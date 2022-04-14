@@ -1,0 +1,2 @@
+# ninjaruss.net
+Personal website.
