@@ -1,4 +1,5 @@
 const textElement = document.getElementById('text');
+const imageElement = document.getElementById('image');
 const optionButtonsElement = document.getElementById('option-buttons');
 
 let state = {}
@@ -50,6 +51,11 @@ const textNodes = [
             },
             {
                 text: 'Abandon the meme.',
+                // setState: {meme: false},
+                nextText: 2
+            },
+            {
+                text: 'Ahhhhhhhhhhhh.',
                 // setState: {meme: false},
                 nextText: 2
             }
