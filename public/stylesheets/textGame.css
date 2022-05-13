@@ -5,7 +5,7 @@
   
 body {
     padding: 0;
-    margin: 0;
+    margin: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,16 +16,17 @@ body {
 
 .prompt {
     text-align: center;
-    font-size: 22px;
+    font-size: 15px;
 }
 
 .container {
     width: 800px;
     max-width: 80%;
-    background-color: white;
+    background-color: black;
+    color: white;
     padding: 10px;
     border-radius: 5px;
-    box-shadow: 0 0 10px 2px;
+    box-shadow: 0 0 1px 2px;
 }
 
 .btn-grid {
@@ -36,20 +37,21 @@ body {
 }
 
 .btn {
-    background-color: hsl(200, 100%, 50%);
+    background-color: black;
     border: 1px solid hsl(200, 100%, 30%);
     border-radius: 5px;
     padding: 5px 10px;
     color: white;
     outline: none;
+    font-size: 12px;
 }
 
 .btn:hover {
-    border-color: black;
+    border-color: goldenrod;
 }
 
 .picture {
-    margin: auto;
+    margin: 10px auto 10px auto;
     display: block;
     border-radius: 8px;
     max-width: 100%;
