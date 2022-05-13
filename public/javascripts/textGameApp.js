@@ -74,11 +74,11 @@ const textNodes = [
         options: [
             {
                 text: 'Macbeth calls for someone to take a look at what caused Duncan’s death while also calling someone to sound the alarm.',
-                nextText: -1
+                nextText: 99
             },
             {
                 text: 'Macbeth tells Macduff and the other men Duncan brought to stay outside so he can investigate and then tell a lie about what happened to Duncan.',
-                nextText: -1
+                nextText: 99
             }
         ]
     },
@@ -90,11 +90,11 @@ const textNodes = [
         options: [
             {
                 text: 'Macbeth calls for someone to sound the alarm of a murder while pondering about the murder he has just caused.',
-                nextText: -1
+                nextText: 99
             },
             {
                 text: 'Macbeth calls for someone to sound the alarm of a murder while thinking of how to drive the conversation of what happened to Duncan into his favor.',
-                nextText: -1
+                nextText: 99
             }
         ]
     },
@@ -106,16 +106,27 @@ const textNodes = [
         options: [
             {
                 text: 'The night goes onward peacefully onto the next morning.',
-                nextText: -1
+                nextText: 99
             },
             {
                 text: 'Lady Macbeth convinces Macbeth to go with the original plan of killing Duncan at night.',
-                nextText: -1
+                nextText: 99
             },
             {
                 text: 'Lady Macbeth decides to take hold of the ship and decides to kill Duncan on her own.',
-                nextText: -1
+                nextText: 99
             }
+        ]
+    },
+    {
+        id: 99,
+        text: 'To be continued...',
+        image: 'https://i0.wp.com/www.hadeninteractive.com/wp-content/uploads/2014/01/wip.jpg?fit=425%2C283&ssl=1',
+        options: [
+            {
+                text: 'Return to start',
+                nextText: -1
+            },
         ]
     },
 ]
