@@ -1,10 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.router = void 0;
-const express_1 = require("express");
-let router = (0, express_1.Router)();
-exports.router = router;
+import express, {Request, Response, Router} from "express";
+let router = Router();
+
 /* GET home page. */
-router.get('/', function (req, res, next) {
-    return res.send('index');
+router.get('/', function(req, res, next) {
+  return res.send('index')
 });
+
+export {router};
