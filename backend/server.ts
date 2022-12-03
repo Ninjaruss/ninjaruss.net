@@ -12,13 +12,6 @@ import {router as indexRouter} from './routes/index';
 app.use('/api', indexRouter);
 // app.use('/api/users', usersRouter);
 
-// respond with "hello world" when a GET request is made to the homepage
-/*
-app.get('/', (req: Request, res: Response) => {
-  return res.send('hello world')
-})
-*/
-
 app.use(
   express.static(path.join(__dirname, "../frontend/build"))
 )
