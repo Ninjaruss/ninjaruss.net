@@ -7,10 +7,10 @@ const port = 3001;
 app.use(express.json());
 
 var indexRouter = require('./routes/index');
-// var usersRouter = require('./routes/users.ts');
+var usersRouter = require('./routes/users.ts');
 
 app.use('/api', indexRouter);
-// app.use('/api/users', usersRouter);
+app.use('/api/users', usersRouter);
 
 app.use(
   express.static(path.join(__dirname, "../frontend/build"))
