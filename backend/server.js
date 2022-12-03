@@ -1,12 +1,12 @@
-import express, {Request, Response} from "express";
-import path from "path";
-const app = express();
+var express = require("express");
+var path = require("path");
+var app = express();
 const port = 3001;
 
 // middleware
 app.use(express.json());
 
-import {router as indexRouter} from './routes/index';
+var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users.ts');
 
 app.use('/api', indexRouter);
