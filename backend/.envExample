@@ -1,4 +1,0 @@
-NODE_ENV = development
-PORT = 3001
-MONGO_URI = mongodb+srv://ninjaruss:ninjaruss@workincluster.7ojlnza.mongodb.net/WorkInCluster?retryWrites=true&w=majority
-JWT_SECRET = secret

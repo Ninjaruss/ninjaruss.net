@@ -1,36 +1,47 @@
-const express = require('express');
-const path = require('path');
-
-const colors = require('colors');
-const connectDB = require('./db/conn');
-const dotenv = require('dotenv').config()
-
-const logger = require('morgan');
-const cookieParser = require('cookie-parser');
-const errorHandler = require('./middleware/errorHandler');
-const createError = require("http-errors");
-
-connectDB();
+const express = require("express");
 const app = express();
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const authRoute = require("./routes/auth");
+const userRoute = require("./routes/users");
+const postRoute = require("./routes/posts");
+const categoryRoute = require("./routes/categories");
+const multer = require("multer");
+const path = require("path");
 
-// middleware
-app.use(logger('dev'));
+dotenv.config();
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use("/images", express.static(path.join(__dirname, "/images")));
 
-// routes
-app.use('/api', require('./routes/indexRouter'));
-app.use('/api/users',  require('./routes/userRouter'));
-app.use('/api/calendars',  require('./routes/calendarRouter'));
+mongoose
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify:true
+  })
+  .then(console.log("Connected to MongoDB"))
+  .catch((err) => console.log(err));
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, req.body.name);
+  },
 });
 
-// error handling
-app.use(errorHandler)
+const upload = multer({ storage: storage });
+app.post("/api/upload", upload.single("file"), (req, res) => {
+  res.status(200).json("File has been uploaded");
+});
 
+app.use("/api/auth", authRoute);
+app.use("/api/users", userRoute);
+app.use("/api/posts", postRoute);
+app.use("/api/categories", categoryRoute);
 
-module.exports = app;
+app.listen("5000", () => {
+  console.log("Backend is running.");
+});
