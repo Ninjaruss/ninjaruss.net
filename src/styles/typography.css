@@ -1,0 +1,206 @@
+/* Persona 4 Golden — Authentic Typography System */
+
+/* Font Face Declarations */
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Font Families */
+  --font-display: 'Archivo Black', sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Type Scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 2rem;
+  --text-4xl: 2.5rem;
+  --text-5xl: 3.5rem;
+
+  /* Line Heights */
+  --leading-tight: 1.0;
+  --leading-snug: 1.2;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+
+  /* Letter Spacing */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.05em;
+}
+
+/* Display Headings — Bold P4G Style (Dark Mode) */
+h1, .h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-5xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+  text-transform: uppercase;
+}
+
+h2, .h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+}
+
+h3, .h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+}
+
+h4, .h4 {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-snug);
+}
+
+h5, .h5 {
+  font-family: var(--font-body);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  line-height: var(--leading-snug);
+}
+
+h6, .h6 {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: var(--leading-normal);
+}
+
+/* Body Text */
+p {
+  margin-bottom: var(--space-md);
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+/* Small Text / Labels */
+.text-sm {
+  font-size: var(--text-sm);
+}
+
+.text-xs {
+  font-size: var(--text-xs);
+}
+
+/* P4G Block Label — Black bg, gold text */
+.label {
+  display: inline-block;
+  background: var(--color-black);
+  color: var(--color-gold);
+  padding: 4px 10px;
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  border-radius: var(--radius-sm);
+}
+
+/* Monospace */
+code, .mono {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--color-dark);
+  color: var(--color-gold);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* Lead Paragraph */
+.lead {
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-muted);
+}
+
+/* Muted Text */
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+/* Gold Accent Text */
+.text-gold {
+  color: var(--color-gold-deep);
+}
+
+/* Prose — Entry Content Styling */
+.prose {
+  max-width: 65ch;
+}
+
+.prose p {
+  margin-bottom: var(--space-lg);
+}
+
+.prose h2 {
+  margin-top: var(--space-2xl);
+  margin-bottom: var(--space-md);
+}
+
+.prose h3 {
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-sm);
+}
+
+.prose ul, .prose ol {
+  margin-bottom: var(--space-lg);
+  padding-left: var(--space-lg);
+}
+
+.prose li {
+  margin-bottom: var(--space-sm);
+}
+
+.prose ul li {
+  list-style-type: disc;
+}
+
+.prose ol li {
+  list-style-type: decimal;
+}
+
+.prose blockquote {
+  margin: var(--space-lg) 0;
+  font-style: italic;
+  color: var(--color-text-muted);
+  background: var(--color-bg-elevated);
+  padding: var(--space-md) var(--space-lg);
+  border: var(--border-thin) solid var(--color-border);
+  border-left: var(--border-thick) solid var(--color-gold);
+  border-radius: var(--radius-sm);
+}
+
+.prose a {
+  color: var(--color-gold);
+  text-decoration: underline;
+  text-decoration-color: var(--color-gold-dim);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  transition: color var(--transition-fast);
+}
+
+.prose a:hover {
+  color: var(--color-gold-orange);
+  text-decoration-color: var(--color-gold);
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  :root {
+    --text-5xl: 2.5rem;
+    --text-4xl: 2rem;
+    --text-3xl: 1.5rem;
+  }
+}

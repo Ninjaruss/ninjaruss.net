@@ -1,0 +1,42 @@
+---
+interface Props {
+  href?: string;
+  size?: 'dominant' | 'medium-wide' | 'medium-tall' | 'small';
+  variant?: 'interactive' | 'static' | 'highlight' | 'dark';
+  accent?: boolean;
+  label?: string;
+  title: string;
+  description?: string;
+  class?: string;
+}
+
+const {
+  href,
+  size = 'small',
+  variant = 'interactive',
+  accent = false,
+  label,
+  title,
+  description,
+  class: className,
+} = Astro.props;
+
+const Tag = href ? 'a' : 'div';
+const sizeClass = `bento-tile--${size}`;
+const variantClass = `bento-tile--${variant}`;
+const accentClass = accent ? 'bento-tile--accent' : '';
+---
+
+<Tag
+  href={href}
+  class:list={['bento-tile', 'bento-tile--full', sizeClass, variantClass, accentClass, className]}
+>
+  <div class="bento-tile__header">
+    {label && <span class="bento-tile__label">{label}</span>}
+    <h3 class="bento-tile__title">{title}</h3>
+  </div>
+  {description && <p class="bento-tile__description">{description}</p>}
+  <div class="bento-tile__footer">
+    <slot />
+  </div>
+</Tag>

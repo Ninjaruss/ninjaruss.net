@@ -1,0 +1,127 @@
+---
+import { getCollection } from 'astro:content';
+import EntryLayout from '../../layouts/EntryLayout.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('experiments');
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<EntryLayout
+  title={entry.data.title}
+  status={entry.data.status}
+  emotional_tags={entry.data.emotional_tags}
+  artifacts={entry.data.artifacts}
+  backLink="/experiments"
+  backLabel="Back to Experiments"
+>
+  {entry.data.question && (
+    <aside class="inquiry-frame">
+      <dl>
+        <div class="inquiry-frame__item">
+          <dt>What was I trying to understand?</dt>
+          <dd>{entry.data.question}</dd>
+        </div>
+        {entry.data.approach && (
+          <div class="inquiry-frame__item">
+            <dt>What did I build/try?</dt>
+            <dd>{entry.data.approach}</dd>
+          </div>
+        )}
+        {entry.data.surprise && (
+          <div class="inquiry-frame__item">
+            <dt>What surprised me?</dt>
+            <dd>{entry.data.surprise}</dd>
+          </div>
+        )}
+        {entry.data.unresolved && (
+          <div class="inquiry-frame__item">
+            <dt>What remains unresolved?</dt>
+            <dd>{entry.data.unresolved}</dd>
+          </div>
+        )}
+      </dl>
+    </aside>
+  )}
+
+  <Content />
+
+  {entry.data.artifacts && entry.data.artifacts.filter(a => a.type === 'link').length > 0 && (
+    <aside class="artifacts">
+      <h3>Related Links</h3>
+      <ul>
+        {entry.data.artifacts.filter(a => a.type === 'link').map((artifact) => (
+          <li>
+            <a href={artifact.src} target="_blank" rel="noopener noreferrer">
+              {artifact.alt || 'View'}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  )}
+</EntryLayout>
+
+<style>
+  .inquiry-frame {
+    margin-bottom: var(--space-2xl);
+    padding: var(--space-lg);
+    background: var(--color-panel);
+    border: 2px solid var(--color-gold);
+    border-radius: var(--radius-md);
+  }
+
+  .inquiry-frame dl {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .inquiry-frame__item dt {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-gold-dark);
+    margin-bottom: var(--space-xs);
+  }
+
+  .inquiry-frame__item dd {
+    color: var(--color-ink);
+    line-height: var(--leading-normal);
+  }
+
+  .artifacts {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .artifacts h3 {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-md);
+  }
+
+  .artifacts ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .artifacts a {
+    color: var(--color-gold-dim);
+    text-decoration: underline;
+  }
+
+  .artifacts a:hover {
+    color: var(--color-gold);
+  }
+</style>

@@ -1,0 +1,154 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BentoGrid from '../components/BentoGrid.astro';
+import BentoTile from '../components/BentoTile.astro';
+---
+
+<BaseLayout title="Home" description="Fragments, reflections, and experiments.">
+  <div class="container">
+    <BentoGrid>
+      <!-- Title Tile -->
+      <div class="title-tile p3r-animate-left">
+        <span class="title-tile__name">Ninjaruss</span>
+      </div>
+
+      <!-- Hero Image Tile -->
+      <div class="image-tile p3r-animate" style="--stagger-delay: 100ms;">
+        <img
+          src="/images/hero-placeholder.svg"
+          alt="Hero visual"
+          class="image-tile__img"
+        />
+      </div>
+
+      <!-- Featured - Yellow Highlight -->
+      <BentoTile
+        href="/experiments"
+        size="medium-tall"
+        variant="highlight"
+        accent
+        label="Experiments"
+        title="What I'm Building"
+        description="Projects framed as inquiries."
+      />
+
+      <!-- Core Sections -->
+      <BentoTile
+        href="/notes"
+        size="medium-wide"
+        variant="dark"
+        accent
+        label="Notes"
+        title="Thoughts in Progress"
+        description="Philosophical fragments. Contradictions allowed."
+      />
+
+      <BentoTile
+        href="/media"
+        size="small"
+        accent
+        label="Media"
+        title="Watched & Read"
+      />
+
+      <!-- Small Tiles: Fragments & Signals -->
+      <BentoTile
+        href="/music"
+        size="small"
+        label="Music"
+        title="Curated Sounds"
+      />
+
+      <BentoTile
+        href="/now"
+        size="small"
+        variant="dark"
+        label="Now"
+        title="Current Focus"
+      />
+
+      <!-- Static / Decorative Tile -->
+      <BentoTile
+        size="small"
+        variant="static"
+        title="..."
+        description="More to come."
+      />
+    </BentoGrid>
+  </div>
+</BaseLayout>
+
+<style>
+  .container {
+    padding-top: var(--space-2xl);
+    padding-bottom: var(--space-3xl);
+  }
+
+  /* Title Tile - Part of the bento grid */
+  .title-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-black);
+    border: var(--border-thick) solid var(--color-gold);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    grid-column: span 1;
+    grid-row: span 1;
+    box-shadow: var(--shadow-glow);
+  }
+
+  .title-tile__name {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    color: var(--color-gold);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-shadow:
+      0 0 30px rgba(255, 229, 44, 0.6),
+      0 0 60px rgba(255, 229, 44, 0.3);
+  }
+
+  /* Image Tile */
+  .image-tile {
+    grid-column: span 1;
+    grid-row: span 1;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: var(--border-thick) solid var(--color-border-strong);
+    background: var(--color-bg-elevated);
+  }
+
+  .image-tile__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    .title-tile {
+      grid-column: span 2;
+      padding: var(--space-lg);
+    }
+
+    .title-tile__name {
+      font-size: clamp(2rem, 10vw, 3rem);
+    }
+
+    .image-tile {
+      grid-column: span 2;
+      min-height: 200px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .title-tile {
+      grid-column: span 1;
+    }
+
+    .image-tile {
+      grid-column: span 1;
+    }
+  }
+</style>

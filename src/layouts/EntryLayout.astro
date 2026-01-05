@@ -1,0 +1,148 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import TagList from '../components/TagList.astro';
+import NavPill from '../components/NavPill.astro';
+import ImageGallery from '../components/ImageGallery.astro';
+
+interface Artifact {
+  type: 'image' | 'video' | 'link';
+  src: string;
+  alt?: string;
+}
+
+interface Props {
+  title: string;
+  status: 'confident' | 'conflicted' | 'unresolved';
+  emotional_tags?: string[];
+  backLink: string;
+  backLabel: string;
+  meta?: Record<string, string>;
+  artifacts?: Artifact[];
+}
+
+const { title, status, emotional_tags = [], backLink, backLabel, meta, artifacts = [] } = Astro.props;
+const hasImages = artifacts.some(a => a.type === 'image');
+---
+
+<BaseLayout title={title} description={`${title} — a reflection.`}>
+  <NavPill backLink={backLink} backLabel={backLabel} />
+  <article class={`entry ${hasImages ? 'entry--has-images' : ''}`}>
+    <div class="container">
+
+      <header class="entry__header">
+        <h1 class="entry__title">{title}</h1>
+        <div class="entry__meta">
+          <StatusBadge status={status} size="md" />
+          <TagList tags={emotional_tags} size="md" />
+        </div>
+        {meta && Object.keys(meta).length > 0 && (
+          <dl class="entry__details">
+            {Object.entries(meta).map(([key, value]) => (
+              <>
+                <dt>{key}</dt>
+                <dd>{value}</dd>
+              </>
+            ))}
+          </dl>
+        )}
+      </header>
+
+      <div class="entry__body">
+        <div class="entry__content prose">
+          <slot />
+        </div>
+        {hasImages && <ImageGallery artifacts={artifacts} />}
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style is:global>
+  /* Entry layout styles - global so they work in split view too */
+  .entry {
+    padding-bottom: calc(var(--space-3xl) + 80px);
+  }
+
+  .entry__header {
+    margin-bottom: var(--space-2xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: var(--border-thick) solid var(--color-gold-dim);
+  }
+
+  .entry__title {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    color: var(--color-text);
+    margin-bottom: var(--space-md);
+    text-transform: uppercase;
+  }
+
+  .entry__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .entry__details {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-xs) var(--space-md);
+    margin-top: var(--space-lg);
+    padding: var(--space-md);
+    background: var(--color-bg-elevated);
+    border: var(--border-medium) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-hard-sm);
+    font-size: var(--text-sm);
+  }
+
+  .entry__details dt {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--color-gold-dim);
+    text-transform: uppercase;
+    font-size: var(--text-xs);
+    letter-spacing: 0.05em;
+  }
+
+  .entry__details dd {
+    color: var(--color-text);
+  }
+
+  .entry__body {
+    display: flex;
+    gap: var(--space-2xl);
+    align-items: flex-start;
+  }
+
+  .entry__content {
+    max-width: 65ch;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* When images are present, adjust layout */
+  .entry--has-images .entry__body {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: var(--space-xl);
+  }
+
+  .entry--has-images .entry__content {
+    max-width: none;
+  }
+
+  @media (max-width: 1200px) {
+    .entry--has-images .entry__body {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .entry__title {
+      font-size: var(--text-2xl);
+    }
+  }
+</style>

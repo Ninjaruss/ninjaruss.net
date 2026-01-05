@@ -1,0 +1,41 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+import '../styles/typography.css';
+import '../styles/bento.css';
+import '../styles/transitions.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Fragments, reflections, and experiments.' } = Astro.props;
+const siteTitle = 'ninjaruss';
+const fullTitle = title === 'Home' ? siteTitle : `${title} — ${siteTitle}`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{fullTitle}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <ClientRouter />
+  </head>
+  <body>
+    <main class="page">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  /* Page transition smoothness */
+  html {
+    scroll-behavior: smooth;
+  }
+</style>

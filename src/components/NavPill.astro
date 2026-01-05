@@ -1,0 +1,161 @@
+---
+interface Props {
+  backLink?: string;
+  backLabel?: string;
+  showHome?: boolean;
+}
+
+const { backLink, backLabel, showHome = true } = Astro.props;
+const currentPath = Astro.url.pathname;
+const isHome = currentPath === '/';
+---
+
+{!isHome && (
+  <nav class="nav-pill">
+    <div class="nav-pill__inner">
+      {showHome && (
+        <a href="/" class="nav-pill__item nav-pill__home" title="Home">
+          <span class="nav-pill__icon">&#9670;</span>
+          <span class="nav-pill__text">Home</span>
+        </a>
+      )}
+      {backLink && backLabel && (
+        <a href={backLink} class="nav-pill__item nav-pill__back">
+          <span class="nav-pill__arrow">&larr;</span>
+          <span class="nav-pill__text">{backLabel}</span>
+        </a>
+      )}
+    </div>
+  </nav>
+)}
+
+<style>
+  .nav-pill {
+    position: fixed;
+    bottom: var(--space-xl);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+  }
+
+  .nav-pill__inner {
+    display: flex;
+    gap: var(--space-sm);
+    background: var(--color-black);
+    padding: var(--space-sm);
+    border-radius: var(--radius-pill);
+    border: var(--border-medium) solid var(--color-gold);
+    box-shadow:
+      0 4px 20px rgba(0, 0, 0, 0.3),
+      0 0 0 2px var(--color-gold-orange);
+  }
+
+  .nav-pill__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-lg);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-white);
+    background: transparent;
+    border-radius: var(--radius-pill);
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .nav-pill__item:hover {
+    background: var(--color-gold);
+    color: var(--color-black);
+    transform: scale(1.05);
+  }
+
+  .nav-pill__item:active {
+    transform: scale(0.98);
+  }
+
+  .nav-pill__home {
+    color: var(--color-gold);
+  }
+
+  .nav-pill__home:hover {
+    background: var(--color-gold);
+    color: var(--color-black);
+  }
+
+  .nav-pill__icon {
+    font-size: var(--text-base);
+    transition: transform var(--transition-fast);
+  }
+
+  .nav-pill__home:hover .nav-pill__icon {
+    transform: rotate(45deg) scale(1.2);
+  }
+
+  .nav-pill__arrow {
+    font-size: var(--text-lg);
+    transition: transform var(--transition-fast);
+  }
+
+  .nav-pill__back:hover .nav-pill__arrow {
+    transform: translateX(-4px);
+  }
+
+  .nav-pill__text {
+    white-space: nowrap;
+  }
+
+  /* P4G Selection indicator */
+  .nav-pill__item::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: var(--radius-pill);
+    opacity: 0;
+    background: var(--color-gold);
+    z-index: -1;
+    transition: opacity var(--transition-fast);
+  }
+
+  /* Floating animation */
+  @keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-4px); }
+  }
+
+  .nav-pill {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .nav-pill:hover {
+    animation-play-state: paused;
+  }
+
+  @media (max-width: 480px) {
+    .nav-pill {
+      bottom: var(--space-lg);
+    }
+
+    .nav-pill__inner {
+      padding: var(--space-xs);
+    }
+
+    .nav-pill__item {
+      padding: var(--space-xs) var(--space-md);
+      font-size: var(--text-xs);
+    }
+
+    .nav-pill__text {
+      display: none;
+    }
+
+    .nav-pill__icon,
+    .nav-pill__arrow {
+      font-size: var(--text-lg);
+    }
+  }
+</style>

@@ -1,0 +1,55 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import NavPill from '../components/NavPill.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  subtitle?: string;
+}
+
+const { title, description, subtitle } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <NavPill />
+  <div class="container">
+    <header class="section-header">
+      <h1 class="section-header__title p3r-animate-left">{title}</h1>
+      {subtitle && <p class="section-header__subtitle p3r-animate" style="--stagger-delay: 80ms;">{subtitle}</p>}
+    </header>
+    <div class="section-content p3r-animate" style="--stagger-delay: 150ms;">
+      <slot />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .section-header {
+    margin-bottom: var(--space-2xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: var(--border-thick) solid var(--color-gold-dim);
+  }
+
+  .section-header__title {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    color: var(--color-gold);
+    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+    text-shadow:
+      0 0 30px rgba(255, 229, 44, 0.4),
+      0 0 60px rgba(255, 229, 44, 0.2);
+  }
+
+  .section-header__subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    max-width: 60ch;
+  }
+
+  .section-content {
+    min-height: 50vh;
+    padding-bottom: 80px; /* Space for floating nav */
+  }
+</style>

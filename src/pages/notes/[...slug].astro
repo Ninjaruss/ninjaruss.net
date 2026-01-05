@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import EntryLayout from '../../layouts/EntryLayout.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('notes');
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<EntryLayout
+  title={entry.data.title}
+  status={entry.data.status}
+  emotional_tags={entry.data.emotional_tags}
+  artifacts={entry.data.artifacts}
+  backLink="/notes"
+  backLabel="Back to Notes"
+>
+  <Content />
+</EntryLayout>

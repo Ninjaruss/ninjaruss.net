@@ -1,0 +1,99 @@
+---
+import StatusBadge from './StatusBadge.astro';
+import TagList from './TagList.astro';
+
+interface Props {
+  href: string;
+  title: string;
+  excerpt?: string;
+  status: 'confident' | 'conflicted' | 'unresolved';
+  tags?: string[];
+  label?: string;
+}
+
+const { href, title, excerpt, status, tags = [], label } = Astro.props;
+---
+
+<a href={href} class="entry-card">
+  <div class="entry-card__header">
+    {label && <span class="entry-card__label">{label}</span>}
+    <h3 class="entry-card__title">{title}</h3>
+  </div>
+  {excerpt && <p class="entry-card__excerpt">{excerpt}</p>}
+  <div class="entry-card__footer">
+    <StatusBadge status={status} />
+    <TagList tags={tags} />
+  </div>
+</a>
+
+<style>
+  .entry-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-elevated);
+    border: var(--border-thick) solid var(--color-gold-dim);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-hard);
+    transition:
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast),
+      border-color var(--transition-fast);
+  }
+
+  .entry-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(255, 229, 44, 0.4);
+    border-color: var(--color-gold);
+  }
+
+  .entry-card:hover .entry-card__title {
+    color: var(--color-gold);
+  }
+
+  .entry-card:active {
+    transform: translate(0, 0);
+    box-shadow: var(--shadow-hard-sm);
+  }
+
+  .entry-card__header {
+    margin-bottom: var(--space-sm);
+  }
+
+  .entry-card__label {
+    display: inline-block;
+    background: var(--color-black);
+    color: var(--color-gold);
+    padding: 4px 10px;
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-sm);
+    border-radius: var(--radius-sm);
+  }
+
+  .entry-card__title {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    line-height: var(--leading-snug);
+    color: var(--color-text);
+    transition: color var(--transition-fast);
+  }
+
+  .entry-card__excerpt {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: var(--leading-normal);
+    margin-bottom: var(--space-md);
+    flex-grow: 1;
+  }
+
+  .entry-card__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: auto;
+  }
+</style>

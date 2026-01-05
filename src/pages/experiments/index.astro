@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
+import ListItem from '../../components/ListItem.astro';
+
+const allExperiments = await getCollection('experiments', ({ data }) => !data.draft);
+const sortedExperiments = allExperiments.sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+
+<SplitViewLayout
+  title="Experiments"
+  description="Projects framed as inquiries."
+  subtitle="What was I trying to understand?"
+  section="experiments"
+>
+  <Fragment slot="list">
+    {sortedExperiments.length > 0 ? (
+      sortedExperiments.map((entry) => (
+        <ListItem
+          href={`/experiments/${entry.slug}`}
+          slug={entry.slug}
+          title={entry.data.title}
+          subtitle={entry.data.question}
+          status={entry.data.status}
+        />
+      ))
+    ) : (
+      <p class="empty-state">No experiments yet.</p>
+    )}
+  </Fragment>
+</SplitViewLayout>
+
+<style>
+  .empty-state {
+    color: var(--color-muted);
+    font-style: italic;
+    text-align: center;
+    padding: var(--space-xl);
+  }
+</style>
