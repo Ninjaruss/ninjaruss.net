@@ -1,0 +1,162 @@
+---
+import StatusBadge from './StatusBadge.astro';
+
+interface Props {
+  href: string;
+  slug: string;
+  title: string;
+  subtitle?: string;
+  status?: 'confident' | 'conflicted' | 'unresolved';
+  meta?: string;
+}
+
+const { href, slug, title, subtitle, status, meta } = Astro.props;
+---
+
+<a href={href} class="list-item" data-slug={slug} role="listitem">
+  <div class="list-item__content">
+    <span class="list-item__title">{title}</span>
+    {subtitle && <span class="list-item__subtitle">{subtitle}</span>}
+  </div>
+  <div class="list-item__meta">
+    {status && <StatusBadge status={status} size="sm" />}
+    {meta && <span class="list-item__meta-text">{meta}</span>}
+  </div>
+  <span class="list-item__arrow">→</span>
+</a>
+
+<style>
+  .list-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+    cursor: pointer;
+    transition:
+      background-color var(--transition-fast),
+      transform var(--transition-fast);
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+  }
+
+  .list-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--color-gold);
+    transform: scaleY(0);
+    transition: transform var(--transition-fast);
+  }
+
+  .list-item:hover {
+    background: rgba(255, 229, 44, 0.1);
+  }
+
+  .list-item:hover::before {
+    transform: scaleY(1);
+  }
+
+  .list-item.is-active {
+    background: var(--color-gold);
+  }
+
+  .list-item.is-active::before {
+    transform: scaleY(1);
+    background: var(--color-black);
+  }
+
+  .list-item.is-active .list-item__title {
+    font-weight: 600;
+    color: var(--color-black);
+  }
+
+  .list-item.is-active .list-item__arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .list-item__content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .list-item__title {
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color var(--transition-fast);
+  }
+
+  .list-item__subtitle {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .list-item__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-shrink: 0;
+  }
+
+  .list-item__meta-text {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    font-family: var(--font-display);
+  }
+
+  .list-item__arrow {
+    font-size: var(--text-lg);
+    color: var(--color-gold);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition:
+      opacity var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .list-item.is-active .list-item__subtitle {
+    color: var(--color-black);
+    opacity: 0.7;
+  }
+
+  .list-item:hover .list-item__arrow {
+    opacity: 0.5;
+    transform: translateX(0);
+  }
+
+  /* Animation stagger for list items */
+  .list-item {
+    animation: p3r-entrance 350ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  .list-item:nth-child(1) { animation-delay: 0ms; }
+  .list-item:nth-child(2) { animation-delay: 40ms; }
+  .list-item:nth-child(3) { animation-delay: 80ms; }
+  .list-item:nth-child(4) { animation-delay: 120ms; }
+  .list-item:nth-child(5) { animation-delay: 160ms; }
+  .list-item:nth-child(6) { animation-delay: 200ms; }
+  .list-item:nth-child(7) { animation-delay: 240ms; }
+  .list-item:nth-child(8) { animation-delay: 280ms; }
+  .list-item:nth-child(n+9) { animation-delay: 320ms; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .list-item {
+      animation: none;
+    }
+  }
+</style>

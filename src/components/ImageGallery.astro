@@ -1,0 +1,91 @@
+---
+interface Artifact {
+  type: 'image' | 'video' | 'link';
+  src: string;
+  alt?: string;
+}
+
+interface Props {
+  artifacts?: Artifact[];
+}
+
+const { artifacts = [] } = Astro.props;
+const images = artifacts.filter(a => a.type === 'image');
+---
+
+{images.length > 0 && (
+  <aside class="image-gallery">
+    <div class="image-gallery__inner">
+      {images.map((img, index) => (
+        <figure class="image-gallery__item" style={`--stagger-delay: ${index * 100}ms`}>
+          <img
+            src={img.src}
+            alt={img.alt || 'Image'}
+            loading="lazy"
+            class="image-gallery__img"
+          />
+          {img.alt && <figcaption class="image-gallery__caption">{img.alt}</figcaption>}
+        </figure>
+      ))}
+    </div>
+  </aside>
+)}
+
+<style is:global>
+  /* Image gallery styles - global so they work in split view too */
+  .image-gallery {
+    position: sticky;
+    top: var(--space-xl);
+    align-self: start;
+  }
+
+  .image-gallery__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .image-gallery__item {
+    background: var(--color-bg-elevated);
+    border: var(--border-medium) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin: 0;
+  }
+
+  .image-gallery__img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform var(--transition-base);
+  }
+
+  .image-gallery__item:hover .image-gallery__img {
+    transform: scale(1.02);
+  }
+
+  .image-gallery__caption {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    background: var(--color-bg-surface);
+    border-top: 1px solid var(--color-border);
+  }
+
+  @media (max-width: 1200px) {
+    .image-gallery {
+      position: relative;
+      top: 0;
+    }
+
+    .image-gallery__inner {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .image-gallery__item {
+      flex: 1 1 200px;
+      max-width: 300px;
+    }
+  }
+</style>

@@ -1,0 +1,76 @@
+---
+import { getCollection } from 'astro:content';
+import EntryLayout from '../../layouts/EntryLayout.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('media');
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+const meta: Record<string, string> = {};
+if (entry.data.media_type) {
+  meta['Type'] = entry.data.media_type.charAt(0).toUpperCase() + entry.data.media_type.slice(1);
+}
+---
+
+<EntryLayout
+  title={entry.data.title}
+  status={entry.data.status}
+  emotional_tags={entry.data.emotional_tags}
+  artifacts={entry.data.artifacts}
+  backLink="/media"
+  backLabel="Back to Media"
+  meta={meta}
+>
+  <Content />
+
+  {entry.data.artifacts && entry.data.artifacts.filter(a => a.type === 'link').length > 0 && (
+    <aside class="artifacts">
+      <h3>Related Links</h3>
+      <ul>
+        {entry.data.artifacts.filter(a => a.type === 'link').map((artifact) => (
+          <li>
+            <a href={artifact.src} target="_blank" rel="noopener noreferrer">
+              {artifact.alt || artifact.src}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  )}
+</EntryLayout>
+
+<style>
+  .artifacts {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .artifacts h3 {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-md);
+  }
+
+  .artifacts ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .artifacts a {
+    color: var(--color-gold-dim);
+    text-decoration: underline;
+  }
+
+  .artifacts a:hover {
+    color: var(--color-gold);
+  }
+</style>

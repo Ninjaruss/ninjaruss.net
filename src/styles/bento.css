@@ -1,0 +1,273 @@
+/* Persona 4 Golden — Dark Mode Bento Grid System */
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+  width: 100%;
+}
+
+/* Tile Base Styles — Dark mode with gold accents */
+.bento-tile {
+  background: var(--color-bg-elevated);
+  border: var(--border-thick) solid var(--color-gold-dim);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-hard);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+/* Interactive Tiles — Gold glow on hover */
+.bento-tile--interactive {
+  cursor: pointer;
+}
+
+.bento-tile--interactive:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(255, 229, 44, 0.4);
+  border-color: var(--color-gold);
+}
+
+.bento-tile--interactive:hover .bento-tile__title {
+  color: var(--color-gold);
+}
+
+.bento-tile--interactive:active {
+  transform: translate(0, 0);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+/* Yellow Highlight Tile — Featured Items */
+.bento-tile--highlight {
+  background: var(--color-gold);
+  color: var(--color-text-on-gold);
+}
+
+.bento-tile--highlight .bento-tile__label {
+  background: var(--color-black);
+  color: var(--color-gold);
+}
+
+.bento-tile--highlight .bento-tile__title {
+  color: var(--color-black);
+}
+
+.bento-tile--highlight .bento-tile__description {
+  color: var(--color-text-on-gold);
+  opacity: 0.85;
+}
+
+.bento-tile--highlight:hover .bento-tile__title {
+  color: var(--color-dark);
+}
+
+/* Cyan Accent Tile — P4G secondary color */
+.bento-tile--cyan {
+  background: var(--color-cyan);
+  color: var(--color-black);
+}
+
+.bento-tile--cyan .bento-tile__label {
+  background: var(--color-black);
+  color: var(--color-cyan);
+}
+
+/* Dark Tile Variant — Deeper dark for contrast */
+.bento-tile--dark {
+  background: var(--color-bg-base);
+  border-color: var(--color-border-strong);
+  color: var(--color-text-on-dark);
+}
+
+.bento-tile--dark .bento-tile__label {
+  background: var(--color-gold);
+  color: var(--color-black);
+}
+
+.bento-tile--dark .bento-tile__title {
+  color: var(--color-white);
+}
+
+.bento-tile--dark .bento-tile__description {
+  color: var(--color-text-muted);
+}
+
+.bento-tile--dark:hover .bento-tile__title {
+  color: var(--color-gold);
+}
+
+.bento-tile--dark:hover {
+  border-color: var(--color-gold);
+}
+
+/* Static / Decorative Tiles */
+.bento-tile--static {
+  background: var(--color-bg-surface);
+  border-style: dashed;
+  border-color: var(--color-border);
+  box-shadow: none;
+  cursor: default;
+}
+
+.bento-tile--static .bento-tile__title {
+  color: var(--color-text-muted);
+}
+
+/* Size Variants */
+.bento-tile--dominant {
+  grid-column: span 2;
+  grid-row: span 2;
+  padding: var(--space-xl);
+  border-radius: var(--radius-lg);
+}
+
+.bento-tile--medium-wide {
+  grid-column: span 2;
+}
+
+.bento-tile--medium-tall {
+  grid-row: span 2;
+}
+
+.bento-tile--small {
+  /* Default 1x1 */
+}
+
+/* Tile Content Layout */
+.bento-tile__header {
+  margin-bottom: var(--space-sm);
+}
+
+/* P4G Style Label — Black bg with rounded corners */
+.bento-tile__label {
+  display: inline-block;
+  background: var(--color-black);
+  color: var(--color-gold);
+  padding: 5px 12px;
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+.bento-tile__title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  transition: color var(--transition-fast);
+}
+
+.bento-tile--dominant .bento-tile__title {
+  font-size: var(--text-3xl);
+}
+
+.bento-tile__description {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-sm);
+  line-height: 1.5;
+}
+
+.bento-tile__footer {
+  margin-top: auto;
+  padding-top: var(--space-md);
+}
+
+/* P4G Corner Accent — Small circle in corner */
+.bento-tile--accent::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 12px;
+  height: 12px;
+  background: var(--color-gold-orange);
+  border-radius: 50%;
+}
+
+.bento-tile--dominant.bento-tile--accent::before {
+  width: 16px;
+  height: 16px;
+  top: 16px;
+  right: 16px;
+}
+
+.bento-tile--highlight.bento-tile--accent::before {
+  background: var(--color-black);
+}
+
+.bento-tile--dark.bento-tile--accent::before {
+  background: var(--color-gold);
+}
+
+/* Tile with Full Content */
+.bento-tile--full {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Section Entry Grid (for listing pages) */
+.entry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-lg);
+}
+
+/* Responsive Bento */
+@media (max-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .bento-tile--dominant {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+
+  .bento-tile {
+    padding: var(--space-md);
+    box-shadow: var(--shadow-hard-sm);
+    border-radius: var(--radius-sm);
+  }
+
+  .bento-tile--dominant {
+    grid-column: span 2;
+    grid-row: span 1;
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+  }
+
+  .bento-tile--medium-wide {
+    grid-column: span 2;
+  }
+
+  .bento-tile--medium-tall {
+    grid-row: span 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bento-tile--dominant,
+  .bento-tile--medium-wide {
+    grid-column: span 1;
+  }
+}

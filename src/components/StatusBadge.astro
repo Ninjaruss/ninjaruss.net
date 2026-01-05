@@ -1,0 +1,54 @@
+---
+interface Props {
+  status: 'confident' | 'conflicted' | 'unresolved';
+  size?: 'sm' | 'md';
+}
+
+const { status, size = 'sm' } = Astro.props;
+
+const statusLabels = {
+  confident: 'Confident',
+  conflicted: 'Conflicted',
+  unresolved: 'Unresolved',
+};
+---
+
+<span class:list={['status-badge', `status-badge--${status}`, `status-badge--${size}`]}>
+  {statusLabels[status]}
+</span>
+
+<style>
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: var(--radius-sm);
+  }
+
+  .status-badge--sm {
+    font-size: var(--text-xs);
+    padding: 4px 10px;
+  }
+
+  .status-badge--md {
+    font-size: var(--text-sm);
+    padding: 6px 14px;
+  }
+
+  .status-badge--confident {
+    background: var(--color-confident);
+    color: var(--color-white);
+  }
+
+  .status-badge--conflicted {
+    background: var(--color-conflicted);
+    color: var(--color-black);
+  }
+
+  .status-badge--unresolved {
+    background: var(--color-unresolved);
+    color: var(--color-white);
+  }
+</style>

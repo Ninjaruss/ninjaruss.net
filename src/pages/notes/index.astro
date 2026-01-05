@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
+import ListItem from '../../components/ListItem.astro';
+
+const allNotes = await getCollection('notes', ({ data }) => !data.draft);
+const sortedNotes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+
+<SplitViewLayout
+  title="Notes"
+  description="Philosophical fragments and beliefs in progress."
+  subtitle="Contradictions allowed. Unfinished entries welcome."
+  section="notes"
+>
+  <Fragment slot="list">
+    {sortedNotes.length > 0 ? (
+      sortedNotes.map((entry) => (
+        <ListItem
+          href={`/notes/${entry.slug}`}
+          slug={entry.slug}
+          title={entry.data.title}
+          status={entry.data.status}
+        />
+      ))
+    ) : (
+      <p class="empty-state">No notes yet.</p>
+    )}
+  </Fragment>
+</SplitViewLayout>
+
+<style>
+  .empty-state {
+    color: var(--color-muted);
+    font-style: italic;
+    text-align: center;
+    padding: var(--space-xl);
+  }
+</style>

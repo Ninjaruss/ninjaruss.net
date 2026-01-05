@@ -1,0 +1,331 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import NavPill from '../components/NavPill.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  subtitle?: string;
+  section: string;
+}
+
+const { title, description, subtitle, section } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <NavPill />
+  <div class="split-view" data-section={section} transition:persist={`split-view-${section}`}>
+    <!-- Left Panel: List -->
+    <aside class="split-view__list">
+      <header class="split-view__header">
+        <h1 class="split-view__title">{title}</h1>
+        {subtitle && <p class="split-view__subtitle">{subtitle}</p>}
+      </header>
+      <nav class="split-view__nav" role="list">
+        <slot name="list" />
+      </nav>
+    </aside>
+
+    <!-- Right Panel: Detail -->
+    <main class="split-view__detail">
+      <div class="split-view__detail-inner">
+        <button class="split-view__back" type="button" aria-label="Back to list">
+          <span class="split-view__back-arrow">←</span>
+          <span class="split-view__back-text">Back to list</span>
+        </button>
+        <div class="split-view__placeholder">
+          <span class="split-view__placeholder-icon">→</span>
+          <p>Select an item to view details</p>
+        </div>
+        <article class="split-view__content" aria-live="polite">
+          <!-- Content loaded here via JS -->
+        </article>
+      </div>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .split-view {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    min-height: calc(100vh - var(--space-2xl));
+    gap: 0;
+  }
+
+  /* Left Panel */
+  .split-view__list {
+    background: var(--color-bg-elevated);
+    border-right: var(--border-thick) solid var(--color-gold-dim);
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--space-2xl));
+    position: sticky;
+    top: var(--space-lg);
+  }
+
+  .split-view__header {
+    padding: var(--space-xl) var(--space-lg);
+    border-bottom: var(--border-medium) solid var(--color-gold);
+    background: var(--color-gold);
+  }
+
+  .split-view__title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    color: var(--color-black);
+    text-transform: uppercase;
+    margin-bottom: var(--space-xs);
+  }
+
+  .split-view__subtitle {
+    font-size: var(--text-sm);
+    color: var(--color-black);
+    opacity: 0.7;
+  }
+
+  .split-view__nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-sm) 0;
+  }
+
+  /* Right Panel */
+  .split-view__detail {
+    background: var(--color-bg-base);
+    padding: var(--space-xl) var(--space-2xl);
+    padding-bottom: calc(var(--space-3xl) + 80px);
+    overflow-y: auto;
+  }
+
+  .split-view__detail-inner {
+    /* No max-width - let entry layout handle its own constraints */
+  }
+
+  /* Entry content within split view */
+  .split-view__content .entry {
+    padding-bottom: 0;
+  }
+
+  .split-view__content .container {
+    padding: 0;
+    max-width: none;
+  }
+
+  /* Force two-column layout for images in split view */
+  .split-view__content .entry--has-images .entry__body {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: var(--space-xl);
+  }
+
+  .split-view__content .entry__header {
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-md);
+  }
+
+  .split-view__content .entry__title {
+    font-size: var(--text-2xl);
+  }
+
+  .split-view__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    color: var(--color-text-muted);
+    text-align: center;
+    gap: var(--space-md);
+  }
+
+  .split-view__placeholder-icon {
+    font-size: var(--text-4xl);
+    opacity: 0.3;
+  }
+
+  .split-view__content {
+    display: none;
+  }
+
+  .split-view__content.is-active {
+    display: block;
+    animation: p3r-entrance 400ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  .split-view.has-selection .split-view__placeholder {
+    display: none;
+  }
+
+  /* Back button (mobile only) */
+  .split-view__back {
+    display: none;
+    align-items: center;
+    gap: var(--space-sm);
+    background: var(--color-black);
+    color: var(--color-gold);
+    border: none;
+    padding: var(--space-sm) var(--space-md);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    margin-bottom: var(--space-lg);
+    transition: background-color var(--transition-fast);
+  }
+
+  .split-view__back:hover {
+    background: var(--color-bg-surface);
+  }
+
+  .split-view__back-arrow {
+    font-size: var(--text-lg);
+  }
+
+  .split-view.has-selection .split-view__back {
+    display: inline-flex;
+  }
+
+  /* Medium screens: stack images below content in split view */
+  @media (max-width: 1100px) {
+    .split-view__content .entry--has-images .entry__body {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Mobile: Stack layout */
+  @media (max-width: 900px) {
+    .split-view {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+
+    .split-view__list {
+      position: relative;
+      height: auto;
+      max-height: none;
+      border-right: none;
+      border-bottom: var(--border-thick) solid var(--color-gold-dim);
+    }
+
+    .split-view__nav {
+      max-height: 50vh;
+    }
+
+    .split-view__detail {
+      min-height: 60vh;
+    }
+
+    .split-view.has-selection .split-view__list {
+      display: none;
+    }
+
+    .split-view.has-selection .split-view__detail {
+      min-height: calc(100vh - var(--space-2xl));
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const splitView = document.querySelector('.split-view') as HTMLElement;
+    if (!splitView) return;
+
+    // Skip if already initialized (for persisted elements)
+    if (splitView.dataset.initialized === 'true') return;
+    splitView.dataset.initialized = 'true';
+
+    const listItems = splitView.querySelectorAll('.list-item');
+    const contentArea = splitView.querySelector('.split-view__content') as HTMLElement;
+    const backButton = splitView.querySelector('.split-view__back') as HTMLButtonElement;
+    const section = splitView.dataset.section;
+
+    let currentSlug: string | null = null;
+
+    // Back button handler
+    backButton?.addEventListener('click', () => {
+      splitView.classList.remove('has-selection');
+      contentArea.classList.remove('is-active');
+      contentArea.innerHTML = '';
+      listItems.forEach(i => i.classList.remove('is-active'));
+      history.pushState(null, '', `/${section}/`);
+      currentSlug = null;
+    });
+
+    listItems.forEach((item) => {
+      item.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const link = item as HTMLAnchorElement;
+        const slug = link.dataset.slug;
+
+        if (!slug || slug === currentSlug) return;
+
+        // Update active state
+        listItems.forEach(i => i.classList.remove('is-active'));
+        item.classList.add('is-active');
+
+        // Show loading state
+        splitView.classList.add('has-selection', 'is-loading');
+        contentArea.classList.remove('is-active');
+
+        try {
+          // Fetch the detail page
+          const response = await fetch(`/${section}/${slug}/`);
+          const html = await response.text();
+
+          // Parse and extract content
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const entryContent = doc.querySelector('.entry');
+
+          if (entryContent) {
+            // Use outerHTML to preserve entry classes (like entry--has-images)
+            contentArea.innerHTML = entryContent.outerHTML;
+            contentArea.classList.add('is-active');
+
+            // Update URL without reload
+            history.pushState({ slug }, '', `/${section}/${slug}/`);
+            currentSlug = slug;
+          }
+        } catch (error) {
+          console.error('Failed to load content:', error);
+          // Fallback: navigate normally
+          window.location.href = link.href;
+        } finally {
+          splitView.classList.remove('is-loading');
+        }
+      });
+    });
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', (e) => {
+      if (e.state?.slug) {
+        const item = splitView.querySelector(`[data-slug="${e.state.slug}"]`);
+        if (item) {
+          (item as HTMLElement).click();
+        }
+      } else {
+        // Back to list view
+        splitView.classList.remove('has-selection');
+        contentArea.classList.remove('is-active');
+        contentArea.innerHTML = '';
+        listItems.forEach(i => i.classList.remove('is-active'));
+        currentSlug = null;
+      }
+    });
+
+    // Check if we're loading a detail page directly
+    const path = window.location.pathname;
+    const match = path.match(new RegExp(`^/${section}/([^/]+)/?$`));
+    if (match) {
+      const slug = match[1];
+      const item = splitView.querySelector(`[data-slug="${slug}"]`);
+      if (item) {
+        (item as HTMLElement).click();
+      }
+    }
+  });
+</script>

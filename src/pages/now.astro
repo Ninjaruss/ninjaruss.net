@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavPill from '../components/NavPill.astro';
+
+const lastUpdated = new Date().toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title="Now" description="What I'm currently focused on.">
+  <NavPill />
+  <div class="container">
+    <article class="now">
+      <header class="now__header">
+        <h1 class="now__title">Now</h1>
+        <p class="now__updated">Last updated: {lastUpdated}</p>
+      </header>
+
+      <div class="now__content">
+        <p>
+          Building this site. Trying to make something that feels like me without
+          turning it into a performance. The goal is a space for fragments—things
+          I've watched, listened to, thought about, built.
+        </p>
+
+        <p>
+          Reading less, but more carefully. Returning to things I rushed through
+          before. Noticing what sticks and what doesn't.
+        </p>
+
+        <p>
+          Still figuring out how to share work without it feeling like marketing.
+          Maybe the answer is to just... not worry about it and let things exist.
+        </p>
+
+        <p>
+          Listening to a lot of ambient music lately. It helps.
+        </p>
+      </div>
+
+      <footer class="now__footer">
+        <p class="now__note">
+          This is a <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer">now page</a>.
+          It's not a permanent record—just a snapshot.
+        </p>
+      </footer>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .now {
+    max-width: 60ch;
+    margin: 0 auto;
+    padding-bottom: 80px; /* Space for floating nav */
+  }
+
+  .now__header {
+    margin-bottom: var(--space-2xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: var(--border-thick) solid var(--color-gold-dim);
+  }
+
+  .now__title {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    color: var(--color-gold);
+    margin-bottom: var(--space-sm);
+    text-shadow:
+      0 0 30px rgba(255, 229, 44, 0.4),
+      0 0 60px rgba(255, 229, 44, 0.2);
+  }
+
+  .now__updated {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    background: var(--color-black);
+    color: var(--color-gold);
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+  }
+
+  .now__content {
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+  }
+
+  .now__content p {
+    margin-bottom: var(--space-lg);
+  }
+
+  .now__content p:last-child {
+    margin-bottom: 0;
+  }
+
+  .now__footer {
+    margin-top: var(--space-3xl);
+    padding-top: var(--space-xl);
+    border-top: var(--border-thin) dashed var(--color-border);
+  }
+
+  .now__note {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .now__note a {
+    color: var(--color-gold-orange);
+    text-decoration: underline;
+    text-decoration-color: var(--color-gold);
+  }
+
+  .now__note a:hover {
+    color: var(--color-gold-deep);
+  }
+</style>
