@@ -13,12 +13,19 @@ import BentoTile from '../components/BentoTile.astro';
       </div>
 
       <!-- Hero Image Tile -->
-      <div class="image-tile p3r-animate" style="--stagger-delay: 100ms;">
-        <img
-          src="/images/hero-placeholder.svg"
-          alt="Hero visual"
-          class="image-tile__img"
-        />
+      <div class="image-tile image-tile--youtube p3r-animate" style="--stagger-delay: 100ms;">
+        <a href="https://www.youtube.com/@Ninjaruss_" target="_blank" rel="noopener noreferrer">
+          <img
+            src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FHCc3Ol7adcw%2Fmaxresdefault.jpg&f=1&nofb=1&ipt=3af1979f6b60ed9a8bb7f3ff02d25d81b2b98005b38c7a5b9f2bc4d6f8bb3aa9"
+            alt="Hero visual"
+            class="image-tile__img"
+          />
+          <div class="image-tile__youtube-overlay">
+            <svg class="image-tile__youtube-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+          </div>
+        </a>
       </div>
 
       <!-- Featured - Yellow Highlight -->
@@ -66,22 +73,30 @@ import BentoTile from '../components/BentoTile.astro';
         label="Now"
         title="Current Focus"
       />
-
-      <!-- Static / Decorative Tile -->
-      <BentoTile
-        size="small"
-        variant="static"
-        title="..."
-        description="More to come."
-      />
+      
+      <!-- Hero Image Tile 2 -->
+      <div class="image-tile image-tile--youtube p3r-animate" style="--stagger-delay: 100ms;">
+        <a href="https://www.youtube.com/@kaima-mask" target="_blank" rel="noopener noreferrer">
+          <img
+            src="https://yt3.ggpht.com/1ThFXMWuqv4QV_DlxmGVxKgNNW6bWWSpETC5uEOleDcM_T07zT3xtueJ-fW1-SCQhgaXA7DtrQ=s600-c-k-c0x00ffffff-no-rj-rp-mo"
+            alt="Hero visual"
+            class="image-tile__img"
+          />
+          <div class="image-tile__youtube-overlay">
+            <svg class="image-tile__youtube-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+          </div>
+        </a>
+      </div>
     </BentoGrid>
   </div>
 </BaseLayout>
 
 <style>
   .container {
-    padding-top: var(--space-2xl);
-    padding-bottom: var(--space-3xl);
+    padding-top: var(--space-md);
+    padding-bottom: var(--space-lg);
   }
 
   /* Title Tile - Part of the bento grid */
@@ -93,17 +108,18 @@ import BentoTile from '../components/BentoTile.astro';
     border: var(--border-thick) solid var(--color-gold);
     border-radius: var(--radius-lg);
     padding: var(--space-xl);
-    grid-column: span 1;
+    grid-column: span 2;
     grid-row: span 1;
     box-shadow: var(--shadow-glow);
+    overflow: hidden;
   }
 
   .title-tile__name {
     font-family: var(--font-display);
-    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
     color: var(--color-gold);
     letter-spacing: 0.02em;
-    text-transform: uppercase;
     text-shadow:
       0 0 30px rgba(255, 229, 44, 0.6),
       0 0 60px rgba(255, 229, 44, 0.3);
@@ -117,6 +133,30 @@ import BentoTile from '../components/BentoTile.astro';
     overflow: hidden;
     border: var(--border-thick) solid var(--color-border-strong);
     background: var(--color-bg-elevated);
+    position: relative;
+    box-shadow: var(--shadow-hard);
+    transition:
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast),
+      border-color var(--transition-fast);
+  }
+
+  .image-tile:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-hard-hover);
+    border-color: var(--color-gold);
+  }
+
+  .image-tile:active {
+    transform: translate(0, 0);
+    box-shadow: var(--shadow-hard-sm);
+  }
+
+  .image-tile a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
   }
 
   .image-tile__img {
@@ -124,6 +164,39 @@ import BentoTile from '../components/BentoTile.astro';
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: filter var(--transition-fast);
+  }
+
+  .image-tile:hover .image-tile__img {
+    filter: brightness(0.8);
+  }
+
+  /* YouTube Overlay */
+  .image-tile__youtube-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+
+  .image-tile--youtube:hover .image-tile__youtube-overlay {
+    opacity: 1;
+  }
+
+  .image-tile__youtube-icon {
+    width: 64px;
+    height: 64px;
+    color: #ff0000;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+    transition: transform var(--transition-fast);
+  }
+
+  .image-tile--youtube:hover .image-tile__youtube-icon {
+    transform: scale(1.1);
   }
 
   @media (max-width: 768px) {
@@ -133,12 +206,17 @@ import BentoTile from '../components/BentoTile.astro';
     }
 
     .title-tile__name {
-      font-size: clamp(2rem, 10vw, 3rem);
+      font-size: clamp(1.8rem, 8vw, 2.5rem);
     }
 
     .image-tile {
       grid-column: span 2;
       min-height: 200px;
+    }
+
+    .image-tile__youtube-icon {
+      width: 48px;
+      height: 48px;
     }
   }
 
@@ -147,8 +225,17 @@ import BentoTile from '../components/BentoTile.astro';
       grid-column: span 1;
     }
 
+    .title-tile__name {
+      font-size: clamp(1.5rem, 6vw, 2rem);
+    }
+
     .image-tile {
       grid-column: span 1;
+    }
+
+    .image-tile__youtube-icon {
+      width: 40px;
+      height: 40px;
     }
   }
 </style>

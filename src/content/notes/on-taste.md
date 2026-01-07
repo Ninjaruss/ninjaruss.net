@@ -2,7 +2,7 @@
 title: "On Taste"
 emotional_tags: ["identity", "creative", "uncertain"]
 status: conflicted
-artifacts:
+thumbnails:
   - type: image
     src: /images/notes/on-taste-01.svg
     alt: "Placeholder - taste and perception"

@@ -53,15 +53,17 @@ const isHome = currentPath === '/';
   .nav-pill__item {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-xs);
     padding: var(--space-sm) var(--space-lg);
     font-family: var(--font-display);
     font-size: var(--text-sm);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: var(--tracking-label);
     color: var(--color-white);
     background: transparent;
     border-radius: var(--radius-pill);
+    position: relative;
     transition:
       background-color var(--transition-fast),
       color var(--transition-fast),
@@ -145,7 +147,10 @@ const isHome = currentPath === '/';
     }
 
     .nav-pill__item {
-      padding: var(--space-xs) var(--space-md);
+      /* Ensure minimum 44x44px touch target */
+      min-width: 44px;
+      min-height: 44px;
+      padding: var(--space-sm);
       font-size: var(--text-xs);
     }
 

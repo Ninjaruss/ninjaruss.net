@@ -1,6 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
-import EntryLayout from '../../layouts/EntryLayout.astro';
+import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
+import ListItem from '../../components/ListItem.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import TagList from '../../components/TagList.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('notes');
@@ -12,15 +15,59 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
+
+// Get all notes for the list
+const allNotes = await getCollection('notes', ({ data }) => !data.draft);
+const sortedNotes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.title));
 ---
 
-<EntryLayout
-  title={entry.data.title}
-  status={entry.data.status}
-  emotional_tags={entry.data.emotional_tags}
-  artifacts={entry.data.artifacts}
-  backLink="/notes"
-  backLabel="Back to Notes"
+<SplitViewLayout
+  title="Notes"
+  description="Philosophical fragments and beliefs in progress."
+  section="notes"
+  initialSlug={entry.slug}
 >
-  <Content />
-</EntryLayout>
+  <Fragment slot="list">
+    {sortedNotes.map((noteEntry) => (
+      <ListItem
+        href={`/notes/${noteEntry.slug}`}
+        slug={noteEntry.slug}
+        title={noteEntry.data.title}
+        status={noteEntry.data.status}
+      />
+    ))}
+  </Fragment>
+
+  <Fragment slot="detail">
+    <article class="entry">
+      <div class="container">
+        <header class="entry__header">
+          <h1 class="entry__title">{entry.data.title}</h1>
+          <div class="entry__meta">
+            <StatusBadge status={entry.data.status} size="md" />
+            <TagList tags={entry.data.emotional_tags} size="md" />
+          </div>
+          {entry.data.thumbnails && entry.data.thumbnails.length > 0 && (
+            <div class="entry__thumbnails">
+              {entry.data.thumbnails.map((thumb) => (
+                <img
+                  src={thumb.src}
+                  alt={thumb.alt || entry.data.title}
+                  class="entry__thumbnail"
+                  data-lightbox-src={thumb.src}
+                  data-lightbox-alt={thumb.alt || entry.data.title}
+                />
+              ))}
+            </div>
+          )}
+        </header>
+
+        <div class="entry__body">
+          <div class="entry__content prose">
+            <Content />
+          </div>
+        </div>
+      </div>
+    </article>
+  </Fragment>
+</SplitViewLayout>

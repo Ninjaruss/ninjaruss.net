@@ -29,7 +29,7 @@
 
 .bento-tile--interactive:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(255, 229, 44, 0.4);
+  box-shadow: var(--shadow-hard-hover);
   border-color: var(--color-gold);
 }
 
@@ -62,6 +62,17 @@
   opacity: 0.85;
 }
 
+.bento-tile--highlight:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard-hover);
+  border-color: var(--color-black);
+}
+
+.bento-tile--highlight:active {
+  transform: translate(0, 0);
+  box-shadow: var(--shadow-hard-sm);
+}
+
 .bento-tile--highlight:hover .bento-tile__title {
   color: var(--color-dark);
 }
@@ -75,6 +86,17 @@
 .bento-tile--cyan .bento-tile__label {
   background: var(--color-black);
   color: var(--color-cyan);
+}
+
+.bento-tile--cyan:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard-hover);
+  border-color: var(--color-black);
+}
+
+.bento-tile--cyan:active {
+  transform: translate(0, 0);
+  box-shadow: var(--shadow-hard-sm);
 }
 
 /* Dark Tile Variant — Deeper dark for contrast */
@@ -97,12 +119,19 @@
   color: var(--color-text-muted);
 }
 
-.bento-tile--dark:hover .bento-tile__title {
-  color: var(--color-gold);
+.bento-tile--dark:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard-hover);
+  border-color: var(--color-gold);
 }
 
-.bento-tile--dark:hover {
-  border-color: var(--color-gold);
+.bento-tile--dark:active {
+  transform: translate(0, 0);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.bento-tile--dark:hover .bento-tile__title {
+  color: var(--color-gold);
 }
 
 /* Static / Decorative Tiles */
@@ -148,11 +177,11 @@
   display: inline-block;
   background: var(--color-black);
   color: var(--color-gold);
-  padding: 5px 12px;
+  padding: var(--space-xs) var(--space-sm);
   font-family: var(--font-display);
   font-size: var(--text-xs);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   margin-bottom: var(--space-sm);
   border-radius: var(--radius-sm);
 }

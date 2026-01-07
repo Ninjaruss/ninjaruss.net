@@ -1,6 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
-import EntryLayout from '../../layouts/EntryLayout.astro';
+import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
+import ListItem from '../../components/ListItem.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import TagList from '../../components/TagList.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('music');
@@ -13,42 +16,95 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
+// Get all music for the list
+const allMusic = await getCollection('music', ({ data }) => !data.draft);
+const sortedMusic = allMusic.sort((a, b) => a.data.title.localeCompare(b.data.title));
+
 const meta: Record<string, string> = {};
 if (entry.data.mood) {
   meta['Mood'] = entry.data.mood;
 }
 ---
 
-<EntryLayout
-  title={entry.data.title}
-  status={entry.data.status}
-  emotional_tags={entry.data.emotional_tags}
-  artifacts={entry.data.artifacts}
-  backLink="/music"
-  backLabel="Back to Music"
-  meta={meta}
+<SplitViewLayout
+  title="Music"
+  description="Curated song collections."
+  section="music"
+  initialSlug={entry.slug}
 >
-  <Content />
+  <Fragment slot="list">
+    {sortedMusic.map((musicEntry) => (
+      <ListItem
+        href={`/music/${musicEntry.slug}`}
+        slug={musicEntry.slug}
+        title={musicEntry.data.title}
+        status={musicEntry.data.status}
+      />
+    ))}
+  </Fragment>
 
-  {entry.data.tracks && entry.data.tracks.length > 0 && (
-    <section class="tracklist">
-      <h3>Tracks</h3>
-      <ol>
-        {entry.data.tracks.map((track) => (
-          <li>
-            <span class="track__title">{track.title}</span>
-            <span class="track__artist">{track.artist}</span>
-            {track.link && (
-              <a href={track.link} target="_blank" rel="noopener noreferrer" class="track__link">
-                Listen
-              </a>
+  <Fragment slot="detail">
+    <article class="entry">
+      <div class="container">
+        <header class="entry__header">
+          <h1 class="entry__title">{entry.data.title}</h1>
+          <div class="entry__meta">
+            <StatusBadge status={entry.data.status} size="md" />
+            <TagList tags={entry.data.emotional_tags} size="md" />
+          </div>
+          {meta && Object.keys(meta).length > 0 && (
+            <dl class="entry__details">
+              {Object.entries(meta).map(([key, value]) => (
+                <>
+                  <dt>{key}</dt>
+                  <dd>{value}</dd>
+                </>
+              ))}
+            </dl>
+          )}
+          {entry.data.thumbnails && entry.data.thumbnails.length > 0 && (
+            <div class="entry__thumbnails">
+              {entry.data.thumbnails.map((thumb) => (
+                <img
+                  src={thumb.src}
+                  alt={thumb.alt || entry.data.title}
+                  class="entry__thumbnail"
+                  data-lightbox-src={thumb.src}
+                  data-lightbox-alt={thumb.alt || entry.data.title}
+                />
+              ))}
+            </div>
+          )}
+        </header>
+
+        <div class="entry__body">
+          <div class="entry__content prose">
+            <Content />
+
+            {entry.data.tracks && entry.data.tracks.length > 0 && (
+              <section class="tracklist">
+                <h3>Tracks</h3>
+                <ol>
+                  {entry.data.tracks.map((track) => (
+                    <li>
+                      <span class="track__title">{track.title}</span>
+                      <span class="track__artist">{track.artist}</span>
+                      {track.link && (
+                        <a href={track.link} target="_blank" rel="noopener noreferrer" class="track__link">
+                          Listen
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              </section>
             )}
-          </li>
-        ))}
-      </ol>
-    </section>
-  )}
-</EntryLayout>
+          </div>
+        </div>
+      </div>
+    </article>
+  </Fragment>
+</SplitViewLayout>
 
 <style>
   .tracklist {
