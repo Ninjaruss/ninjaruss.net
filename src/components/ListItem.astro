@@ -8,12 +8,13 @@ interface Props {
   subtitle?: string;
   status?: 'confident' | 'conflicted' | 'unresolved';
   meta?: string;
+  tags?: string[];
 }
 
-const { href, slug, title, subtitle, status, meta } = Astro.props;
+const { href, slug, title, subtitle, status, meta, tags = [] } = Astro.props;
 ---
 
-<a href={href} class="list-item" data-slug={slug} role="listitem">
+<a href={href} class="list-item" data-slug={slug} data-tags={tags.join(',')} role="listitem">
   <div class="list-item__content">
     <span class="list-item__title">{title}</span>
     {subtitle && <span class="list-item__subtitle">{subtitle}</span>}
@@ -119,6 +120,7 @@ const { href, slug, title, subtitle, status, meta } = Astro.props;
     align-items: center;
     gap: var(--space-sm);
     flex-shrink: 0;
+    margin-left: auto;
   }
 
   .list-item__meta-text {

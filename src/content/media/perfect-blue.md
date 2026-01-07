@@ -1,7 +1,7 @@
 ---
 title: "Perfect Blue"
 media_type: film
-emotional_tags: ["disorienting", "prescient", "uncomfortable"]
+tags: ["disorienting", "prescient", "uncomfortable"]
 status: confident
 ---
 

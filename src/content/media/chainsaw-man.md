@@ -1,7 +1,7 @@
 ---
 title: "Chainsaw Man"
 media_type: manga
-emotional_tags: ["chaotic", "tender", "absurd"]
+tags: ["chaotic", "tender", "absurd"]
 status: conflicted
 ---
 

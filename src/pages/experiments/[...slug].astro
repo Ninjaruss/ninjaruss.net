@@ -34,6 +34,7 @@ const sortedExperiments = allExperiments.sort((a, b) => a.data.title.localeCompa
         slug={exp.slug}
         title={exp.data.title}
         status={exp.data.status}
+        tags={exp.data.tags}
       />
     ))}
   </Fragment>
@@ -45,7 +46,7 @@ const sortedExperiments = allExperiments.sort((a, b) => a.data.title.localeCompa
           <h1 class="entry__title">{entry.data.title}</h1>
           <div class="entry__meta">
             <StatusBadge status={entry.data.status} size="md" />
-            <TagList tags={entry.data.emotional_tags} size="md" />
+            <TagList tags={entry.data.tags} size="md" />
           </div>
           {entry.data.thumbnails && entry.data.thumbnails.length > 0 && (
             <div class="entry__thumbnails">
@@ -99,34 +100,3 @@ const sortedExperiments = allExperiments.sort((a, b) => a.data.title.localeCompa
     </article>
   </Fragment>
 </SplitViewLayout>
-
-<style>
-  .inquiry-frame {
-    margin-bottom: var(--space-2xl);
-    padding: var(--space-lg);
-    background: var(--color-panel);
-    border: 2px solid var(--color-gold);
-    border-radius: var(--radius-md);
-  }
-
-  .inquiry-frame dl {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-  }
-
-  .inquiry-frame__item dt {
-    font-family: var(--font-display);
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--color-gold-dark);
-    margin-bottom: var(--space-xs);
-  }
-
-  .inquiry-frame__item dd {
-    color: var(--color-ink);
-    line-height: var(--leading-normal);
-  }
-
-</style>

@@ -44,10 +44,10 @@ src/
 
 All collections share a base schema:
 - `title` (required string)
-- `emotional_tags` (string array)
+- `tags` (string array)
 - `collections` (string array for cross-referencing)
 - `status`: `'confident' | 'conflicted' | 'unresolved'`
-- `thumbnails`: `{ src, alt? }[]`
+- `thumbnails`: `{ type?, src, alt? }[]`
 - `draft` (boolean, filters from production)
 
 Collection-specific extensions:
@@ -75,9 +75,9 @@ Collection-specific extensions:
 
 ### Content
 - `StatusBadge.astro` — Status indicator (confident/conflicted/unresolved)
-- `TagList.astro` — Emotional tag pills
+- `TagList.astro` — Tag pills display
 - `ImageGallery.astro` — Sticky sidebar image gallery
-- `ThumbnailGallery.astro` — Thumbnail display (new, unintegrated)
+- `MediaLightbox.astro` — Fullscreen media popup
 
 ## Design System
 
@@ -119,7 +119,7 @@ Collection-specific extensions:
 
 ## Important Implementation Details
 
-1. **SplitViewLayout JavaScript**: Client-side fetch for detail content, History API for navigation, falls back gracefully without JS
+1. **SplitViewLayout JavaScript**: Client-side fetch for detail content, History API for navigation, search/tag filtering (Cmd/Ctrl+K to focus search), falls back gracefully without JS
 
 2. **View Transitions**: Uses Astro's ClientRouter with custom P4G-style slide animations
 

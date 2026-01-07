@@ -1,7 +1,7 @@
 ---
 title: "Monster"
 media_type: anime
-emotional_tags: ["unsettling", "patient", "morally complex"]
+tags: ["unsettling", "patient", "morally complex"]
 status: confident
 ---
 

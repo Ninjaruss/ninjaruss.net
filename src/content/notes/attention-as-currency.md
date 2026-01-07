@@ -1,6 +1,6 @@
 ---
 title: "Attention as Currency"
-emotional_tags: ["digital", "critical", "observational"]
+tags: ["digital", "critical", "observational"]
 status: confident
 thumbnails:
   - type: image
