@@ -4,7 +4,7 @@ question: "What would it take to make a niche manga more accessible?"
 approach: "Documentation, guides, and community coordination."
 surprise: "The existing community was more active than expected—just fragmented."
 unresolved: "Scale vs. quality tradeoff. Do I keep it small and good, or try to grow it?"
-emotional_tags: ["community", "preservation", "obsessive"]
+tags: ["community", "preservation", "obsessive"]
 status: conflicted
 thumbnails:
   - type: link

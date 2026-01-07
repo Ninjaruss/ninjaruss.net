@@ -34,6 +34,7 @@ const sortedNotes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.ti
         slug={noteEntry.slug}
         title={noteEntry.data.title}
         status={noteEntry.data.status}
+        tags={noteEntry.data.tags}
       />
     ))}
   </Fragment>
@@ -45,7 +46,7 @@ const sortedNotes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.ti
           <h1 class="entry__title">{entry.data.title}</h1>
           <div class="entry__meta">
             <StatusBadge status={entry.data.status} size="md" />
-            <TagList tags={entry.data.emotional_tags} size="md" />
+            <TagList tags={entry.data.tags} size="md" />
           </div>
           {entry.data.thumbnails && entry.data.thumbnails.length > 0 && (
             <div class="entry__thumbnails">

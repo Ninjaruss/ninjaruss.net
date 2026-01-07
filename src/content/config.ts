@@ -3,7 +3,7 @@ import { defineCollection, z } from 'astro:content';
 // Shared schema fields across all content types
 const sharedSchema = z.object({
   title: z.string(),
-  emotional_tags: z.array(z.string()).default([]),
+  tags: z.array(z.string()).default([]),
   collections: z.array(z.string()).default([]),
   status: z.enum(['confident', 'conflicted', 'unresolved']).default('unresolved'),
   thumbnails: z.array(z.object({

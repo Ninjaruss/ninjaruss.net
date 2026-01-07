@@ -27,6 +27,30 @@ const hasInitialContent = Astro.slots.has('detail');
       <header class="split-view__header">
         <h1 class="split-view__title">{title}</h1>
       </header>
+      <div class="split-view__filter">
+        <div class="split-view__search-wrapper">
+          <span class="split-view__search-icon">⌕</span>
+          <input
+            type="search"
+            class="split-view__search"
+            placeholder="Search..."
+            aria-label="Search entries"
+          />
+        </div>
+        <div class="split-view__tags-filter">
+          <button class="split-view__tags-toggle" type="button" aria-expanded="false">
+            <span class="split-view__tags-label">Tags</span>
+            <span class="split-view__tags-chevron">▾</span>
+          </button>
+          <div class="split-view__tags-dropdown" hidden>
+            <div class="split-view__tags-list"></div>
+            <button class="split-view__tags-clear" type="button">Clear all</button>
+          </div>
+        </div>
+      </div>
+      <div class="split-view__no-results" hidden>
+        <p>No matching entries</p>
+      </div>
       <nav class="split-view__nav" role="list">
         <slot name="list" />
       </nav>
@@ -54,11 +78,16 @@ const hasInitialContent = Astro.slots.has('detail');
   <MediaLightbox />
 </BaseLayout>
 
-<style>
+<style is:global>
+  /* Remove page padding when split-view is active */
+  .page:has(.split-view) {
+    padding: 0;
+  }
+
   .split-view {
     display: grid;
-    grid-template-columns: 320px 1fr;
-    min-height: calc(100vh - var(--space-lg) * 2);
+    grid-template-columns: 380px 1fr;
+    min-height: 100vh;
     gap: 0;
   }
 
@@ -68,9 +97,9 @@ const hasInitialContent = Astro.slots.has('detail');
     border-right: var(--border-thick) solid var(--color-gold-dim);
     display: flex;
     flex-direction: column;
-    height: calc(100vh - var(--space-lg) * 2);
+    height: 100vh;
     position: sticky;
-    top: var(--space-sm);
+    top: 0;
   }
 
   .split-view__header {
@@ -95,6 +124,181 @@ const hasInitialContent = Astro.slots.has('detail');
     flex: 1;
     overflow-y: auto;
     padding: var(--space-sm) 0;
+  }
+
+  /* Filter UI */
+  .split-view__filter {
+    display: flex;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-bg-surface);
+    border-bottom: var(--border-thin) solid var(--color-border);
+  }
+
+  .split-view__search-wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .split-view__search-icon {
+    position: absolute;
+    left: var(--space-sm);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    pointer-events: none;
+  }
+
+  .split-view__search {
+    width: 100%;
+    padding: var(--space-xs) var(--space-sm) var(--space-xs) var(--space-xl);
+    background: var(--color-bg-base);
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .split-view__search::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .split-view__search:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 2px rgba(255, 229, 44, 0.2);
+  }
+
+  .split-view__tags-filter {
+    position: relative;
+  }
+
+  .split-view__tags-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--color-bg-base);
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+  }
+
+  .split-view__tags-toggle:hover {
+    border-color: var(--color-gold-dim);
+    color: var(--color-text);
+  }
+
+  .split-view__tags-toggle[aria-expanded="true"] {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+  }
+
+  .split-view__tags-toggle.has-selection {
+    background: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-black);
+  }
+
+  .split-view__tags-chevron {
+    font-size: var(--text-xs);
+    transition: transform var(--transition-fast);
+  }
+
+  .split-view__tags-toggle[aria-expanded="true"] .split-view__tags-chevron {
+    transform: rotate(180deg);
+  }
+
+  .split-view__tags-dropdown {
+    position: absolute;
+    top: calc(100% + var(--space-xs));
+    right: 0;
+    min-width: 200px;
+    max-width: 280px;
+    max-height: 300px;
+    overflow-y: auto;
+    background: var(--color-bg-elevated);
+    border: var(--border-medium) solid var(--color-gold-dim);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm);
+    z-index: 100;
+    box-shadow: var(--shadow-hard);
+  }
+
+  .split-view__tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-sm);
+  }
+
+  .split-view__tag-pill {
+    padding: var(--space-2xs) var(--space-sm);
+    background: var(--color-bg-surface);
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .split-view__tag-pill:hover {
+    border-color: var(--color-gold-dim);
+    color: var(--color-text);
+  }
+
+  .split-view__tag-pill.is-selected {
+    background: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-black);
+    font-weight: 500;
+  }
+
+  .split-view__tags-clear {
+    width: 100%;
+    padding: var(--space-xs);
+    background: transparent;
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .split-view__tags-clear:hover {
+    border-color: var(--color-gold-dim);
+    color: var(--color-text);
+  }
+
+  .split-view__no-results {
+    padding: var(--space-xl) var(--space-md);
+    text-align: center;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .split-view__no-results[hidden] {
+    display: none;
+  }
+
+  /* Hide list items when filtered out */
+  .list-item.is-filtered {
+    display: none;
   }
 
   /* Right Panel */
@@ -296,12 +500,259 @@ const hasInitialContent = Astro.slots.has('detail');
     }
 
     .split-view.has-selection .split-view__detail {
-      min-height: calc(100vh - var(--space-lg) * 2);
+      min-height: 100vh;
     }
+  }
+
+  /* ==========================================
+     Section-specific styles (available for client-side nav)
+     ========================================== */
+
+  /* Entry details (media type, mood, etc.) */
+  .split-view__content .entry__details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-lg);
+    margin-top: var(--space-md);
+    font-size: var(--text-sm);
+  }
+
+  .split-view__content .entry__details dt {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-text-muted);
+  }
+
+  .split-view__content .entry__details dd {
+    color: var(--color-text);
+  }
+
+  /* Experiments: Inquiry frame */
+  .split-view__content .inquiry-frame {
+    margin-bottom: var(--space-2xl);
+    padding: var(--space-lg);
+    background: var(--color-bg-elevated);
+    border: var(--border-medium) solid var(--color-gold);
+    border-radius: var(--radius-md);
+  }
+
+  .split-view__content .inquiry-frame dl {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .split-view__content .inquiry-frame__item dt {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-gold-dim);
+    margin-bottom: var(--space-xs);
+  }
+
+  .split-view__content .inquiry-frame__item dd {
+    color: var(--color-text);
+    line-height: 1.6;
+  }
+
+  /* Music: Tracklist */
+  .split-view__content .tracklist {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-xl);
+    border-top: var(--border-thin) solid var(--color-border);
+  }
+
+  .split-view__content .tracklist h3 {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-md);
+    color: var(--color-gold);
+  }
+
+  .split-view__content .tracklist ol {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    counter-reset: track;
+  }
+
+  .split-view__content .tracklist li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+    padding: var(--space-sm) 0;
+    border-bottom: var(--border-hairline) solid var(--color-border);
+    counter-increment: track;
+  }
+
+  .split-view__content .tracklist li::before {
+    content: counter(track) ".";
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    min-width: 2.5ch;
+  }
+
+  .split-view__content .track__title {
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .split-view__content .track__artist {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .split-view__content .track__link {
+    margin-left: auto;
+    font-size: var(--text-xs);
+    color: var(--color-gold-dim);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    transition: color var(--transition-fast);
+  }
+
+  .split-view__content .track__link:hover {
+    color: var(--color-gold);
   }
 </style>
 
 <script>
+  // Initialize search and tag filter functionality
+  function initFilterSystem(splitView: HTMLElement) {
+    const searchInput = splitView.querySelector('.split-view__search') as HTMLInputElement;
+    const tagsToggle = splitView.querySelector('.split-view__tags-toggle') as HTMLButtonElement;
+    const tagsDropdown = splitView.querySelector('.split-view__tags-dropdown') as HTMLElement;
+    const tagsList = splitView.querySelector('.split-view__tags-list') as HTMLElement;
+    const tagsClear = splitView.querySelector('.split-view__tags-clear') as HTMLButtonElement;
+    const noResults = splitView.querySelector('.split-view__no-results') as HTMLElement;
+    const listItems = splitView.querySelectorAll('.list-item') as NodeListOf<HTMLElement>;
+
+    if (!searchInput || !tagsToggle || !tagsList) return;
+
+    // State
+    let selectedTags: Set<string> = new Set();
+    let searchQuery = '';
+
+    // Extract unique tags from all list items
+    const allTags = new Set<string>();
+    listItems.forEach((item) => {
+      const tags = item.dataset.tags?.split(',').filter(Boolean) || [];
+      tags.forEach((tag) => allTags.add(tag));
+    });
+
+    // Populate tags dropdown
+    const sortedTags = Array.from(allTags).sort();
+    tagsList.innerHTML = sortedTags
+      .map((tag) => `<button class="split-view__tag-pill" type="button" data-tag="${tag}">${tag}</button>`)
+      .join('');
+
+    // Hide tags filter if no tags exist
+    if (sortedTags.length === 0) {
+      const tagsFilter = splitView.querySelector('.split-view__tags-filter') as HTMLElement;
+      if (tagsFilter) tagsFilter.style.display = 'none';
+    }
+
+    // Filter function
+    function applyFilters() {
+      const query = searchQuery.toLowerCase().trim();
+      let visibleCount = 0;
+
+      listItems.forEach((item) => {
+        const title = item.querySelector('.list-item__title')?.textContent?.toLowerCase() || '';
+        const itemTags = item.dataset.tags?.split(',').filter(Boolean) || [];
+
+        // Check search match
+        const matchesSearch = !query || title.includes(query);
+
+        // Check tag match (any selected tag matches)
+        const matchesTags = selectedTags.size === 0 || itemTags.some((tag) => selectedTags.has(tag));
+
+        const isVisible = matchesSearch && matchesTags;
+        item.classList.toggle('is-filtered', !isVisible);
+
+        if (isVisible) visibleCount++;
+      });
+
+      // Show/hide no results message
+      noResults.hidden = visibleCount > 0;
+    }
+
+    // Search input handler
+    searchInput.addEventListener('input', () => {
+      searchQuery = searchInput.value;
+      applyFilters();
+    });
+
+    // Tags toggle handler
+    tagsToggle.addEventListener('click', () => {
+      const isExpanded = tagsToggle.getAttribute('aria-expanded') === 'true';
+      tagsToggle.setAttribute('aria-expanded', String(!isExpanded));
+      tagsDropdown.hidden = isExpanded;
+    });
+
+    // Tag pill click handler (event delegation)
+    tagsList.addEventListener('click', (e) => {
+      const pill = (e.target as HTMLElement).closest('.split-view__tag-pill') as HTMLElement;
+      if (!pill) return;
+
+      const tag = pill.dataset.tag;
+      if (!tag) return;
+
+      if (selectedTags.has(tag)) {
+        selectedTags.delete(tag);
+        pill.classList.remove('is-selected');
+      } else {
+        selectedTags.add(tag);
+        pill.classList.add('is-selected');
+      }
+
+      // Update toggle button state
+      tagsToggle.classList.toggle('has-selection', selectedTags.size > 0);
+
+      applyFilters();
+    });
+
+    // Clear all tags
+    tagsClear.addEventListener('click', () => {
+      selectedTags.clear();
+      tagsList.querySelectorAll('.split-view__tag-pill').forEach((pill) => {
+        pill.classList.remove('is-selected');
+      });
+      tagsToggle.classList.remove('has-selection');
+      applyFilters();
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!tagsToggle.contains(e.target as Node) && !tagsDropdown.contains(e.target as Node)) {
+        tagsToggle.setAttribute('aria-expanded', 'false');
+        tagsDropdown.hidden = true;
+      }
+    });
+
+    // Keyboard shortcut: Cmd/Ctrl+K to focus search
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInput.focus();
+      }
+      // Escape to clear search and close dropdown
+      if (e.key === 'Escape') {
+        if (document.activeElement === searchInput && searchQuery) {
+          searchInput.value = '';
+          searchQuery = '';
+          applyFilters();
+        }
+        tagsToggle.setAttribute('aria-expanded', 'false');
+        tagsDropdown.hidden = true;
+      }
+    });
+  }
+
   // Initialize click handlers for lightbox on all images
   function initMediaLightbox() {
     // Header thumbnails (frontmatter images)
@@ -368,6 +819,9 @@ const hasInitialContent = Astro.slots.has('detail');
 
     // Initialize lightbox handlers for pre-rendered content
     initMediaLightbox();
+
+    // Initialize search and tag filter
+    initFilterSystem(splitView);
 
     // If there's pre-rendered content, mark the corresponding list item as active
     if (initialSlug) {

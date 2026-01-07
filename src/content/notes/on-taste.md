@@ -1,6 +1,6 @@
 ---
 title: "On Taste"
-emotional_tags: ["identity", "creative", "uncertain"]
+tags: ["identity", "creative", "uncertain"]
 status: conflicted
 thumbnails:
   - type: image

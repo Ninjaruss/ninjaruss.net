@@ -1,7 +1,7 @@
 ---
 title: "Focus State"
 mood: "productive"
-emotional_tags: ["minimal", "steady", "ambient"]
+tags: ["minimal", "steady", "ambient"]
 status: unresolved
 tracks:
   - title: "Avril 14th"

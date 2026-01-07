@@ -1,7 +1,7 @@
 ---
 title: "Late Night Drives"
 mood: "contemplative"
-emotional_tags: ["nocturnal", "introspective", "moving"]
+tags: ["nocturnal", "introspective", "moving"]
 status: confident
 tracks:
   - title: "Midnight City"

@@ -1,6 +1,6 @@
 ---
 title: "Unfinished Ideas Are Still Ideas"
-emotional_tags: ["process", "creative", "permission"]
+tags: ["process", "creative", "permission"]
 status: unresolved
 thumbnails:
   - type: image

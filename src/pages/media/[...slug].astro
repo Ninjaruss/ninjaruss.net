@@ -39,6 +39,7 @@ if (entry.data.media_type) {
         slug={mediaEntry.slug}
         title={mediaEntry.data.title}
         status={mediaEntry.data.status}
+        tags={mediaEntry.data.tags}
       />
     ))}
   </Fragment>
@@ -50,7 +51,7 @@ if (entry.data.media_type) {
           <h1 class="entry__title">{entry.data.title}</h1>
           <div class="entry__meta">
             <StatusBadge status={entry.data.status} size="md" />
-            <TagList tags={entry.data.emotional_tags} size="md" />
+            <TagList tags={entry.data.tags} size="md" />
           </div>
           {meta && Object.keys(meta).length > 0 && (
             <dl class="entry__details">

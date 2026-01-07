@@ -4,7 +4,7 @@ question: "Can a personal site be reflective without being pretentious?"
 approach: "Built with Astro, styled with vanilla CSS, inspired by P4G's UI energy."
 surprise: "The bento grid layout makes everything feel more intentional than it is."
 unresolved: "Still not sure if the tone is right. Might be too self-serious."
-emotional_tags: ["meta", "design", "identity"]
+tags: ["meta", "design", "identity"]
 status: unresolved
 ---
 
