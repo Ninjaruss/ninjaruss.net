@@ -6,8 +6,8 @@ const sharedSchema = z.object({
   emotional_tags: z.array(z.string()).default([]),
   collections: z.array(z.string()).default([]),
   status: z.enum(['confident', 'conflicted', 'unresolved']).default('unresolved'),
-  artifacts: z.array(z.object({
-    type: z.enum(['image', 'video', 'link']),
+  thumbnails: z.array(z.object({
+    type: z.enum(['image', 'video', 'link']).default('image'),
     src: z.string(),
     alt: z.string().optional(),
   })).optional(),

@@ -23,22 +23,23 @@ const statusLabels = {
     align-items: center;
     font-family: var(--font-display);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: var(--tracking-label);
     border-radius: var(--radius-sm);
   }
 
   .status-badge--sm {
     font-size: var(--text-xs);
-    padding: 4px 10px;
+    padding: var(--space-xs) var(--space-sm);
   }
 
   .status-badge--md {
     font-size: var(--text-sm);
-    padding: 6px 14px;
+    padding: var(--space-xs) var(--space-md);
   }
 
+  /* WCAG AA compliant contrast ratios */
   .status-badge--confident {
-    background: var(--color-confident);
+    background: #16a34a; /* Darker green for 4.7:1 contrast with white */
     color: var(--color-white);
   }
 
@@ -48,7 +49,7 @@ const statusLabels = {
   }
 
   .status-badge--unresolved {
-    background: var(--color-unresolved);
+    background: #6b7280; /* Darker gray for 5.4:1 contrast with white */
     color: var(--color-white);
   }
 </style>

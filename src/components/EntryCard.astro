@@ -43,7 +43,7 @@ const { href, title, excerpt, status, tags = [], label } = Astro.props;
 
   .entry-card:hover {
     transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 rgba(255, 229, 44, 0.4);
+    box-shadow: var(--shadow-hard-hover);
     border-color: var(--color-gold);
   }
 
@@ -64,11 +64,11 @@ const { href, title, excerpt, status, tags = [], label } = Astro.props;
     display: inline-block;
     background: var(--color-black);
     color: var(--color-gold);
-    padding: 4px 10px;
+    padding: var(--space-xs) var(--space-sm);
     font-family: var(--font-display);
     font-size: var(--text-xs);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: var(--tracking-label);
     margin-bottom: var(--space-sm);
     border-radius: var(--radius-sm);
   }

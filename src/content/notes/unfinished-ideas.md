@@ -2,7 +2,7 @@
 title: "Unfinished Ideas Are Still Ideas"
 emotional_tags: ["process", "creative", "permission"]
 status: unresolved
-artifacts:
+thumbnails:
   - type: image
     src: /images/notes/unfinished-01.svg
     alt: "Placeholder - work in progress"

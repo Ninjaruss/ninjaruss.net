@@ -24,12 +24,12 @@ const { tags, size = 'sm' } = Astro.props;
 
   .tag-list--sm .tag {
     font-size: var(--text-xs);
-    padding: 4px 10px;
+    padding: var(--space-xs) var(--space-sm);
   }
 
   .tag-list--md .tag {
     font-size: var(--text-sm);
-    padding: 5px 14px;
+    padding: var(--space-xs) var(--space-md);
   }
 
   .tag {
@@ -39,15 +39,6 @@ const { tags, size = 'sm' } = Astro.props;
     border: var(--border-thin) solid var(--color-border-strong);
     border-radius: var(--radius-pill);
     color: var(--color-text-muted);
-    transition:
-      background-color var(--transition-fast),
-      color var(--transition-fast),
-      border-color var(--transition-fast);
-  }
-
-  .tag:hover {
-    background: var(--color-gold);
-    color: var(--color-black);
-    border-color: var(--color-gold);
+    /* No hover state - tags are not interactive */
   }
 </style>

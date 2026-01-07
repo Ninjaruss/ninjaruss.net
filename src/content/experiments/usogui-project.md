@@ -6,7 +6,7 @@ surprise: "The existing community was more active than expected—just fragmente
 unresolved: "Scale vs. quality tradeoff. Do I keep it small and good, or try to grow it?"
 emotional_tags: ["community", "preservation", "obsessive"]
 status: conflicted
-artifacts:
+thumbnails:
   - type: link
     src: "https://usogui.info"
     alt: "Usogui Archive"

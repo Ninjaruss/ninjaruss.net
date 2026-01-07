@@ -10,7 +10,6 @@ const sortedMedia = allMedia.sort((a, b) => a.data.title.localeCompare(b.data.ti
 <SplitViewLayout
   title="Media"
   description="Notes on anime, manga, and films."
-  subtitle="Emotionally tagged reflections. Not ratings."
   section="media"
 >
   <Fragment slot="list">
@@ -20,7 +19,6 @@ const sortedMedia = allMedia.sort((a, b) => a.data.title.localeCompare(b.data.ti
           href={`/media/${entry.slug}`}
           slug={entry.slug}
           title={entry.data.title}
-          subtitle={entry.data.media_type}
           status={entry.data.status}
         />
       ))

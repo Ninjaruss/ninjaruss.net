@@ -10,7 +10,6 @@ const sortedMusic = allMusic.sort((a, b) => a.data.title.localeCompare(b.data.ti
 <SplitViewLayout
   title="Music"
   description="Curated song collections."
-  subtitle="Sorted by mood or internal logic."
   section="music"
 >
   <Fragment slot="list">
@@ -20,7 +19,6 @@ const sortedMusic = allMusic.sort((a, b) => a.data.title.localeCompare(b.data.ti
           href={`/music/${entry.slug}`}
           slug={entry.slug}
           title={entry.data.title}
-          subtitle={entry.data.mood}
           status={entry.data.status}
         />
       ))

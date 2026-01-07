@@ -1,25 +1,31 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import NavPill from '../components/NavPill.astro';
+import MediaLightbox from '../components/MediaLightbox.astro';
 
 interface Props {
   title: string;
   description: string;
-  subtitle?: string;
   section: string;
+  initialSlug?: string;
 }
 
-const { title, description, subtitle, section } = Astro.props;
+const { title, description, section, initialSlug } = Astro.props;
+const hasInitialContent = Astro.slots.has('detail');
 ---
 
 <BaseLayout title={title} description={description}>
   <NavPill />
-  <div class="split-view" data-section={section} transition:persist={`split-view-${section}`}>
+  <div
+    class:list={['split-view', { 'has-selection': hasInitialContent }]}
+    data-section={section}
+    data-initial-slug={initialSlug}
+    transition:persist={`split-view-${section}`}
+  >
     <!-- Left Panel: List -->
     <aside class="split-view__list">
       <header class="split-view__header">
         <h1 class="split-view__title">{title}</h1>
-        {subtitle && <p class="split-view__subtitle">{subtitle}</p>}
       </header>
       <nav class="split-view__nav" role="list">
         <slot name="list" />
@@ -34,22 +40,25 @@ const { title, description, subtitle, section } = Astro.props;
           <span class="split-view__back-text">Back to list</span>
         </button>
         <div class="split-view__placeholder">
-          <span class="split-view__placeholder-icon">→</span>
-          <p>Select an item to view details</p>
+          <div class="split-view__placeholder-content">
+            <span class="split-view__placeholder-icon">→</span>
+            <p class="split-view__placeholder-title">Select an item to view details</p>
+          </div>
         </div>
-        <article class="split-view__content" aria-live="polite">
-          <!-- Content loaded here via JS -->
+        <article class:list={['split-view__content', { 'is-active': hasInitialContent }]} aria-live="polite">
+          {hasInitialContent ? <slot name="detail" /> : null}
         </article>
       </div>
     </main>
   </div>
+  <MediaLightbox />
 </BaseLayout>
 
 <style>
   .split-view {
     display: grid;
     grid-template-columns: 320px 1fr;
-    min-height: calc(100vh - var(--space-2xl));
+    min-height: calc(100vh - var(--space-lg) * 2);
     gap: 0;
   }
 
@@ -59,30 +68,28 @@ const { title, description, subtitle, section } = Astro.props;
     border-right: var(--border-thick) solid var(--color-gold-dim);
     display: flex;
     flex-direction: column;
-    height: calc(100vh - var(--space-2xl));
+    height: calc(100vh - var(--space-lg) * 2);
     position: sticky;
-    top: var(--space-lg);
+    top: var(--space-sm);
   }
 
   .split-view__header {
-    padding: var(--space-xl) var(--space-lg);
+    padding: var(--space-lg) var(--space-md);
     border-bottom: var(--border-medium) solid var(--color-gold);
     background: var(--color-gold);
   }
 
   .split-view__title {
     font-family: var(--font-display);
-    font-size: var(--text-2xl);
+    font-size: var(--text-lg);
     color: var(--color-black);
     text-transform: uppercase;
-    margin-bottom: var(--space-xs);
+    margin-bottom: 0;
+    line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
-  .split-view__subtitle {
-    font-size: var(--text-sm);
-    color: var(--color-black);
-    opacity: 0.7;
-  }
 
   .split-view__nav {
     flex: 1;
@@ -105,6 +112,7 @@ const { title, description, subtitle, section } = Astro.props;
   /* Entry content within split view */
   .split-view__content .entry {
     padding-bottom: 0;
+    max-width: 720px;
   }
 
   .split-view__content .container {
@@ -112,16 +120,76 @@ const { title, description, subtitle, section } = Astro.props;
     max-width: none;
   }
 
-  /* Force two-column layout for images in split view */
-  .split-view__content .entry--has-images .entry__body {
-    display: grid;
-    grid-template-columns: 1fr 240px;
-    gap: var(--space-xl);
+  /* Thumbnail gallery under title (frontmatter images) */
+  .split-view__content .entry__thumbnails {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    margin-top: var(--space-lg);
+  }
+
+  .split-view__content .entry__thumbnail {
+    width: auto;
+    max-width: 180px;
+    max-height: 140px;
+    height: auto;
+    border-radius: var(--radius-sm);
+    border: var(--border-medium) solid var(--color-border-strong);
+    cursor: pointer;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+    object-fit: cover;
+  }
+
+  .split-view__content .entry__thumbnail:hover {
+    transform: scale(1.02);
+    border-color: var(--color-gold);
+    box-shadow: var(--shadow-hard-sm);
+  }
+
+  /* Single thumbnail takes more space */
+  .split-view__content .entry__thumbnails:has(.entry__thumbnail:only-child) .entry__thumbnail {
+    max-width: 280px;
+    max-height: 200px;
+  }
+
+  /* Inline media in markdown prose - consistent sizing */
+  .split-view__content .prose img,
+  .split-view__content .prose video {
+    display: block;
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    margin: var(--space-xl) 0;
+    border-radius: var(--radius-md);
+    border: var(--border-medium) solid var(--color-border-strong);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .split-view__content .prose img:hover,
+  .split-view__content .prose video:hover {
+    border-color: var(--color-gold-dim);
+    box-shadow: var(--shadow-hard-sm);
+  }
+
+  /* Video-specific styling */
+  .split-view__content .prose video {
+    background: var(--color-bg-elevated);
+  }
+
+  /* Smaller inline images (use ![alt](src){.small} in markdown) */
+  .split-view__content .prose img.small {
+    max-width: 320px;
+  }
+
+  /* Full-width images */
+  .split-view__content .prose img.full {
+    max-width: 100%;
   }
 
   .split-view__content .entry__header {
-    margin-bottom: var(--space-lg);
-    padding-bottom: var(--space-md);
+    margin-bottom: var(--space-2xl);
+    padding-bottom: var(--space-lg);
   }
 
   .split-view__content .entry__title {
@@ -136,13 +204,25 @@ const { title, description, subtitle, section } = Astro.props;
     min-height: 50vh;
     color: var(--color-text-muted);
     text-align: center;
+  }
+
+  .split-view__placeholder-content {
+    display: flex;
+    flex-direction: column;
     gap: var(--space-md);
+    align-items: center;
+    max-width: 50ch;
   }
 
   .split-view__placeholder-icon {
     font-size: var(--text-4xl);
     opacity: 0.3;
   }
+
+  .split-view__placeholder-title {
+    font-size: var(--text-lg);
+  }
+
 
   .split-view__content {
     display: none;
@@ -188,13 +268,6 @@ const { title, description, subtitle, section } = Astro.props;
     display: inline-flex;
   }
 
-  /* Medium screens: stack images below content in split view */
-  @media (max-width: 1100px) {
-    .split-view__content .entry--has-images .entry__body {
-      grid-template-columns: 1fr;
-    }
-  }
-
   /* Mobile: Stack layout */
   @media (max-width: 900px) {
     .split-view {
@@ -223,12 +296,60 @@ const { title, description, subtitle, section } = Astro.props;
     }
 
     .split-view.has-selection .split-view__detail {
-      min-height: calc(100vh - var(--space-2xl));
+      min-height: calc(100vh - var(--space-lg) * 2);
     }
   }
 </style>
 
 <script>
+  // Initialize click handlers for lightbox on all images
+  function initMediaLightbox() {
+    // Header thumbnails (frontmatter images)
+    const thumbnails = document.querySelectorAll('.entry__thumbnail[data-lightbox-src]');
+    thumbnails.forEach((thumb) => {
+      if ((thumb as HTMLElement).dataset.lightboxInit === 'true') return;
+      (thumb as HTMLElement).dataset.lightboxInit = 'true';
+
+      thumb.addEventListener('click', () => {
+        const src = (thumb as HTMLElement).dataset.lightboxSrc;
+        const alt = (thumb as HTMLElement).dataset.lightboxAlt || '';
+        if (src && window.openMediaLightbox) {
+          window.openMediaLightbox(src, alt, 'image');
+        }
+      });
+    });
+
+    // Inline images in prose content
+    const proseImages = document.querySelectorAll('.split-view__content .prose img');
+    proseImages.forEach((img) => {
+      if ((img as HTMLElement).dataset.lightboxInit === 'true') return;
+      (img as HTMLElement).dataset.lightboxInit = 'true';
+
+      img.addEventListener('click', () => {
+        const src = (img as HTMLImageElement).src;
+        const alt = (img as HTMLImageElement).alt || '';
+        if (src && window.openMediaLightbox) {
+          window.openMediaLightbox(src, alt, 'image');
+        }
+      });
+    });
+
+    // Inline videos in prose content
+    const proseVideos = document.querySelectorAll('.split-view__content .prose video');
+    proseVideos.forEach((video) => {
+      if ((video as HTMLElement).dataset.lightboxInit === 'true') return;
+      (video as HTMLElement).dataset.lightboxInit = 'true';
+
+      video.addEventListener('click', () => {
+        const src = (video as HTMLVideoElement).src ||
+                    (video as HTMLVideoElement).querySelector('source')?.src || '';
+        if (src && window.openMediaLightbox) {
+          window.openMediaLightbox(src, '', 'video');
+        }
+      });
+    });
+  }
+
   document.addEventListener('astro:page-load', () => {
     const splitView = document.querySelector('.split-view') as HTMLElement;
     if (!splitView) return;
@@ -241,8 +362,20 @@ const { title, description, subtitle, section } = Astro.props;
     const contentArea = splitView.querySelector('.split-view__content') as HTMLElement;
     const backButton = splitView.querySelector('.split-view__back') as HTMLButtonElement;
     const section = splitView.dataset.section;
+    const initialSlug = splitView.dataset.initialSlug;
 
-    let currentSlug: string | null = null;
+    let currentSlug: string | null = initialSlug || null;
+
+    // Initialize lightbox handlers for pre-rendered content
+    initMediaLightbox();
+
+    // If there's pre-rendered content, mark the corresponding list item as active
+    if (initialSlug) {
+      const activeItem = splitView.querySelector(`[data-slug="${initialSlug}"]`);
+      if (activeItem) {
+        activeItem.classList.add('is-active');
+      }
+    }
 
     // Back button handler
     backButton?.addEventListener('click', () => {
@@ -250,7 +383,7 @@ const { title, description, subtitle, section } = Astro.props;
       contentArea.classList.remove('is-active');
       contentArea.innerHTML = '';
       listItems.forEach(i => i.classList.remove('is-active'));
-      history.pushState(null, '', `/${section}/`);
+      window.location.href = `/${section}/`;
       currentSlug = null;
     });
 
@@ -282,13 +415,17 @@ const { title, description, subtitle, section } = Astro.props;
           const entryContent = doc.querySelector('.entry');
 
           if (entryContent) {
-            // Use outerHTML to preserve entry classes (like entry--has-images)
             contentArea.innerHTML = entryContent.outerHTML;
             contentArea.classList.add('is-active');
 
             // Update URL without reload
             history.pushState({ slug }, '', `/${section}/${slug}/`);
             currentSlug = slug;
+
+            // Re-initialize lightbox handlers for new content
+            setTimeout(() => {
+              initMediaLightbox();
+            }, 50);
           }
         } catch (error) {
           console.error('Failed to load content:', error);

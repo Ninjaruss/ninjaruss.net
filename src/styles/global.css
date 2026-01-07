@@ -21,15 +21,12 @@
   --color-border: #3a3a3a;          /* Subtle borders (brighter) */
   --color-border-strong: #505050;   /* Emphasized borders */
 
-  /* Legacy aliases for compatibility */
-  --color-dark: #111111;
+  /* Semantic aliases (pointing to new tokens) */
+  --color-dark: var(--color-bg-base);
   --color-white: #ffffff;
-  --color-off-white: #0a0a0a;
-  --color-muted: #a0a0a0;
-  --color-charcoal: #f5f5f5;
-  --color-ink: #f5f5f5;
-  --color-gold-dark: #d4b82a;
-  --color-panel: #181818;
+  --color-muted: var(--color-text-muted);
+  --color-gold-dark: var(--color-gold-dim);
+  --color-panel: var(--color-bg-elevated);
 
   /* Text Colors — improved contrast for dark backgrounds */
   --color-text: #f5f5f5;            /* Primary text (brighter) */
@@ -47,8 +44,10 @@
   --border-thick: 4px;
   --border-medium: 3px;
   --border-thin: 2px;
+  --border-hairline: 1px;
 
   /* Spacing Scale */
+  --space-2xs: 0.125rem;
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
@@ -57,6 +56,19 @@
   --space-2xl: 3rem;
   --space-3xl: 4rem;
 
+  /* Responsive Breakpoints (for reference in media queries) */
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1200px;
+
+  /* Opacity Scale */
+  --opacity-subtle: 0.1;
+  --opacity-light: 0.2;
+  --opacity-medium: 0.3;
+  --opacity-strong: 0.4;
+  --opacity-heavy: 0.5;
+
   /* P4G uses ROUNDED corners — key characteristic */
   --radius-sm: 8px;
   --radius-md: 16px;
@@ -64,14 +76,27 @@
   --radius-pill: 100px;
 
   /* Dark mode shadows — gold glow effect */
-  --shadow-hard: 4px 4px 0 rgba(255, 229, 44, 0.3);
-  --shadow-hard-sm: 2px 2px 0 rgba(255, 229, 44, 0.2);
+  --shadow-hard: 4px 4px 0 rgba(255, 229, 44, var(--opacity-medium));
+  --shadow-hard-sm: 2px 2px 0 rgba(255, 229, 44, var(--opacity-light));
+  --shadow-hard-hover: 6px 6px 0 rgba(255, 229, 44, var(--opacity-strong));
   --shadow-glow: 0 0 20px rgba(255, 229, 44, 0.15);
-  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, var(--opacity-heavy));
+
+  /* Standardized letter-spacing for labels */
+  --tracking-label: 0.05em;
 
   /* Transitions */
   --transition-fast: 100ms ease-out;
   --transition-base: 150ms ease-out;
+
+  /* Animation Durations */
+  --animation-fast: 350ms;
+  --animation-base: 400ms;
+  --animation-slow: 450ms;
+  --animation-easing: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Stagger Increments */
+  --stagger-increment: 50ms;
 }
 
 /* Reset */
@@ -163,7 +188,7 @@ ul, ol {
 
 /* Page Wrapper */
 .page {
-  padding: var(--space-2xl) 0;
+  padding: var(--space-lg) 0;
 }
 
 /* P4G Style Label — Black bg with rounded pill shape */
@@ -171,10 +196,10 @@ ul, ol {
   display: inline-block;
   background: var(--color-black);
   color: var(--color-gold);
-  padding: var(--space-xs) var(--space-md);
+  padding: var(--space-xs) var(--space-sm);
   font-family: var(--font-display);
   font-size: var(--text-xs);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   border-radius: var(--radius-sm);
 }

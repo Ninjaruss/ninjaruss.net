@@ -1,0 +1,186 @@
+---
+// MediaLightbox - Fullscreen popup for viewing images/videos
+// Used by MediaSidebar component
+---
+
+<div class="media-lightbox" id="media-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Media viewer">
+  <button class="media-lightbox__close" type="button" aria-label="Close viewer">
+    <span aria-hidden="true">×</span>
+  </button>
+  <div class="media-lightbox__backdrop"></div>
+  <div class="media-lightbox__content">
+    <img class="media-lightbox__img" src="" alt="" />
+    <video class="media-lightbox__video" controls style="display: none;"></video>
+  </div>
+  <p class="media-lightbox__caption"></p>
+</div>
+
+<style is:global>
+  .media-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 200ms ease-out, visibility 200ms ease-out;
+  }
+
+  .media-lightbox.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .media-lightbox__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    cursor: pointer;
+  }
+
+  .media-lightbox__close {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    z-index: 2;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-black);
+    border: var(--border-medium) solid var(--color-gold);
+    border-radius: var(--radius-sm);
+    color: var(--color-gold);
+    font-size: var(--text-2xl);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .media-lightbox__close:hover {
+    background: var(--color-gold);
+    color: var(--color-black);
+    transform: scale(1.05);
+  }
+
+  .media-lightbox__content {
+    position: relative;
+    z-index: 1;
+    max-width: 90vw;
+    max-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .media-lightbox__img,
+  .media-lightbox__video {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border: var(--border-medium) solid var(--color-gold-dim);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .media-lightbox__caption {
+    position: relative;
+    z-index: 1;
+    margin-top: var(--space-md);
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--color-bg-elevated);
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    text-align: center;
+    max-width: 60ch;
+  }
+
+  .media-lightbox__caption:empty {
+    display: none;
+  }
+
+  /* Animation for content entrance */
+  .media-lightbox.is-active .media-lightbox__content {
+    animation: lightbox-entrance 300ms var(--animation-easing) forwards;
+  }
+
+  @keyframes lightbox-entrance {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+</style>
+
+<script>
+  function initLightbox() {
+    const lightbox = document.getElementById('media-lightbox');
+    if (!lightbox) return;
+
+    const img = lightbox.querySelector('.media-lightbox__img') as HTMLImageElement;
+    const video = lightbox.querySelector('.media-lightbox__video') as HTMLVideoElement;
+    const caption = lightbox.querySelector('.media-lightbox__caption') as HTMLElement;
+    const closeBtn = lightbox.querySelector('.media-lightbox__close') as HTMLButtonElement;
+    const backdrop = lightbox.querySelector('.media-lightbox__backdrop') as HTMLElement;
+
+    // Open lightbox
+    window.openMediaLightbox = (src: string, alt: string, type: 'image' | 'video' = 'image') => {
+      if (type === 'video') {
+        img.style.display = 'none';
+        video.style.display = 'block';
+        video.src = src;
+        video.play();
+      } else {
+        video.style.display = 'none';
+        video.pause();
+        img.style.display = 'block';
+        img.src = src;
+        img.alt = alt;
+      }
+      caption.textContent = alt || '';
+      lightbox.classList.add('is-active');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    };
+
+    // Close lightbox
+    const closeLightbox = () => {
+      lightbox.classList.remove('is-active');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      video.pause();
+      video.src = '';
+    };
+
+    closeBtn?.addEventListener('click', closeLightbox);
+    backdrop?.addEventListener('click', closeLightbox);
+
+    // Close on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('is-active')) {
+        closeLightbox();
+      }
+    });
+  }
+
+  // Declare global type
+  declare global {
+    interface Window {
+      openMediaLightbox: (src: string, alt: string, type?: 'image' | 'video') => void;
+    }
+  }
+
+  // Initialize on page load and Astro navigation
+  document.addEventListener('astro:page-load', initLightbox);
+  initLightbox();
+</script>

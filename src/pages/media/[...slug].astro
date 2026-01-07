@@ -1,6 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
-import EntryLayout from '../../layouts/EntryLayout.astro';
+import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
+import ListItem from '../../components/ListItem.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import TagList from '../../components/TagList.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('media');
@@ -13,64 +16,73 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
+// Get all media for the list
+const allMedia = await getCollection('media', ({ data }) => !data.draft);
+const sortedMedia = allMedia.sort((a, b) => a.data.title.localeCompare(b.data.title));
+
 const meta: Record<string, string> = {};
 if (entry.data.media_type) {
   meta['Type'] = entry.data.media_type.charAt(0).toUpperCase() + entry.data.media_type.slice(1);
 }
 ---
 
-<EntryLayout
-  title={entry.data.title}
-  status={entry.data.status}
-  emotional_tags={entry.data.emotional_tags}
-  artifacts={entry.data.artifacts}
-  backLink="/media"
-  backLabel="Back to Media"
-  meta={meta}
+<SplitViewLayout
+  title="Media"
+  description="Notes on anime, manga, and films."
+  section="media"
+  initialSlug={entry.slug}
 >
-  <Content />
+  <Fragment slot="list">
+    {sortedMedia.map((mediaEntry) => (
+      <ListItem
+        href={`/media/${mediaEntry.slug}`}
+        slug={mediaEntry.slug}
+        title={mediaEntry.data.title}
+        status={mediaEntry.data.status}
+      />
+    ))}
+  </Fragment>
 
-  {entry.data.artifacts && entry.data.artifacts.filter(a => a.type === 'link').length > 0 && (
-    <aside class="artifacts">
-      <h3>Related Links</h3>
-      <ul>
-        {entry.data.artifacts.filter(a => a.type === 'link').map((artifact) => (
-          <li>
-            <a href={artifact.src} target="_blank" rel="noopener noreferrer">
-              {artifact.alt || artifact.src}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </aside>
-  )}
-</EntryLayout>
+  <Fragment slot="detail">
+    <article class="entry">
+      <div class="container">
+        <header class="entry__header">
+          <h1 class="entry__title">{entry.data.title}</h1>
+          <div class="entry__meta">
+            <StatusBadge status={entry.data.status} size="md" />
+            <TagList tags={entry.data.emotional_tags} size="md" />
+          </div>
+          {meta && Object.keys(meta).length > 0 && (
+            <dl class="entry__details">
+              {Object.entries(meta).map(([key, value]) => (
+                <>
+                  <dt>{key}</dt>
+                  <dd>{value}</dd>
+                </>
+              ))}
+            </dl>
+          )}
+          {entry.data.thumbnails && entry.data.thumbnails.length > 0 && (
+            <div class="entry__thumbnails">
+              {entry.data.thumbnails.map((thumb) => (
+                <img
+                  src={thumb.src}
+                  alt={thumb.alt || entry.data.title}
+                  class="entry__thumbnail"
+                  data-lightbox-src={thumb.src}
+                  data-lightbox-alt={thumb.alt || entry.data.title}
+                />
+              ))}
+            </div>
+          )}
+        </header>
 
-<style>
-  .artifacts {
-    margin-top: var(--space-2xl);
-    padding-top: var(--space-xl);
-    border-top: 1px solid var(--color-border);
-  }
-
-  .artifacts h3 {
-    font-family: var(--font-display);
-    font-size: var(--text-lg);
-    margin-bottom: var(--space-md);
-  }
-
-  .artifacts ul {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-  }
-
-  .artifacts a {
-    color: var(--color-gold-dim);
-    text-decoration: underline;
-  }
-
-  .artifacts a:hover {
-    color: var(--color-gold);
-  }
-</style>
+        <div class="entry__body">
+          <div class="entry__content prose">
+            <Content />
+          </div>
+        </div>
+      </div>
+    </article>
+  </Fragment>
+</SplitViewLayout>
