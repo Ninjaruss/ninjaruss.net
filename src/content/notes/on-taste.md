@@ -1,11 +1,7 @@
 ---
 title: "On Taste"
 tags: ["identity", "creative", "uncertain"]
-status: conflicted
-thumbnails:
-  - type: image
-    src: /images/notes/on-taste-01.svg
-    alt: "Placeholder - taste and perception"
+status: ongoing
 ---
 
 Taste is the thing that makes you love what you love and hate what you hate, and you can't fully explain either. It's accumulated exposure plus something ineffable.

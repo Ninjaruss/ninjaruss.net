@@ -5,12 +5,9 @@ const sharedSchema = z.object({
   title: z.string(),
   tags: z.array(z.string()).default([]),
   collections: z.array(z.string()).default([]),
-  status: z.enum(['confident', 'conflicted', 'unresolved']).default('unresolved'),
-  thumbnails: z.array(z.object({
-    type: z.enum(['image', 'video', 'link']).default('image'),
-    src: z.string(),
-    alt: z.string().optional(),
-  })).optional(),
+  status: z.enum(['completed', 'ongoing', 'unresolved']).default('unresolved'),
+  publishedAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
   draft: z.boolean().default(false),
 });
 
@@ -44,12 +41,7 @@ const notes = defineCollection({
 // Experiments collection — projects framed as inquiries
 const experiments = defineCollection({
   type: 'content',
-  schema: sharedSchema.extend({
-    question: z.string(),              // What were you trying to understand?
-    approach: z.string().optional(),   // What did you build/try?
-    surprise: z.string().optional(),   // What surprised you?
-    unresolved: z.string().optional(), // What remains open?
-  }),
+  schema: sharedSchema
 });
 
 export const collections = {

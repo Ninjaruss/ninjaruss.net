@@ -2,7 +2,7 @@
 title: "Late Night Drives"
 mood: "contemplative"
 tags: ["nocturnal", "introspective", "moving"]
-status: confident
+status: completed
 tracks:
   - title: "Midnight City"
     artist: "M83"

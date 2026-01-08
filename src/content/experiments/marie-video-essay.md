@@ -1,6 +1,6 @@
 ---
-title: "This Website"
-tags: ["web dev"]
+title: "Marie - Video Essay"
+tags: ["video"]
 status: completed
 ---
 
@@ -11,3 +11,6 @@ This time I wanted something different. A place for fragments. Notes on things I
 The Persona 4 Golden inspiration came from wanting something that felt energetic and structured but not corporate. The gold accents and bold typography are an attempt at having a visual identity without it feeling like branding.
 
 Still iterating. Still not sure it works.
+
+![Marie](/images/experiments/2024-09-11%20Your%20Canvas%20Poem%201.png)
+

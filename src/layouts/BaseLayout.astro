@@ -8,11 +8,14 @@ import '../styles/transitions.css';
 interface Props {
   title: string;
   description?: string;
+  ogImage?: string;
 }
 
-const { title, description = 'Fragments, reflections, and experiments.' } = Astro.props;
+const { title, description = 'Fragments, reflections, and experiments.', ogImage } = Astro.props;
 const siteTitle = 'ninjaruss';
 const fullTitle = title === 'Home' ? '*live without regret*' : `${title} — ${siteTitle}`;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://ninjaruss.net');
+const ogImageUrl = ogImage ? new URL(ogImage, Astro.site || 'https://ninjaruss.net').href : undefined;
 ---
 
 <!DOCTYPE html>
@@ -23,11 +26,27 @@ const fullTitle = title === 'Home' ? '*live without regret*' : `${title} — ${s
     <meta name="description" content={description} />
     <title>{fullTitle}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalUrl.href} />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl.href} />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
     <ClientRouter />
   </head>
   <body>
-    <main class="page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    <main id="main-content" class="page">
       <slot />
     </main>
   </body>
@@ -37,5 +56,29 @@ const fullTitle = title === 'Home' ? '*live without regret*' : `${title} — ${s
   /* Page transition smoothness */
   html {
     scroll-behavior: smooth;
+  }
+
+  /* Skip to content link for accessibility */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: var(--space-md);
+    z-index: 9999;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-gold);
+    color: var(--color-black);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: top 0.2s ease;
+  }
+
+  .skip-link:focus {
+    top: var(--space-md);
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
   }
 </style>

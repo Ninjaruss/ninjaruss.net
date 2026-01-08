@@ -1,15 +1,7 @@
 ---
 title: "Usogui Archive"
-question: "What would it take to make a niche manga more accessible?"
-approach: "Documentation, guides, and community coordination."
-surprise: "The existing community was more active than expected—just fragmented."
-unresolved: "Scale vs. quality tradeoff. Do I keep it small and good, or try to grow it?"
 tags: ["community", "preservation", "obsessive"]
-status: conflicted
-thumbnails:
-  - type: link
-    src: "https://usogui.info"
-    alt: "Usogui Archive"
+status: ongoing
 ---
 
 Usogui is one of my favorite manga. It's also nearly impossible to recommend because it's dense, untranslated for years, and requires significant context to appreciate.

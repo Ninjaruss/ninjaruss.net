@@ -4,6 +4,7 @@ import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import TagList from '../../components/TagList.astro';
+import DateDisplay from '../../components/DateDisplay.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('experiments');
@@ -47,52 +48,12 @@ const sortedExperiments = allExperiments.sort((a, b) => a.data.title.localeCompa
           <div class="entry__meta">
             <StatusBadge status={entry.data.status} size="md" />
             <TagList tags={entry.data.tags} size="md" />
+            <DateDisplay date={entry.data.publishedAt} updatedAt={entry.data.updatedAt} size="md" />
           </div>
-          {entry.data.thumbnails && entry.data.thumbnails.length > 0 && (
-            <div class="entry__thumbnails">
-              {entry.data.thumbnails.map((thumb) => (
-                <img
-                  src={thumb.src}
-                  alt={thumb.alt || entry.data.title}
-                  class="entry__thumbnail"
-                  data-lightbox-src={thumb.src}
-                  data-lightbox-alt={thumb.alt || entry.data.title}
-                />
-              ))}
-            </div>
-          )}
         </header>
 
         <div class="entry__body">
           <div class="entry__content prose">
-            {entry.data.question && (
-              <aside class="inquiry-frame">
-                <dl>
-                  <div class="inquiry-frame__item">
-                    <dt>What was I trying to understand?</dt>
-                    <dd>{entry.data.question}</dd>
-                  </div>
-                  {entry.data.approach && (
-                    <div class="inquiry-frame__item">
-                      <dt>What did I build/try?</dt>
-                      <dd>{entry.data.approach}</dd>
-                    </div>
-                  )}
-                  {entry.data.surprise && (
-                    <div class="inquiry-frame__item">
-                      <dt>What surprised me?</dt>
-                      <dd>{entry.data.surprise}</dd>
-                    </div>
-                  )}
-                  {entry.data.unresolved && (
-                    <div class="inquiry-frame__item">
-                      <dt>What remains unresolved?</dt>
-                      <dd>{entry.data.unresolved}</dd>
-                    </div>
-                  )}
-                </dl>
-              </aside>
-            )}
             <Content />
           </div>
         </div>

@@ -46,14 +46,12 @@ All collections share a base schema:
 - `title` (required string)
 - `tags` (string array)
 - `collections` (string array for cross-referencing)
-- `status`: `'confident' | 'conflicted' | 'unresolved'`
-- `thumbnails`: `{ type?, src, alt? }[]`
+- `status`: `'completed' | 'ongoing' | 'unresolved'`
 - `draft` (boolean, filters from production)
 
 Collection-specific extensions:
 - **media**: adds `media_type: 'anime' | 'manga' | 'film'`
 - **music**: adds `mood`, `tracks: { title, artist, link? }[]`
-- **experiments**: adds `question`, `approach`, `surprise`, `unresolved`
 
 ## Layouts
 
@@ -74,7 +72,7 @@ Collection-specific extensions:
 - `EntryCard.astro` — Card component for listings
 
 ### Content
-- `StatusBadge.astro` — Status indicator (confident/conflicted/unresolved)
+- `StatusBadge.astro` — Status indicator (completed/ongoing/unresolved)
 - `TagList.astro` — Tag pills display
 - `ImageGallery.astro` — Sticky sidebar image gallery
 - `MediaLightbox.astro` — Fullscreen media popup
@@ -126,8 +124,8 @@ Collection-specific extensions:
 3. **Draft Filtering**: All collection queries should filter `draft !== true`
 
 4. **Status Colors** (WCAG AA compliant):
-   - Confident: `#16a34a` (dark green)
-   - Conflicted: `#fbbf24` (amber)
+   - Completed: `#16a34a` (dark green)
+   - Ongoing: `#fbbf24` (amber)
    - Unresolved: `#6b7280` (gray)
 
 5. **Accessibility**: Focus-visible gold rings, prefers-reduced-motion respected, 44px minimum touch targets

@@ -36,8 +36,8 @@
   --color-text-on-gold: #000000;
 
   /* Status Colors — brighter for dark mode */
-  --color-confident: #4ade80;       /* Brighter green */
-  --color-conflicted: #fbbf24;      /* Brighter amber */
+  --color-completed: #4ade80;       /* Brighter green */
+  --color-ongoing: #fbbf24;      /* Brighter amber */
   --color-unresolved: #9ca3af;      /* Neutral gray */
 
   /* P4G Border Weight */
