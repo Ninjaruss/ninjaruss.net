@@ -324,38 +324,6 @@ const hasInitialContent = Astro.slots.has('detail');
     max-width: none;
   }
 
-  /* Thumbnail gallery under title (frontmatter images) */
-  .split-view__content .entry__thumbnails {
-    display: flex;
-    gap: var(--space-sm);
-    flex-wrap: wrap;
-    margin-top: var(--space-lg);
-  }
-
-  .split-view__content .entry__thumbnail {
-    width: auto;
-    max-width: 180px;
-    max-height: 140px;
-    height: auto;
-    border-radius: var(--radius-sm);
-    border: var(--border-medium) solid var(--color-border-strong);
-    cursor: pointer;
-    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
-    object-fit: cover;
-  }
-
-  .split-view__content .entry__thumbnail:hover {
-    transform: scale(1.02);
-    border-color: var(--color-gold);
-    box-shadow: var(--shadow-hard-sm);
-  }
-
-  /* Single thumbnail takes more space */
-  .split-view__content .entry__thumbnails:has(.entry__thumbnail:only-child) .entry__thumbnail {
-    max-width: 280px;
-    max-height: 200px;
-  }
-
   /* Inline media in markdown prose - consistent sizing */
   .split-view__content .prose img,
   .split-view__content .prose video {
@@ -408,6 +376,30 @@ const hasInitialContent = Astro.slots.has('detail');
     min-height: 50vh;
     color: var(--color-text-muted);
     text-align: center;
+  }
+
+  /* Loading state indicator */
+  .split-view.is-loading .split-view__content::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .split-view.is-loading .split-view__content {
+    position: relative;
+    min-height: 200px;
+  }
+
+  @keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
   }
 
   .split-view__placeholder-content {
@@ -755,21 +747,6 @@ const hasInitialContent = Astro.slots.has('detail');
 
   // Initialize click handlers for lightbox on all images
   function initMediaLightbox() {
-    // Header thumbnails (frontmatter images)
-    const thumbnails = document.querySelectorAll('.entry__thumbnail[data-lightbox-src]');
-    thumbnails.forEach((thumb) => {
-      if ((thumb as HTMLElement).dataset.lightboxInit === 'true') return;
-      (thumb as HTMLElement).dataset.lightboxInit = 'true';
-
-      thumb.addEventListener('click', () => {
-        const src = (thumb as HTMLElement).dataset.lightboxSrc;
-        const alt = (thumb as HTMLElement).dataset.lightboxAlt || '';
-        if (src && window.openMediaLightbox) {
-          window.openMediaLightbox(src, alt, 'image');
-        }
-      });
-    });
-
     // Inline images in prose content
     const proseImages = document.querySelectorAll('.split-view__content .prose img');
     proseImages.forEach((img) => {
@@ -876,6 +853,13 @@ const hasInitialContent = Astro.slots.has('detail');
             history.pushState({ slug }, '', `/${section}/${slug}/`);
             currentSlug = slug;
 
+            // Focus management: move focus to content for screen readers
+            const heading = contentArea.querySelector('h1, h2, .entry__title') as HTMLElement;
+            if (heading) {
+              heading.setAttribute('tabindex', '-1');
+              heading.focus({ preventScroll: true });
+            }
+
             // Re-initialize lightbox handlers for new content
             setTimeout(() => {
               initMediaLightbox();
@@ -917,6 +901,46 @@ const hasInitialContent = Astro.slots.has('detail');
       if (item) {
         (item as HTMLElement).click();
       }
+    }
+
+    // Keyboard navigation for list items
+    const nav = splitView.querySelector('.split-view__nav') as HTMLElement;
+    if (nav) {
+      nav.addEventListener('keydown', (e: KeyboardEvent) => {
+        const items = Array.from(nav.querySelectorAll('.list-item:not(.is-filtered)')) as HTMLElement[];
+        if (items.length === 0) return;
+
+        const activeItem = nav.querySelector('.list-item:focus, .list-item.is-active') as HTMLElement;
+        const currentIndex = activeItem ? items.indexOf(activeItem) : -1;
+
+        switch (e.key) {
+          case 'ArrowDown':
+            e.preventDefault();
+            const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+            items[nextIndex].focus();
+            break;
+          case 'ArrowUp':
+            e.preventDefault();
+            const prevIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+            items[prevIndex].focus();
+            break;
+          case 'Enter':
+          case ' ':
+            if (document.activeElement?.classList.contains('list-item')) {
+              e.preventDefault();
+              (document.activeElement as HTMLElement).click();
+            }
+            break;
+          case 'Home':
+            e.preventDefault();
+            items[0]?.focus();
+            break;
+          case 'End':
+            e.preventDefault();
+            items[items.length - 1]?.focus();
+            break;
+        }
+      });
     }
   });
 </script>

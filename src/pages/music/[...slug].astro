@@ -4,6 +4,7 @@ import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import TagList from '../../components/TagList.astro';
+import DateDisplay from '../../components/DateDisplay.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('music');
@@ -52,6 +53,7 @@ if (entry.data.mood) {
           <div class="entry__meta">
             <StatusBadge status={entry.data.status} size="md" />
             <TagList tags={entry.data.tags} size="md" />
+            <DateDisplay date={entry.data.publishedAt} updatedAt={entry.data.updatedAt} size="md" />
           </div>
           {meta && Object.keys(meta).length > 0 && (
             <dl class="entry__details">
@@ -62,19 +64,6 @@ if (entry.data.mood) {
                 </>
               ))}
             </dl>
-          )}
-          {entry.data.thumbnails && entry.data.thumbnails.length > 0 && (
-            <div class="entry__thumbnails">
-              {entry.data.thumbnails.map((thumb) => (
-                <img
-                  src={thumb.src}
-                  alt={thumb.alt || entry.data.title}
-                  class="entry__thumbnail"
-                  data-lightbox-src={thumb.src}
-                  data-lightbox-alt={thumb.alt || entry.data.title}
-                />
-              ))}
-            </div>
           )}
         </header>
 

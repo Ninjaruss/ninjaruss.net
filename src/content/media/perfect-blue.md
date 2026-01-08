@@ -2,7 +2,7 @@
 title: "Perfect Blue"
 media_type: film
 tags: ["disorienting", "prescient", "uncomfortable"]
-status: confident
+status: completed
 ---
 
 Made in 1997, still the most accurate depiction of what the internet does to identity. Satoshi Kon understood something about performance and self that we're only now catching up to.
