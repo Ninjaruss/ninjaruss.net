@@ -1,6 +1,6 @@
 ---
 title: "Monster"
-media_type: anime
+reflections_type: anime
 tags: ["unsettling", "patient", "morally complex"]
 status: completed
 ---

@@ -1,6 +1,6 @@
 ---
 title: "Tengen Toppa Gurren Lagann"
-media_type: anime
+reflections_type: anime
 tags: ["peak"]
 status: ongoing
 ---
@@ -12,7 +12,7 @@ Needless to say, if you haven't already, I urge you to give Gurren Lagann a try.
 Then it hit me, this show quite literally tells you what it is set out to do and shows why each action leads to the outcomes portrayed in the show. It was almost like a web of details stringing together back to the main themes of the show: to keep trying and exceed the expectations of the universe. In line with my tendency to enjoy long video essays, I watched a lot of videos exploring the details behind Gurren Lagann. Some notable ones I can remember were the works by BestGuyEver's "Best Anime Ever - Tenga Toppa Gurren Lagann" and Caribou-kun's "What Inspired Gurren Lagann". These videos hammered in the point that the chaotic goofiness of Gurren Lagann was more than a bunch of funny decisions: each thing was an extension of the human experience and pushing the premise that the human fighting spirit has no bounds.
 Anime Opening
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/-hB-WOW2BN0" title="Sam Luff — Sorairo Days (cover)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-hB-WOW2BN0" title="Sam Luff — Sorairo Days (cover)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-reflections; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 The opening for Gurren Lagann was the thing that got me to watch this show in the first place. Dating back to when I was exploring English covers of Japanese openings I enjoyed back then, I came across a cover of Sorairo Days sung by Sam Luff and produced by Studio Yuraki. This cover was in short - an absolute banger. I would listen to this cover and the original all the time to give me motivation to push through my classes during university.
 The translation for the lyrics really spoke to me and I wanted to find what was the show behind the opening.

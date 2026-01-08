@@ -4,7 +4,7 @@ import BentoGrid from '../components/BentoGrid.astro';
 import BentoTile from '../components/BentoTile.astro';
 ---
 
-<BaseLayout title="Home" description="Fragments, reflections, and experiments.">
+<BaseLayout title="Home" description="Fragments, reflections, and showcase.">
   <div class="container">
     <BentoGrid>
       <!-- Title Tile -->
@@ -30,11 +30,11 @@ import BentoTile from '../components/BentoTile.astro';
 
       <!-- Featured - Yellow Highlight -->
       <BentoTile
-        href="/experiments"
+        href="/showcase"
         size="medium-tall"
         variant="highlight"
         accent
-        label="Experiments"
+        label="Showcase"
         title="What I'm Building"
         description="Projects framed as inquiries."
       />
@@ -51,20 +51,15 @@ import BentoTile from '../components/BentoTile.astro';
       />
 
       <BentoTile
-        href="/media"
+        href="/reflections"
         size="small"
         accent
-        label="Media"
+        label="Reflections"
         title="Watched & Read"
       />
 
       <!-- Small Tiles: Fragments & Signals -->
-      <BentoTile
-        href="/music"
-        size="small"
-        label="Music"
-        title="Curated Sounds"
-      />
+      
 
       <BentoTile
         href="/now"
@@ -199,7 +194,7 @@ import BentoTile from '../components/BentoTile.astro';
     transform: scale(1.1);
   }
 
-  @media (max-width: 768px) {
+  @reflections (max-width: 768px) {
     .title-tile {
       grid-column: span 2;
       padding: var(--space-lg);
@@ -220,7 +215,7 @@ import BentoTile from '../components/BentoTile.astro';
     }
   }
 
-  @media (max-width: 480px) {
+  @reflections (max-width: 480px) {
     .title-tile {
       grid-column: span 1;
     }

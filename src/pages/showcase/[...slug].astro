@@ -7,7 +7,7 @@ import TagList from '../../components/TagList.astro';
 import DateDisplay from '../../components/DateDisplay.astro';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('experiments');
+  const entries = await getCollection('showcase');
   return entries.map((entry) => ({
     params: { slug: entry.slug },
     props: { entry },
@@ -17,21 +17,21 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
-// Get all experiments for the list
-const allExperiments = await getCollection('experiments', ({ data }) => !data.draft);
+// Get all showcase for the list
+const allExperiments = await getCollection('showcase', ({ data }) => !data.draft);
 const sortedExperiments = allExperiments.sort((a, b) => a.data.title.localeCompare(b.data.title));
 ---
 
 <SplitViewLayout
-  title="Experiments"
+  title="Showcase"
   description="Projects framed as inquiries."
-  section="experiments"
+  section="showcase"
   initialSlug={entry.slug}
 >
   <Fragment slot="list">
     {sortedExperiments.map((exp) => (
       <ListItem
-        href={`/experiments/${exp.slug}`}
+        href={`/showcase/${exp.slug}`}
         slug={exp.slug}
         title={exp.data.title}
         status={exp.data.status}

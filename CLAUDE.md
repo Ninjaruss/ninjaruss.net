@@ -4,7 +4,7 @@ This file provides guidance for Claude Code (claude.ai/code) when working with t
 
 ## Project Overview
 
-**ninjaruss.net** is a personal website built with Astro 5, featuring a Persona 4 Golden-inspired dark UI aesthetic. It's a static site for fragments, reflections, and experiments—organized around philosophical notes, media consumption logs, curated music collections, and inquiry-driven projects.
+**ninjaruss.net** is a personal website built with Astro 5, featuring a Persona 4 Golden-inspired dark UI aesthetic. It's a static site for fragments, reflections, and experiments—organized around philosophical notes, reflections consumption logs, curated music collections, and inquiry-driven projects.
 
 ## Build & Development Commands
 
@@ -24,10 +24,10 @@ src/
 ├── components/       # Reusable Astro components
 ├── content/          # Content collections (Markdown)
 │   ├── config.ts     # Zod schema definitions
-│   ├── media/        # Anime, manga, film notes
+│   ├── reflections/        # Anime, manga, film notes
 │   ├── music/        # Curated song collections
 │   ├── notes/        # Philosophical fragments
-│   └── experiments/  # Projects as inquiries
+│   └── showcase/  # Projects as inquiries
 ├── layouts/          # Page layout templates
 ├── pages/            # File-based routing
 └── styles/           # Global CSS (no frameworks)
@@ -50,7 +50,7 @@ All collections share a base schema:
 - `draft` (boolean, filters from production)
 
 Collection-specific extensions:
-- **media**: adds `media_type: 'anime' | 'manga' | 'film'`
+- **reflections**: adds `reflections_type: 'anime' | 'manga' | 'film'`
 - **music**: adds `mood`, `tracks: { title, artist, link? }[]`
 
 ## Layouts

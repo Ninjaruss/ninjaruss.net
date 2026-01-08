@@ -3,20 +3,20 @@ import { getCollection } from 'astro:content';
 import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
 
-const allExperiments = await getCollection('experiments', ({ data }) => !data.draft);
+const allExperiments = await getCollection('showcase', ({ data }) => !data.draft);
 const sortedExperiments = allExperiments.sort((a, b) => a.data.title.localeCompare(b.data.title));
 ---
 
 <SplitViewLayout
-  title="Experiments"
+  title="Showcase"
   description="Projects framed as inquiries."
-  section="experiments"
+  section="showcase"
 >
   <Fragment slot="list">
     {sortedExperiments.length > 0 ? (
     sortedExperiments.map((entry) => (
       <ListItem
-        href={`/experiments/${entry.slug}`}
+        href={`/showcase/${entry.slug}`}
         slug={entry.slug}
         title={entry.data.title}
         status={entry.data.status}
@@ -24,7 +24,7 @@ const sortedExperiments = allExperiments.sort((a, b) => a.data.title.localeCompa
       />
     ))
   ) : (
-    <p class="empty-state">No experiments yet.</p>
+    <p class="empty-state">No showcase yet.</p>
   )}
   </Fragment>
 </SplitViewLayout>

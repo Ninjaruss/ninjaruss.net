@@ -1,14 +1,14 @@
 # ninjaruss.net
 
-Personal website for fragments, reflections, and experiments. Built with Astro, styled with vanilla CSS, inspired by Persona 4 Golden's UI aesthetic.
+Personal website for fragments, reflections, and showcase. Built with Astro, styled with vanilla CSS, inspired by Persona 4 Golden's UI aesthetic.
 
 ## Structure
 
 - `/` — Homepage with P4G-inspired bento grid
-- `/media` — Notes on anime, manga, films
+- `/reflections` — Notes on anime, manga, films
 - `/music` — Curated song collections
 - `/notes` — Philosophical fragments
-- `/experiments` — Projects framed as inquiries
+- `/showcase` — Projects framed as inquiries
 - `/now` — Current focus snapshot
 
 ## Commands
