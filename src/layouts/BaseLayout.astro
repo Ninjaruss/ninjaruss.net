@@ -11,7 +11,7 @@ interface Props {
   ogImage?: string;
 }
 
-const { title, description = 'Fragments, reflections, and experiments.', ogImage } = Astro.props;
+const { title, description = 'Fragments, reflections, and showcase.', ogImage } = Astro.props;
 const siteTitle = 'ninjaruss';
 const fullTitle = title === 'Home' ? '*live without regret*' : `${title} — ${siteTitle}`;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://ninjaruss.net');

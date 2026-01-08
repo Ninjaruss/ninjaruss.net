@@ -11,11 +11,11 @@ const sharedSchema = z.object({
   draft: z.boolean().default(false),
 });
 
-// Media collection — anime, manga, films
-const media = defineCollection({
+// Reflections collection — anime, manga, films
+const reflections = defineCollection({
   type: 'content',
   schema: sharedSchema.extend({
-    media_type: z.enum(['anime', 'manga', 'film']),
+    reflections_type: z.enum(['anime', 'manga', 'film']),
   }),
 });
 
@@ -38,15 +38,15 @@ const notes = defineCollection({
   schema: sharedSchema,
 });
 
-// Experiments collection — projects framed as inquiries
-const experiments = defineCollection({
+// Showcase collection — projects framed as inquiries
+const showcase = defineCollection({
   type: 'content',
   schema: sharedSchema
 });
 
 export const collections = {
-  media,
+  reflections,
   music,
   notes,
-  experiments,
+  showcase,
 };

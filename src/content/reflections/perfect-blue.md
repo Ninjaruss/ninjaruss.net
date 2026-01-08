@@ -1,6 +1,6 @@
 ---
 title: "Perfect Blue"
-media_type: film
+reflections_type: film
 tags: ["disorienting", "prescient", "uncomfortable"]
 status: completed
 ---

@@ -324,7 +324,7 @@ const hasInitialContent = Astro.slots.has('detail');
     max-width: none;
   }
 
-  /* Inline media in markdown prose - consistent sizing */
+  /* Inline reflections in markdown prose - consistent sizing */
   .split-view__content .prose img,
   .split-view__content .prose video {
     display: block;
@@ -465,7 +465,7 @@ const hasInitialContent = Astro.slots.has('detail');
   }
 
   /* Mobile: Stack layout */
-  @media (max-width: 900px) {
+  @reflections (max-width: 900px) {
     .split-view {
       grid-template-columns: 1fr;
       min-height: auto;
@@ -500,7 +500,7 @@ const hasInitialContent = Astro.slots.has('detail');
      Section-specific styles (available for client-side nav)
      ========================================== */
 
-  /* Entry details (media type, mood, etc.) */
+  /* Entry details (reflections type, mood, etc.) */
   .split-view__content .entry__details {
     display: flex;
     flex-wrap: wrap;
@@ -521,7 +521,7 @@ const hasInitialContent = Astro.slots.has('detail');
     color: var(--color-text);
   }
 
-  /* Experiments: Inquiry frame */
+  /* Showcase: Inquiry frame */
   .split-view__content .inquiry-frame {
     margin-bottom: var(--space-2xl);
     padding: var(--space-lg);

@@ -3,20 +3,20 @@ import { getCollection } from 'astro:content';
 import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
 
-const allMedia = await getCollection('media', ({ data }) => !data.draft);
+const allMedia = await getCollection('reflections', ({ data }) => !data.draft);
 const sortedMedia = allMedia.sort((a, b) => a.data.title.localeCompare(b.data.title));
 ---
 
 <SplitViewLayout
-  title="Media"
+  title="Reflections"
   description="Notes on anime, manga, and films."
-  section="media"
+  section="reflections"
 >
   <Fragment slot="list">
     {sortedMedia.length > 0 ? (
       sortedMedia.map((entry) => (
         <ListItem
-          href={`/media/${entry.slug}`}
+          href={`/reflections/${entry.slug}`}
           slug={entry.slug}
           title={entry.data.title}
           status={entry.data.status}
@@ -24,7 +24,7 @@ const sortedMedia = allMedia.sort((a, b) => a.data.title.localeCompare(b.data.ti
         />
       ))
     ) : (
-      <p class="empty-state">No media notes yet.</p>
+      <p class="empty-state">No reflections notes yet.</p>
     )}
   </Fragment>
 </SplitViewLayout>

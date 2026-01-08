@@ -7,7 +7,7 @@ import TagList from '../../components/TagList.astro';
 import DateDisplay from '../../components/DateDisplay.astro';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('media');
+  const entries = await getCollection('reflections');
   return entries.map((entry) => ({
     params: { slug: entry.slug },
     props: { entry },
@@ -17,30 +17,30 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
-// Get all media for the list
-const allMedia = await getCollection('media', ({ data }) => !data.draft);
+// Get all reflections for the list
+const allMedia = await getCollection('reflections', ({ data }) => !data.draft);
 const sortedMedia = allMedia.sort((a, b) => a.data.title.localeCompare(b.data.title));
 
 const meta: Record<string, string> = {};
-if (entry.data.media_type) {
-  meta['Type'] = entry.data.media_type.charAt(0).toUpperCase() + entry.data.media_type.slice(1);
+if (entry.data.reflections_type) {
+  meta['Type'] = entry.data.reflections_type.charAt(0).toUpperCase() + entry.data.reflections_type.slice(1);
 }
 ---
 
 <SplitViewLayout
-  title="Media"
+  title="Reflections"
   description="Notes on anime, manga, and films."
-  section="media"
+  section="reflections"
   initialSlug={entry.slug}
 >
   <Fragment slot="list">
-    {sortedMedia.map((mediaEntry) => (
+    {sortedMedia.map((reflectionsEntry) => (
       <ListItem
-        href={`/media/${mediaEntry.slug}`}
-        slug={mediaEntry.slug}
-        title={mediaEntry.data.title}
-        status={mediaEntry.data.status}
-        tags={mediaEntry.data.tags}
+        href={`/reflections/${reflectionsEntry.slug}`}
+        slug={reflectionsEntry.slug}
+        title={reflectionsEntry.data.title}
+        status={reflectionsEntry.data.status}
+        tags={reflectionsEntry.data.tags}
       />
     ))}
   </Fragment>
