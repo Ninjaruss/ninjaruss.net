@@ -4,7 +4,8 @@ import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import TagList from '../../components/TagList.astro';
-import DateDisplay from '../../components/DateDisplay.astro';
+import fs from 'node:fs';
+import path from 'node:path';
 
 export async function getStaticPaths() {
   const entries = await getCollection('music');
@@ -25,6 +26,29 @@ const meta: Record<string, string> = {};
 if (entry.data.mood) {
   meta['Mood'] = entry.data.mood;
 }
+
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+};
+
+// Hybrid date approach: manual override or file mtime
+const getUpdatedDate = () => {
+  if (entry.data.updatedAt) return entry.data.updatedAt;
+
+  try {
+    const filePath = path.join(process.cwd(), 'src', 'content', 'music', `${entry.id}`);
+    const stats = fs.statSync(filePath);
+    return stats.mtime;
+  } catch {
+    return undefined;
+  }
+};
+
+const updatedAt = getUpdatedDate();
 ---
 
 <SplitViewLayout
@@ -51,9 +75,24 @@ if (entry.data.mood) {
         <header class="entry__header">
           <h1 class="entry__title">{entry.data.title}</h1>
           <div class="entry__meta">
-            <StatusBadge status={entry.data.status} size="md" />
-            <TagList tags={entry.data.tags} size="md" />
-            <DateDisplay date={entry.data.publishedAt} updatedAt={entry.data.updatedAt} size="md" />
+            <div class="entry__meta-row">
+              <StatusBadge status={entry.data.status} size="md" />
+              <TagList tags={entry.data.tags} size="md" />
+            </div>
+            <div class="entry__meta-dates">
+              {entry.data.publishedAt && (
+                <div class="meta-date-item">
+                  <span class="meta-date-label">Created</span>
+                  <span class="meta-date-value">{formatDate(entry.data.publishedAt)}</span>
+                </div>
+              )}
+              {updatedAt && entry.data.publishedAt && updatedAt > entry.data.publishedAt && (
+                <div class="meta-date-item">
+                  <span class="meta-date-label">Last Edited</span>
+                  <span class="meta-date-value">{formatDate(updatedAt)}</span>
+                </div>
+              )}
+            </div>
           </div>
           {meta && Object.keys(meta).length > 0 && (
             <dl class="entry__details">
