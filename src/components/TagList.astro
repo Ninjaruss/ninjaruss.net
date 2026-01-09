@@ -14,31 +14,3 @@ const { tags, size = 'sm' } = Astro.props;
     ))}
   </div>
 )}
-
-<style>
-  .tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-xs);
-  }
-
-  .tag-list--sm .tag {
-    font-size: var(--text-xs);
-    padding: var(--space-xs) var(--space-sm);
-  }
-
-  .tag-list--md .tag {
-    font-size: var(--text-sm);
-    padding: var(--space-xs) var(--space-md);
-  }
-
-  .tag {
-    font-family: var(--font-body);
-    font-weight: 500;
-    background: var(--color-bg-surface);
-    border: var(--border-thin) solid var(--color-border-strong);
-    border-radius: var(--radius-pill);
-    color: var(--color-text-muted);
-    /* No hover state - tags are not interactive */
-  }
-</style>
