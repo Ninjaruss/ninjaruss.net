@@ -19,7 +19,6 @@ const sortedMusic = allMusic.sort((a, b) => a.data.title.localeCompare(b.data.ti
           href={`/music/${entry.slug}`}
           slug={entry.slug}
           title={entry.data.title}
-          status={entry.data.status}
           tags={entry.data.tags}
         />
       ))

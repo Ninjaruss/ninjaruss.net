@@ -1,17 +1,14 @@
 ---
-import StatusBadge from './StatusBadge.astro';
-
 interface Props {
   href: string;
   slug: string;
   title: string;
   subtitle?: string;
-  status?: 'completed' | 'ongoing' | 'unresolved';
   meta?: string;
   tags?: string[];
 }
 
-const { href, slug, title, subtitle, status, meta, tags = [] } = Astro.props;
+const { href, slug, title, subtitle, meta, tags = [] } = Astro.props;
 ---
 
 <a href={href} class="list-item" data-slug={slug} data-tags={tags.join(',')} role="listitem">
@@ -20,7 +17,6 @@ const { href, slug, title, subtitle, status, meta, tags = [] } = Astro.props;
     {subtitle && <span class="list-item__subtitle">{subtitle}</span>}
   </div>
   <div class="list-item__meta">
-    {status && <StatusBadge status={status} size="sm" />}
     {meta && <span class="list-item__meta-text">{meta}</span>}
   </div>
   <span class="list-item__arrow">→</span>

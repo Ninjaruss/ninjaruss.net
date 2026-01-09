@@ -1,7 +1,6 @@
 ---
 title: "Marie - Video Essay"
 tags: ["video"]
-status: completed
 publishedAt: 2025-01-09
 ---
 

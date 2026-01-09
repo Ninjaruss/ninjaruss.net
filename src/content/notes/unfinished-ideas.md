@@ -1,7 +1,6 @@
 ---
 title: "Various Ideas"
 tags: ["creative"]
-status: unresolved
 ---
 
 ## Here are various ideas I have been playing around with in my mind

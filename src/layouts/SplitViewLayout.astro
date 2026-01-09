@@ -58,10 +58,6 @@ const hasInitialContent = Astro.slots.has('detail');
     <!-- Right Panel: Detail -->
     <main class="split-view__detail">
       <div class="split-view__detail-inner">
-        <button class="split-view__back" type="button" aria-label="Back to list">
-          <span class="split-view__back-arrow">←</span>
-          <span class="split-view__back-text">Back to list</span>
-        </button>
         <div class="split-view__placeholder">
           <div class="split-view__placeholder-content">
             <span class="split-view__placeholder-icon">→</span>
@@ -493,37 +489,6 @@ const hasInitialContent = Astro.slots.has('detail');
     display: none;
   }
 
-  /* Back button (mobile only) */
-  .split-view__back {
-    display: none;
-    align-items: center;
-    gap: var(--space-sm);
-    background: var(--color-black);
-    color: var(--color-gold);
-    border: none;
-    padding: var(--space-sm) var(--space-md);
-    font-family: var(--font-display);
-    font-size: var(--text-sm);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    margin-bottom: var(--space-lg);
-    transition: background-color var(--transition-fast);
-  }
-
-  .split-view__back:hover {
-    background: var(--color-bg-surface);
-  }
-
-  .split-view__back-arrow {
-    font-size: var(--text-lg);
-  }
-
-  .split-view.has-selection .split-view__back {
-    display: inline-flex;
-  }
-
   /* Mobile: Stack layout */
   @media (max-width: 900px) {
     .split-view {
@@ -701,41 +666,6 @@ const hasInitialContent = Astro.slots.has('detail');
     color: var(--color-text-muted);
   }
 
-  /* StatusBadge component */
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    font-family: var(--font-display);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
-    border-radius: var(--radius-sm);
-  }
-
-  .status-badge--sm {
-    font-size: var(--text-xs);
-    padding: var(--space-xs) var(--space-sm);
-  }
-
-  .status-badge--md {
-    font-size: var(--text-sm);
-    padding: var(--space-xs) var(--space-md);
-  }
-
-  .status-badge--completed {
-    background: #16a34a;
-    color: var(--color-white);
-  }
-
-  .status-badge--ongoing {
-    background: var(--color-ongoing);
-    color: var(--color-black);
-  }
-
-  .status-badge--unresolved {
-    background: #6b7280;
-    color: var(--color-white);
-  }
-
   /* DateDisplay component */
   .date-display {
     display: inline-flex;
@@ -784,7 +714,6 @@ const hasInitialContent = Astro.slots.has('detail');
     const tagsClear = splitView.querySelector('.split-view__tags-clear') as HTMLElement | null;
     const tagsFilter = splitView.querySelector('.split-view__tags-filter') as HTMLElement | null;
     const noResults = splitView.querySelector('.split-view__no-results') as HTMLElement | null;
-    const backButton = splitView.querySelector('.split-view__back') as HTMLButtonElement | null;
     const contentArea = splitView.querySelector('.split-view__content') as HTMLElement | null;
     const listItems = Array.from(splitView.querySelectorAll('.list-item')) as HTMLElement[];
 
@@ -1024,16 +953,6 @@ const hasInitialContent = Astro.slots.has('detail');
         const slug = item.dataset.slug;
         if (slug) await loadContent(slug);
       });
-    });
-
-    // Back button
-    backButton?.addEventListener('click', () => {
-      splitView.classList.remove('has-selection');
-      contentArea.classList.remove('is-active');
-      contentArea.innerHTML = '';
-      listItems.forEach((i) => i.classList.remove('is-active'));
-      history.pushState(null, '', `/${section}/`);
-      currentSlug = null;
     });
 
     // Browser back/forward (attach once per section)
