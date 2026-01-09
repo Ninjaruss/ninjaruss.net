@@ -244,7 +244,7 @@ code, .mono {
 }
 
 /* Responsive Typography */
-@reflections (max-width: 768px) {
+@media (max-width: 768px) {
   :root {
     --text-5xl: 2.5rem;
     --text-4xl: 2rem;

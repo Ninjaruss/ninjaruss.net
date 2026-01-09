@@ -194,7 +194,7 @@ import BentoTile from '../components/BentoTile.astro';
     transform: scale(1.1);
   }
 
-  @reflections (max-width: 768px) {
+  @media (max-width: 768px) {
     .title-tile {
       grid-column: span 2;
       padding: var(--space-lg);
@@ -215,7 +215,7 @@ import BentoTile from '../components/BentoTile.astro';
     }
   }
 
-  @reflections (max-width: 480px) {
+  @media (max-width: 480px) {
     .title-tile {
       grid-column: span 1;
     }

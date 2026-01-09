@@ -1,10 +1,7 @@
-# TODO
-- Add meta data that indicates last time markdown was edited
-- Fix styling for of tags and update positioning/margins betwen titles/status/tags/content
-- Add an archive for old "now" posts; update date based on change?
-- Fix tag filtering and search
-- Fix dynamic sizing for the bento grid
+# Changelog
 
+## 2026-01-09
 
-## Changes
-### 2026-01-08
+### Fixed
+- Fixed search and tag filters not working in SplitViewLayout due to CSS specificity issue. Scoped styles from ListItem component were overriding the `.is-filtered` display rule. Added `!important` to ensure filtered items are properly hidden.
+- Fixed tags button not working after page refresh. Added initialization guard to prevent duplicate event listeners from being attached when `initSplitView()` runs multiple times (once immediately and once on `astro:page-load`).
