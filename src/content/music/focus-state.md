@@ -2,7 +2,6 @@
 title: "Focus State"
 mood: "productive"
 tags: ["minimal", "steady", "ambient"]
-status: unresolved
 tracks:
   - title: "Avril 14th"
     artist: "Aphex Twin"

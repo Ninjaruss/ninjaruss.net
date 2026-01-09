@@ -1,7 +1,6 @@
 ---
 title: "On Taste"
 tags: ["identity", "creative", "uncertain"]
-status: ongoing
 ---
 
 Taste is the thing that makes you love what you love and hate what you hate, and you can't fully explain either. It's accumulated exposure plus something ineffable.

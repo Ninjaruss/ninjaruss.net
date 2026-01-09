@@ -5,7 +5,6 @@ const sharedSchema = z.object({
   title: z.string(),
   tags: z.array(z.string()).default([]),
   collections: z.array(z.string()).default([]),
-  status: z.enum(['completed', 'ongoing', 'unresolved']).default('unresolved'),
   publishedAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   draft: z.boolean().default(false),

@@ -1,7 +1,21 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 import BentoTile from '../components/BentoTile.astro';
+
+// Query all content collections for items with publishedAt dates
+const notes = await getCollection('notes', ({ data }) => !data.draft && data.publishedAt);
+const reflections = await getCollection('reflections', ({ data }) => !data.draft && data.publishedAt);
+const showcase = await getCollection('showcase', ({ data }) => !data.draft && data.publishedAt);
+const music = await getCollection('music', ({ data }) => !data.draft && data.publishedAt);
+
+// Find the most recently published content
+const allContent = [...notes, ...reflections, ...showcase, ...music];
+const mostRecent = allContent
+  .sort((a, b) => new Date(b.data.publishedAt!).getTime() - new Date(a.data.publishedAt!).getTime())[0];
+
+const recentHref = mostRecent ? `/${mostRecent.collection}/${mostRecent.slug}` : undefined;
 ---
 
 <BaseLayout title="Home" description="Fragments, reflections, and showcase.">
@@ -68,7 +82,18 @@ import BentoTile from '../components/BentoTile.astro';
         label="Now"
         title="Current Focus"
       />
-      
+
+      {mostRecent && (
+        <BentoTile
+          href={recentHref}
+          size="small"
+          variant="dark"
+          accent
+          label="Latest"
+          title={mostRecent.data.title}
+        />
+      )}
+
       <!-- Hero Image Tile 2 -->
       <div class="image-tile image-tile--youtube p3r-animate" style="--stagger-delay: 100ms;">
         <a href="https://www.youtube.com/@kaima-mask" target="_blank" rel="noopener noreferrer">

@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
-import StatusBadge from '../../components/StatusBadge.astro';
 import TagList from '../../components/TagList.astro';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -63,7 +62,6 @@ const updatedAt = getUpdatedDate();
         href={`/music/${musicEntry.slug}`}
         slug={musicEntry.slug}
         title={musicEntry.data.title}
-        status={musicEntry.data.status}
         tags={musicEntry.data.tags}
       />
     ))}
@@ -76,7 +74,6 @@ const updatedAt = getUpdatedDate();
           <h1 class="entry__title">{entry.data.title}</h1>
           <div class="entry__meta">
             <div class="entry__meta-row">
-              <StatusBadge status={entry.data.status} size="md" />
               <TagList tags={entry.data.tags} size="md" />
             </div>
             <div class="entry__meta-dates">

@@ -1,7 +1,6 @@
 ---
 title: "This Website"
 tags: ["web dev"]
-status: completed
 publishedAt: 2025-01-09
 ---
 
