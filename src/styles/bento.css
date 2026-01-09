@@ -252,7 +252,7 @@
 }
 
 /* Responsive Bento */
-@reflections (max-width: 1024px) {
+@media (max-width: 1024px) {
   .bento-grid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -262,7 +262,7 @@
   }
 }
 
-@reflections (max-width: 768px) {
+@media (max-width: 768px) {
   .bento-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-md);
@@ -290,7 +290,7 @@
   }
 }
 
-@reflections (max-width: 480px) {
+@media (max-width: 480px) {
   .bento-grid {
     grid-template-columns: 1fr;
   }

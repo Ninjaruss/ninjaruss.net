@@ -44,6 +44,9 @@ const lastUpdated = new Date().toLocaleDateString('en-US', {
         <p class="now__note">
           surely future me will figure it out soon
         </p>
+        <a href="/now/archive" class="now__archive-link">
+          View past "now" entries &rarr;
+        </a>
       </footer>
     </article>
   </div>
@@ -116,5 +119,22 @@ const lastUpdated = new Date().toLocaleDateString('en-US', {
 
   .now__note a:hover {
     color: var(--color-gold-deep);
+  }
+
+  .now__archive-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-top: var(--space-lg);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-gold);
+    transition: color var(--transition-fast);
+  }
+
+  .now__archive-link:hover {
+    color: var(--color-gold-orange);
   }
 </style>

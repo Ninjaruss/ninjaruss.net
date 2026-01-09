@@ -1,0 +1,144 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NavPill from '../../components/NavPill.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('now');
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
+---
+
+<BaseLayout title={`Now - ${entry.data.title}`} description="Past snapshot of what I was focused on.">
+  <NavPill />
+  <div class="container">
+    <article class="now">
+      <header class="now__header">
+        <div class="now__label">Archive</div>
+        <h1 class="now__title">{entry.data.title}</h1>
+        <p class="now__updated">{formatDate(entry.data.publishedAt)}</p>
+        <nav class="now__nav">
+          <a href="/now" class="now__nav-link">
+            <span class="now__nav-arrow">&larr;</span>
+            Current
+          </a>
+          <a href="/now/archive" class="now__nav-link">
+            All Archives
+            <span class="now__nav-arrow">&rarr;</span>
+          </a>
+        </nav>
+      </header>
+
+      <div class="now__content prose">
+        <Content />
+      </div>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .now {
+    max-width: 60ch;
+    margin: 0 auto;
+    padding-bottom: 80px;
+  }
+
+  .now__header {
+    margin-bottom: var(--space-2xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: var(--border-thick) solid var(--color-gold-dim);
+  }
+
+  .now__label {
+    display: inline-block;
+    background: var(--color-bg-elevated);
+    color: var(--color-text-muted);
+    padding: var(--space-xs) var(--space-sm);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    border-radius: var(--radius-sm);
+    border: var(--border-thin) solid var(--color-border);
+    margin-bottom: var(--space-md);
+  }
+
+  .now__title {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
+  }
+
+  .now__updated {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    background: var(--color-black);
+    color: var(--color-gold);
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-lg);
+  }
+
+  .now__nav {
+    display: flex;
+    gap: var(--space-lg);
+  }
+
+  .now__nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-gold);
+    transition: color var(--transition-fast);
+  }
+
+  .now__nav-link:hover {
+    color: var(--color-gold-orange);
+  }
+
+  .now__nav-arrow {
+    transition: transform var(--transition-fast);
+  }
+
+  .now__nav-link:first-child:hover .now__nav-arrow {
+    transform: translateX(-4px);
+  }
+
+  .now__nav-link:last-child:hover .now__nav-arrow {
+    transform: translateX(4px);
+  }
+
+  .now__content {
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+  }
+
+  .now__content p {
+    margin-bottom: var(--space-lg);
+  }
+
+  .now__content p:last-child {
+    margin-bottom: 0;
+  }
+</style>

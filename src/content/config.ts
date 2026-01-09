@@ -44,9 +44,21 @@ const showcase = defineCollection({
   schema: sharedSchema
 });
 
+// Now collection — archived "now" snapshots
+const now = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string().default('Now'),
+    publishedAt: z.coerce.date(),
+    updatedAt: z.coerce.date().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
 export const collections = {
   reflections,
   music,
   notes,
   showcase,
+  now,
 };

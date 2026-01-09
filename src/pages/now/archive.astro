@@ -1,0 +1,145 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NavPill from '../../components/NavPill.astro';
+
+const allNowPosts = await getCollection('now', ({ data }) => !data.draft);
+const sortedPosts = allNowPosts.sort((a, b) =>
+  b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
+);
+
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+  });
+};
+---
+
+<BaseLayout title="Now Archive" description="Past snapshots of what I was focused on.">
+  <NavPill />
+  <div class="container">
+    <article class="now-archive">
+      <header class="now-archive__header">
+        <h1 class="now-archive__title">Now Archive</h1>
+        <p class="now-archive__description">Past snapshots of what I was focused on.</p>
+        <a href="/now" class="now-archive__back">
+          <span class="now-archive__back-arrow">&larr;</span>
+          Back to current
+        </a>
+      </header>
+
+      <div class="now-archive__list">
+        {sortedPosts.length > 0 ? (
+          sortedPosts.map((post) => (
+            <a href={`/now/${post.slug}`} class="now-archive__item">
+              <span class="now-archive__item-title">{post.data.title}</span>
+              <span class="now-archive__item-date">{formatDate(post.data.publishedAt)}</span>
+            </a>
+          ))
+        ) : (
+          <p class="now-archive__empty">No archived entries yet.</p>
+        )}
+      </div>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .now-archive {
+    max-width: 60ch;
+    margin: 0 auto;
+    padding-bottom: 80px;
+  }
+
+  .now-archive__header {
+    margin-bottom: var(--space-2xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: var(--border-thick) solid var(--color-gold-dim);
+  }
+
+  .now-archive__title {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    color: var(--color-gold);
+    margin-bottom: var(--space-sm);
+    text-shadow:
+      0 0 30px rgba(255, 229, 44, 0.4),
+      0 0 60px rgba(255, 229, 44, 0.2);
+  }
+
+  .now-archive__description {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-lg);
+  }
+
+  .now-archive__back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-gold);
+    transition: color var(--transition-fast);
+  }
+
+  .now-archive__back:hover {
+    color: var(--color-gold-orange);
+  }
+
+  .now-archive__back-arrow {
+    transition: transform var(--transition-fast);
+  }
+
+  .now-archive__back:hover .now-archive__back-arrow {
+    transform: translateX(-4px);
+  }
+
+  .now-archive__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .now-archive__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-bg-elevated);
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition:
+      border-color var(--transition-fast),
+      background-color var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .now-archive__item:hover {
+    border-color: var(--color-gold-dim);
+    background: var(--color-bg-surface);
+    transform: translateX(4px);
+  }
+
+  .now-archive__item-title {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--color-text);
+  }
+
+  .now-archive__item-date {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .now-archive__empty {
+    color: var(--color-text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: var(--space-xl);
+  }
+</style>

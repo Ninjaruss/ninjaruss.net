@@ -20,7 +20,6 @@ const hasInitialContent = Astro.slots.has('detail');
     class:list={['split-view', { 'has-selection': hasInitialContent }]}
     data-section={section}
     data-initial-slug={initialSlug}
-    transition:persist={`split-view-${section}`}
   >
     <!-- Left Panel: List -->
     <aside class="split-view__list">
@@ -298,7 +297,7 @@ const hasInitialContent = Astro.slots.has('detail');
 
   /* Hide list items when filtered out */
   .list-item.is-filtered {
-    display: none;
+    display: none !important;
   }
 
   /* Right Panel */
@@ -362,10 +361,34 @@ const hasInitialContent = Astro.slots.has('detail');
   .split-view__content .entry__header {
     margin-bottom: var(--space-2xl);
     padding-bottom: var(--space-lg);
+    border-bottom: var(--border-thin) solid var(--color-border);
   }
 
   .split-view__content .entry__title {
     font-size: var(--text-2xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .split-view__content .entry__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    padding-top: var(--space-md);
+    border-top: var(--border-hairline) solid var(--color-border);
+  }
+
+  .split-view__content .entry__meta > * {
+    flex-shrink: 0;
+  }
+
+  /* Add separator dots between meta items */
+  .split-view__content .entry__meta .tag-list {
+    margin-left: var(--space-xs);
+  }
+
+  .split-view__content .entry__meta .date-display {
+    margin-left: auto;
   }
 
   .split-view__placeholder {
@@ -465,7 +488,7 @@ const hasInitialContent = Astro.slots.has('detail');
   }
 
   /* Mobile: Stack layout */
-  @reflections (max-width: 900px) {
+  @media (max-width: 900px) {
     .split-view {
       grid-template-columns: 1fr;
       min-height: auto;
@@ -613,80 +636,171 @@ const hasInitialContent = Astro.slots.has('detail');
 </style>
 
 <script>
-  // Initialize search and tag filter functionality
-  function initFilterSystem(splitView: HTMLElement) {
-    const searchInput = splitView.querySelector('.split-view__search') as HTMLInputElement;
-    const tagsToggle = splitView.querySelector('.split-view__tags-toggle') as HTMLButtonElement;
-    const tagsDropdown = splitView.querySelector('.split-view__tags-dropdown') as HTMLElement;
-    const tagsList = splitView.querySelector('.split-view__tags-list') as HTMLElement;
-    const tagsClear = splitView.querySelector('.split-view__tags-clear') as HTMLButtonElement;
-    const noResults = splitView.querySelector('.split-view__no-results') as HTMLElement;
-    const listItems = splitView.querySelectorAll('.list-item') as NodeListOf<HTMLElement>;
+  function initSplitView() {
+    const splitView = document.querySelector('.split-view') as HTMLElement | null;
+    if (!splitView) return;
 
-    if (!searchInput || !tagsToggle || !tagsList) return;
+    // Prevent duplicate initialization
+    if ((splitView as any).__splitViewInitialized) return;
+    (splitView as any).__splitViewInitialized = true;
 
-    // State
-    let selectedTags: Set<string> = new Set();
-    let searchQuery = '';
+    const section = splitView.dataset.section || '';
+    const initialSlug = splitView.dataset.initialSlug;
+    const searchInput = splitView.querySelector('.split-view__search') as HTMLInputElement | null;
+    const tagsList = splitView.querySelector('.split-view__tags-list') as HTMLElement | null;
+    const tagsToggle = splitView.querySelector('.split-view__tags-toggle') as HTMLElement | null;
+    const tagsDropdown = splitView.querySelector('.split-view__tags-dropdown') as HTMLElement | null;
+    const tagsClear = splitView.querySelector('.split-view__tags-clear') as HTMLElement | null;
+    const tagsFilter = splitView.querySelector('.split-view__tags-filter') as HTMLElement | null;
+    const noResults = splitView.querySelector('.split-view__no-results') as HTMLElement | null;
+    const backButton = splitView.querySelector('.split-view__back') as HTMLButtonElement | null;
+    const contentArea = splitView.querySelector('.split-view__content') as HTMLElement | null;
+    const listItems = Array.from(splitView.querySelectorAll('.list-item')) as HTMLElement[];
 
-    // Extract unique tags from all list items
-    const allTags = new Set<string>();
-    listItems.forEach((item) => {
-      const tags = item.dataset.tags?.split(',').filter(Boolean) || [];
-      tags.forEach((tag) => allTags.add(tag));
-    });
-
-    // Populate tags dropdown
-    const sortedTags = Array.from(allTags).sort();
-    tagsList.innerHTML = sortedTags
-      .map((tag) => `<button class="split-view__tag-pill" type="button" data-tag="${tag}">${tag}</button>`)
-      .join('');
-
-    // Hide tags filter if no tags exist
-    if (sortedTags.length === 0) {
-      const tagsFilter = splitView.querySelector('.split-view__tags-filter') as HTMLElement;
-      if (tagsFilter) tagsFilter.style.display = 'none';
+    if (!searchInput || !tagsList || !tagsToggle || !tagsDropdown || !tagsClear || !tagsFilter || !noResults || !contentArea) {
+      console.error('Split view: missing required elements');
+      return;
     }
 
-    // Filter function
+    let currentSlug: string | null = initialSlug || null;
+
+    // Get filter state from URL
+    function getFiltersFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const search = params.get('search') || '';
+      const tagsParam = params.get('tags') || '';
+      const tags = tagsParam ? new Set(tagsParam.split(',').filter(Boolean)) : new Set<string>();
+      return { search, tags };
+    }
+
+    // Update URL with current filters
+    function updateURL(search: string, tags: Set<string>) {
+      const params = new URLSearchParams(window.location.search);
+
+      if (search) {
+        params.set('search', search);
+      } else {
+        params.delete('search');
+      }
+
+      if (tags.size > 0) {
+        params.set('tags', Array.from(tags).sort().join(','));
+      } else {
+        params.delete('tags');
+      }
+
+      const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+      history.replaceState(null, '', newURL);
+    }
+
+    // Populate tags dropdown and restore selected state
+    function populateTags(selectedTags: Set<string>) {
+      const allTags = new Set<string>();
+      listItems.forEach((item) => {
+        const tags = item.dataset.tags?.split(',').filter(Boolean) || [];
+        tags.forEach((tag) => allTags.add(tag));
+      });
+
+      const sortedTags = Array.from(allTags).sort();
+      tagsList!.innerHTML = sortedTags
+        .map((tag) => {
+          const isSelected = selectedTags.has(tag);
+          return `<button class="split-view__tag-pill ${isSelected ? 'is-selected' : ''}" type="button" data-tag="${tag}">${tag}</button>`;
+        })
+        .join('');
+
+      tagsFilter!.style.display = sortedTags.length === 0 ? 'none' : '';
+      tagsToggle!.classList.toggle('has-selection', selectedTags.size > 0);
+    }
+
+    // Apply filters based on current URL params
     function applyFilters() {
-      const query = searchQuery.toLowerCase().trim();
+      const { search, tags } = getFiltersFromURL();
+      const query = search.toLowerCase().trim();
       let visibleCount = 0;
 
       listItems.forEach((item) => {
         const title = item.querySelector('.list-item__title')?.textContent?.toLowerCase() || '';
         const itemTags = item.dataset.tags?.split(',').filter(Boolean) || [];
 
-        // Check search match
         const matchesSearch = !query || title.includes(query);
-
-        // Check tag match (any selected tag matches)
-        const matchesTags = selectedTags.size === 0 || itemTags.some((tag) => selectedTags.has(tag));
+        const matchesTags = tags.size === 0 || itemTags.some((tag) => tags.has(tag));
 
         const isVisible = matchesSearch && matchesTags;
         item.classList.toggle('is-filtered', !isVisible);
-
         if (isVisible) visibleCount++;
       });
 
-      // Show/hide no results message
-      noResults.hidden = visibleCount > 0;
+      noResults!.hidden = visibleCount > 0;
     }
 
-    // Search input handler
+    // Load detail content
+    async function loadContent(slug: string) {
+      if (!splitView || !contentArea || slug === currentSlug) return;
+
+      listItems.forEach((i) => i.classList.remove('is-active'));
+      const activeItem = splitView.querySelector(`[data-slug="${slug}"]`);
+      activeItem?.classList.add('is-active');
+
+      splitView.classList.add('has-selection', 'is-loading');
+      contentArea.classList.remove('is-active');
+
+      try {
+        const response = await fetch(`/${section}/${slug}/`);
+        const html = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const entryContent = doc.querySelector('.entry');
+
+        if (entryContent) {
+          contentArea.innerHTML = entryContent.outerHTML;
+          contentArea.classList.add('is-active');
+          history.pushState({ slug }, '', `/${section}/${slug}/`);
+          currentSlug = slug;
+
+          const heading = contentArea.querySelector('h1, h2, .entry__title') as HTMLElement;
+          if (heading) {
+            heading.setAttribute('tabindex', '-1');
+            heading.focus({ preventScroll: true });
+          }
+
+          setTimeout(() => initMediaLightbox(), 50);
+        }
+      } catch (error) {
+        console.error('Failed to load content:', error);
+        window.location.href = `/${section}/${slug}/`;
+      } finally {
+        splitView.classList.remove('is-loading');
+      }
+    }
+
+    // Initialize - restore state from URL
+    const { search: initialSearch, tags: initialTags } = getFiltersFromURL();
+    searchInput.value = initialSearch;
+    populateTags(initialTags);
+    applyFilters();
+
+    if (initialSlug) {
+      const activeItem = splitView.querySelector(`[data-slug="${initialSlug}"]`);
+      activeItem?.classList.add('is-active');
+    }
+
+    // Search input
     searchInput.addEventListener('input', () => {
-      searchQuery = searchInput.value;
+      const { tags } = getFiltersFromURL();
+      updateURL(searchInput.value, tags);
       applyFilters();
     });
 
-    // Tags toggle handler
-    tagsToggle.addEventListener('click', () => {
+    // Tags toggle
+    tagsToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
       const isExpanded = tagsToggle.getAttribute('aria-expanded') === 'true';
       tagsToggle.setAttribute('aria-expanded', String(!isExpanded));
       tagsDropdown.hidden = isExpanded;
     });
 
-    // Tag pill click handler (event delegation)
+    // Tag pill clicks (event delegation)
     tagsList.addEventListener('click', (e) => {
       const pill = (e.target as HTMLElement).closest('.split-view__tag-pill') as HTMLElement;
       if (!pill) return;
@@ -694,60 +808,175 @@ const hasInitialContent = Astro.slots.has('detail');
       const tag = pill.dataset.tag;
       if (!tag) return;
 
-      if (selectedTags.has(tag)) {
-        selectedTags.delete(tag);
+      const { search, tags } = getFiltersFromURL();
+
+      if (tags.has(tag)) {
+        tags.delete(tag);
         pill.classList.remove('is-selected');
       } else {
-        selectedTags.add(tag);
+        tags.add(tag);
         pill.classList.add('is-selected');
       }
 
-      // Update toggle button state
-      tagsToggle.classList.toggle('has-selection', selectedTags.size > 0);
-
+      tagsToggle.classList.toggle('has-selection', tags.size > 0);
+      updateURL(search, tags);
       applyFilters();
     });
 
-    // Clear all tags
+    // Clear tags
     tagsClear.addEventListener('click', () => {
-      selectedTags.clear();
-      tagsList.querySelectorAll('.split-view__tag-pill').forEach((pill) => {
-        pill.classList.remove('is-selected');
+      const { search } = getFiltersFromURL();
+      updateURL(search, new Set());
+      tagsList.querySelectorAll('.split-view__tag-pill').forEach((p) => {
+        p.classList.remove('is-selected');
       });
       tagsToggle.classList.remove('has-selection');
       applyFilters();
     });
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!tagsToggle.contains(e.target as Node) && !tagsDropdown.contains(e.target as Node)) {
-        tagsToggle.setAttribute('aria-expanded', 'false');
-        tagsDropdown.hidden = true;
-      }
+    // Close dropdown when clicking outside (attach once)
+    if (!(window as any).__splitViewGlobalHandlers) {
+      (window as any).__splitViewGlobalHandlers = true;
+
+      document.addEventListener('click', (e) => {
+        const toggle = document.querySelector('.split-view__tags-toggle') as HTMLElement | null;
+        const dropdown = document.querySelector('.split-view__tags-dropdown') as HTMLElement | null;
+        if (toggle && dropdown && !toggle.contains(e.target as Node) && !dropdown.contains(e.target as Node)) {
+          toggle.setAttribute('aria-expanded', 'false');
+          dropdown.hidden = true;
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        const search = document.querySelector('.split-view__search') as HTMLInputElement | null;
+        const toggle = document.querySelector('.split-view__tags-toggle') as HTMLElement | null;
+        const dropdown = document.querySelector('.split-view__tags-dropdown') as HTMLElement | null;
+
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k' && search) {
+          e.preventDefault();
+          search.focus();
+        }
+
+        if (e.key === 'Escape') {
+          if (search && document.activeElement === search && search.value) {
+            search.value = '';
+            // Update URL and trigger filter
+            const params = new URLSearchParams(window.location.search);
+            params.delete('search');
+            const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+            history.replaceState(null, '', newURL);
+            // Dispatch a custom event to trigger filter update
+            window.dispatchEvent(new Event('filterschanged'));
+          }
+          if (toggle && dropdown) {
+            toggle.setAttribute('aria-expanded', 'false');
+            dropdown.hidden = true;
+          }
+        }
+      });
+
+      // Listen for filter changes to reapply
+      window.addEventListener('filterschanged', () => {
+        const sv = document.querySelector('.split-view');
+        if (sv) {
+          // Trigger reapply on the current split view
+          const event = new CustomEvent('applyfilters');
+          sv.dispatchEvent(event);
+        }
+      });
+    }
+
+    // List item clicks
+    listItems.forEach((item) => {
+      item.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const slug = item.dataset.slug;
+        if (slug) await loadContent(slug);
+      });
     });
 
-    // Keyboard shortcut: Cmd/Ctrl+K to focus search
-    document.addEventListener('keydown', (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        searchInput.focus();
-      }
-      // Escape to clear search and close dropdown
-      if (e.key === 'Escape') {
-        if (document.activeElement === searchInput && searchQuery) {
-          searchInput.value = '';
-          searchQuery = '';
-          applyFilters();
+    // Back button
+    backButton?.addEventListener('click', () => {
+      splitView.classList.remove('has-selection');
+      contentArea.classList.remove('is-active');
+      contentArea.innerHTML = '';
+      listItems.forEach((i) => i.classList.remove('is-active'));
+      history.pushState(null, '', `/${section}/`);
+      currentSlug = null;
+    });
+
+    // Browser back/forward (attach once per section)
+    if (!(window as any)[`__splitViewPopstate_${section}`]) {
+      (window as any)[`__splitViewPopstate_${section}`] = true;
+
+      window.addEventListener('popstate', (e) => {
+        const sv = document.querySelector('.split-view') as HTMLElement | null;
+        if (!sv || sv.dataset.section !== section) return;
+
+        const content = sv.querySelector('.split-view__content') as HTMLElement | null;
+        const items = Array.from(sv.querySelectorAll('.list-item')) as HTMLElement[];
+
+        if (e.state?.slug) {
+          // Find the loadContent function and call it
+          const item = sv.querySelector(`[data-slug="${e.state.slug}"]`) as HTMLElement;
+          item?.click();
+        } else {
+          sv.classList.remove('has-selection');
+          if (content) {
+            content.classList.remove('is-active');
+            content.innerHTML = '';
+          }
+          items.forEach((i) => i.classList.remove('is-active'));
         }
-        tagsToggle.setAttribute('aria-expanded', 'false');
-        tagsDropdown.hidden = true;
+      });
+    }
+
+    // Listen for custom filter apply event
+    splitView.addEventListener('applyfilters', () => {
+      applyFilters();
+    });
+
+    // Keyboard navigation
+    const nav = splitView.querySelector('.split-view__nav') as HTMLElement;
+    nav?.addEventListener('keydown', (e: KeyboardEvent) => {
+      const visibleItems = listItems.filter((item) => !item.classList.contains('is-filtered'));
+      if (visibleItems.length === 0) return;
+
+      const activeItem = visibleItems.find((item) => item === document.activeElement || item.classList.contains('is-active'));
+      const currentIndex = activeItem ? visibleItems.indexOf(activeItem) : -1;
+
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          const nextIndex = currentIndex < visibleItems.length - 1 ? currentIndex + 1 : 0;
+          visibleItems[nextIndex].focus();
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          const prevIndex = currentIndex > 0 ? currentIndex - 1 : visibleItems.length - 1;
+          visibleItems[prevIndex].focus();
+          break;
+        case 'Enter':
+        case ' ':
+          if (document.activeElement?.classList.contains('list-item')) {
+            e.preventDefault();
+            (document.activeElement as HTMLElement).click();
+          }
+          break;
+        case 'Home':
+          e.preventDefault();
+          visibleItems[0]?.focus();
+          break;
+        case 'End':
+          e.preventDefault();
+          visibleItems[visibleItems.length - 1]?.focus();
+          break;
       }
     });
   }
 
-  // Initialize click handlers for lightbox on all images
+  // Initialize lightbox for images/videos - called after content loads
   function initMediaLightbox() {
-    // Inline images in prose content
     const proseImages = document.querySelectorAll('.split-view__content .prose img');
     proseImages.forEach((img) => {
       if ((img as HTMLElement).dataset.lightboxInit === 'true') return;
@@ -762,7 +991,6 @@ const hasInitialContent = Astro.slots.has('detail');
       });
     });
 
-    // Inline videos in prose content
     const proseVideos = document.querySelectorAll('.split-view__content .prose video');
     proseVideos.forEach((video) => {
       if ((video as HTMLElement).dataset.lightboxInit === 'true') return;
@@ -778,169 +1006,19 @@ const hasInitialContent = Astro.slots.has('detail');
     });
   }
 
+  // Run on page load
   document.addEventListener('astro:page-load', () => {
-    const splitView = document.querySelector('.split-view') as HTMLElement;
-    if (!splitView) return;
-
-    // Skip if already initialized (for persisted elements)
-    if (splitView.dataset.initialized === 'true') return;
-    splitView.dataset.initialized = 'true';
-
-    const listItems = splitView.querySelectorAll('.list-item');
-    const contentArea = splitView.querySelector('.split-view__content') as HTMLElement;
-    const backButton = splitView.querySelector('.split-view__back') as HTMLButtonElement;
-    const section = splitView.dataset.section;
-    const initialSlug = splitView.dataset.initialSlug;
-
-    let currentSlug: string | null = initialSlug || null;
-
-    // Initialize lightbox handlers for pre-rendered content
+    initSplitView();
     initMediaLightbox();
-
-    // Initialize search and tag filter
-    initFilterSystem(splitView);
-
-    // If there's pre-rendered content, mark the corresponding list item as active
-    if (initialSlug) {
-      const activeItem = splitView.querySelector(`[data-slug="${initialSlug}"]`);
-      if (activeItem) {
-        activeItem.classList.add('is-active');
-      }
-    }
-
-    // Back button handler
-    backButton?.addEventListener('click', () => {
-      splitView.classList.remove('has-selection');
-      contentArea.classList.remove('is-active');
-      contentArea.innerHTML = '';
-      listItems.forEach(i => i.classList.remove('is-active'));
-      window.location.href = `/${section}/`;
-      currentSlug = null;
-    });
-
-    listItems.forEach((item) => {
-      item.addEventListener('click', async (e) => {
-        e.preventDefault();
-
-        const link = item as HTMLAnchorElement;
-        const slug = link.dataset.slug;
-
-        if (!slug || slug === currentSlug) return;
-
-        // Update active state
-        listItems.forEach(i => i.classList.remove('is-active'));
-        item.classList.add('is-active');
-
-        // Show loading state
-        splitView.classList.add('has-selection', 'is-loading');
-        contentArea.classList.remove('is-active');
-
-        try {
-          // Fetch the detail page
-          const response = await fetch(`/${section}/${slug}/`);
-          const html = await response.text();
-
-          // Parse and extract content
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, 'text/html');
-          const entryContent = doc.querySelector('.entry');
-
-          if (entryContent) {
-            contentArea.innerHTML = entryContent.outerHTML;
-            contentArea.classList.add('is-active');
-
-            // Update URL without reload
-            history.pushState({ slug }, '', `/${section}/${slug}/`);
-            currentSlug = slug;
-
-            // Focus management: move focus to content for screen readers
-            const heading = contentArea.querySelector('h1, h2, .entry__title') as HTMLElement;
-            if (heading) {
-              heading.setAttribute('tabindex', '-1');
-              heading.focus({ preventScroll: true });
-            }
-
-            // Re-initialize lightbox handlers for new content
-            setTimeout(() => {
-              initMediaLightbox();
-            }, 50);
-          }
-        } catch (error) {
-          console.error('Failed to load content:', error);
-          // Fallback: navigate normally
-          window.location.href = link.href;
-        } finally {
-          splitView.classList.remove('is-loading');
-        }
-      });
-    });
-
-    // Handle browser back/forward
-    window.addEventListener('popstate', (e) => {
-      if (e.state?.slug) {
-        const item = splitView.querySelector(`[data-slug="${e.state.slug}"]`);
-        if (item) {
-          (item as HTMLElement).click();
-        }
-      } else {
-        // Back to list view
-        splitView.classList.remove('has-selection');
-        contentArea.classList.remove('is-active');
-        contentArea.innerHTML = '';
-        listItems.forEach(i => i.classList.remove('is-active'));
-        currentSlug = null;
-      }
-    });
-
-    // Check if we're loading a detail page directly
-    const path = window.location.pathname;
-    const match = path.match(new RegExp(`^/${section}/([^/]+)/?$`));
-    if (match) {
-      const slug = match[1];
-      const item = splitView.querySelector(`[data-slug="${slug}"]`);
-      if (item) {
-        (item as HTMLElement).click();
-      }
-    }
-
-    // Keyboard navigation for list items
-    const nav = splitView.querySelector('.split-view__nav') as HTMLElement;
-    if (nav) {
-      nav.addEventListener('keydown', (e: KeyboardEvent) => {
-        const items = Array.from(nav.querySelectorAll('.list-item:not(.is-filtered)')) as HTMLElement[];
-        if (items.length === 0) return;
-
-        const activeItem = nav.querySelector('.list-item:focus, .list-item.is-active') as HTMLElement;
-        const currentIndex = activeItem ? items.indexOf(activeItem) : -1;
-
-        switch (e.key) {
-          case 'ArrowDown':
-            e.preventDefault();
-            const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
-            items[nextIndex].focus();
-            break;
-          case 'ArrowUp':
-            e.preventDefault();
-            const prevIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
-            items[prevIndex].focus();
-            break;
-          case 'Enter':
-          case ' ':
-            if (document.activeElement?.classList.contains('list-item')) {
-              e.preventDefault();
-              (document.activeElement as HTMLElement).click();
-            }
-            break;
-          case 'Home':
-            e.preventDefault();
-            items[0]?.focus();
-            break;
-          case 'End':
-            e.preventDefault();
-            items[items.length - 1]?.focus();
-            break;
-        }
-      });
-    }
   });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      initSplitView();
+      initMediaLightbox();
+    });
+  } else {
+    initSplitView();
+    initMediaLightbox();
+  }
 </script>
