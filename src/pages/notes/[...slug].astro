@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
 import TagList from '../../components/TagList.astro';
+import RelatedContent from '../../components/RelatedContent.astro';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -21,6 +22,10 @@ const { Content } = await entry.render();
 const allNotes = await getCollection('notes', ({ data }) => !data.draft);
 const sortedNotes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.title));
 
+// Fetch all collections for related content
+const allReflections = await getCollection('reflections', ({ data }) => !data.draft);
+const allShowcase = await getCollection('showcase', ({ data }) => !data.draft);
+
 const formatDate = (date: Date) => {
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -29,6 +34,20 @@ const formatDate = (date: Date) => {
     timeZone: 'UTC',
   });
 };
+
+// Strip markdown syntax for searchable content
+function stripMarkdown(markdown: string): string {
+  return markdown
+    .replace(/```[\s\S]*?```/g, '')           // Remove code blocks
+    .replace(/`[^`]+`/g, '')                  // Remove inline code
+    .replace(/!\[.*?\]\(.*?\)/g, '')          // Remove images
+    .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Remove links, keep text
+    .replace(/^#{1,6}\s+/gm, '')              // Remove headings
+    .replace(/[*_]{1,2}([^*_]+)[*_]{1,2}/g, '$1') // Remove bold/italic
+    .replace(/\s+/g, ' ')                     // Collapse whitespace
+    .trim()
+    .slice(0, 500);                           // Truncate to 500 chars
+}
 
 // Hybrid date approach: manual override or file mtime
 const getUpdatedDate = () => {
@@ -60,6 +79,7 @@ const updatedAt = getUpdatedDate();
         slug={noteEntry.slug}
         title={noteEntry.data.title}
         tags={noteEntry.data.tags}
+        searchableContent={stripMarkdown(noteEntry.body)}
       />
     ))}
   </Fragment>
@@ -96,6 +116,17 @@ const updatedAt = getUpdatedDate();
             <Content />
           </div>
         </div>
+
+        {entry.data.collections.length > 0 && (
+          <RelatedContent
+            currentSlug={entry.slug}
+            currentCollections={entry.data.collections}
+            section="notes"
+            allReflections={allReflections}
+            allNotes={allNotes}
+            allShowcase={allShowcase}
+          />
+        )}
       </div>
     </article>
   </Fragment>

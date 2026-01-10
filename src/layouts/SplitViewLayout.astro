@@ -362,13 +362,28 @@ const hasInitialContent = Astro.slots.has('detail');
     border-radius: var(--radius-md);
     border: var(--border-medium) solid var(--color-border-strong);
     cursor: pointer;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast),
+      transform var(--transition-base);
+    transform-style: preserve-3d;
+    will-change: transform;
   }
 
   .split-view__content .prose img:hover,
   .split-view__content .prose video:hover {
     border-color: var(--color-gold-dim);
-    box-shadow: var(--shadow-hard-sm);
+    box-shadow:
+      var(--shadow-hard-sm),
+      0 0 20px rgba(255, 229, 44, 0.15);
+    transform: perspective(800px) rotateY(2deg) rotateX(-1deg) scale(1.02);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .split-view__content .prose img:hover,
+    .split-view__content .prose video:hover {
+      transform: scale(1.01);
+    }
   }
 
   /* Video-specific styling */
@@ -726,6 +741,31 @@ const hasInitialContent = Astro.slots.has('detail');
   .date-display__updated {
     font-style: italic;
   }
+
+  /* Visual hierarchy improvements: dim sidebar when scrolling */
+  .split-view__list.is-scrolled {
+    opacity: 0.7;
+    transition: opacity 300ms ease-out;
+  }
+
+  /* Visual hierarchy improvements: dim non-active list items when content is selected */
+  .split-view.has-selection .list-item:not(.is-active) {
+    opacity: 0.6;
+    transition: opacity 200ms ease-out;
+  }
+
+  /* Reduce hover effect on non-active items when content is selected */
+  .split-view.has-selection .list-item:not(.is-active):hover {
+    opacity: 0.85;
+    box-shadow:
+      inset 4px 0 0 var(--color-gold),
+      0 0 10px rgba(255, 229, 44, 0.08);
+  }
+
+  /* Ensure active item stays prominent */
+  .split-view.has-selection .list-item.is-active {
+    opacity: 1;
+  }
 </style>
 
 <script>
@@ -748,6 +788,8 @@ const hasInitialContent = Astro.slots.has('detail');
     const noResults = splitView.querySelector('.split-view__no-results') as HTMLElement | null;
     const contentArea = splitView.querySelector('.split-view__content') as HTMLElement | null;
     const listItems = Array.from(splitView.querySelectorAll('.list-item')) as HTMLElement[];
+    const navContainer = splitView.querySelector('.split-view__nav') as HTMLElement | null;
+    const listPanel = splitView.querySelector('.split-view__list') as HTMLElement | null;
 
     if (!searchInput || !tagsList || !tagsToggle || !tagsDropdown || !tagsClear || !tagsFilter || !noResults || !contentArea) {
       console.error('Split view: missing required elements');
@@ -815,8 +857,10 @@ const hasInitialContent = Astro.slots.has('detail');
       listItems.forEach((item) => {
         const title = item.querySelector('.list-item__title')?.textContent?.toLowerCase() || '';
         const itemTags = item.dataset.tags?.split(',').filter(Boolean) || [];
+        const searchContent = item.dataset.searchContent?.toLowerCase() || '';
 
-        const matchesSearch = !query || title.includes(query);
+        // Search in title OR body content
+        const matchesSearch = !query || title.includes(query) || searchContent.includes(query);
         const matchesTags = tags.size === 0 || itemTags.some((tag) => tags.has(tag));
 
         const isVisible = matchesSearch && matchesTags;
@@ -1104,6 +1148,21 @@ const hasInitialContent = Astro.slots.has('detail');
       applyFilters();
     });
 
+    // Scroll detection for visual hierarchy
+    if (navContainer && listPanel) {
+      let scrollTimeout: number | null = null;
+
+      navContainer.addEventListener('scroll', () => {
+        const isScrolled = navContainer.scrollTop > 10;
+
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+
+        scrollTimeout = window.setTimeout(() => {
+          listPanel.classList.toggle('is-scrolled', isScrolled);
+        }, 50);
+      });
+    }
+
     // Keyboard navigation
     const nav = splitView.querySelector('.split-view__nav') as HTMLElement;
     nav?.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -1174,10 +1233,56 @@ const hasInitialContent = Astro.slots.has('detail');
     });
   }
 
+  // Prose image 3D tilt effect
+  function initProseImageTilt() {
+    const proseImages = document.querySelectorAll('.split-view__content .prose img');
+
+    proseImages.forEach((img) => {
+      if ((img as HTMLElement).dataset.tiltInit === 'true') return;
+      (img as HTMLElement).dataset.tiltInit = 'true';
+
+      let rafId: number | null = null;
+
+      function handleMouseMove(e: MouseEvent) {
+        const rect = img.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const mouseX = e.clientX - centerX;
+        const mouseY = e.clientY - centerY;
+
+        // Max 5 degree tilt (subtle)
+        const rotateY = (mouseX / (rect.width / 2)) * 5;
+        const rotateX = -(mouseY / (rect.height / 2)) * 5;
+
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          (img as HTMLElement).style.transform = `
+            perspective(800px)
+            rotateY(${rotateY}deg)
+            rotateX(${rotateX}deg)
+            scale(1.03)
+          `;
+        });
+      }
+
+      function handleMouseLeave() {
+        if (rafId) cancelAnimationFrame(rafId);
+        (img as HTMLElement).style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg) scale(1)';
+      }
+
+      if (window.matchMedia('(hover: hover)').matches) {
+        img.addEventListener('mousemove', handleMouseMove as EventListener);
+        img.addEventListener('mouseleave', handleMouseLeave);
+      }
+    });
+  }
+
   // Run on page load
   document.addEventListener('astro:page-load', () => {
     initSplitView();
     initMediaLightbox();
+    initProseImageTilt();
   });
 
   if (document.readyState === 'loading') {

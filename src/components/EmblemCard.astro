@@ -43,6 +43,7 @@ const cardBack = '/images/ygo-card-backing.png';
     height: 100%;
     transform-style: preserve-3d;
     transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
   }
 
   .emblem-card.is-flipped .emblem-card__flipper {
@@ -63,7 +64,9 @@ const cardBack = '/images/ygo-card-backing.png';
 
   .emblem-card:hover .emblem-card__face {
     border-color: var(--color-gold-dim);
-    box-shadow: var(--shadow-hard);
+    box-shadow:
+      var(--shadow-hard),
+      0 0 25px rgba(255, 229, 44, 0.2);
   }
 
   .emblem-card__back {
@@ -98,6 +101,74 @@ const cardBack = '/images/ygo-card-backing.png';
   @media (prefers-reduced-motion: reduce) {
     .emblem-card__flipper {
       transition: none;
+      transform: rotateY(0deg) !important;
     }
   }
 </style>
+
+<script>
+  function initEmblemTilt() {
+    const emblemCards = document.querySelectorAll('.emblem-card');
+
+    emblemCards.forEach((card) => {
+      const flipper = card.querySelector('.emblem-card__flipper');
+      if (!flipper) return;
+
+      let isHovering = false;
+      let rafId: number | null = null;
+
+      function handleMouseMove(e: MouseEvent) {
+        if (!isHovering) return;
+
+        const rect = card.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const mouseX = e.clientX - centerX;
+        const mouseY = e.clientY - centerY;
+
+        // Max 15 degree tilt
+        const rotateY = (mouseX / (rect.width / 2)) * 15;
+        const rotateX = -(mouseY / (rect.height / 2)) * 15;
+
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          const baseRotation = card.classList.contains('is-flipped') ? 180 : 0;
+          (flipper as HTMLElement).style.transform = `
+            rotateY(${baseRotation + rotateY}deg)
+            rotateX(${rotateX}deg)
+            scale3d(1.03, 1.03, 1.03)
+          `;
+        });
+      }
+
+      function handleMouseEnter() {
+        isHovering = true;
+        (flipper as HTMLElement).style.transition = 'transform 150ms ease-out';
+      }
+
+      function handleMouseLeave() {
+        isHovering = false;
+        if (rafId) cancelAnimationFrame(rafId);
+
+        const baseRotation = card.classList.contains('is-flipped') ? 180 : 0;
+        (flipper as HTMLElement).style.transform = `rotateY(${baseRotation}deg) scale3d(1, 1, 1)`;
+        (flipper as HTMLElement).style.transition = 'transform 600ms cubic-bezier(0.4, 0, 0.2, 1)';
+      }
+
+      // Only on hover-capable devices
+      if (window.matchMedia('(hover: hover)').matches) {
+        card.addEventListener('mouseenter', handleMouseEnter);
+        card.addEventListener('mousemove', handleMouseMove as EventListener);
+        card.addEventListener('mouseleave', handleMouseLeave);
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', initEmblemTilt);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initEmblemTilt);
+  } else {
+    initEmblemTilt();
+  }
+</script>

@@ -6,12 +6,20 @@ interface Props {
   subtitle?: string;
   meta?: string;
   tags?: string[];
+  searchableContent?: string;
 }
 
-const { href, slug, title, subtitle, meta, tags = [] } = Astro.props;
+const { href, slug, title, subtitle, meta, tags = [], searchableContent } = Astro.props;
 ---
 
-<a href={href} class="list-item" data-slug={slug} data-tags={tags.join(',')} role="listitem">
+<a
+  href={href}
+  class="list-item"
+  data-slug={slug}
+  data-tags={tags.join(',')}
+  data-search-content={searchableContent}
+  role="listitem"
+>
   <div class="list-item__content">
     <span class="list-item__title">{title}</span>
     {subtitle && <span class="list-item__subtitle">{subtitle}</span>}
@@ -32,7 +40,8 @@ const { href, slug, title, subtitle, meta, tags = [] } = Astro.props;
     cursor: pointer;
     transition:
       background-color var(--transition-fast),
-      transform var(--transition-fast);
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast);
     text-decoration: none;
     color: inherit;
     position: relative;
@@ -47,15 +56,36 @@ const { href, slug, title, subtitle, meta, tags = [] } = Astro.props;
     width: 4px;
     background: var(--color-gold);
     transform: scaleY(0);
-    transition: transform var(--transition-fast);
+    transition:
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast);
   }
 
   .list-item:hover {
-    background: rgba(255, 229, 44, var(--opacity-subtle));
+    background: linear-gradient(90deg, rgba(255, 229, 44, 0.15) 0%, rgba(255, 229, 44, 0.08) 100%);
+    transform: translateX(4px) scale(1.005);
+    box-shadow:
+      inset 4px 0 0 var(--color-gold),
+      0 0 15px rgba(255, 229, 44, 0.1);
   }
 
   .list-item:hover::before {
     transform: scaleY(1);
+    box-shadow: 0 0 10px var(--color-gold);
+  }
+
+  .list-item:hover .list-item__title {
+    color: var(--color-gold);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .list-item:hover {
+      transform: translateX(2px);
+      box-shadow: inset 4px 0 0 var(--color-gold);
+    }
+    .list-item:hover::before {
+      box-shadow: none;
+    }
   }
 
   .list-item.is-active {

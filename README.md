@@ -6,7 +6,6 @@ Personal website for fragments, reflections, and showcase. Built with Astro, sty
 
 - `/` — Homepage with P4G-inspired bento grid
 - `/reflections` — Notes on anime, manga, films
-- `/music` — Curated song collections
 - `/notes` — Philosophical fragments
 - `/showcase` — Projects framed as inquiries
 - `/now` — Current focus snapshot

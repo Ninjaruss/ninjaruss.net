@@ -4,12 +4,12 @@ This file provides guidance for Claude Code (claude.ai/code) when working with t
 
 ## Project Overview
 
-**ninjaruss.net** is a personal website built with Astro 5, featuring a Persona 4 Golden-inspired dark UI aesthetic. It's a static site for fragments, reflections, and experiments—organized around philosophical notes, reflections consumption logs, curated music collections, and inquiry-driven projects.
+**ninjaruss.net** is a personal website built with Astro 5, featuring a Persona 4 Golden-inspired dark UI aesthetic. It's a static site for fragments, reflections, and experiments—organized around philosophical notes, reflections consumption logs, and inquiry-driven projects.
 
 ## Build & Development Commands
 
 ```bash
-npm run dev       # Start dev server at localhost:3001
+npm run dev       # Start dev server at localhost:4321
 npm run build     # Build static site to ./dist/
 npm run preview   # Preview production build locally
 npm run astro     # Direct Astro CLI access
@@ -25,7 +25,6 @@ src/
 ├── content/          # Content collections (Markdown)
 │   ├── config.ts     # Zod schema definitions
 │   ├── reflections/  # Anime, manga, film notes
-│   ├── music/        # Curated song collections
 │   ├── notes/        # Philosophical fragments
 │   ├── now/          # "Now" page snapshots (current focus)
 │   └── showcase/     # Projects as inquiries
@@ -43,16 +42,20 @@ src/
 
 ## Content Collections Schema
 
-All collections share a base schema:
+All collections share a base schema (defined in `sharedSchema`):
 - `title` (required string)
-- `tags` (string array)
-- `collections` (string array for cross-referencing)
-- `draft` (boolean, filters from production)
+- `tags` (string array, defaults to [])
+- `collections` (string array for cross-referencing, defaults to [])
+- `publishedAt` (optional date)
+- `updatedAt` (optional date)
+- `draft` (boolean, defaults to false, filters from production)
+- `emblem` (optional string, path to page-specific emblem image)
 
 Collection-specific extensions:
 - **reflections**: adds `reflections_type: 'anime' | 'manga' | 'film'`
-- **music**: adds `mood`, `tracks: { title, artist, link? }[]`
-- **now**: simplified schema with `title`, `publishedAt` (required), `updatedAt`, `draft`
+- **notes**: uses sharedSchema without extensions
+- **showcase**: uses sharedSchema without extensions
+- **now**: simplified schema with `title` (defaults to 'Now'), `publishedAt` (required), `updatedAt`, `draft`
 
 ## Layouts
 
@@ -83,7 +86,8 @@ Sizes: `dominant` (2x2), `medium-wide` (2x1), `medium-tall` (1x2), `small` (1x1)
 
 ### Content
 - `TagList.astro` — Tag pills display
-- `ImageGallery.astro` — Sticky sidebar image gallery
+- `DateDisplay.astro` — Published/updated date display with optional size variants
+- `EmblemCard.astro` — Flippable card component for page emblems (Yu-Gi-Oh card backing style)
 - `MediaLightbox.astro` — Fullscreen media popup
 
 ## Design System
@@ -106,7 +110,7 @@ Sizes: `dominant` (2x2), `medium-wide` (2x1), `medium-tall` (1x2), `small` (1x1)
 --shadow-glow: 0 0 20px rgba(255, 229, 44, 0.15);
 
 /* Animation */
---ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+--animation-easing: cubic-bezier(0.16, 1, 0.3, 1);
 --animation-base: 400ms;
 ```
 

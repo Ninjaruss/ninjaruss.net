@@ -42,12 +42,38 @@
 /* Interactive Tiles — Gold glow on hover */
 .bento-tile--interactive {
   cursor: pointer;
+  position: relative;
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base),
+    filter var(--transition-base);
+}
+
+/* Gradient background glow */
+.bento-tile--interactive::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, var(--color-gold) 0%, #ffb52c 50%, var(--color-gold) 100%);
+  border-radius: var(--radius-md);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
 }
 
 .bento-tile--interactive:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: var(--shadow-hard-hover);
+  transform: translate(-2px, -2px) rotate(-0.5deg) scale(1.01);
+  box-shadow:
+    var(--shadow-hard-hover),
+    0 0 30px rgba(255, 229, 44, 0.25);
   border-color: var(--color-gold);
+  filter: brightness(1.05);
+}
+
+.bento-tile--interactive:hover::before {
+  opacity: 0.15;
 }
 
 .bento-tile--interactive:hover .bento-tile__title {
@@ -57,6 +83,16 @@
 .bento-tile--interactive:active {
   transform: translate(0, 0);
   box-shadow: var(--shadow-hard-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bento-tile--interactive:hover {
+    transform: translate(-2px, -2px);
+    filter: none;
+  }
+  .bento-tile--interactive::before {
+    display: none;
+  }
 }
 
 /* Yellow Highlight Tile — Featured Items */

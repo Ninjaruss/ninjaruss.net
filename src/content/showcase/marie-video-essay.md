@@ -2,6 +2,7 @@
 title: "Marie - Video Essay"
 tags: ["video"]
 publishedAt: 2026-01-02
+collections: ["ongoing works"]
 ---
 
 I've tried to build personal sites before. They always ended up feeling like portfolios or resumes—things designed to impress rather than express.
