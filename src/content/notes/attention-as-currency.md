@@ -1,6 +1,7 @@
 ---
 title: "Attention as Currency"
 tags: ["digital", "critical", "observational"]
+emblem: "/images/emblems/coin.svg"
 ---
 
 Everyone talks about attention as a resource that gets spent, but maybe it's more useful to think of it as a currency that gets exchanged. You give attention to get something—entertainment, information, connection, status.

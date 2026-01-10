@@ -55,6 +55,7 @@ const updatedAt = getUpdatedDate();
   description="Notes on anime, manga, and films."
   section="reflections"
   initialSlug={entry.slug}
+  initialEmblem={entry.data.emblem}
 >
   <Fragment slot="list">
     {sortedMedia.map((reflectionsEntry) => (
@@ -69,6 +70,7 @@ const updatedAt = getUpdatedDate();
 
   <Fragment slot="detail">
     <article class="entry">
+      {entry.data.emblem && <span data-page-emblem data-src={entry.data.emblem} hidden />}
       <div class="container">
         <header class="entry__header">
           <h1 class="entry__title">{entry.data.title}</h1>
