@@ -19,19 +19,6 @@ const reflections = defineCollection({
   }),
 });
 
-// Music collection — curated song collections by mood
-const music = defineCollection({
-  type: 'content',
-  schema: sharedSchema.extend({
-    mood: z.string().optional(),
-    tracks: z.array(z.object({
-      title: z.string(),
-      artist: z.string(),
-      link: z.string().optional(),
-    })).optional(),
-  }),
-});
-
 // Notes collection — philosophical fragments, beliefs in progress
 const notes = defineCollection({
   type: 'content',
@@ -57,7 +44,6 @@ const now = defineCollection({
 
 export const collections = {
   reflections,
-  music,
   notes,
   showcase,
   now,

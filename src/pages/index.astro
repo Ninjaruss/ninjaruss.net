@@ -8,26 +8,43 @@ import BentoTile from '../components/BentoTile.astro';
 const notes = await getCollection('notes', ({ data }) => !data.draft && data.publishedAt);
 const reflections = await getCollection('reflections', ({ data }) => !data.draft && data.publishedAt);
 const showcase = await getCollection('showcase', ({ data }) => !data.draft && data.publishedAt);
-const music = await getCollection('music', ({ data }) => !data.draft && data.publishedAt);
 
 // Find the most recently published content
-const allContent = [...notes, ...reflections, ...showcase, ...music];
+const allContent = [...notes, ...reflections, ...showcase];
 const mostRecent = allContent
   .sort((a, b) => new Date(b.data.publishedAt!).getTime() - new Date(a.data.publishedAt!).getTime())[0];
 
 const recentHref = mostRecent ? `/${mostRecent.collection}/${mostRecent.slug}` : undefined;
+
+// Calculate "X days ago" for latest content
+const getDaysAgo = (date: Date) => {
+  // Create date objects at midnight local time for accurate day comparison
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const compareDate = new Date(date);
+  compareDate.setHours(0, 0, 0, 0);
+
+  const diffMs = today.getTime() - compareDate.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return 'today';
+  if (diffDays === 1) return 'yesterday';
+  return `${diffDays} days ago`;
+};
+
+const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) : '';
 ---
 
 <BaseLayout title="Home" description="Fragments, reflections, and showcase.">
   <div class="container">
     <BentoGrid>
-      <!-- Title Tile -->
-      <div class="title-tile p3r-animate-left">
+      <!-- Row 1-2: Title Hero (3x2) + YouTube Hero #1 (3x2) -->
+      <div class="title-tile bento-tile--span-3x2 p3r-animate-left">
         <span class="title-tile__name">Ninjaruss</span>
       </div>
 
-      <!-- Hero Image Tile -->
-      <div class="image-tile image-tile--youtube p3r-animate" style="--stagger-delay: 100ms;">
+      <div class="image-tile image-tile--youtube bento-tile--span-3x2 p3r-animate" style="--stagger-delay: 100ms;">
         <a href="https://www.youtube.com/@Ninjaruss_" target="_blank" rel="noopener noreferrer">
           <img
             src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FHCc3Ol7adcw%2Fmaxresdefault.jpg&f=1&nofb=1&ipt=3af1979f6b60ed9a8bb7f3ff02d25d81b2b98005b38c7a5b9f2bc4d6f8bb3aa9"
@@ -42,60 +59,60 @@ const recentHref = mostRecent ? `/${mostRecent.collection}/${mostRecent.slug}` :
         </a>
       </div>
 
-      <!-- Featured - Yellow Highlight -->
+      <!-- Row 3-4: Showcase (3x2) + Notes (3x2) -->
       <BentoTile
         href="/showcase"
-        size="medium-tall"
         variant="highlight"
         accent
         label="Showcase"
         title="What I'm Building"
         description="Projects framed as inquiries."
+        class="bento-tile--core bento-tile--span-3x2"
       />
 
-      <!-- Core Sections -->
       <BentoTile
         href="/notes"
-        size="medium-wide"
         variant="dark"
         accent
         label="Notes"
         title="Thoughts in Progress"
         description="Philosophical fragments. Contradictions allowed."
+        class="bento-tile--core bento-tile--span-3x2"
       />
 
+      <!-- Row 5-6: Reflections (2x2) + Latest (2x1) + Now (2x1) -->
       <BentoTile
         href="/reflections"
-        size="small"
         accent
         label="Reflections"
         title="Watched & Read"
-      />
-
-      <!-- Small Tiles: Fragments & Signals -->
-      
-
-      <BentoTile
-        href="/now"
-        size="small"
-        variant="dark"
-        label="Now"
-        title="Current Focus"
+        description="Anime, manga, and film notes."
+        class="bento-tile--core bento-tile--span-2x2"
       />
 
       {mostRecent && (
         <BentoTile
           href={recentHref}
-          size="small"
           variant="dark"
           accent
           label="Latest"
           title={mostRecent.data.title}
-        />
+          class="bento-tile--span-2x1"
+        >
+          <span class="days-ago">{daysAgo}</span>
+        </BentoTile>
       )}
 
-      <!-- Hero Image Tile 2 -->
-      <div class="image-tile image-tile--youtube p3r-animate" style="--stagger-delay: 100ms;">
+      <BentoTile
+        href="/now"
+        variant="highlight"
+        label="Now"
+        title="Current Focus"
+        class="bento-tile--span-2x1"
+      />
+
+      <!-- Row 7-8: YouTube Hero #2 (3x2) + Mini Tiles (2x1 each) -->
+      <div class="image-tile image-tile--youtube bento-tile--span-3x2 p3r-animate" style="--stagger-delay: 100ms;">
         <a href="https://www.youtube.com/@kaima-mask" target="_blank" rel="noopener noreferrer">
           <img
             src="https://yt3.ggpht.com/1ThFXMWuqv4QV_DlxmGVxKgNNW6bWWSpETC5uEOleDcM_T07zT3xtueJ-fW1-SCQhgaXA7DtrQ=s600-c-k-c0x00ffffff-no-rj-rp-mo"
@@ -115,8 +132,16 @@ const recentHref = mostRecent ? `/${mostRecent.collection}/${mostRecent.slug}` :
 
 <style>
   .container {
-    padding-top: var(--space-md);
-    padding-bottom: var(--space-lg);
+    padding-top: var(--space-sm);
+    padding-bottom: var(--space-md);
+  }
+
+  /* Days ago indicator for Latest tile */
+  .days-ago {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-transform: lowercase;
   }
 
   /* Title Tile - Part of the bento grid */
@@ -127,7 +152,7 @@ const recentHref = mostRecent ? `/${mostRecent.collection}/${mostRecent.slug}` :
     background: var(--color-black);
     border: var(--border-thick) solid var(--color-gold);
     border-radius: var(--radius-lg);
-    padding: var(--space-xl);
+    padding: var(--space-md);
     grid-column: span 2;
     grid-row: span 1;
     box-shadow: var(--shadow-glow);

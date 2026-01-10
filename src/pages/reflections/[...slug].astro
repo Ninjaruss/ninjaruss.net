@@ -31,6 +31,7 @@ const formatDate = (date: Date) => {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
+    timeZone: 'UTC',
   });
 };
 
@@ -81,7 +82,7 @@ const updatedAt = getUpdatedDate();
             <div class="entry__meta-dates">
               {entry.data.publishedAt && (
                 <div class="meta-date-item">
-                  <span class="meta-date-label">Created</span>
+                  <span class="meta-date-label">Published</span>
                   <span class="meta-date-value">{formatDate(entry.data.publishedAt)}</span>
                 </div>
               )}
