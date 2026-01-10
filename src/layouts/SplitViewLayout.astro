@@ -2,15 +2,17 @@
 import BaseLayout from './BaseLayout.astro';
 import NavPill from '../components/NavPill.astro';
 import MediaLightbox from '../components/MediaLightbox.astro';
+import EmblemCard from '../components/EmblemCard.astro';
 
 interface Props {
   title: string;
   description: string;
   section: string;
   initialSlug?: string;
+  initialEmblem?: string;
 }
 
-const { title, description, section, initialSlug } = Astro.props;
+const { title, description, section, initialSlug, initialEmblem } = Astro.props;
 const hasInitialContent = Astro.slots.has('detail');
 ---
 
@@ -55,7 +57,7 @@ const hasInitialContent = Astro.slots.has('detail');
       </nav>
     </aside>
 
-    <!-- Right Panel: Detail -->
+    <!-- Center Panel: Detail -->
     <main class="split-view__detail">
       <div class="split-view__detail-inner">
         <div class="split-view__placeholder">
@@ -69,6 +71,16 @@ const hasInitialContent = Astro.slots.has('detail');
         </article>
       </div>
     </main>
+
+    <!-- Right Panel: Emblem -->
+    <aside class="split-view__emblem">
+      <EmblemCard emblemSrc={initialEmblem} isInitiallyFlipped={hasInitialContent} />
+    </aside>
+
+    <!-- Mobile Emblem Badge -->
+    <div class="emblem-badge" data-emblem-badge>
+      <EmblemCard emblemSrc={initialEmblem} isInitiallyFlipped={hasInitialContent} />
+    </div>
   </div>
   <MediaLightbox />
 </BaseLayout>
@@ -81,7 +93,7 @@ const hasInitialContent = Astro.slots.has('detail');
 
   .split-view {
     display: grid;
-    grid-template-columns: 380px 1fr;
+    grid-template-columns: 380px 1fr 240px;
     min-height: 100vh;
     gap: 0;
   }
@@ -308,6 +320,25 @@ const hasInitialContent = Astro.slots.has('detail');
     /* No max-width - let entry layout handle its own constraints */
   }
 
+  /* Emblem Panel (Right Sidebar) */
+  .split-view__emblem {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: var(--space-xl) var(--space-lg);
+    background: var(--color-bg-elevated);
+    border-left: var(--border-thick) solid var(--color-gold-dim);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Mobile floating badge - hidden on desktop */
+  .emblem-badge {
+    display: none;
+  }
+
   /* Entry content within split view */
   .split-view__content .entry {
     padding-bottom: 0;
@@ -487,6 +518,31 @@ const hasInitialContent = Astro.slots.has('detail');
 
   .split-view.has-selection .split-view__placeholder {
     display: none;
+  }
+
+  /* Tablet: Hide emblem sidebar, 2-column layout */
+  @media (max-width: 1200px) {
+    .split-view {
+      grid-template-columns: 380px 1fr;
+    }
+
+    .split-view__emblem {
+      display: none;
+    }
+
+    /* Show mobile badge when content is selected */
+    .split-view.has-selection .emblem-badge {
+      display: block;
+      position: fixed;
+      bottom: 100px; /* Above NavPill */
+      right: var(--space-md);
+      width: 60px;
+      z-index: 50;
+    }
+
+    .emblem-badge .emblem-card {
+      max-width: 60px;
+    }
   }
 
   /* Mobile: Stack layout */
@@ -794,6 +850,58 @@ const hasInitialContent = Astro.slots.has('detail');
       noResults!.hidden = visibleCount > 0;
     }
 
+    // Trigger emblem card flip animation - single 360° spin to the right
+    // Sequence: emblem (front) → card back → new emblem (front)
+    function triggerEmblemFlip(doc?: Document) {
+      const emblemCards = document.querySelectorAll('[data-emblem-card]');
+      if (emblemCards.length === 0) return;
+
+      // Extract emblem source from fetched page if available
+      const pageEmblem = doc?.querySelector('[data-page-emblem]');
+      const emblemSrc = pageEmblem?.getAttribute('data-src') || '/images/emblems/default.svg';
+
+      const totalDuration = 800; // Total duration for full 360° spin
+
+      emblemCards.forEach((card) => {
+        const frontImg = card.querySelector('[data-emblem-front]') as HTMLImageElement;
+        const flipper = card.querySelector('.emblem-card__flipper') as HTMLElement;
+        if (!flipper) return;
+
+        // FIXED ORDER: Disable transitions FIRST, then modify classes/styles
+        flipper.style.transition = 'none';
+        card.classList.remove('is-flipped');
+        flipper.style.transform = 'rotateY(180deg)';
+
+        // Force reflow
+        void flipper.offsetWidth;
+
+        // Single smooth spin from 180deg to 540deg (full 360°)
+        flipper.style.transition = `transform ${totalDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+        flipper.style.transform = 'rotateY(540deg)';
+
+        // Update image near end (after card backing shown, before new emblem visible)
+        setTimeout(() => {
+          if (frontImg && emblemSrc) {
+            frontImg.src = emblemSrc;
+          }
+        }, totalDuration * 0.5);
+
+        // After animation completes, normalize to 180deg (540 % 360 = 180)
+        setTimeout(() => {
+          flipper.style.transition = 'none';
+          flipper.style.transform = 'rotateY(180deg)';
+          card.classList.add('is-flipped');
+
+          // Re-enable transitions after a frame to avoid conflicts
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              flipper.style.transition = '';
+            });
+          });
+        }, totalDuration);
+      });
+    }
+
     // Load detail content
     async function loadContent(slug: string) {
       if (!splitView || !contentArea || slug === currentSlug) return;
@@ -825,6 +933,9 @@ const hasInitialContent = Astro.slots.has('detail');
           }
 
           setTimeout(() => initMediaLightbox(), 50);
+
+          // Trigger emblem card flip animation
+          triggerEmblemFlip(doc);
         }
       } catch (error) {
         console.error('Failed to load content:', error);

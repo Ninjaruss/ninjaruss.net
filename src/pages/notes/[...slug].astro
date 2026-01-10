@@ -50,6 +50,7 @@ const updatedAt = getUpdatedDate();
   description="Philosophical fragments and beliefs in progress."
   section="notes"
   initialSlug={entry.slug}
+  initialEmblem={entry.data.emblem}
 >
   <Fragment slot="list">
     {sortedNotes.map((noteEntry) => (
@@ -64,6 +65,7 @@ const updatedAt = getUpdatedDate();
 
   <Fragment slot="detail">
     <article class="entry">
+      {entry.data.emblem && <span data-page-emblem data-src={entry.data.emblem} hidden />}
       <div class="container">
         <header class="entry__header">
           <h1 class="entry__title">{entry.data.title}</h1>

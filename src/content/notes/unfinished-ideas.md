@@ -1,6 +1,7 @@
 ---
 title: "Various Ideas"
 tags: ["creative"]
+emblem: "/images/emblems/lightbulb.svg"
 ---
 
 ## Here are various ideas I have been playing around with in my mind

@@ -2,6 +2,7 @@
 title: "Usogui Archive"
 tags: ["community", "preservation", "obsessive"]
 publishedAt: 2025-01-08
+emblem: /images/notes/attention-01.svg
 ---
 
 Usogui is one of my favorite manga. It's also nearly impossible to recommend because it's dense, untranslated for years, and requires significant context to appreciate.

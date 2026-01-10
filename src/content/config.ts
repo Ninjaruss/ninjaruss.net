@@ -8,6 +8,7 @@ const sharedSchema = z.object({
   publishedAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   draft: z.boolean().default(false),
+  emblem: z.string().optional(), // Path to page-specific emblem image
 });
 
 // Reflections collection — anime, manga, films

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 63 88">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffe52c"/>
+      <stop offset="50%" style="stop-color:#ffb833"/>
+      <stop offset="100%" style="stop-color:#e5c800"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Card background -->
+  <rect width="63" height="88" rx="8" fill="#111111"/>
+
+  <!-- Inner border -->
+  <rect x="4" y="4" width="55" height="80" rx="6" fill="none" stroke="#3a3a3a" stroke-width="1"/>
+
+  <!-- Gold accent frame -->
+  <rect x="8" y="8" width="47" height="72" rx="4" fill="none" stroke="url(#goldGradient)" stroke-width="2"/>
+
+  <!-- Center emblem area -->
+  <rect x="12" y="24" width="39" height="40" rx="4" fill="#181818"/>
+
+  <!-- Eye icon -->
+  <g filter="url(#glow)" transform="translate(31.5, 44)">
+    <!-- Eye outline -->
+    <ellipse cx="0" cy="0" rx="14" ry="9" fill="none" stroke="url(#goldGradient)" stroke-width="2"/>
+    <!-- Iris -->
+    <circle cx="0" cy="0" r="6" fill="none" stroke="url(#goldGradient)" stroke-width="2"/>
+    <!-- Pupil -->
+    <circle cx="0" cy="0" r="2.5" fill="url(#goldGradient)"/>
+    <!-- Highlight -->
+    <circle cx="2" cy="-2" r="1" fill="#fff" opacity="0.8"/>
+  </g>
+
+  <!-- Top decorative line -->
+  <rect x="16" y="14" width="31" height="2" rx="1" fill="#ffe52c" opacity="0.6"/>
+
+  <!-- Bottom decorative line -->
+  <rect x="16" y="72" width="31" height="2" rx="1" fill="#ffe52c" opacity="0.6"/>
+</svg>
