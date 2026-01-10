@@ -35,25 +35,58 @@ const { href, title, excerpt, status, tags = [], label } = Astro.props;
     border-radius: var(--radius-md);
     padding: var(--space-lg);
     box-shadow: var(--shadow-hard);
+    position: relative;
     transition:
-      transform var(--transition-fast),
-      box-shadow var(--transition-fast),
-      border-color var(--transition-fast);
+      transform var(--transition-base),
+      box-shadow var(--transition-base),
+      border-color var(--transition-base),
+      filter var(--transition-base);
+  }
+
+  /* Animated gradient border */
+  .entry-card::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: linear-gradient(120deg, transparent 0%, var(--color-gold) 50%, transparent 100%);
+    border-radius: calc(var(--radius-md) + 3px);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity var(--transition-base);
+    pointer-events: none;
   }
 
   .entry-card:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: var(--shadow-hard-hover);
+    transform: translate(-3px, -3px) rotate(0.5deg) scale(1.02);
+    box-shadow:
+      var(--shadow-hard-hover),
+      0 0 35px rgba(255, 229, 44, 0.3);
     border-color: var(--color-gold);
+    filter: brightness(1.08) saturate(1.1);
+  }
+
+  .entry-card:hover::before {
+    opacity: 0.2;
   }
 
   .entry-card:hover .entry-card__title {
     color: var(--color-gold);
+    text-shadow: 0 0 8px rgba(255, 229, 44, 0.3);
   }
 
   .entry-card:active {
     transform: translate(0, 0);
     box-shadow: var(--shadow-hard-sm);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .entry-card:hover {
+      transform: translate(-2px, -2px);
+      filter: none;
+    }
+    .entry-card:hover .entry-card__title {
+      text-shadow: none;
+    }
   }
 
   .entry-card__header {

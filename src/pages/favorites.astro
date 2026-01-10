@@ -1,0 +1,276 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavPill from '../components/NavPill.astro';
+import EmblemCard from '../components/EmblemCard.astro';
+
+const allFavorites = await getCollection('favorites', ({ data }) => !data.draft);
+const sortedFavorites = allFavorites.sort((a, b) =>
+  new Date(b.data.publishedAt || 0).getTime() - new Date(a.data.publishedAt || 0).getTime()
+);
+
+// Extract unique types for filtering
+const allTypes = [...new Set(allFavorites.map(f => f.data.favorites_type))].sort();
+---
+
+<BaseLayout title="Favorites" description="Characters, media, and inspirations">
+  <NavPill />
+
+  <div class="favorites-container">
+    <header class="favorites-header p3r-animate">
+      <h1 class="favorites-title">Favorites</h1>
+      <p class="favorites-subtitle">Inspirations</p>
+    </header>
+
+    <div class="favorites-filter p3r-animate" style="--stagger-delay: 50ms;">
+      <button class="type-pill is-selected" data-type="all" aria-pressed="true">All</button>
+      {allTypes.map(type => (
+        <button class="type-pill" data-type={type} aria-pressed="false">
+          {type}
+        </button>
+      ))}
+    </div>
+
+    <div class="favorites-grid">
+      {sortedFavorites.length > 0 ? (
+        sortedFavorites.map((entry, index) => (
+          <a
+            href={`/favorites/${entry.slug}`}
+            class="favorite-card p3r-animate"
+            data-type={entry.data.favorites_type}
+            style={`--stagger-delay: ${(index % 20) * 50}ms`}
+          >
+            <div class="favorite-card__emblem">
+              <EmblemCard emblemSrc={entry.data.emblem} isInitiallyFlipped={true} />
+            </div>
+            <div class="favorite-card__content">
+              <h3 class="favorite-card__title">{entry.data.title}</h3>
+              <span class="favorite-card__type">{entry.data.favorites_type}</span>
+            </div>
+          </a>
+        ))
+      ) : (
+        <p class="empty-state">No favorites yet.</p>
+      )}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .favorites-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--space-md);
+  }
+
+  .favorites-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .favorites-title {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    color: var(--color-gold);
+    text-transform: uppercase;
+    margin-bottom: var(--space-xs);
+    line-height: 1.2;
+  }
+
+  .favorites-subtitle {
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+  }
+
+  /* Filter Pills */
+  .favorites-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    justify-content: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .type-pill {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-bg-elevated);
+    color: var(--color-text);
+    border: var(--border-medium) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-base);
+  }
+
+  .type-pill:hover {
+    background: var(--color-bg-surface);
+    border-color: var(--color-gold-dim);
+    transform: translateY(-2px);
+  }
+
+  .type-pill.is-selected {
+    background: var(--color-gold);
+    color: var(--color-black);
+    border-color: var(--color-gold);
+    font-weight: 600;
+  }
+
+  .type-pill:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+
+  /* Grid Layout */
+  .favorites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-xl);
+    padding: var(--space-2xl) 0;
+  }
+
+  @media (max-width: 768px) {
+    .favorites-grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: var(--space-lg);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .favorites-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-md);
+    }
+
+    .favorites-container {
+      padding: var(--space-xl) var(--space-sm);
+    }
+  }
+
+  /* Favorite Card */
+  .favorite-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    text-decoration: none;
+    transition: transform var(--transition-base);
+    contain: layout style paint;
+  }
+
+  .favorite-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .favorite-card:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+  }
+
+  .favorite-card__emblem {
+    width: 100%;
+    max-width: 240px;
+    margin: 0 auto;
+  }
+
+  .favorite-card__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: 0 var(--space-sm);
+  }
+
+  .favorite-card__title {
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    color: var(--color-text);
+    text-align: center;
+    line-height: 1.3;
+    margin: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .favorite-card__type {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-gold-dim);
+  }
+
+  .favorite-card.is-hidden {
+    display: none;
+  }
+
+  /* Empty State */
+  .empty-state {
+    grid-column: 1 / -1;
+    color: var(--color-text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: var(--space-2xl);
+  }
+</style>
+
+<script>
+  function initFavoritesFilter() {
+    const pills = document.querySelectorAll('.type-pill');
+    const cards = document.querySelectorAll('.favorite-card');
+
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const selectedType = pill.getAttribute('data-type');
+        if (!selectedType) return;
+
+        // Update active state
+        pills.forEach(p => {
+          p.classList.remove('is-selected');
+          p.setAttribute('aria-pressed', 'false');
+        });
+        pill.classList.add('is-selected');
+        pill.setAttribute('aria-pressed', 'true');
+
+        // Filter cards with stagger animation
+        let visibleCount = 0;
+        cards.forEach((card, index) => {
+          const cardType = card.getAttribute('data-type');
+          const isVisible = selectedType === 'all' || cardType === selectedType;
+
+          if (isVisible) {
+            card.classList.remove('is-hidden');
+            // Reset and reapply animation with stagger
+            card.style.animation = 'none';
+            setTimeout(() => {
+              card.style.animation = '';
+              card.style.setProperty('--stagger-delay', `${visibleCount * 50}ms`);
+              visibleCount++;
+            }, 10);
+          } else {
+            card.classList.add('is-hidden');
+          }
+        });
+      });
+    });
+  }
+
+  // Initialize on page load
+  document.addEventListener('astro:page-load', () => {
+    initFavoritesFilter();
+  });
+
+  // Also initialize on DOMContentLoaded for non-Astro navigation
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      initFavoritesFilter();
+    });
+  } else {
+    initFavoritesFilter();
+  }
+</script>

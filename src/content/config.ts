@@ -31,6 +31,14 @@ const showcase = defineCollection({
   schema: sharedSchema
 });
 
+// Favorites collection — characters, anime, manga, films, games that inspire
+const favorites = defineCollection({
+  type: 'content',
+  schema: sharedSchema.extend({
+    favorites_type: z.enum(['anime', 'manga', 'film', 'music', 'book', 'game', 'character', 'other']),
+  }),
+});
+
 // Now collection — archived "now" snapshots
 const now = defineCollection({
   type: 'content',
@@ -46,5 +54,6 @@ export const collections = {
   reflections,
   notes,
   showcase,
+  favorites,
   now,
 };
