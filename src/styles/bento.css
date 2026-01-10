@@ -2,9 +2,26 @@
 
 .bento-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-lg);
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: minmax(80px, auto);
+  gap: var(--space-sm);
   width: 100%;
+}
+
+/* Dense asymmetric layout spans */
+.bento-tile--span-3x2 {
+  grid-column: span 3;
+  grid-row: span 2;
+}
+
+.bento-tile--span-2x2 {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.bento-tile--span-2x1 {
+  grid-column: span 2;
+  grid-row: span 1;
 }
 
 /* Tile Base Styles — Dark mode with gold accents */
@@ -12,7 +29,7 @@
   background: var(--color-bg-elevated);
   border: var(--border-thick) solid var(--color-gold-dim);
   border-radius: var(--radius-md);
-  padding: var(--space-lg);
+  padding: var(--space-md);
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-hard);
@@ -151,7 +168,7 @@
 .bento-tile--dominant {
   grid-column: span 2;
   grid-row: span 2;
-  padding: var(--space-xl);
+  padding: var(--space-lg);
   border-radius: var(--radius-lg);
 }
 
@@ -167,9 +184,28 @@
   /* Default 1x1 */
 }
 
+/* Core Content Tiles — Elevated visual weight for main entry points */
+.bento-tile--core {
+  box-shadow:
+    var(--shadow-hard),
+    0 4px 24px rgba(255, 229, 44, 0.15);
+}
+
+.bento-tile--core .bento-tile__title {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.bento-tile--core:hover {
+  box-shadow:
+    var(--shadow-hard-hover),
+    0 8px 32px rgba(255, 229, 44, 0.25);
+}
+
 /* Tile Content Layout */
 .bento-tile__header {
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-xs);
 }
 
 /* P4G Style Label — Black bg with rounded corners */
@@ -182,7 +218,7 @@
   font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: var(--tracking-label);
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-xs);
   border-radius: var(--radius-sm);
 }
 
@@ -201,13 +237,13 @@
 .bento-tile__description {
   font-size: var(--text-sm);
   color: var(--color-text-muted);
-  margin-top: var(--space-sm);
-  line-height: 1.5;
+  margin-top: var(--space-xs);
+  line-height: 1.4;
 }
 
 .bento-tile__footer {
   margin-top: auto;
-  padding-top: var(--space-md);
+  padding-top: var(--space-sm);
 }
 
 /* P4G Corner Accent — Small circle in corner */
@@ -254,7 +290,12 @@
 /* Responsive Bento */
 @media (max-width: 1024px) {
   .bento-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .bento-tile--span-3x2 {
+    grid-column: span 2;
+    grid-row: span 2;
   }
 
   .bento-tile--dominant {
@@ -272,6 +313,16 @@
     padding: var(--space-md);
     box-shadow: var(--shadow-hard-sm);
     border-radius: var(--radius-sm);
+  }
+
+  .bento-tile--span-3x2,
+  .bento-tile--span-2x2 {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+
+  .bento-tile--span-2x1 {
+    grid-column: span 2;
   }
 
   .bento-tile--dominant {
@@ -295,6 +346,9 @@
     grid-template-columns: 1fr;
   }
 
+  .bento-tile--span-3x2,
+  .bento-tile--span-2x2,
+  .bento-tile--span-2x1,
   .bento-tile--dominant,
   .bento-tile--medium-wide {
     grid-column: span 1;

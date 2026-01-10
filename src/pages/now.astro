@@ -1,8 +1,19 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NavPill from '../components/NavPill.astro';
 
-const lastUpdated = new Date().toLocaleDateString('en-US', {
+// Get the latest now entry from the collection
+const allNowPosts = await getCollection('now', ({ data }) => !data.draft);
+const sortedPosts = allNowPosts.sort((a, b) =>
+  b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
+);
+const latestPost = sortedPosts[0];
+
+// Render the markdown content
+const { Content } = await latestPost.render();
+
+const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
@@ -19,31 +30,10 @@ const lastUpdated = new Date().toLocaleDateString('en-US', {
       </header>
 
       <div class="now__content">
-        <p>
-          I'm back to having a little too many main objectives at once, but this time with better focus on what truly matters to me.
-          I truly believe that I have what it takes to fully actualize myself and at this point it is to continue dismantling any barriers stopping me.
-
-        </p>
-        <p>
-          Unfortunately, it requires me to go through a lot of emotional conflict from my parents and my own old identity trying to keep me in stasis.
-        </p>
-        <p>
-          I want to try living in Japan. It seems that so many things I enjoy are from there and I want to figure out the core reason why.
-          The difficulty to pursue this seems very high, but my mindset has developed over the past few years to where I am accepting that it takes commitment and drive to make anything happen.
-        </p>
-        <p>
-          In the mean time while I keep progressing towards that goal, I am doing my best to focus on building stuff I find meaningful or plainly enjoyable.
-          Playing around with vibe coding to make this site and the Usogui archive has been a lot of fun recently.
-          </p>
-          <p>
-            To end things off, I want to let myself know that I need to follow where my core being leads me and to slowly remove the habits that don't help me become who I want to be.
-          </p>
+        <Content />
       </div>
 
       <footer class="now__footer">
-        <p class="now__note">
-          surely future me will figure it out soon
-        </p>
         <a href="/now/archive" class="now__archive-link">
           View past "now" entries &rarr;
         </a>

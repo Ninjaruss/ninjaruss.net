@@ -24,10 +24,11 @@ src/
 ├── components/       # Reusable Astro components
 ├── content/          # Content collections (Markdown)
 │   ├── config.ts     # Zod schema definitions
-│   ├── reflections/        # Anime, manga, film notes
+│   ├── reflections/  # Anime, manga, film notes
 │   ├── music/        # Curated song collections
 │   ├── notes/        # Philosophical fragments
-│   └── showcase/  # Projects as inquiries
+│   ├── now/          # "Now" page snapshots (current focus)
+│   └── showcase/     # Projects as inquiries
 ├── layouts/          # Page layout templates
 ├── pages/            # File-based routing
 └── styles/           # Global CSS (no frameworks)
@@ -51,6 +52,7 @@ All collections share a base schema:
 Collection-specific extensions:
 - **reflections**: adds `reflections_type: 'anime' | 'manga' | 'film'`
 - **music**: adds `mood`, `tracks: { title, artist, link? }[]`
+- **now**: simplified schema with `title`, `publishedAt` (required), `updatedAt`, `draft`
 
 ## Layouts
 
@@ -63,8 +65,17 @@ Collection-specific extensions:
 ## Component Inventory
 
 ### Structural
-- `BentoGrid.astro` / `BentoTile.astro` — Homepage grid system
+- `BentoGrid.astro` / `BentoTile.astro` — Homepage grid system with visual hierarchy
 - `NavPill.astro` — Floating bottom navigation
+
+### Bento Tile Hierarchy
+The homepage uses a visual hierarchy pattern:
+- **Core tiles** (`.bento-tile--core`): Main entry points (Showcase, Notes, Reflections) with elevated gold glow and larger typography
+- **Signal tiles**: Current activity indicators (Now, Latest) - smaller, secondary visual weight
+- **External tiles**: YouTube links and external content
+
+Tile variants: `interactive` (default), `highlight` (gold bg), `dark`, `static`
+Sizes: `dominant` (2x2), `medium-wide` (2x1), `medium-tall` (1x2), `small` (1x1)
 
 ### List/Detail
 - `ListItem.astro` — Left panel items in SplitViewLayout
@@ -122,6 +133,10 @@ Collection-specific extensions:
 3. **Draft Filtering**: All collection queries should filter `draft !== true`
 
 4. **Accessibility**: Focus-visible gold rings, prefers-reduced-motion respected, 44px minimum touch targets
+
+5. **Now Page**: Dynamically renders the latest entry from the `now` collection. To update, add a new markdown file to `src/content/now/` with `publishedAt` frontmatter
+
+6. **Latest Tile**: Homepage shows most recent content across all collections with "X days ago" indicator
 
 ## Adding New Content
 
