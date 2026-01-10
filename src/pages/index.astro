@@ -9,6 +9,18 @@ const notes = await getCollection('notes', ({ data }) => !data.draft && data.pub
 const reflections = await getCollection('reflections', ({ data }) => !data.draft && data.publishedAt);
 const showcase = await getCollection('showcase', ({ data }) => !data.draft && data.publishedAt);
 
+// Query now collection for latest entry
+const allNow = await getCollection('now', ({ data }) => !data.draft);
+const latestNow = allNow.sort((a, b) =>
+  new Date(b.data.publishedAt).getTime() - new Date(a.data.publishedAt).getTime()
+)[0];
+
+// Format month and year for now tile
+const nowDate = latestNow?.data.publishedAt;
+const nowMonthYear = nowDate
+  ? nowDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+  : '';
+
 // Find the most recently published content
 const allContent = [...notes, ...reflections, ...showcase];
 const mostRecent = allContent
@@ -109,16 +121,46 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
         label="Now"
         title="Current Focus"
         class="bento-tile--span-2x1"
-      />
+      >
+        <span class="now-date">{nowMonthYear}</span>
+      </BentoTile>
 
       <BentoTile
         href="/favorites"
         variant="highlight"
         label="Favorites"
         title="Inspirations"
-        description="Characters, media, and inspirations"
-        class="bento-tile--span-2x1"
       />
+
+      <a
+        href="https://myanimelist.net/animelist/Ninjaruss_?status=7&order=4&order2=0"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="logo-tile p3r-animate"
+        style="--stagger-delay: 100ms;"
+      >
+        <img
+          src="/images/logos/myanimelist.svg"
+          alt="MyAnimeList"
+          class="logo-tile__img"
+        />
+        <span class="logo-tile__label">MyAnimeList</span>
+      </a>
+
+      <a
+        href="https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD?si=2b68cabcfc26451c"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="logo-tile p3r-animate"
+        style="--stagger-delay: 150ms;"
+      >
+        <img
+          src="/images/logos/spotify.svg"
+          alt="Spotify Playlist"
+          class="logo-tile__img"
+        />
+        <span class="logo-tile__label">Spotify</span>
+      </a>
 
       <!-- Row 7-8: YouTube Hero #2 (3x2) + Mini Tiles (2x1 each) -->
       <div class="image-tile image-tile--youtube bento-tile--span-3x2 p3r-animate" style="--stagger-delay: 100ms;">
@@ -151,6 +193,62 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
     font-size: var(--text-xs);
     color: var(--color-text-muted);
     text-transform: lowercase;
+  }
+
+  /* Month/year indicator for Now tile */
+  .now-date {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-black);
+    text-transform: lowercase;
+  }
+
+  /* Logo Tiles (MyAnimeList, Spotify) */
+  .logo-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background: var(--color-bg-elevated);
+    border: var(--border-medium) solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all var(--transition-base);
+    min-height: 80px;
+  }
+
+  .logo-tile:hover {
+    transform: translate(-2px, -2px);
+    border-color: var(--color-gold);
+    box-shadow:
+      4px 4px 0 rgba(255, 229, 44, 0.3),
+      0 0 20px rgba(255, 229, 44, 0.15);
+  }
+
+  .logo-tile:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+
+  .logo-tile__img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+  }
+
+  .logo-tile__label {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    text-align: center;
+  }
+
+  .logo-tile:hover .logo-tile__label {
+    color: var(--color-gold);
   }
 
   /* Title Tile - Part of the bento grid */

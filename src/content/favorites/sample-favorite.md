@@ -2,10 +2,8 @@
 title: "Sample Favorite"
 tags: ["example", "test"]
 collections: []
-publishedAt: 2026-01-10
 emblem: "/images/emblems/default.svg"
 favorites_type: "character"
-draft: false
 ---
 
 This is a sample favorite entry to demonstrate the new favorites gallery feature.
