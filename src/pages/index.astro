@@ -6,7 +6,7 @@ import BentoTile from '../components/BentoTile.astro';
 
 // Query all content collections for items with publishedAt dates
 const notes = await getCollection('notes', ({ data }) => !data.draft && data.publishedAt);
-const reflections = await getCollection('reflections', ({ data }) => !data.draft && data.publishedAt);
+const media = await getCollection('media', ({ data }) => !data.draft && data.publishedAt);
 const showcase = await getCollection('showcase', ({ data }) => !data.draft && data.publishedAt);
 
 // Query now collection for latest entry
@@ -22,7 +22,7 @@ const nowMonthYear = nowDate
   : '';
 
 // Find the most recently published content
-const allContent = [...notes, ...reflections, ...showcase];
+const allContent = [...notes, ...media, ...showcase];
 const mostRecent = allContent
   .sort((a, b) => new Date(b.data.publishedAt!).getTime() - new Date(a.data.publishedAt!).getTime())[0];
 
@@ -93,11 +93,11 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
         class="bento-tile--core bento-tile--span-3x2"
       />
 
-      <!-- Row 5-6: Reflections (2x2) + Latest (2x1) + Now (2x1) -->
+      <!-- Row 5-6: Media (2x2) + Latest (2x1) + Now (2x1) -->
       <BentoTile
-        href="/reflections"
+        href="/media"
         variant="dark"
-        label="Reflections"
+        label="Media"
         title="Watched & Read"
         description="My thoughts on anime, manga, movies, and more."
         class="bento-tile--core bento-tile--span-2x2"

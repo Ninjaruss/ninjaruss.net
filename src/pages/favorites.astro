@@ -4,16 +4,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import NavPill from '../components/NavPill.astro';
 import EmblemCard from '../components/EmblemCard.astro';
 
-const allFavorites = await getCollection('favorites', ({ data }) => !data.draft);
+const allFavorites = await getCollection('media', ({ data }) => !data.draft && data.isFavorite);
 const sortedFavorites = allFavorites.sort((a, b) =>
   new Date(b.data.publishedAt || 0).getTime() - new Date(a.data.publishedAt || 0).getTime()
 );
 
 // Extract unique types for filtering
-const allTypes = [...new Set(allFavorites.map(f => f.data.favorites_type))].sort();
+const allTypes = [...new Set(allFavorites.map(f => f.data.content_type))].sort();
 ---
 
-<BaseLayout title="Favorites" description="Characters, media, and inspirations">
+<BaseLayout title="Favorites" description="Curated highlights and inspirations">
   <NavPill />
 
   <div class="favorites-container">
@@ -37,7 +37,7 @@ const allTypes = [...new Set(allFavorites.map(f => f.data.favorites_type))].sort
           <a
             href={`/favorites/${entry.slug}`}
             class="favorite-card p3r-animate"
-            data-type={entry.data.favorites_type}
+            data-type={entry.data.content_type}
             style={`--stagger-delay: ${(index % 20) * 50}ms`}
           >
             <div class="favorite-card__emblem">
@@ -45,7 +45,7 @@ const allTypes = [...new Set(allFavorites.map(f => f.data.favorites_type))].sort
             </div>
             <div class="favorite-card__content">
               <h3 class="favorite-card__title">{entry.data.title}</h3>
-              <span class="favorite-card__type">{entry.data.favorites_type}</span>
+              <span class="favorite-card__type">{entry.data.content_type}</span>
             </div>
           </a>
         ))
@@ -184,6 +184,24 @@ const allTypes = [...new Set(allFavorites.map(f => f.data.favorites_type))].sort
     align-items: center;
     gap: var(--space-xs);
     padding: 0 var(--space-sm);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity var(--transition-base), transform var(--transition-base);
+  }
+
+  .favorite-card:hover .favorite-card__content {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .favorite-card__content {
+      transform: none;
+    }
+
+    .favorite-card:hover .favorite-card__content {
+      transform: none;
+    }
   }
 
   .favorite-card__title {

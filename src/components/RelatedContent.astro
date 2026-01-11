@@ -4,8 +4,8 @@ import type { CollectionEntry } from 'astro:content';
 interface Props {
   currentSlug: string;
   currentCollections: string[];
-  section: 'reflections' | 'notes' | 'showcase';
-  allReflections: CollectionEntry<'reflections'>[];
+  section: 'media' | 'notes' | 'showcase';
+  allReflections: CollectionEntry<'media'>[];
   allNotes: CollectionEntry<'notes'>[];
   allShowcase: CollectionEntry<'showcase'>[];
 }
@@ -14,7 +14,7 @@ const { currentSlug, currentCollections, section, allReflections, allNotes, allS
 
 // Combine all entries from all collections
 const allEntries = [
-  ...allReflections.map(entry => ({ ...entry, type: 'reflections' as const })),
+  ...allReflections.map(entry => ({ ...entry, type: 'media' as const })),
   ...allNotes.map(entry => ({ ...entry, type: 'notes' as const })),
   ...allShowcase.map(entry => ({ ...entry, type: 'showcase' as const }))
 ];
@@ -45,9 +45,9 @@ const relatedEntries = allEntries
   .slice(0, 6); // Limit to 6 results
 
 // Helper to get section display name
-const getSectionLabel = (type: 'reflections' | 'notes' | 'showcase') => {
+const getSectionLabel = (type: 'media' | 'notes' | 'showcase') => {
   const labels = {
-    reflections: 'Reflection',
+    media: 'Media',
     notes: 'Note',
     showcase: 'Project'
   };

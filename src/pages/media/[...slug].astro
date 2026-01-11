@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('reflections');
+  const entries = await getCollection('media');
   return entries.map((entry) => ({
     params: { slug: entry.slug },
     props: { entry },
@@ -18,18 +18,18 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
-// Get all reflections for the list
-const allMedia = await getCollection('reflections', ({ data }) => !data.draft);
+// Get all media for the list
+const allMedia = await getCollection('media', ({ data }) => !data.draft);
 const sortedMedia = allMedia.sort((a, b) => a.data.title.localeCompare(b.data.title));
 
 // Fetch all collections for related content
-const allReflections = allMedia;
+const allMediaEntries = allMedia;
 const allNotes = await getCollection('notes', ({ data }) => !data.draft);
 const allShowcase = await getCollection('showcase', ({ data }) => !data.draft);
 
 const meta: Record<string, string> = {};
-if (entry.data.reflections_type) {
-  meta['Type'] = entry.data.reflections_type.charAt(0).toUpperCase() + entry.data.reflections_type.slice(1);
+if (entry.data.content_type) {
+  meta['Type'] = entry.data.content_type.charAt(0).toUpperCase() + entry.data.content_type.slice(1);
 }
 
 const formatDate = (date: Date) => {
@@ -60,7 +60,7 @@ const getUpdatedDate = () => {
   if (entry.data.updatedAt) return entry.data.updatedAt;
 
   try {
-    const filePath = path.join(process.cwd(), 'src', 'content', 'reflections', `${entry.id}`);
+    const filePath = path.join(process.cwd(), 'src', 'content', 'media', `${entry.id}`);
     const stats = fs.statSync(filePath);
     return stats.mtime;
   } catch {
@@ -72,20 +72,21 @@ const updatedAt = getUpdatedDate();
 ---
 
 <SplitViewLayout
-  title="Reflections"
-  description="Notes on anime, manga, and films."
-  section="reflections"
+  title="Media"
+  description="Notes on anime, manga, films, and more."
+  section="media"
   initialSlug={entry.slug}
   initialEmblem={entry.data.emblem}
 >
   <Fragment slot="list">
-    {sortedMedia.map((reflectionsEntry) => (
+    {sortedMedia.map((mediaEntry) => (
       <ListItem
-        href={`/reflections/${reflectionsEntry.slug}`}
-        slug={reflectionsEntry.slug}
-        title={reflectionsEntry.data.title}
-        tags={reflectionsEntry.data.tags}
-        searchableContent={stripMarkdown(reflectionsEntry.body)}
+        href={`/media/${mediaEntry.slug}`}
+        slug={mediaEntry.slug}
+        title={mediaEntry.data.title}
+        tags={mediaEntry.data.tags}
+        searchableContent={stripMarkdown(mediaEntry.body || '')}
+        contentType={mediaEntry.data.content_type}
       />
     ))}
   </Fragment>
@@ -137,8 +138,8 @@ const updatedAt = getUpdatedDate();
           <RelatedContent
             currentSlug={entry.slug}
             currentCollections={entry.data.collections}
-            section="reflections"
-            allReflections={allReflections}
+            section="media"
+            allReflections={allMediaEntries}
             allNotes={allNotes}
             allShowcase={allShowcase}
           />

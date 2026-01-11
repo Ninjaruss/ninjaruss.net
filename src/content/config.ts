@@ -11,11 +11,12 @@ const sharedSchema = z.object({
   emblem: z.string().optional(), // Path to page-specific emblem image
 });
 
-// Reflections collection — anime, manga, films
-const reflections = defineCollection({
+// Media collection — anime, manga, films, series, music, books, games, characters, and other inspirations
+const media = defineCollection({
   type: 'content',
   schema: sharedSchema.extend({
-    reflections_type: z.enum(['anime', 'manga', 'film']),
+    content_type: z.enum(['anime', 'manga', 'film', 'series', 'music', 'book', 'game', 'character', 'other']),
+    isFavorite: z.boolean().default(false),
   }),
 });
 
@@ -31,14 +32,6 @@ const showcase = defineCollection({
   schema: sharedSchema
 });
 
-// Favorites collection — characters, anime, manga, films, games that inspire
-const favorites = defineCollection({
-  type: 'content',
-  schema: sharedSchema.extend({
-    favorites_type: z.enum(['anime', 'manga', 'film', 'music', 'book', 'game', 'character', 'other']),
-  }),
-});
-
 // Now collection — archived "now" snapshots
 const now = defineCollection({
   type: 'content',
@@ -51,9 +44,8 @@ const now = defineCollection({
 });
 
 export const collections = {
-  reflections,
+  media,
   notes,
   showcase,
-  favorites,
   now,
 };

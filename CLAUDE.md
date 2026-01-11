@@ -24,10 +24,9 @@ src/
 ├── components/       # Reusable Astro components
 ├── content/          # Content collections (Markdown)
 │   ├── config.ts     # Zod schema definitions
-│   ├── reflections/  # Anime, manga, film notes
+│   ├── media/        # Anime, manga, films, series, characters, music, etc.
 │   ├── notes/        # Philosophical fragments
 │   ├── now/          # "Now" page snapshots (current focus)
-│   ├── favorites/    # Inspirational content (characters, media, etc.)
 │   └── showcase/     # Projects as inquiries
 ├── layouts/          # Page layout templates
 ├── pages/            # File-based routing
@@ -53,8 +52,7 @@ All collections share a base schema (defined in `sharedSchema`):
 - `emblem` (optional string, path to page-specific emblem image)
 
 Collection-specific extensions:
-- **reflections**: adds `reflections_type: 'anime' | 'manga' | 'film'`
-- **favorites**: adds `favorites_type: 'anime' | 'manga' | 'film' | 'music' | 'book' | 'game' | 'character' | 'other'`
+- **media**: adds `content_type: 'anime' | 'manga' | 'film' | 'series' | 'music' | 'book' | 'game' | 'character' | 'other'` and `isFavorite: boolean` (defaults to false)
 - **notes**: uses sharedSchema without extensions
 - **showcase**: uses sharedSchema without extensions
 - **now**: simplified schema with `title` (defaults to 'Now'), `publishedAt` (required), `updatedAt`, `draft`
@@ -75,9 +73,9 @@ Collection-specific extensions:
 
 ### Bento Tile Hierarchy
 The homepage uses a visual hierarchy pattern:
-- **Core tiles** (`.bento-tile--core`): Main entry points (Showcase, Notes, Reflections) with elevated gold glow and larger typography
+- **Core tiles** (`.bento-tile--core`): Main entry points (Showcase, Notes, Media) with elevated gold glow and larger typography
 - **Signal tiles**: Current activity indicators (Now, Latest) - smaller, secondary visual weight
-- **Favorites tile**: Gold highlight variant for inspirations collection
+- **Favorites tile**: Gold highlight variant for curated inspirations collection (shows `isFavorite: true` entries)
 - **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) with 48x48px logos and hover effects
 - **YouTube tiles**: Video embeds with custom aspect ratios
 
@@ -88,7 +86,7 @@ Span classes: `.bento-tile--span-3x2`, `.bento-tile--span-2x2`, `.bento-tile--sp
 **Current Homepage Grid Pattern:**
 - Rows 1-2: Title (3×2) + YouTube Hero #1 (3×2)
 - Rows 3-4: Showcase (3×2, core) + Notes (3×2, core)
-- Rows 5-6: Reflections (2×2, core) + Latest (2×1) + Now (2×1)
+- Rows 5-6: Media (2×2, core) + Latest (2×1) + Now (2×1)
 - Row 7: Favorites (1×1, highlight) + MAL Logo (1×1) + Spotify Logo (1×1)
 - Rows 8-9: YouTube Hero #2 (3×2)
 
@@ -145,14 +143,17 @@ Span classes: `.bento-tile--span-3x2`, `.bento-tile--span-2x2`, `.bento-tile--sp
 ## Pages & Routes
 
 ### Content Collection Pages
-- `/reflections` — SplitViewLayout with anime/manga/film reviews
-- `/reflections/[slug]` — Individual reflection detail pages
+- `/media` — SplitViewLayout with all media (anime, manga, films, series, characters, etc.)
+- `/media/[slug]` — Individual media detail pages
 - `/notes` — SplitViewLayout with philosophical fragments
 - `/notes/[slug]` — Individual note detail pages
 - `/showcase` — SplitViewLayout with project inquiries
 - `/showcase/[slug]` — Individual project detail pages
-- `/favorites` — Grid layout with type-filtered inspirations (NEW)
-- `/favorites/[slug]` — Centered single-column detail with prominent emblem (NEW)
+- `/favorites` — Grid layout showing media entries with `isFavorite: true`
+- `/favorites/[slug]` — Centered single-column detail with prominent emblem
+
+### Legacy Routes
+- `/reflections` — Redirects to `/media` (301 redirect for backward compatibility)
 
 ### Utility Pages
 - `/` — Homepage with BentoGrid tiles
@@ -160,10 +161,11 @@ Span classes: `.bento-tile--span-3x2`, `.bento-tile--span-2x2`, `.bento-tile--sp
 - `/now/archive` — Historical "Now" entries list (NEW)
 
 ### Favorites Page Features
+- Shows media entries where `isFavorite: true`
 - Responsive grid: `auto-fill minmax(220px, 1fr)` → `minmax(160px, 1fr)` → 2 columns on mobile
-- Type filter pills with client-side filtering
+- Type filter pills with client-side filtering (based on `content_type`)
 - EmblemCards initially flipped to show emblems
-- Staggered animations (100ms increments)
+- Staggered animations (50ms increments)
 - Accessible (ARIA-pressed states)
 
 ### Favorites Detail Page Features
@@ -187,7 +189,7 @@ Span classes: `.bento-tile--span-3x2`, `.bento-tile--span-2x2`, `.bento-tile--sp
 
 6. **Latest Tile**: Homepage shows most recent content across all collections with "X days ago" indicator
 
-7. **Favorites Page**: Grid layout with client-side type filtering (anime, manga, film, music, book, game, character, other). Filter pills use ARIA-pressed states. Staggered animations reset on filter change. EmblemCards start flipped (showing emblem front).
+7. **Favorites Page**: Shows media entries where `isFavorite: true`. Grid layout with client-side type filtering by `content_type` (anime, manga, film, series, music, book, game, character, other). Filter pills use ARIA-pressed states. Staggered animations reset on filter change. EmblemCards start flipped (showing emblem front).
 
 8. **Related Content System**: Uses `collections` field in frontmatter for cross-referencing. Calculates relevance scores based on matching collections, displays up to 6 related entries in card grid at bottom of detail pages. Shows emblem thumbnail, section badge, and title.
 
@@ -215,16 +217,18 @@ Span classes: `.bento-tile--span-3x2`, `.bento-tile--span-2x2`, `.bento-tile--sp
 
 ## Adding New Content
 
-1. Create `.md` file in appropriate `src/content/` subdirectory (reflections, notes, showcase, favorites, now)
+1. Create `.md` file in appropriate `src/content/` subdirectory (media, notes, showcase, now)
 2. Include required frontmatter matching collection schema
 3. Add `emblem: '/images/emblems/your-emblem.svg'` for custom emblem (optional)
 4. Use `collections: ['tag1', 'tag2']` field to cross-reference related content (enables RelatedContent component)
 5. Set `draft: true` while working, remove for publishing
-6. Run `npm run build` to validate schema
+6. For media entries: Set `isFavorite: true` to show in favorites gallery (optional, defaults to false)
+7. Run `npm run build` to validate schema
 
 ### Content Type Guidelines
-- **Reflections**: Reviews and consumption logs (anime, manga, film)
-- **Favorites**: Inspirational content and personal favorites (anime, manga, film, music, book, game, character, other)
+- **Media**: All reviews, consumption logs, and inspirational content (anime, manga, film, series, music, book, game, character, other)
+  - Set `isFavorite: false` (or omit) for reviews/notes that appear only in /media
+  - Set `isFavorite: true` for curated highlights that appear in both /media and /favorites
 - **Notes**: Philosophical fragments and thoughts
 - **Showcase**: Project inquiries and experiments
 - **Now**: Current focus snapshots (time-based)
