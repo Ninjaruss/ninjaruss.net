@@ -7,7 +7,7 @@ emblem: "/images/showcase/2024-12-10_Marie_video.png"
 ---
 <iframe width="560" height="315" src="https://www.youtube.com/embed/HCc3Ol7adcw?si=W889e7FcEM041Wbh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-II really liked Marie's character from Persona 4 Golden so much that I made a whole video essay on her. Not only that, I went out of my way to express myself through her character. [Why is that?](/media/marie)
+I really liked Marie's character from Persona 4 Golden so much that I made a whole video essay on her. Not only that, I went out of my way to express myself through her character. [Why is that?](/media/marie)
 
 In creating this video, there were multiple things that really made this a truly special video for me. 
 - I was really struggling with getting out of my mind as I felt I wasn't making much out of myself (even though I've been doing great compared to my peers). The act of recording the sections for this video helped me a lot in letting go of any perfectionistic or doubt driven thoughts.
