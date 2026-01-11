@@ -35,6 +35,7 @@ const cardBack = '/images/ygo-card-backing.png';
     width: 100%;
     max-width: 240px;
     aspect-ratio: 63 / 88; /* Standard card ratio */
+    cursor: pointer;
   }
 
   .emblem-card__flipper {
@@ -234,9 +235,26 @@ const cardBack = '/images/ygo-card-backing.png';
     });
   }
 
+  function initEmblemLightbox() {
+    const cards = document.querySelectorAll('.emblem-card');
+    cards.forEach((card) => {
+      const img = card.querySelector('.emblem-card__front img') as HTMLImageElement;
+      if (img) {
+        card.addEventListener('click', (e) => {
+          e.preventDefault();
+          const src = img.getAttribute('src');
+          if (src && (window as any).openMediaLightbox) {
+            (window as any).openMediaLightbox(src, 'Page emblem', 'image');
+          }
+        });
+      }
+    });
+  }
+
   function init() {
     initEmblemTilt();
     initEmblemFloat();
+    initEmblemLightbox();
   }
 
   document.addEventListener('astro:page-load', init);

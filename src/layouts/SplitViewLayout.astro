@@ -1512,11 +1512,12 @@ const hasInitialContent = Astro.slots.has('detail');
     });
 
     // Scroll detection for visual hierarchy
-    if (navContainer && listPanel) {
+    // Dim sidebar when scrolling main content, not when scrolling sidebar itself
+    if (detailPanel && listPanel) {
       let scrollTimeout: number | null = null;
 
-      navContainer.addEventListener('scroll', () => {
-        const isScrolled = navContainer.scrollTop > 10;
+      detailPanel.addEventListener('scroll', () => {
+        const isScrolled = detailPanel.scrollTop > 10;
 
         if (scrollTimeout) clearTimeout(scrollTimeout);
 
