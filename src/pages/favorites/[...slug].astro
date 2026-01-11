@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('favorites', ({ data }) => !data.draft);
+  const entries = await getCollection('media', ({ data }) => !data.draft && data.isFavorite);
   return entries.map((entry) => ({
     params: { slug: entry.slug },
     props: { entry },
@@ -32,7 +32,7 @@ const getUpdatedDate = () => {
   if (entry.data.updatedAt) return entry.data.updatedAt;
 
   try {
-    const filePath = path.join(process.cwd(), 'src', 'content', 'favorites', `${entry.id}`);
+    const filePath = path.join(process.cwd(), 'src', 'content', 'media', `${entry.id}`);
     const stats = fs.statSync(filePath);
     return stats.mtime;
   } catch {
@@ -65,7 +65,7 @@ const updatedAt = getUpdatedDate();
 
         <div class="favorite-detail__meta p3r-animate" style="--stagger-delay: 150ms;">
           <span class="favorite-detail__type">
-            {entry.data.favorites_type}
+            {entry.data.content_type}
           </span>
 
           {entry.data.tags.length > 0 && (

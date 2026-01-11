@@ -1,7 +1,11 @@
 ---
 title: "Tengen Toppa Gurren Lagann"
-reflections_type: anime
+content_type: anime
 tags: ["peak"]
+collections: ["gurren lagann"]
+emblem: "/images/media/ttgl.webp"
+publishedAt: 2026-01-10
+isFavorite: true
 ---
 
 When I say this is my favorite anime of all time, what do I mean by that? Some may say it is the show that makes you smile with glee. Others may say it is how memorable the moments in the show are. I would say that it is a whole combination of these things: resonance with your own human experience and how well executed the show explores the experience they are presenting (or rather the meaning they are trying to portray). To me, Tengen Toppa Gurren Lagann is a beautiful metaphor of what it means to push through your limits and how important the human fighting spirit is in life.

@@ -38,6 +38,16 @@ const hasInitialContent = Astro.slots.has('detail');
             aria-label="Search entries"
           />
         </div>
+        <div class="split-view__type-filter">
+          <button class="split-view__type-toggle" type="button" aria-expanded="false">
+            <span class="split-view__type-label">Type</span>
+            <span class="split-view__type-chevron">▾</span>
+          </button>
+          <div class="split-view__type-dropdown" hidden>
+            <div class="split-view__type-list"></div>
+            <button class="split-view__type-clear" type="button">Clear all</button>
+          </div>
+        </div>
         <div class="split-view__tags-filter">
           <button class="split-view__tags-toggle" type="button" aria-expanded="false">
             <span class="split-view__tags-label">Tags</span>
@@ -48,6 +58,10 @@ const hasInitialContent = Astro.slots.has('detail');
             <button class="split-view__tags-clear" type="button">Clear all</button>
           </div>
         </div>
+        <button class="split-view__clear-all-filters" type="button" hidden>
+          <span class="split-view__clear-all-icon">✕</span>
+          <span class="split-view__clear-all-label">Clear All</span>
+        </button>
       </div>
       <div class="split-view__no-results" hidden>
         <p>No matching entries</p>
@@ -179,6 +193,122 @@ const hasInitialContent = Astro.slots.has('detail');
     box-shadow: 0 0 0 2px rgba(255, 229, 44, 0.2);
   }
 
+  /* Type Filter */
+  .split-view__type-filter {
+    position: relative;
+  }
+
+  .split-view__type-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--color-bg-base);
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+  }
+
+  .split-view__type-toggle:hover {
+    border-color: var(--color-gold-dim);
+    color: var(--color-text);
+  }
+
+  .split-view__type-toggle[aria-expanded="true"] {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+  }
+
+  .split-view__type-toggle.has-selection {
+    background: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-black);
+  }
+
+  .split-view__type-chevron {
+    font-size: var(--text-xs);
+    transition: transform var(--transition-fast);
+  }
+
+  .split-view__type-toggle[aria-expanded="true"] .split-view__type-chevron {
+    transform: rotate(180deg);
+  }
+
+  .split-view__type-dropdown {
+    position: absolute;
+    top: calc(100% + var(--space-xs));
+    right: 0;
+    min-width: 160px;
+    max-width: 220px;
+    max-height: 300px;
+    overflow-y: auto;
+    background: var(--color-bg-elevated);
+    border: var(--border-medium) solid var(--color-gold-dim);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm);
+    z-index: 100;
+    box-shadow: var(--shadow-hard);
+  }
+
+  .split-view__type-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-sm);
+  }
+
+  .split-view__type-pill {
+    padding: var(--space-2xs) var(--space-sm);
+    background: var(--color-bg-surface);
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-transform: capitalize;
+  }
+
+  .split-view__type-pill:hover {
+    border-color: var(--color-gold-dim);
+    color: var(--color-text);
+  }
+
+  .split-view__type-pill.is-selected {
+    background: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-black);
+    font-weight: 500;
+  }
+
+  .split-view__type-clear {
+    width: 100%;
+    padding: var(--space-xs);
+    background: transparent;
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .split-view__type-clear:hover {
+    border-color: var(--color-gold-dim);
+    color: var(--color-text);
+  }
+
+  /* Tags Filter */
   .split-view__tags-filter {
     position: relative;
   }
@@ -290,6 +420,45 @@ const hasInitialContent = Astro.slots.has('detail');
   .split-view__tags-clear:hover {
     border-color: var(--color-gold-dim);
     color: var(--color-text);
+  }
+
+  /* Clear All Filters Button */
+  .split-view__clear-all-filters {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    background: rgba(255, 229, 44, 0.1);
+    border: var(--border-thin) solid var(--color-gold-dim);
+    border-radius: var(--radius-sm);
+    color: var(--color-gold);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-top: var(--space-xs);
+  }
+
+  .split-view__clear-all-filters:hover {
+    background: rgba(255, 229, 44, 0.2);
+    border-color: var(--color-gold);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 229, 44, 0.2);
+  }
+
+  .split-view__clear-all-filters[hidden] {
+    display: none;
+  }
+
+  .split-view__clear-all-icon {
+    font-size: var(--text-sm);
+    line-height: 1;
+  }
+
+  .split-view__clear-all-label {
+    font-weight: 500;
   }
 
   .split-view__no-results {
@@ -780,18 +949,24 @@ const hasInitialContent = Astro.slots.has('detail');
     const section = splitView.dataset.section || '';
     const initialSlug = splitView.dataset.initialSlug;
     const searchInput = splitView.querySelector('.split-view__search') as HTMLInputElement | null;
+    const typesList = splitView.querySelector('.split-view__type-list') as HTMLElement | null;
+    const typeToggle = splitView.querySelector('.split-view__type-toggle') as HTMLElement | null;
+    const typeDropdown = splitView.querySelector('.split-view__type-dropdown') as HTMLElement | null;
+    const typeClear = splitView.querySelector('.split-view__type-clear') as HTMLElement | null;
+    const typeFilter = splitView.querySelector('.split-view__type-filter') as HTMLElement | null;
     const tagsList = splitView.querySelector('.split-view__tags-list') as HTMLElement | null;
     const tagsToggle = splitView.querySelector('.split-view__tags-toggle') as HTMLElement | null;
     const tagsDropdown = splitView.querySelector('.split-view__tags-dropdown') as HTMLElement | null;
     const tagsClear = splitView.querySelector('.split-view__tags-clear') as HTMLElement | null;
     const tagsFilter = splitView.querySelector('.split-view__tags-filter') as HTMLElement | null;
+    const clearAllButton = splitView.querySelector('.split-view__clear-all-filters') as HTMLElement | null;
     const noResults = splitView.querySelector('.split-view__no-results') as HTMLElement | null;
     const contentArea = splitView.querySelector('.split-view__content') as HTMLElement | null;
     const listItems = Array.from(splitView.querySelectorAll('.list-item')) as HTMLElement[];
     const navContainer = splitView.querySelector('.split-view__nav') as HTMLElement | null;
     const listPanel = splitView.querySelector('.split-view__list') as HTMLElement | null;
 
-    if (!searchInput || !tagsList || !tagsToggle || !tagsDropdown || !tagsClear || !tagsFilter || !noResults || !contentArea) {
+    if (!searchInput || !typesList || !typeToggle || !typeDropdown || !typeClear || !typeFilter || !tagsList || !tagsToggle || !tagsDropdown || !tagsClear || !tagsFilter || !clearAllButton || !noResults || !contentArea) {
       console.error('Split view: missing required elements');
       return;
     }
@@ -804,12 +979,14 @@ const hasInitialContent = Astro.slots.has('detail');
       const params = new URLSearchParams(window.location.search);
       const search = params.get('search') || '';
       const tagsParam = params.get('tags') || '';
+      const typesParam = params.get('types') || '';
       const tags = tagsParam ? new Set(tagsParam.split(',').filter(Boolean)) : new Set<string>();
-      return { search, tags };
+      const types = typesParam ? new Set(typesParam.split(',').filter(Boolean)) : new Set<string>();
+      return { search, tags, types };
     }
 
     // Update URL with current filters
-    function updateURL(search: string, tags: Set<string>) {
+    function updateURL(search: string, tags: Set<string>, types: Set<string>) {
       const params = new URLSearchParams(window.location.search);
 
       if (search) {
@@ -824,8 +1001,38 @@ const hasInitialContent = Astro.slots.has('detail');
         params.delete('tags');
       }
 
+      if (types.size > 0) {
+        params.set('types', Array.from(types).sort().join(','));
+      } else {
+        params.delete('types');
+      }
+
       const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
       history.replaceState(null, '', newURL);
+
+      // Show/hide clear all button based on active filters
+      const hasActiveFilters = tags.size > 0 || types.size > 0;
+      clearAllButton!.hidden = !hasActiveFilters;
+    }
+
+    // Populate types dropdown and restore selected state
+    function populateTypes(selectedTypes: Set<string>) {
+      const allTypes = new Set<string>();
+      listItems.forEach((item) => {
+        const type = item.dataset.contentType;
+        if (type) allTypes.add(type);
+      });
+
+      const sortedTypes = Array.from(allTypes).sort();
+      typesList!.innerHTML = sortedTypes
+        .map((type) => {
+          const isSelected = selectedTypes.has(type);
+          return `<button class="split-view__type-pill ${isSelected ? 'is-selected' : ''}" type="button" data-type="${type}">${type}</button>`;
+        })
+        .join('');
+
+      typeFilter!.style.display = sortedTypes.length === 0 ? 'none' : '';
+      typeToggle!.classList.toggle('has-selection', selectedTypes.size > 0);
     }
 
     // Populate tags dropdown and restore selected state
@@ -850,20 +1057,22 @@ const hasInitialContent = Astro.slots.has('detail');
 
     // Apply filters based on current URL params
     function applyFilters() {
-      const { search, tags } = getFiltersFromURL();
+      const { search, tags, types } = getFiltersFromURL();
       const query = search.toLowerCase().trim();
       let visibleCount = 0;
 
       listItems.forEach((item) => {
         const title = item.querySelector('.list-item__title')?.textContent?.toLowerCase() || '';
         const itemTags = item.dataset.tags?.split(',').filter(Boolean) || [];
+        const itemType = item.dataset.contentType || '';
         const searchContent = item.dataset.searchContent?.toLowerCase() || '';
 
         // Search in title OR body content
         const matchesSearch = !query || title.includes(query) || searchContent.includes(query);
         const matchesTags = tags.size === 0 || itemTags.some((tag) => tags.has(tag));
+        const matchesType = types.size === 0 || types.has(itemType);
 
-        const isVisible = matchesSearch && matchesTags;
+        const isVisible = matchesSearch && matchesTags && matchesType;
         item.classList.toggle('is-filtered', !isVisible);
         if (isVisible) visibleCount++;
       });
@@ -1000,9 +1209,10 @@ const hasInitialContent = Astro.slots.has('detail');
     }
 
     // Initialize - restore state from URL
-    const { search: initialSearch, tags: initialTags } = getFiltersFromURL();
+    const { search: initialSearch, tags: initialTags, types: initialTypes } = getFiltersFromURL();
     searchInput.value = initialSearch;
     populateTags(initialTags);
+    populateTypes(initialTypes);
     applyFilters();
 
     if (initialSlug) {
@@ -1012,8 +1222,13 @@ const hasInitialContent = Astro.slots.has('detail');
 
     // Idle detection for emblem floating
     let isIdle = false;
+    let resumeTimer: number | null = null;
+    const RESUME_DELAY = 3000; // Resume floating after 3 seconds of inactivity
 
     function startFloating() {
+      // Clear any pending resume timer
+      if (resumeTimer) clearTimeout(resumeTimer);
+
       if (splitView && splitView.classList.contains('has-selection') && !isIdle) {
         isIdle = true;
         document.querySelectorAll('[data-emblem-card]').forEach(card => {
@@ -1023,18 +1238,26 @@ const hasInitialContent = Astro.slots.has('detail');
     }
 
     function stopFloating() {
+      // Clear any pending resume timer
+      if (resumeTimer) clearTimeout(resumeTimer);
+
       if (isIdle) {
         isIdle = false;
         document.querySelectorAll('[data-emblem-card]').forEach(card => {
           card.dispatchEvent(new CustomEvent('emblemcard:idle-end'));
         });
       }
+
+      // Set timer to resume floating after inactivity
+      resumeTimer = window.setTimeout(() => {
+        startFloating();
+      }, RESUME_DELAY);
     }
 
     // Search input
     searchInput.addEventListener('input', () => {
-      const { tags } = getFiltersFromURL();
-      updateURL(searchInput.value, tags);
+      const { tags, types } = getFiltersFromURL();
+      updateURL(searchInput.value, tags, types);
       applyFilters();
       stopFloating();
     });
@@ -1045,6 +1268,12 @@ const hasInitialContent = Astro.slots.has('detail');
       const isExpanded = tagsToggle.getAttribute('aria-expanded') === 'true';
       tagsToggle.setAttribute('aria-expanded', String(!isExpanded));
       tagsDropdown.hidden = isExpanded;
+
+      // Close type dropdown when opening tags
+      if (!isExpanded) {
+        typeToggle.setAttribute('aria-expanded', 'false');
+        typeDropdown.hidden = true;
+      }
     });
 
     // Tag pill clicks (event delegation)
@@ -1055,7 +1284,7 @@ const hasInitialContent = Astro.slots.has('detail');
       const tag = pill.dataset.tag;
       if (!tag) return;
 
-      const { search, tags } = getFiltersFromURL();
+      const { search, tags, types } = getFiltersFromURL();
 
       if (tags.has(tag)) {
         tags.delete(tag);
@@ -1066,18 +1295,86 @@ const hasInitialContent = Astro.slots.has('detail');
       }
 
       tagsToggle.classList.toggle('has-selection', tags.size > 0);
-      updateURL(search, tags);
+      updateURL(search, tags, types);
       applyFilters();
     });
 
     // Clear tags
     tagsClear.addEventListener('click', () => {
-      const { search } = getFiltersFromURL();
-      updateURL(search, new Set());
+      const { search, types } = getFiltersFromURL();
+      updateURL(search, new Set(), types);
       tagsList.querySelectorAll('.split-view__tag-pill').forEach((p) => {
         p.classList.remove('is-selected');
       });
       tagsToggle.classList.remove('has-selection');
+      applyFilters();
+    });
+
+    // Type toggle
+    typeToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isExpanded = typeToggle.getAttribute('aria-expanded') === 'true';
+      typeToggle.setAttribute('aria-expanded', String(!isExpanded));
+      typeDropdown.hidden = isExpanded;
+
+      // Close tags dropdown when opening type
+      if (!isExpanded) {
+        tagsToggle.setAttribute('aria-expanded', 'false');
+        tagsDropdown.hidden = true;
+      }
+    });
+
+    // Type pill clicks (event delegation)
+    typesList.addEventListener('click', (e) => {
+      const pill = (e.target as HTMLElement).closest('.split-view__type-pill') as HTMLElement;
+      if (!pill) return;
+
+      const type = pill.dataset.type;
+      if (!type) return;
+
+      const { search, tags, types } = getFiltersFromURL();
+
+      if (types.has(type)) {
+        types.delete(type);
+        pill.classList.remove('is-selected');
+      } else {
+        types.add(type);
+        pill.classList.add('is-selected');
+      }
+
+      typeToggle.classList.toggle('has-selection', types.size > 0);
+      updateURL(search, tags, types);
+      applyFilters();
+    });
+
+    // Clear types
+    typeClear.addEventListener('click', () => {
+      const { search, tags } = getFiltersFromURL();
+      updateURL(search, tags, new Set());
+      typesList.querySelectorAll('.split-view__type-pill').forEach((p) => {
+        p.classList.remove('is-selected');
+      });
+      typeToggle.classList.remove('has-selection');
+      applyFilters();
+    });
+
+    // Clear all filters (both types and tags)
+    clearAllButton.addEventListener('click', () => {
+      const { search } = getFiltersFromURL();
+      updateURL(search, new Set(), new Set());
+
+      // Clear all tag pills
+      tagsList.querySelectorAll('.split-view__tag-pill').forEach((p) => {
+        p.classList.remove('is-selected');
+      });
+      tagsToggle.classList.remove('has-selection');
+
+      // Clear all type pills
+      typesList.querySelectorAll('.split-view__type-pill').forEach((p) => {
+        p.classList.remove('is-selected');
+      });
+      typeToggle.classList.remove('has-selection');
+
       applyFilters();
     });
 
@@ -1086,18 +1383,28 @@ const hasInitialContent = Astro.slots.has('detail');
       (window as any).__splitViewGlobalHandlers = true;
 
       document.addEventListener('click', (e) => {
-        const toggle = document.querySelector('.split-view__tags-toggle') as HTMLElement | null;
-        const dropdown = document.querySelector('.split-view__tags-dropdown') as HTMLElement | null;
-        if (toggle && dropdown && !toggle.contains(e.target as Node) && !dropdown.contains(e.target as Node)) {
-          toggle.setAttribute('aria-expanded', 'false');
-          dropdown.hidden = true;
+        const tagsToggle = document.querySelector('.split-view__tags-toggle') as HTMLElement | null;
+        const tagsDropdown = document.querySelector('.split-view__tags-dropdown') as HTMLElement | null;
+        const typeToggle = document.querySelector('.split-view__type-toggle') as HTMLElement | null;
+        const typeDropdown = document.querySelector('.split-view__type-dropdown') as HTMLElement | null;
+
+        if (tagsToggle && tagsDropdown && !tagsToggle.contains(e.target as Node) && !tagsDropdown.contains(e.target as Node)) {
+          tagsToggle.setAttribute('aria-expanded', 'false');
+          tagsDropdown.hidden = true;
+        }
+
+        if (typeToggle && typeDropdown && !typeToggle.contains(e.target as Node) && !typeDropdown.contains(e.target as Node)) {
+          typeToggle.setAttribute('aria-expanded', 'false');
+          typeDropdown.hidden = true;
         }
       });
 
       document.addEventListener('keydown', (e) => {
         const search = document.querySelector('.split-view__search') as HTMLInputElement | null;
-        const toggle = document.querySelector('.split-view__tags-toggle') as HTMLElement | null;
-        const dropdown = document.querySelector('.split-view__tags-dropdown') as HTMLElement | null;
+        const tagsToggle = document.querySelector('.split-view__tags-toggle') as HTMLElement | null;
+        const tagsDropdown = document.querySelector('.split-view__tags-dropdown') as HTMLElement | null;
+        const typeToggle = document.querySelector('.split-view__type-toggle') as HTMLElement | null;
+        const typeDropdown = document.querySelector('.split-view__type-dropdown') as HTMLElement | null;
 
         if ((e.metaKey || e.ctrlKey) && e.key === 'k' && search) {
           e.preventDefault();
@@ -1115,9 +1422,13 @@ const hasInitialContent = Astro.slots.has('detail');
             // Dispatch a custom event to trigger filter update
             window.dispatchEvent(new Event('filterschanged'));
           }
-          if (toggle && dropdown) {
-            toggle.setAttribute('aria-expanded', 'false');
-            dropdown.hidden = true;
+          if (tagsToggle && tagsDropdown) {
+            tagsToggle.setAttribute('aria-expanded', 'false');
+            tagsDropdown.hidden = true;
+          }
+          if (typeToggle && typeDropdown) {
+            typeToggle.setAttribute('aria-expanded', 'false');
+            typeDropdown.hidden = true;
           }
         }
       });
@@ -1148,10 +1459,15 @@ const hasInitialContent = Astro.slots.has('detail');
     // Emblem hover pauses floating (but NOT general mouse movement)
     document.querySelectorAll('[data-emblem-card]').forEach(card => {
       card.addEventListener('mouseenter', () => {
-        card.dispatchEvent(new CustomEvent('emblemcard:idle-end'));
+        // Clear resume timer and pause floating during hover
+        if (resumeTimer) clearTimeout(resumeTimer);
+        if (isIdle) {
+          isIdle = false;
+          card.dispatchEvent(new CustomEvent('emblemcard:idle-end'));
+        }
       });
       card.addEventListener('mouseleave', () => {
-        // Resume floating after hovering emblem
+        // Resume floating immediately after hovering emblem
         startFloating();
       });
     });

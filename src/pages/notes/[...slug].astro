@@ -23,7 +23,7 @@ const allNotes = await getCollection('notes', ({ data }) => !data.draft);
 const sortedNotes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.title));
 
 // Fetch all collections for related content
-const allReflections = await getCollection('reflections', ({ data }) => !data.draft);
+const allReflections = await getCollection('media', ({ data }) => !data.draft);
 const allShowcase = await getCollection('showcase', ({ data }) => !data.draft);
 
 const formatDate = (date: Date) => {
