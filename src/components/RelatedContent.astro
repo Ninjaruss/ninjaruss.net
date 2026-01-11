@@ -5,16 +5,16 @@ interface Props {
   currentSlug: string;
   currentCollections: string[];
   section: 'media' | 'notes' | 'showcase';
-  allReflections: CollectionEntry<'media'>[];
+  allMedia: CollectionEntry<'media'>[];
   allNotes: CollectionEntry<'notes'>[];
   allShowcase: CollectionEntry<'showcase'>[];
 }
 
-const { currentSlug, currentCollections, section, allReflections, allNotes, allShowcase } = Astro.props;
+const { currentSlug, currentCollections, section, allMedia, allNotes, allShowcase } = Astro.props;
 
 // Combine all entries from all collections
 const allEntries = [
-  ...allReflections.map(entry => ({ ...entry, type: 'media' as const })),
+  ...allMedia.map(entry => ({ ...entry, type: 'media' as const })),
   ...allNotes.map(entry => ({ ...entry, type: 'notes' as const })),
   ...allShowcase.map(entry => ({ ...entry, type: 'showcase' as const }))
 ];

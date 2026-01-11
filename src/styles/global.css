@@ -56,7 +56,7 @@
   --space-2xl: 3rem;
   --space-3xl: 4rem;
 
-  /* Responsive Breakpoints (for reference in reflections queries) */
+  /* Responsive Breakpoints (for reference in media queries) */
   --breakpoint-sm: 480px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
