@@ -83,6 +83,17 @@ const cardBack = '/images/ygo-card-backing.png';
     object-fit: cover;
   }
 
+  /* Floating animation container */
+  .emblem-card {
+    transform: translateY(var(--float-y, 0));
+    transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Override transition during active floating */
+  .emblem-card[style*="--float-y"] {
+    transition: none;
+  }
+
   /* Hover tilt effect */
   .emblem-card:hover .emblem-card__flipper {
     transform: rotateY(180deg) scale(1.02);
@@ -165,10 +176,73 @@ const cardBack = '/images/ygo-card-backing.png';
     });
   }
 
-  document.addEventListener('astro:page-load', initEmblemTilt);
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initEmblemTilt);
-  } else {
+  function initEmblemFloat() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const emblemCards = document.querySelectorAll('.emblem-card');
+
+    emblemCards.forEach((card) => {
+      let floatRafId: number | null = null;
+      let isFloating = false;
+      let startTime: number | null = null;
+
+      const FLOAT_AMPLITUDE = 10; // pixels (increased for visibility)
+      const FLOAT_PERIOD = 35000; // 35 seconds
+
+      function animate(currentTime: number) {
+        if (!isFloating) {
+          if (floatRafId) {
+            // Transition out smoothly
+            const currentY = parseFloat((card as HTMLElement).style.getPropertyValue('--float-y') || '0');
+            if (Math.abs(currentY) > 0.1) {
+              const targetY = currentY * 0.9;
+              (card as HTMLElement).style.setProperty('--float-y', `${targetY}px`);
+              floatRafId = requestAnimationFrame(animate);
+            } else {
+              (card as HTMLElement).style.removeProperty('--float-y');
+              floatRafId = null;
+            }
+          }
+          return;
+        }
+
+        if (startTime === null) startTime = currentTime;
+
+        const elapsed = currentTime - startTime;
+        const progress = (elapsed % FLOAT_PERIOD) / FLOAT_PERIOD;
+
+        // Sine wave with ease
+        const sineValue = Math.sin(progress * Math.PI * 2);
+        const eased = -(Math.cos(Math.PI * ((sineValue + 1) / 2)) - 1) / 2;
+        const translateY = (eased * 2 - 1) * FLOAT_AMPLITUDE;
+
+        (card as HTMLElement).style.setProperty('--float-y', `${translateY}px`);
+        floatRafId = requestAnimationFrame(animate);
+      }
+
+      card.addEventListener('emblemcard:idle-start', () => {
+        if (isFloating) return;
+        isFloating = true;
+        startTime = null;
+        floatRafId = requestAnimationFrame(animate);
+      });
+
+      card.addEventListener('emblemcard:idle-end', () => {
+        isFloating = false;
+        // animate() will handle transition out
+      });
+    });
+  }
+
+  function init() {
     initEmblemTilt();
+    initEmblemFloat();
+  }
+
+  document.addEventListener('astro:page-load', init);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 </script>
