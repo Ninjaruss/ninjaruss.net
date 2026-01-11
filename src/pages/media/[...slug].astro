@@ -4,6 +4,7 @@ import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
 import TagList from '../../components/TagList.astro';
 import RelatedContent from '../../components/RelatedContent.astro';
+import { stripMarkdown, hasMinimalContent } from '../../utils/content';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -27,10 +28,6 @@ const allMediaEntries = allMedia;
 const allNotes = await getCollection('notes', ({ data }) => !data.draft);
 const allShowcase = await getCollection('showcase', ({ data }) => !data.draft);
 
-const meta: Record<string, string> = {};
-if (entry.data.content_type) {
-  meta['Type'] = entry.data.content_type.charAt(0).toUpperCase() + entry.data.content_type.slice(1);
-}
 
 const formatDate = (date: Date) => {
   return date.toLocaleDateString('en-US', {
@@ -40,20 +37,6 @@ const formatDate = (date: Date) => {
     timeZone: 'UTC',
   });
 };
-
-// Strip markdown syntax for searchable content
-function stripMarkdown(markdown: string): string {
-  return markdown
-    .replace(/```[\s\S]*?```/g, '')           // Remove code blocks
-    .replace(/`[^`]+`/g, '')                  // Remove inline code
-    .replace(/!\[.*?\]\(.*?\)/g, '')          // Remove images
-    .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Remove links, keep text
-    .replace(/^#{1,6}\s+/gm, '')              // Remove headings
-    .replace(/[*_]{1,2}([^*_]+)[*_]{1,2}/g, '$1') // Remove bold/italic
-    .replace(/\s+/g, ' ')                     // Collapse whitespace
-    .trim()
-    .slice(0, 500);                           // Truncate to 500 chars
-}
 
 // Hybrid date approach: manual override or file mtime
 const getUpdatedDate = () => {
@@ -69,6 +52,9 @@ const getUpdatedDate = () => {
 };
 
 const updatedAt = getUpdatedDate();
+
+// Check if entry has substantial content
+const hasContent = !hasMinimalContent(entry.body);
 ---
 
 <SplitViewLayout
@@ -85,8 +71,9 @@ const updatedAt = getUpdatedDate();
         slug={mediaEntry.slug}
         title={mediaEntry.data.title}
         tags={mediaEntry.data.tags}
-        searchableContent={stripMarkdown(mediaEntry.body || '')}
+        searchableContent={stripMarkdown(mediaEntry.body || '').slice(0, 500)}
         contentType={mediaEntry.data.content_type}
+        hasMinimalContent={hasMinimalContent(mediaEntry.body)}
       />
     ))}
   </Fragment>
@@ -98,9 +85,11 @@ const updatedAt = getUpdatedDate();
         <header class="entry__header">
           <h1 class="entry__title">{entry.data.title}</h1>
           <div class="entry__meta">
-            <div class="entry__meta-row">
-              <TagList tags={entry.data.tags} size="md" />
-            </div>
+            {entry.data.tags.length > 0 && (
+              <div class="entry__meta-row">
+                <TagList tags={entry.data.tags} size="md" />
+              </div>
+            )}
             <div class="entry__meta-dates">
               {entry.data.publishedAt && (
                 <div class="meta-date-item">
@@ -116,23 +105,15 @@ const updatedAt = getUpdatedDate();
               )}
             </div>
           </div>
-          {meta && Object.keys(meta).length > 0 && (
-            <dl class="entry__details">
-              {Object.entries(meta).map(([key, value]) => (
-                <>
-                  <dt>{key}</dt>
-                  <dd>{value}</dd>
-                </>
-              ))}
-            </dl>
-          )}
         </header>
 
-        <div class="entry__body">
-          <div class="entry__content prose">
-            <Content />
+        {hasContent && (
+          <div class="entry__body">
+            <div class="entry__content prose">
+              <Content />
+            </div>
           </div>
-        </div>
+        )}
 
         {entry.data.collections.length > 0 && (
           <RelatedContent

@@ -4,6 +4,7 @@ import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
 import TagList from '../../components/TagList.astro';
 import RelatedContent from '../../components/RelatedContent.astro';
+import { stripMarkdown, hasMinimalContent } from '../../utils/content';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -36,20 +37,6 @@ const formatDate = (date: Date) => {
   });
 };
 
-// Strip markdown syntax for searchable content
-function stripMarkdown(markdown: string): string {
-  return markdown
-    .replace(/```[\s\S]*?```/g, '')           // Remove code blocks
-    .replace(/`[^`]+`/g, '')                  // Remove inline code
-    .replace(/!\[.*?\]\(.*?\)/g, '')          // Remove images
-    .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Remove links, keep text
-    .replace(/^#{1,6}\s+/gm, '')              // Remove headings
-    .replace(/[*_]{1,2}([^*_]+)[*_]{1,2}/g, '$1') // Remove bold/italic
-    .replace(/\s+/g, ' ')                     // Collapse whitespace
-    .trim()
-    .slice(0, 500);                           // Truncate to 500 chars
-}
-
 // Hybrid date approach: manual override or file mtime
 const getUpdatedDate = () => {
   if (entry.data.updatedAt) return entry.data.updatedAt;
@@ -64,6 +51,9 @@ const getUpdatedDate = () => {
 };
 
 const updatedAt = getUpdatedDate();
+
+// Check if entry has substantial content
+const hasContent = !hasMinimalContent(entry.body);
 ---
 
 <SplitViewLayout
@@ -80,7 +70,8 @@ const updatedAt = getUpdatedDate();
         slug={exp.slug}
         title={exp.data.title}
         tags={exp.data.tags}
-        searchableContent={stripMarkdown(exp.body)}
+        searchableContent={stripMarkdown(exp.body).slice(0, 500)}
+        hasMinimalContent={hasMinimalContent(exp.body)}
       />
     ))}
   </Fragment>
@@ -92,9 +83,11 @@ const updatedAt = getUpdatedDate();
         <header class="entry__header">
           <h1 class="entry__title">{entry.data.title}</h1>
           <div class="entry__meta">
-            <div class="entry__meta-row">
-              <TagList tags={entry.data.tags} size="md" />
-            </div>
+            {entry.data.tags.length > 0 && (
+              <div class="entry__meta-row">
+                <TagList tags={entry.data.tags} size="md" />
+              </div>
+            )}
             <div class="entry__meta-dates">
               {entry.data.publishedAt && (
                 <div class="meta-date-item">
@@ -112,11 +105,13 @@ const updatedAt = getUpdatedDate();
           </div>
         </header>
 
-        <div class="entry__body">
-          <div class="entry__content prose">
-            <Content />
+        {hasContent && (
+          <div class="entry__body">
+            <div class="entry__content prose">
+              <Content />
+            </div>
           </div>
-        </div>
+        )}
 
         {entry.data.collections.length > 0 && (
           <RelatedContent

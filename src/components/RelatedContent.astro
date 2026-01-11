@@ -45,13 +45,20 @@ const relatedEntries = allEntries
   .slice(0, 6); // Limit to 6 results
 
 // Helper to get section display name
-const getSectionLabel = (type: 'media' | 'notes' | 'showcase') => {
+const getSectionLabel = (entry: typeof relatedEntries[0]) => {
+  // For media entries, show specific content type
+  if (entry.type === 'media' && 'content_type' in entry.data) {
+    const type = entry.data.content_type;
+    return type.charAt(0).toUpperCase() + type.slice(1);
+  }
+
+  // For other sections, show generic labels
   const labels = {
     media: 'Media',
     notes: 'Note',
     showcase: 'Project'
   };
-  return labels[type];
+  return labels[entry.type];
 };
 ---
 
@@ -67,7 +74,7 @@ const getSectionLabel = (type: 'media' | 'notes' | 'showcase') => {
             </div>
           )}
           <div class="related-card__content">
-            <span class="related-card__badge">{getSectionLabel(entry.type)}</span>
+            <span class="related-card__badge">{getSectionLabel(entry)}</span>
             <h3 class="related-card__title">{entry.data.title}</h3>
           </div>
         </a>

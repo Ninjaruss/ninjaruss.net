@@ -30,16 +30,15 @@ const recentHref = mostRecent ? `/${mostRecent.collection}/${mostRecent.slug}` :
 
 // Calculate "X days ago" for latest content
 const getDaysAgo = (date: Date) => {
-  // Create date objects at midnight local time for accurate day comparison
   const today = new Date();
   const compareDate = new Date(date);
 
-  // Use Date components to create clean midnight dates, avoiding timezone issues
-  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  const compareMidnight = new Date(compareDate.getFullYear(), compareDate.getMonth(), compareDate.getDate());
+  // Use UTC to avoid timezone issues
+  const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+  const compareUTC = Date.UTC(compareDate.getFullYear(), compareDate.getMonth(), compareDate.getDate());
 
-  const diffMs = todayMidnight.getTime() - compareMidnight.getTime();
-  const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+  const diffMs = todayUTC - compareUTC;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0) return 'today';
   if (diffDays === 1) return 'yesterday';
