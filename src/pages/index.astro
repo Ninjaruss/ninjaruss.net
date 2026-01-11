@@ -54,6 +54,7 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
       <!-- Row 1-2: Title Hero (3x2) + YouTube Hero #1 (3x2) -->
       <div class="title-tile bento-tile--span-3x2 p3r-animate-left">
         <span class="title-tile__name">Ninjaruss</span>
+        <p class="title-tile__description">Live without regret.</p>
       </div>
 
       <div class="image-tile image-tile--youtube bento-tile--span-3x2 p3r-animate" style="--stagger-delay: 100ms;">
@@ -78,27 +79,26 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
         accent
         label="Showcase"
         title="What I'm Building"
-        description="Projects framed as inquiries."
+        description="Stuff I've created and that I am currently working on."
         class="bento-tile--core bento-tile--span-3x2"
       />
 
       <BentoTile
         href="/notes"
         variant="dark"
-        accent
         label="Notes"
         title="Thoughts in Progress"
-        description="Philosophical fragments. Contradictions allowed."
+        description="An assortment of ideas I've been thinking about."
         class="bento-tile--core bento-tile--span-3x2"
       />
 
       <!-- Row 5-6: Reflections (2x2) + Latest (2x1) + Now (2x1) -->
       <BentoTile
         href="/reflections"
-        accent
+        variant="dark"
         label="Reflections"
         title="Watched & Read"
-        description="Anime, manga, and film notes."
+        description="My thoughts on anime, manga, movies, and more."
         class="bento-tile--core bento-tile--span-2x2"
       />
 
@@ -121,15 +121,17 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
         label="Now"
         title="Current Focus"
         class="bento-tile--span-2x1"
+        description="Where am I at right now?"
       >
         <span class="now-date">{nowMonthYear}</span>
       </BentoTile>
 
       <BentoTile
         href="/favorites"
-        variant="highlight"
+        variant="dark"
         label="Favorites"
         title="Inspirations"
+        description="My favorite characters, series, and soundtracks."
       />
 
       <a
@@ -145,6 +147,7 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
           class="logo-tile__img"
         />
         <span class="logo-tile__label">MyAnimeList</span>
+        <p class="logo-tile__description">Anime I've watched and rated based on personal enjoyment.</p>
       </a>
 
       <a
@@ -160,6 +163,7 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
           class="logo-tile__img"
         />
         <span class="logo-tile__label">Spotify</span>
+        <p class="logo-tile__description">The bangers I listen to every day.</p>
       </a>
 
       <!-- Row 7-8: YouTube Hero #2 (3x2) + Mini Tiles (2x1 each) -->
@@ -251,9 +255,36 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
     color: var(--color-gold);
   }
 
+  .logo-tile__description {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    margin-top: var(--space-xs);
+    line-height: 1.4;
+    text-align: center;
+
+    /* Hidden by default, revealed on hover with 400ms delay */
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition:
+      opacity 200ms ease-out 400ms,
+      max-height 300ms ease-out 0ms;
+  }
+
+  .logo-tile:hover .logo-tile__description {
+    opacity: 1;
+    max-height: 100px;
+  }
+
+  /* Instant hide on mouse out (remove delay) */
+  .logo-tile:not(:hover) .logo-tile__description {
+    transition-delay: 0ms;
+  }
+
   /* Title Tile - Part of the bento grid */
   .title-tile {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     background: var(--color-black);
@@ -264,6 +295,8 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
     grid-row: span 1;
     box-shadow: var(--shadow-glow);
     overflow: hidden;
+    opacity: 1;
+    transition: opacity var(--transition-base);
   }
 
   .title-tile__name {
@@ -277,6 +310,32 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
       0 0 60px rgba(255, 229, 44, 0.3);
   }
 
+  .title-tile__description {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-top: var(--space-xs);
+    line-height: 1.4;
+    text-align: center;
+
+    /* Hidden by default, revealed on hover with 400ms delay */
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition:
+      opacity 200ms ease-out 400ms,
+      max-height 300ms ease-out 0ms;
+  }
+
+  .title-tile:hover .title-tile__description {
+    opacity: 1;
+    max-height: 100px;
+  }
+
+  /* Instant hide on mouse out (remove delay) */
+  .title-tile:not(:hover) .title-tile__description {
+    transition-delay: 0ms;
+  }
+
   /* Image Tile */
   .image-tile {
     grid-column: span 1;
@@ -287,7 +346,9 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
     background: var(--color-bg-elevated);
     position: relative;
     box-shadow: var(--shadow-hard);
+    opacity: 1;
     transition:
+      opacity var(--transition-base),
       transform var(--transition-fast),
       box-shadow var(--transition-fast),
       border-color var(--transition-fast);
@@ -349,6 +410,19 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
 
   .image-tile--youtube:hover .image-tile__youtube-icon {
     transform: scale(1.1);
+  }
+
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    .title-tile__description,
+    .logo-tile__description {
+      transition: opacity 100ms ease-out 0ms;
+    }
+
+    .title-tile:hover .title-tile__description,
+    .logo-tile:hover .logo-tile__description {
+      transition-delay: 0ms;
+    }
   }
 
   @media (max-width: 768px) {

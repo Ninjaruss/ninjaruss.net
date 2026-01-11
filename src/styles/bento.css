@@ -8,6 +8,28 @@
   width: 100%;
 }
 
+/* Neighbor Dimming Effect — Dim non-hovered tiles when any tile is hovered */
+.bento-grid:has(.bento-tile:hover) .bento-tile:not(:hover),
+.bento-grid:has(.logo-tile:hover) .bento-tile:not(:hover),
+.bento-grid:has(.title-tile:hover) .bento-tile:not(:hover),
+.bento-grid:has(.image-tile:hover) .bento-tile:not(:hover),
+.bento-grid:has(.bento-tile:hover) .logo-tile:not(:hover),
+.bento-grid:has(.bento-tile:hover) .title-tile:not(:hover),
+.bento-grid:has(.bento-tile:hover) .image-tile:not(:hover),
+.bento-grid:has(.logo-tile:hover) .logo-tile:not(:hover),
+.bento-grid:has(.logo-tile:hover) .title-tile:not(:hover),
+.bento-grid:has(.logo-tile:hover) .image-tile:not(:hover),
+.bento-grid:has(.title-tile:hover) .bento-tile:not(:hover),
+.bento-grid:has(.title-tile:hover) .logo-tile:not(:hover),
+.bento-grid:has(.title-tile:hover) .title-tile:not(:hover),
+.bento-grid:has(.title-tile:hover) .image-tile:not(:hover),
+.bento-grid:has(.image-tile:hover) .bento-tile:not(:hover),
+.bento-grid:has(.image-tile:hover) .logo-tile:not(:hover),
+.bento-grid:has(.image-tile:hover) .title-tile:not(:hover),
+.bento-grid:has(.image-tile:hover) .image-tile:not(:hover) {
+  opacity: 0.3;
+}
+
 /* Dense asymmetric layout spans */
 .bento-tile--span-3x2 {
   grid-column: span 3;
@@ -33,7 +55,9 @@
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-hard);
+  opacity: 1;
   transition:
+    opacity var(--transition-base),
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
     border-color var(--transition-fast);
@@ -93,6 +117,37 @@
   .bento-tile--interactive::before {
     display: none;
   }
+
+  /* Disable neighbor dimming for reduced motion */
+  .bento-grid:has(.bento-tile:hover) .bento-tile:not(:hover),
+  .bento-grid:has(.logo-tile:hover) .bento-tile:not(:hover),
+  .bento-grid:has(.title-tile:hover) .bento-tile:not(:hover),
+  .bento-grid:has(.image-tile:hover) .bento-tile:not(:hover),
+  .bento-grid:has(.bento-tile:hover) .logo-tile:not(:hover),
+  .bento-grid:has(.bento-tile:hover) .title-tile:not(:hover),
+  .bento-grid:has(.bento-tile:hover) .image-tile:not(:hover),
+  .bento-grid:has(.logo-tile:hover) .logo-tile:not(:hover),
+  .bento-grid:has(.logo-tile:hover) .title-tile:not(:hover),
+  .bento-grid:has(.logo-tile:hover) .image-tile:not(:hover),
+  .bento-grid:has(.title-tile:hover) .bento-tile:not(:hover),
+  .bento-grid:has(.title-tile:hover) .logo-tile:not(:hover),
+  .bento-grid:has(.title-tile:hover) .title-tile:not(:hover),
+  .bento-grid:has(.title-tile:hover) .image-tile:not(:hover),
+  .bento-grid:has(.image-tile:hover) .bento-tile:not(:hover),
+  .bento-grid:has(.image-tile:hover) .logo-tile:not(:hover),
+  .bento-grid:has(.image-tile:hover) .title-tile:not(:hover),
+  .bento-grid:has(.image-tile:hover) .image-tile:not(:hover) {
+    opacity: 1;
+  }
+
+  /* Instant subtitle reveal (no delay) */
+  .bento-tile__description {
+    transition: opacity 100ms ease-out 0ms;
+  }
+
+  .bento-tile:hover .bento-tile__description {
+    transition-delay: 0ms;
+  }
 }
 
 /* Yellow Highlight Tile — Featured Items */
@@ -112,7 +167,11 @@
 
 .bento-tile--highlight .bento-tile__description {
   color: var(--color-text-on-gold);
-  opacity: 0.85;
+  opacity: 0; /* Override - start hidden */
+}
+
+.bento-tile--highlight:hover .bento-tile__description {
+  opacity: 0.85; /* Restore variant opacity on hover */
 }
 
 .bento-tile--highlight:hover {
@@ -275,6 +334,24 @@
   color: var(--color-text-muted);
   margin-top: var(--space-xs);
   line-height: 1.4;
+
+  /* Hidden by default, revealed on hover with 400ms delay */
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    opacity 200ms ease-out 400ms,
+    max-height 300ms ease-out 0ms;
+}
+
+.bento-tile:hover .bento-tile__description {
+  opacity: 1;
+  max-height: 200px;
+}
+
+/* Instant hide on mouse out (remove delay) */
+.bento-tile:not(:hover) .bento-tile__description {
+  transition-delay: 0ms;
 }
 
 .bento-tile__footer {
