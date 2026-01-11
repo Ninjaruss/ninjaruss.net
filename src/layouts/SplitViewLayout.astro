@@ -987,6 +987,9 @@ const hasInitialContent = Astro.slots.has('detail');
           isAnimating = true;
           await triggerEmblemFlip(doc, isFirstLoad);
           isAnimating = false;
+
+          // Start floating for newly loaded content
+          startFloating();
         }
       } catch (error) {
         console.error('Failed to load content:', error);
@@ -1007,11 +1010,33 @@ const hasInitialContent = Astro.slots.has('detail');
       activeItem?.classList.add('is-active');
     }
 
+    // Idle detection for emblem floating
+    let isIdle = false;
+
+    function startFloating() {
+      if (splitView && splitView.classList.contains('has-selection') && !isIdle) {
+        isIdle = true;
+        document.querySelectorAll('[data-emblem-card]').forEach(card => {
+          card.dispatchEvent(new CustomEvent('emblemcard:idle-start'));
+        });
+      }
+    }
+
+    function stopFloating() {
+      if (isIdle) {
+        isIdle = false;
+        document.querySelectorAll('[data-emblem-card]').forEach(card => {
+          card.dispatchEvent(new CustomEvent('emblemcard:idle-end'));
+        });
+      }
+    }
+
     // Search input
     searchInput.addEventListener('input', () => {
       const { tags } = getFiltersFromURL();
       updateURL(searchInput.value, tags);
       applyFilters();
+      stopFloating();
     });
 
     // Tags toggle
@@ -1108,6 +1133,29 @@ const hasInitialContent = Astro.slots.has('detail');
       });
     }
 
+    // Idle detection event listeners (attach once)
+    if (!(window as any).__splitViewIdleHandlers) {
+      (window as any).__splitViewIdleHandlers = true;
+
+      // Scroll detection - stops floating
+      const detailPanel = splitView?.querySelector('.split-view__detail');
+      detailPanel?.addEventListener('scroll', stopFloating, { passive: true });
+
+      // Keyboard input - stops floating
+      document.addEventListener('keydown', stopFloating);
+    }
+
+    // Emblem hover pauses floating (but NOT general mouse movement)
+    document.querySelectorAll('[data-emblem-card]').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.dispatchEvent(new CustomEvent('emblemcard:idle-end'));
+      });
+      card.addEventListener('mouseleave', () => {
+        // Resume floating after hovering emblem
+        startFloating();
+      });
+    });
+
     // List item clicks
     listItems.forEach((item) => {
       item.addEventListener('click', async (e) => {
@@ -1200,6 +1248,11 @@ const hasInitialContent = Astro.slots.has('detail');
           break;
       }
     });
+
+    // Start floating if initial content is loaded
+    if (initialSlug) {
+      startFloating();
+    }
   }
 
   // Initialize lightbox for images/videos - called after content loads
