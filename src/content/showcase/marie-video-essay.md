@@ -14,7 +14,7 @@ In creating this video, there were multiple things that really made this a truly
 - I found out that Eden Riegel, the English Voice Actress for Marie, was going to be in Los Angeles for a meet and greet; I made the effort to show up and have a lovely conversation with her.
 ![MarieEngVA](/images/showcase/2024-09-14%20Marie%20English%20VA%20Eden%20Riegel.jpg)
 - To not be too forgettable and to try my hand at a little bit of art, I made a poem expressing my thoughts and feelings in life.
-![MariePoem](/images/showcase/2024-09-11%20Your%20Canvas%20Poem%201.png)
+![A poem expressing myself through the writing style of Marie's poems](/images/showcase/2024-09-11%20Your%20Canvas%20Poem%201.png)
 
 Admittedly, this is a little bit of a cringy video when viewed in the lens I did all this effort for a fictional character I relate to. But really, I am proud I spent the effort and pushed through the friction to complete this project. I now have a piece of work that although may not be super polished and impactful, it has given me an unforgettable set of experiences and memories I will take with me into my next endeavor. 
 
