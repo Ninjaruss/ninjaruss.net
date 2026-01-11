@@ -24,7 +24,7 @@ const allExperiments = await getCollection('showcase', ({ data }) => !data.draft
 const sortedExperiments = allExperiments.sort((a, b) => a.data.title.localeCompare(b.data.title));
 
 // Fetch all collections for related content
-const allReflections = await getCollection('media', ({ data }) => !data.draft);
+const allMedia = await getCollection('media', ({ data }) => !data.draft);
 const allNotes = await getCollection('notes', ({ data }) => !data.draft);
 const allShowcase = allExperiments;
 
@@ -120,7 +120,7 @@ const hasContent = !hasMinimalContent(entry.body);
             currentSlug={entry.slug}
             currentCollections={entry.data.collections}
             section="showcase"
-            allReflections={allReflections}
+            allMedia={allMedia}
             allNotes={allNotes}
             allShowcase={allShowcase}
           />

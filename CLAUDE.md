@@ -4,7 +4,7 @@ This file provides guidance for Claude Code (claude.ai/code) when working with t
 
 ## Project Overview
 
-**ninjaruss.net** is a personal website built with Astro 5, featuring a Persona 4 Golden-inspired dark UI aesthetic. It's a static site for fragments, reflections, and experiments—organized around philosophical notes, reflections consumption logs, and inquiry-driven projects.
+**ninjaruss.net** is a personal website built with Astro 5, featuring a Persona 4 Golden-inspired dark UI aesthetic. It's a static site for fragments, media, and experiments—organized around philosophical notes, media consumption logs, and inquiry-driven projects.
 
 ## Build & Development Commands
 
@@ -153,7 +153,7 @@ Span classes: `.bento-tile--span-3x2`, `.bento-tile--span-2x2`, `.bento-tile--sp
 - `/favorites/[slug]` — Centered single-column detail with prominent emblem
 
 ### Legacy Routes
-- `/reflections` — Redirects to `/media` (301 redirect for backward compatibility)
+- `/media` — Redirects to `/media` (301 redirect for backward compatibility)
 
 ### Utility Pages
 - `/` — Homepage with BentoGrid tiles
