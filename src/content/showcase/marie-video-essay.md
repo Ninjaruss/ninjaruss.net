@@ -3,6 +3,7 @@ title: "Marie - Video Essay"
 tags: ["video"]
 publishedAt: 2026-01-11
 collections: ["persona"]
+emblem: "/images/showcase/2024-12-10_Marie_video.png"
 ---
 <iframe width="560" height="315" src="https://www.youtube.com/embed/HCc3Ol7adcw?si=W889e7FcEM041Wbh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
