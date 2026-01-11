@@ -1163,8 +1163,12 @@ const hasInitialContent = Astro.slots.has('detail');
       const isFirstLoad = currentSlug === null;
 
       listItems.forEach((i) => i.classList.remove('is-active'));
-      const activeItem = splitView.querySelector(`[data-slug="${slug}"]`);
-      activeItem?.classList.add('is-active');
+      const activeItem = splitView.querySelector(`[data-slug="${slug}"]`) as HTMLElement | null;
+      if (activeItem) {
+        activeItem.classList.add('is-active');
+        // Scroll the active item into view with smooth behavior
+        activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
 
       splitView.classList.add('has-selection', 'is-loading');
       contentArea.classList.remove('is-active');
@@ -1215,8 +1219,12 @@ const hasInitialContent = Astro.slots.has('detail');
     applyFilters();
 
     if (initialSlug) {
-      const activeItem = splitView.querySelector(`[data-slug="${initialSlug}"]`);
-      activeItem?.classList.add('is-active');
+      const activeItem = splitView.querySelector(`[data-slug="${initialSlug}"]`) as HTMLElement | null;
+      if (activeItem) {
+        activeItem.classList.add('is-active');
+        // Scroll the initial active item into view (without smooth scroll on initial load)
+        activeItem.scrollIntoView({ block: 'nearest' });
+      }
     }
 
     // Idle detection for emblem floating

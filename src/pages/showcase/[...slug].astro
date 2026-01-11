@@ -88,20 +88,22 @@ const hasContent = !hasMinimalContent(entry.body);
                 <TagList tags={entry.data.tags} size="md" />
               </div>
             )}
-            <div class="entry__meta-dates">
-              {entry.data.publishedAt && (
-                <div class="meta-date-item">
-                  <span class="meta-date-label">Published</span>
-                  <span class="meta-date-value">{formatDate(entry.data.publishedAt)}</span>
-                </div>
-              )}
-              {updatedAt && entry.data.publishedAt && updatedAt > entry.data.publishedAt && (
-                <div class="meta-date-item">
-                  <span class="meta-date-label">Last Edited</span>
-                  <span class="meta-date-value">{formatDate(updatedAt)}</span>
-                </div>
-              )}
-            </div>
+            {(entry.data.publishedAt || (updatedAt && entry.data.publishedAt && updatedAt > entry.data.publishedAt)) && (
+              <div class="entry__meta-dates">
+                {entry.data.publishedAt && (
+                  <div class="meta-date-item">
+                    <span class="meta-date-label">Published</span>
+                    <span class="meta-date-value">{formatDate(entry.data.publishedAt)}</span>
+                  </div>
+                )}
+                {updatedAt && entry.data.publishedAt && updatedAt > entry.data.publishedAt && (
+                  <div class="meta-date-item">
+                    <span class="meta-date-label">Last Edited</span>
+                    <span class="meta-date-value">{formatDate(updatedAt)}</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </header>
 
