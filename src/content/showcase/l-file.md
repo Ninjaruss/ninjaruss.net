@@ -1,9 +1,9 @@
 ---
-title: "Usogui Archive"
-tags: ["community", "preservation", "obsessive"]
+title: "L-file - Usogui archive"
+tags: ["web dev"]
 publishedAt: 2025-01-08
 emblem: /images/notes/attention-01.svg
-collections: ["ongoing works"]
+collections: ["web dev"]
 ---
 
 Usogui is one of my favorite manga. It's also nearly impossible to recommend because it's dense, untranslated for years, and requires significant context to appreciate.
