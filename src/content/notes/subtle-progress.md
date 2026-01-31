@@ -2,6 +2,7 @@
 title: "Subtle Progress"
 tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
+publishedAt: 2025-01-31
 ---
 
 ## I am changing constantly, but to everyone else and even myself, I haven't changed much at all.
