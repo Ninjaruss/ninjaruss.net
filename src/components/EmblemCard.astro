@@ -2,9 +2,10 @@
 interface Props {
   emblemSrc?: string;
   isInitiallyFlipped?: boolean;
+  disableLightbox?: boolean;
 }
 
-const { emblemSrc, isInitiallyFlipped = false } = Astro.props;
+const { emblemSrc, isInitiallyFlipped = false, disableLightbox = false } = Astro.props;
 const defaultEmblem = '/images/emblems/default.svg';
 const cardBack = '/images/ygo-card-backing.png';
 ---
@@ -13,6 +14,7 @@ const cardBack = '/images/ygo-card-backing.png';
   class:list={['emblem-card', { 'is-flipped': isInitiallyFlipped }]}
   data-emblem-card
   data-emblem-src={emblemSrc || defaultEmblem}
+  data-disable-lightbox={disableLightbox ? 'true' : 'false'}
 >
   <div class="emblem-card__flipper">
     <div class="emblem-card__face emblem-card__back">
@@ -238,6 +240,11 @@ const cardBack = '/images/ygo-card-backing.png';
   function initEmblemLightbox() {
     const cards = document.querySelectorAll('.emblem-card');
     cards.forEach((card) => {
+      // Skip if lightbox is disabled
+      if (card.getAttribute('data-disable-lightbox') === 'true') {
+        return;
+      }
+
       const img = card.querySelector('.emblem-card__front img') as HTMLImageElement;
       if (img) {
         card.addEventListener('click', (e) => {

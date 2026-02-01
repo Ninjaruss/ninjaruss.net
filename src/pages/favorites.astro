@@ -41,7 +41,7 @@ const allTypes = [...new Set(allFavorites.map(f => f.data.content_type))].sort()
             style={`--stagger-delay: ${(index % 20) * 50}ms`}
           >
             <div class="favorite-card__emblem">
-              <EmblemCard emblemSrc={entry.data.emblem} isInitiallyFlipped={true} />
+              <EmblemCard emblemSrc={entry.data.emblem} isInitiallyFlipped={true} disableLightbox={true} />
             </div>
             <div class="favorite-card__content">
               <h3 class="favorite-card__title">{entry.data.title}</h3>
