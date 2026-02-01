@@ -1,0 +1,24 @@
+---
+title: "Gratitude"
+tags: ["life"]
+emblem: "/images/emblems/lightbulb.svg"
+publishedAt: 2026-02-01
+---
+
+## Be grateful for everything you have...
+At least, that's what you should do. But the issue is, how do you go about proving that you're grateful? Take for instance my own life, I am fortunate enough to have so many good things going for me like having two loving parents, living in a stable environment with access to any necessity I require, being educated and well spoken, etc. There are an innumerable amount of things I am thankful for and that isn't even including all of the things I am not directly related to. For example, all of the art, technology, people, etc. that I've had the opportunity to interact with all because of my circumnstances and actions in life. To say that these things have not impacted my life in some shape or form would be a disservice to the human condition.
+
+What I am trying to say, is that there are so many things to be grateful for that you wouldn't even have the time or energy to show gratitiude to every single little thing. Of course, you can do simple things like praying and being thankful for meals which is a good habit to do, but my point still stands that no matter what you do, it wouldn't be "enough" to be grateful for everything.
+
+However, that does not mean gratitude should be dismissed and you shouldn't say thank you for even seemingly mundane things. "To take things for granted" honestly feels like a human condition as I assume it frees up our brain to think about other things when stuff we have is working just fine. Only when we lose the things is when we finally understand how grateful we should have been.
+
+I feel the solution is to use the things we've been granted and to push the envelope even further. Instead of thanking the actions of a previous person, you pay it forward by making something worth a thank you. At a small fundamental level, it's going out of your way to do the smallest deed of good when you have the opportunity to do so. "That's just being a good person", well I would argue that whether good or not, your actions have an impact that pushes the timeline forward. 
+
+For example, I was working as a cart pusher and was really irritated by the amount of ways each customer add inconviences to my job. Placing carts the wrong way, clustering carts together and making a mess, leaving garbage everywhere, so many ways that made my job so much more difficult. I really wondered if my job was even worth doing at all (spoiler alert, probably not; job shouldn't even exist if we had a half decent culture around it). I, however, did not let this stop me from continuing to do my best on what I can control and make sure that those who have a remote sense of decency get a whole hearted thank you from me. 
+
+But in the grand scheme of things, most if not all the customers were just doing the things they've been taught or grew up with. Like my habit of thanking every single person that helps me out, there are people that will leave the carts in the planters cause they believed it was a little bit better than leaving the cart in the middle of the street. It that sense, I really shouldn't blame them too much (though they still should take responsibility) as perhaps it's how the society was built. 
+
+Which is why I emphasize in my own personaility and philosphy that despite all the noise and circumnstances that you are in now, it is ultimately up to you the individual to become the one who enacts change within your own life. Obviously, it is easy to say as I am rather privledged and have not gone through the "real" hardships of something like poverty or health complications, but I try to remind myself to continue "fighting on" even if I had those negative experiences and situations pull me down. 
+
+I will probably write another note on this idea, but one of the saddest things I thought about is how to convince someone who has all of these negative experiences and lesser privledges than me to keep fighting on. Because it comes off as arrogant and deaf when I say this without knowing the full extent of their experience. My perspective is that there are an infinite number of possibilities to change a given situation, but it all relies on the individual to be willing and open to the idea that there's a way out. It's a little too abstract when I say this as if someone were told to tell you to jump off a cliff and then you will find out you can fly. This is why I have added on to my philosphy that even though the individual can enact great change, often times support from another person or community is needed for the individual to evolve. So in essence, my current solution to the issue of privledge gap is to honestly engage with someone and to be realistic with them, but to always add the more positive view on things. 
+
