@@ -251,7 +251,7 @@ const cardBack = '/images/ygo-card-backing.png';
           e.preventDefault();
           const src = img.getAttribute('src');
           if (src && (window as any).openMediaLightbox) {
-            (window as any).openMediaLightbox(src, 'Page emblem', 'image');
+            (window as any).openMediaLightbox(src, '', 'image');
           }
         });
       }

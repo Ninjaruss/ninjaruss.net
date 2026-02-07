@@ -2,9 +2,12 @@
 import { getCollection } from 'astro:content';
 import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
+import { hasMinimalContent } from '../../utils/content';
 
 const allMedia = await getCollection('media', ({ data }) => !data.draft);
-const sortedMedia = allMedia.sort((a, b) => a.data.title.localeCompare(b.data.title));
+const sortedMedia = allMedia.sort((a, b) =>
+  new Date(b.data.publishedAt || 0).getTime() - new Date(a.data.publishedAt || 0).getTime()
+);
 ---
 
 <SplitViewLayout
@@ -21,6 +24,7 @@ const sortedMedia = allMedia.sort((a, b) => a.data.title.localeCompare(b.data.ti
           title={entry.data.title}
           tags={entry.data.tags}
           contentType={entry.data.content_type}
+          hasMinimalContent={hasMinimalContent(entry.body)}
         />
       ))
     ) : (
