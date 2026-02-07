@@ -2,9 +2,12 @@
 import { getCollection } from 'astro:content';
 import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
+import { hasMinimalContent } from '../../utils/content';
 
 const allNotes = await getCollection('notes', ({ data }) => !data.draft);
-const sortedNotes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.title));
+const sortedNotes = allNotes.sort((a, b) =>
+  new Date(b.data.publishedAt || 0).getTime() - new Date(a.data.publishedAt || 0).getTime()
+);
 ---
 
 <SplitViewLayout
@@ -20,6 +23,7 @@ const sortedNotes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.ti
           slug={entry.slug}
           title={entry.data.title}
           tags={entry.data.tags}
+          hasMinimalContent={hasMinimalContent(entry.body)}
         />
       ))
     ) : (
