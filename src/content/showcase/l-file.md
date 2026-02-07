@@ -12,7 +12,7 @@ I finally did it! The Usogui database is now live on the Internet!
 
 I was looking to try my hand at making a full production website while using... Claude Code. Yes, this website is immensely vibe coded, but I wanted to make sure that the priority was to make a stable enough database for my favorite manga. To me, the coolest thing is that I can get this site live with all the features I want on my own. It's better to have a site than not make one at all to me.
 
-![Landing page for L-file.com](/images/showcase/2026-02-07%L-file%home.png)
+![Landing page for L-file.com](/images/showcase/2026-02-07-L-file-home.png)
 
 Some quick things I learned while making this website:
 - Being really specific about your site like including specifications of how the website will be used and the types of data on your site goes a long way in making the development process easier.
@@ -25,7 +25,7 @@ The one thing that this project has made clear to me is that I really do lack a 
 
 One of the major issues early on with coding this website was the data management for the admin dashboard. It might be due to the unfamiliarity of react-admin, but there would often be issues with editing and saving data. I think it was due to the LLM not keeping in mind the frontend/backend API connections and would not properly update them if new changes were added to the data architecture.
 
-![Initial database design of the Usogui database](/images/showcase/2025-08-21%Database%Diagram.png)
+![Initial database design of the Usogui database](/images/showcase/2025-08-21-Database-Diagram.png)
 
 The one model-context-protocol I added to Claude Code was Serena. To be honest, I am not sure how effective this tool is with vibe coding, but it is supposed to condense tool usage for the LLM to properly search through the project quickly. Basically, it should navigate the project a bit easier without spending too much additional context to find specific files. In the future, I plan to look into using a MCP for the frontend as Opus did an alright job in frontend implementation, but was lacking in how clean the design could be.
 
@@ -33,4 +33,4 @@ Overall, I sort of downplay how neat this website is after completing it. Even t
 
 Hopefully, a frontend overhaul may be planned in the future, but the real struggle now is to get attention to this site. The ideal scenario is that it inspires others to contribute to this site and really make it a premier resource for newcomers and those that plan to reread the story. 
 
-![Yes, this is a real panel.](/images/showcase/2026-02-07%Usogui%feet%meme.jpg)
+![Yes, this is a real panel.](/images/showcase/2026-02-07-Usogui-feet-meme.jpg)
