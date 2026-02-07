@@ -12,7 +12,7 @@ I really liked Marie's character from Persona 4 Golden so much that I made a who
 In creating this video, there were multiple things that really made this a truly special video for me. 
 - I was really struggling with getting out of my mind as I felt I wasn't making much out of myself (even though I've been doing great compared to my peers). The act of recording the sections for this video helped me a lot in letting go of any perfectionistic or doubt driven thoughts.
 - I found out that Eden Riegel, the English Voice Actress for Marie, was going to be in Los Angeles for a meet and greet; I made the effort to show up and have a lovely conversation with her.
-![MarieEngVA](/images/showcase/2024-09-14-Marie-English-VA-Eden-Riegel.jpg)
+![Marie English VA Eden Riegel](/images/showcase/2024-09-14-Marie-English-VA-Eden-Riegel.jpg)
 - To not be too forgettable and to try my hand at a little bit of art, I made a poem expressing my thoughts and feelings in life.
 ![A poem expressing myself through the writing style of Marie's poems](/images/showcase/2024-09-11-Your-Canvas-Poem-1.png)
 

@@ -8,7 +8,9 @@ collections: ["web dev"]
 
 I finally did it! The Usogui database is now live on the Internet! 
 
-[L-file](https://l-file.com)
+<a href="https://l-file.com" target="_blank" rel="noopener noreferrer">
+  L-file
+</a>
 
 I was looking to try my hand at making a full production website while using... Claude Code. Yes, this website is immensely vibe coded, but I wanted to make sure that the priority was to make a stable enough database for my favorite manga. To me, the coolest thing is that I can get this site live with all the features I want on my own. It's better to have a site than not make one at all to me.
 
