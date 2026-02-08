@@ -5,7 +5,7 @@ emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-02-07
 ---
 
-## I am lowkey hermit. At least, in terms of my social relationships with friends.
+## I am a lowkey hermit. At least, in terms of my social relationships.
 
 I was wondering why I've become a sort of recluse where I'll disappear for months at a time before interacting with my friends in person. It's less obvious now since as an adult it's difficult to always make time to see every friend group you have, but I think there's a history that might show why I tend to go off and do my own thing.
 
