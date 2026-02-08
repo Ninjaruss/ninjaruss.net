@@ -29,35 +29,18 @@ const allContent = [...notes, ...media, ...showcase];
 const sorted = allContent
   .sort((a, b) => new Date(b.data.publishedAt!).getTime() - new Date(a.data.publishedAt!).getTime());
 
-// If multiple entries share the most recent date, pick one randomly
+// Get entries with the most recent date for client-side randomization
 const mostRecentDate = sorted[0] ? new Date(sorted[0].data.publishedAt!).getTime() : null;
 const sameDateEntries = mostRecentDate
   ? sorted.filter(entry => new Date(entry.data.publishedAt!).getTime() === mostRecentDate)
   : [];
-const mostRecent = sameDateEntries.length > 0
-  ? sameDateEntries[Math.floor(Math.random() * sameDateEntries.length)]
-  : sorted[0];
 
-const recentHref = mostRecent ? `/${mostRecent.collection}/${mostRecent.slug}` : undefined;
-
-// Calculate "X days ago" for latest content
-const getDaysAgo = (date: Date) => {
-  const today = new Date();
-  const compareDate = new Date(date);
-
-  // Use UTC to avoid timezone issues
-  const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
-  const compareUTC = Date.UTC(compareDate.getFullYear(), compareDate.getMonth(), compareDate.getDate());
-
-  const diffMs = todayUTC - compareUTC;
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) return 'today';
-  if (diffDays === 1) return 'yesterday';
-  return `${diffDays} days ago`;
-};
-
-const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) : '';
+// Prepare data for client-side randomization
+const latestEntries = sameDateEntries.map(entry => ({
+  title: entry.data.title,
+  href: `/${entry.collection}/${entry.slug}`,
+  publishedAt: entry.data.publishedAt!.toISOString(),
+}));
 ---
 
 <BaseLayout title="Home" description="Fragments, media, and showcase.">
@@ -114,17 +97,21 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
         class="bento-tile--core bento-tile--span-2x2"
       />
 
-      {mostRecent && (
-        <BentoTile
-          href={recentHref}
-          variant="dark"
-          accent
-          label="Latest"
-          title={mostRecent.data.title}
-          class="bento-tile--span-2x1"
+      {latestEntries.length > 0 && (
+        <a
+          id="latest-tile"
+          href={latestEntries[0].href}
+          class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--accent bento-tile--span-2x1"
+          data-entries={JSON.stringify(latestEntries)}
         >
-          <span class="days-ago">{daysAgo}</span>
-        </BentoTile>
+          <div class="bento-tile__header">
+            <span class="bento-tile__label">Latest</span>
+            <h3 class="bento-tile__title" id="latest-title">{latestEntries[0].title}</h3>
+          </div>
+          <div class="bento-tile__footer">
+            <span class="days-ago" id="latest-days-ago"></span>
+          </div>
+        </a>
       )}
 
       <!-- Now Tile -->
@@ -489,3 +476,34 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
     }
   }
 </style>
+
+<script>
+  // Randomize Latest tile on each page load
+  const latestTile = document.getElementById('latest-tile') as HTMLAnchorElement | null;
+  if (latestTile) {
+    const entries = JSON.parse(latestTile.dataset.entries || '[]');
+    if (entries.length > 0) {
+      // Pick a random entry
+      const entry = entries[Math.floor(Math.random() * entries.length)];
+
+      // Update tile
+      latestTile.href = entry.href;
+      const titleEl = document.getElementById('latest-title');
+      if (titleEl) titleEl.textContent = entry.title;
+
+      // Calculate "X days ago"
+      const daysAgoEl = document.getElementById('latest-days-ago');
+      if (daysAgoEl) {
+        const today = new Date();
+        const publishedDate = new Date(entry.publishedAt);
+        const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+        const publishedUTC = Date.UTC(publishedDate.getFullYear(), publishedDate.getMonth(), publishedDate.getDate());
+        const diffDays = Math.floor((todayUTC - publishedUTC) / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 0) daysAgoEl.textContent = 'today';
+        else if (diffDays === 1) daysAgoEl.textContent = 'yesterday';
+        else daysAgoEl.textContent = `${diffDays} days ago`;
+      }
+    }
+  }
+</script>
