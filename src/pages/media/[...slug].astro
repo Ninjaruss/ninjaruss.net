@@ -19,7 +19,9 @@ const { Content } = await entry.render();
 
 // Get all media for the list
 const allMedia = await getCollection('media', ({ data }) => !data.draft);
-const sortedMedia = allMedia.sort((a, b) => a.data.title.localeCompare(b.data.title));
+const sortedMedia = allMedia.sort((a, b) =>
+  new Date(b.data.publishedAt || 0).getTime() - new Date(a.data.publishedAt || 0).getTime()
+);
 
 // Fetch all collections for related content
 const allMediaEntries = allMedia;

@@ -19,7 +19,9 @@ const { Content } = await entry.render();
 
 // Get all showcase for the list
 const allExperiments = await getCollection('showcase', ({ data }) => !data.draft);
-const sortedExperiments = allExperiments.sort((a, b) => a.data.title.localeCompare(b.data.title));
+const sortedExperiments = allExperiments.sort((a, b) =>
+  new Date(b.data.publishedAt || 0).getTime() - new Date(a.data.publishedAt || 0).getTime()
+);
 
 // Fetch all collections for related content
 const allMedia = await getCollection('media', ({ data }) => !data.draft);

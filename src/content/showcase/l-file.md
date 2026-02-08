@@ -1,5 +1,5 @@
 ---
-title: "L-file - Usogui Archive"
+title: "L-file - Usogui Database"
 tags: ["web dev"]
 publishedAt: 2026-02-07
 emblem: /images/showcase/Usogui_Volume_2_popout.png
@@ -19,7 +19,7 @@ Some quick things I learned while making this website:
 
 What really urged me to make this site was the fact there isn't a really great wiki for Usogui yet. The closest thing that exists is the Usogui fandom website, but it is largely incomplete and the user interface is horrendous and filled with ads. On top of that, this manga is largely unknown and doesn't even have an official English translation despite its amazing story that spans over 539 chapters.
 
-The one thing that this project has made clear to me is that I really do lack a lot of frontend coding experience. Although I can understand what the code does, I have trouble customizing it to my own and really fine tuning what the user interface should look. As a result, the website's design looks very deriviative and is missing a unique feel to it. 
+The one thing that this project has made clear to me is that I really do lack a lot of frontend coding experience. Although I can understand what the code does, I have trouble customizing it to my own and really fine tuning what the user interface should look like. As a result, the website's design looks very deriviative and is missing a unique feel to it. 
 
 One of the major issues early on with coding this website was the data management for the admin dashboard. It might be due to the unfamiliarity of react-admin, but there would often be issues with editing and saving data. I think it was due to the LLM not keeping in mind the frontend/backend API connections and would not properly update them if new changes were added to the data architecture.
 
