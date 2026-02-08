@@ -26,8 +26,17 @@ const nowMonthYearLocal = nowDate
 
 // Find the most recently published content
 const allContent = [...notes, ...media, ...showcase];
-const mostRecent = allContent
-  .sort((a, b) => new Date(b.data.publishedAt!).getTime() - new Date(a.data.publishedAt!).getTime())[0];
+const sorted = allContent
+  .sort((a, b) => new Date(b.data.publishedAt!).getTime() - new Date(a.data.publishedAt!).getTime());
+
+// If multiple entries share the most recent date, pick one randomly
+const mostRecentDate = sorted[0] ? new Date(sorted[0].data.publishedAt!).getTime() : null;
+const sameDateEntries = mostRecentDate
+  ? sorted.filter(entry => new Date(entry.data.publishedAt!).getTime() === mostRecentDate)
+  : [];
+const mostRecent = sameDateEntries.length > 0
+  ? sameDateEntries[Math.floor(Math.random() * sameDateEntries.length)]
+  : sorted[0];
 
 const recentHref = mostRecent ? `/${mostRecent.collection}/${mostRecent.slug}` : undefined;
 
