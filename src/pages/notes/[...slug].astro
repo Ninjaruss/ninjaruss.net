@@ -2,9 +2,11 @@
 import { getCollection } from 'astro:content';
 import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
-import TagList from '../../components/TagList.astro';
+import EntryHeader from '../../components/EntryHeader.astro';
+import EntryBody from '../../components/EntryBody.astro';
 import RelatedContent from '../../components/RelatedContent.astro';
 import { stripMarkdown, hasMinimalContent } from '../../utils/content';
+import { getAllCollections, getSortedEntries } from '../../utils/collections';
 
 export async function getStaticPaths() {
   const entries = await getCollection('notes');
@@ -17,29 +19,8 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
-// Get all notes for the list
-const allNotes = await getCollection('notes', ({ data }) => !data.draft);
-const sortedNotes = allNotes.sort((a, b) =>
-  new Date(b.data.publishedAt || 0).getTime() - new Date(a.data.publishedAt || 0).getTime()
-);
-
-// Fetch all collections for related content
-const allMedia = await getCollection('media', ({ data }) => !data.draft);
-const allShowcase = await getCollection('showcase', ({ data }) => !data.draft);
-
-const formatDate = (date: Date) => {
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    timeZone: 'UTC',
-  });
-};
-
-// Only use explicit updatedAt from frontmatter
-const updatedAt = entry.data.updatedAt;
-
-// Check if entry has substantial content
+const sortedNotes = await getSortedEntries('notes');
+const { allMedia, allNotes, allShowcase } = await getAllCollections();
 const hasContent = !hasMinimalContent(entry.body);
 ---
 
@@ -65,43 +46,17 @@ const hasContent = !hasMinimalContent(entry.body);
 
   <Fragment slot="detail">
     <article class="entry">
-      {entry.data.emblem && <span data-page-emblem data-src={entry.data.emblem} hidden />}
       <div class="container">
-        <header class="entry__header">
-          <h1 class="entry__title">{entry.data.title}</h1>
-          <div class="entry__meta">
-            {entry.data.tags.length > 0 && (
-              <div class="entry__meta-row">
-                <TagList tags={entry.data.tags} size="md" />
-              </div>
-            )}
-            {(entry.data.publishedAt || (updatedAt && entry.data.publishedAt && updatedAt > entry.data.publishedAt)) && (
-              <div class="entry__meta-dates">
-                {entry.data.publishedAt && (
-                  <div class="meta-date-item">
-                    <span class="meta-date-label">Published</span>
-                    <span class="meta-date-value">{formatDate(entry.data.publishedAt)}</span>
-                  </div>
-                )}
-                {updatedAt && entry.data.publishedAt && updatedAt > entry.data.publishedAt && (
-                  <div class="meta-date-item">
-                    <span class="meta-date-label">Last Edited</span>
-                    <span class="meta-date-value">{formatDate(updatedAt)}</span>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </header>
-
-        {hasContent && (
-          <div class="entry__body">
-            <div class="entry__content prose">
-              <Content />
-            </div>
-          </div>
-        )}
-
+        <EntryHeader
+          title={entry.data.title}
+          tags={entry.data.tags}
+          publishedAt={entry.data.publishedAt}
+          updatedAt={entry.data.updatedAt}
+          emblem={entry.data.emblem}
+        />
+        <EntryBody hasContent={hasContent}>
+          <Content />
+        </EntryBody>
         {entry.data.collections.length > 0 && (
           <RelatedContent
             currentSlug={entry.slug}

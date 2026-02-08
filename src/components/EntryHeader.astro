@@ -1,0 +1,43 @@
+---
+import TagList from './TagList.astro';
+import { formatDate, shouldShowUpdatedDate } from '../utils/dates';
+
+interface Props {
+  title: string;
+  tags: string[];
+  publishedAt?: Date;
+  updatedAt?: Date;
+  emblem?: string;
+}
+
+const { title, tags, publishedAt, updatedAt, emblem } = Astro.props;
+const showUpdated = shouldShowUpdatedDate(publishedAt, updatedAt);
+---
+
+<header class="entry__header">
+  {emblem && <span data-page-emblem data-src={emblem} hidden />}
+  <h1 class="entry__title">{title}</h1>
+  <div class="entry__meta">
+    {tags.length > 0 && (
+      <div class="entry__meta-row">
+        <TagList tags={tags} size="md" />
+      </div>
+    )}
+    {(publishedAt || showUpdated) && (
+      <div class="entry__meta-dates">
+        {publishedAt && (
+          <div class="meta-date-item">
+            <span class="meta-date-label">Published</span>
+            <span class="meta-date-value">{formatDate(publishedAt)}</span>
+          </div>
+        )}
+        {showUpdated && updatedAt && (
+          <div class="meta-date-item">
+            <span class="meta-date-label">Last Edited</span>
+            <span class="meta-date-value">{formatDate(updatedAt)}</span>
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+</header>
