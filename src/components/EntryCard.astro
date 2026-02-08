@@ -1,5 +1,4 @@
 ---
-import StatusBadge from './StatusBadge.astro';
 import TagList from './TagList.astro';
 
 interface Props {
@@ -21,7 +20,6 @@ const { href, title, excerpt, status, tags = [], label } = Astro.props;
   </div>
   {excerpt && <p class="entry-card__excerpt">{excerpt}</p>}
   <div class="entry-card__footer">
-    <StatusBadge status={status} />
     <TagList tags={tags} />
   </div>
 </a>
