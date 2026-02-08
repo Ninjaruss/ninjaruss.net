@@ -6,12 +6,8 @@ emblem: /images/notes/attention-01.svg
 collections: ["web dev"]
 ---
 
-I finally did it! The Usogui database is now live on the Internet! 
-  
-<a href="https://l-file.com" target="_blank" rel="noopener noreferrer">
-  L-file
-</a>
-  
+I finally did it! The Usogui database is now live on the Internet! [L-file website](https://l-file.com)
+
 I was looking to try my hand at making a full production website while using... Claude Code. Yes, this website is immensely vibe coded, but I wanted to make sure that the priority was to make a stable enough database for my favorite manga. To me, the coolest thing is that I can get this site live with all the features I want on my own. It's better to have a site than not make one at all to me.
 
 ![Landing page for L-file.com](/images/showcase/2026-02-07-L-file-home.png)
