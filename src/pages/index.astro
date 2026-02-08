@@ -128,7 +128,7 @@ const daysAgo = mostRecent ? getDaysAgo(new Date(mostRecent.data.publishedAt!)) 
         description="Where am I at right now?"
       >
         <span class="now-date" title={`Local: ${nowMonthYearLocal}`}>
-          {nowMonthYearUTC} UTC
+          {nowMonthYearUTC}
           {nowMonthYearLocal !== nowMonthYearUTC ? ` — ${nowMonthYearLocal} locally` : ''}
         </span>
       </BentoTile>
