@@ -1,0 +1,15 @@
+---
+interface Props {
+  hasContent: boolean;
+}
+
+const { hasContent } = Astro.props;
+---
+
+{hasContent && (
+  <div class="entry__body">
+    <div class="entry__content prose">
+      <slot />
+    </div>
+  </div>
+)}

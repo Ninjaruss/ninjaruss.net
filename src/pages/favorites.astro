@@ -23,7 +23,7 @@ const allTypes = [...new Set(allFavorites.map(f => f.data.content_type))].sort()
     </header>
 
     <div class="favorites-filter p3r-animate" style="--stagger-delay: 50ms;">
-      <button class="type-pill is-selected" data-type="all" aria-pressed="true">All</button>
+      <button class="type-pill" data-type="all" aria-pressed="false">All</button>
       {allTypes.map(type => (
         <button class="type-pill" data-type={type} aria-pressed="false">
           {type}
@@ -242,39 +242,76 @@ const allTypes = [...new Set(allFavorites.map(f => f.data.content_type))].sort()
     const pills = document.querySelectorAll('.type-pill');
     const cards = document.querySelectorAll('.favorite-card');
 
+    // Get filter type from URL
+    function getTypeFromURL(): string {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('type') || 'all';
+    }
+
+    // Update URL with current filter
+    function updateURL(type: string) {
+      const params = new URLSearchParams(window.location.search);
+
+      if (type === 'all') {
+        params.delete('type');
+      } else {
+        params.set('type', type);
+      }
+
+      const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+      history.replaceState({ type }, '', newURL);
+    }
+
+    // Apply filter for a given type
+    function applyFilter(selectedType: string) {
+      // Update pill states
+      pills.forEach(p => {
+        const pillType = p.getAttribute('data-type');
+        const isSelected = pillType === selectedType;
+        p.classList.toggle('is-selected', isSelected);
+        p.setAttribute('aria-pressed', String(isSelected));
+      });
+
+      // Filter cards with stagger animation
+      let visibleCount = 0;
+      cards.forEach((card) => {
+        const cardType = card.getAttribute('data-type');
+        const isVisible = selectedType === 'all' || cardType === selectedType;
+
+        if (isVisible) {
+          card.classList.remove('is-hidden');
+          // Reset and reapply animation with stagger
+          (card as HTMLElement).style.animation = 'none';
+          setTimeout(() => {
+            (card as HTMLElement).style.animation = '';
+            (card as HTMLElement).style.setProperty('--stagger-delay', `${visibleCount * 50}ms`);
+            visibleCount++;
+          }, 10);
+        } else {
+          card.classList.add('is-hidden');
+        }
+      });
+    }
+
+    // Initialize from URL on page load
+    const initialType = getTypeFromURL();
+    applyFilter(initialType);
+
+    // Handle pill clicks
     pills.forEach(pill => {
       pill.addEventListener('click', () => {
         const selectedType = pill.getAttribute('data-type');
         if (!selectedType) return;
 
-        // Update active state
-        pills.forEach(p => {
-          p.classList.remove('is-selected');
-          p.setAttribute('aria-pressed', 'false');
-        });
-        pill.classList.add('is-selected');
-        pill.setAttribute('aria-pressed', 'true');
-
-        // Filter cards with stagger animation
-        let visibleCount = 0;
-        cards.forEach((card, index) => {
-          const cardType = card.getAttribute('data-type');
-          const isVisible = selectedType === 'all' || cardType === selectedType;
-
-          if (isVisible) {
-            card.classList.remove('is-hidden');
-            // Reset and reapply animation with stagger
-            card.style.animation = 'none';
-            setTimeout(() => {
-              card.style.animation = '';
-              card.style.setProperty('--stagger-delay', `${visibleCount * 50}ms`);
-              visibleCount++;
-            }, 10);
-          } else {
-            card.classList.add('is-hidden');
-          }
-        });
+        applyFilter(selectedType);
+        updateURL(selectedType);
       });
+    });
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', (e: PopStateEvent) => {
+      const type = (e.state as { type?: string })?.type || getTypeFromURL();
+      applyFilter(type);
     });
   }
 
