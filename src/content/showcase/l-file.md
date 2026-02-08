@@ -2,7 +2,7 @@
 title: "L-file - Usogui Archive"
 tags: ["web dev"]
 publishedAt: 2026-02-07
-emblem: /images/notes/attention-01.svg
+emblem: /images/showcase/Usogui_Volume_2_popout.png
 collections: ["web dev"]
 ---
 
