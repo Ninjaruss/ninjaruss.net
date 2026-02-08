@@ -13,8 +13,9 @@ const latestPost = sortedPosts[0];
 // Render the markdown content
 const { Content } = await latestPost.render();
 
+// Format date in UTC for consistency
 const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
-  timeZone: 'UTC',
+  timeZone: 'UTC', // Force UTC
   year: 'numeric',
   month: 'long',
   day: 'numeric',
@@ -27,7 +28,9 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
     <article class="now">
       <header class="now__header">
         <h1 class="now__title">Now</h1>
-        <p class="now__updated">Last updated: {lastUpdated}</p>
+        <p class="now__updated" title="Date shown in UTC">
+          Last updated: {lastUpdated} (UTC)
+        </p>
       </header>
 
       <div class="now__content">
