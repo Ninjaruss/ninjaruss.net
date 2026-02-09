@@ -24,4 +24,8 @@ Smart contracts and how Bitcoin nodes verify each transaction was a big thing fo
 
 If you plan to look into Bitcoin, I highly suggest to pull information from various perspectives. Afterwards, obtain a way to self custody the Bitcoin yourself because without it, you are incurring some risk having some external entity managing your money. Granted, holding money yourself can be nerve racking as all of the security depends on your ability to not get duped or forget where you place things. That's just a trade off you will need to accept and account for when looking into products and exchanges to reach the goal of owning some Bitcoin. I may update this note in the future to further research and explain more specifics. 
 
+Upon some quick research, there's a Reddit post that seems to provide a lot of references and info on Bitcoin itself. I still need to do a deep dive and look through the stuff in this post, but this seems pretty legit.
+
+https://www.reddit.com/r/Bitcoin/s/wshRUsFeFE
+
 Regardless, this is a technology that should be looked into early in your financial journey. Even if you don't plan to invest in it, additional knowledge can help you further analyze other potential investments with more awareness.
