@@ -478,32 +478,40 @@ const latestEntries = sameDateEntries.map(entry => ({
 </style>
 
 <script>
-  // Randomize Latest tile on each page load
-  const latestTile = document.getElementById('latest-tile') as HTMLAnchorElement | null;
-  if (latestTile) {
-    const entries = JSON.parse(latestTile.dataset.entries || '[]');
-    if (entries.length > 0) {
-      // Pick a random entry
-      const entry = entries[Math.floor(Math.random() * entries.length)];
+  // Initialize Latest tile - runs on initial load and after view transitions
+  function initializeLatestTile() {
+    const latestTile = document.getElementById('latest-tile') as HTMLAnchorElement | null;
+    if (latestTile) {
+      const entries = JSON.parse(latestTile.dataset.entries || '[]');
+      if (entries.length > 0) {
+        // Pick a random entry
+        const entry = entries[Math.floor(Math.random() * entries.length)];
 
-      // Update tile
-      latestTile.href = entry.href;
-      const titleEl = document.getElementById('latest-title');
-      if (titleEl) titleEl.textContent = entry.title;
+        // Update tile
+        latestTile.href = entry.href;
+        const titleEl = document.getElementById('latest-title');
+        if (titleEl) titleEl.textContent = entry.title;
 
-      // Calculate "X days ago"
-      const daysAgoEl = document.getElementById('latest-days-ago');
-      if (daysAgoEl) {
-        const today = new Date();
-        const publishedDate = new Date(entry.publishedAt);
-        const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
-        const publishedUTC = Date.UTC(publishedDate.getFullYear(), publishedDate.getMonth(), publishedDate.getDate());
-        const diffDays = Math.floor((todayUTC - publishedUTC) / (1000 * 60 * 60 * 24));
+        // Calculate "X days ago"
+        const daysAgoEl = document.getElementById('latest-days-ago');
+        if (daysAgoEl) {
+          const today = new Date();
+          const publishedDate = new Date(entry.publishedAt);
+          const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+          const publishedUTC = Date.UTC(publishedDate.getFullYear(), publishedDate.getMonth(), publishedDate.getDate());
+          const diffDays = Math.floor((todayUTC - publishedUTC) / (1000 * 60 * 60 * 24));
 
-        if (diffDays === 0) daysAgoEl.textContent = 'today';
-        else if (diffDays === 1) daysAgoEl.textContent = 'yesterday';
-        else daysAgoEl.textContent = `${diffDays} days ago`;
+          if (diffDays === 0) daysAgoEl.textContent = 'today';
+          else if (diffDays === 1) daysAgoEl.textContent = 'yesterday';
+          else daysAgoEl.textContent = `${diffDays} days ago`;
+        }
       }
     }
   }
+
+  // Run on initial page load
+  initializeLatestTile();
+
+  // Run after each view transition navigation
+  document.addEventListener('astro:page-load', initializeLatestTile);
 </script>
