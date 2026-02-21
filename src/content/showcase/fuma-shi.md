@@ -32,7 +32,7 @@ https://www.roblox.com/games/434243843/Yamakita-Kanagawa
 There's a whole history that I could attempt to parse through, but here are a few highlights:
 - Was originally Uzushiogakure before major overhaul in 2016
 ![Early concept of the Fuma-shi logo](/images/showcase/2016-06-10-Fuma-shi-old-logo.png)
-- Takeda clan vs Fuma-shi (Uzushiogakure)  
+- Takeda clan vs Fuma-shi 
 https://www.roblox.com/games/547818361/Castle-Torin-In  
 ![Raid instructions against the Takeda clan](/images/showcase/2016-11-29-Takeda-raid.png)
 - Shogunate taken over by Taira makes way for Fuma-shi to be an independent clan
