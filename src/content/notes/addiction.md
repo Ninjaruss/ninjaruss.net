@@ -1,0 +1,21 @@
+---
+title: "Addiction"
+tags: ["life"]
+emblem: "/images/emblems/lightbulb.svg"
+publishedAt: 2026-02-20
+---
+
+## I seem to have a very addictive personality.
+Lately, I've been having trouble getting off doomscrolling on YouTube shorts and spending a little too long on my latest replacement, Deadlock, for my stimming game of choice at the moment. As I mentioned during the Now post for this month, I have trouble handling multiple tasks or deadlines concurrently. The result is that I go on very long sessions being obsessive and "locked-in" on a specific thing.
+
+Some examples include debugging the L-file website past midnight, researching for far too long on upcoming changes to my life (like buying a new piece of tech or learning about privacy), and figuring out a build or deck for the game that I'm playing. I get stuck focused on whatever singular thing I am on and by the time I notice, it's now 3 AM and my mind goes numb.
+
+Numbness, that's probably the feeling I get the most when it comes to these moments. I find it hard to really to interrupt myself when my focus gets caught... I really hate it. More so, this really applies to the times I don't properly spend my time on the stuff that matters currently like immersing more in the Japanese language or doing my taxes (soon, I swear). 
+
+I believe the issue I am having is related to how my body reacts to what I am doing at any given moment. I think it's the frustration of not feeling like stuff is progressing or is changing my life immediately; most of the most impactful things that happen take so much time to build up. Like taking a trip to an anime convention that's on the other side of the country. That took a good amount of planning, but really self development to convince myself to go through with it. I would likely never have done it if I wasn't already making steps towards being more social and prioritizing the experience rather than calculating the "logical" value I would get. This is a core tenet I've learned in that practically most if not all change starts from small incremental change.
+
+So now what? Is my brain cooked? Well luckily, having the ability to focus on a singular thing for hours is a good problem to have as it proves that I do, in fact, have a functioning attention span. The issue is, how that focus is used ends up detracting from all of the goals I've been setting myself. It's abundantly clear that I need to cut out the things that have pulled my attention and instead replace them with something that is better for me in the long run. It's difficult to actually implement in practice as I really am affected by how I feel even though I say I'm fine. 
+
+Already being in the works is stuff to take away some of the biggest culprits that take away my time. I'm starting to use Unhook (browser extension) along with YouTube Revanced to take away the option to access shorts or most of my home page. For gaming, I have found that the only way to get me out of it is to do something that gives tangle value to me. This website is the biggest thing (well really, buying a Macbook Air M4) that prevents me from spending so much time on gaming. 
+
+Still, it isn't a complete solution. The fundamental issue is, I feel that there is so much more to life, but it's difficult to prove that to the me that's living the day to day right now. I could be doing so many things with my time, yet I spend my time hopping on Marvel Rivals or Elden Ring Nightreign for the rest of the night. I need to keep reminding myself that yes, these games are amazing and fun, but my life itself could be unimaginably amazing if I accept the uncomfortable journey ahead. At least, I am already guiding my path towards this unknowable road, the road less taken. To be of clear mind and have a burning soul is the hardest thing to have when those things don't seem to manifest themselves in the current moment. Yet, I try and keep trying till something changes. This trying and likely faling is the one thing I sort of want to be addicted to. I am close with the fact I can tolerate playing a Soulslike, so I at least I'm not completely at a beginner stage. 
