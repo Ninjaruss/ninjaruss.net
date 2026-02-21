@@ -1,7 +1,7 @@
 ---
 title: "Fuma-shi - Roblox Roleplay Group"
 tags: ["misc"]
-publishedAt: 2026-02-20
+publishedAt: 2026-02-21
 emblem: "/images/showcase/fuma-shi-logo.png"
 ---
 
@@ -20,7 +20,7 @@ Luckily, the above video is one of the very few I can find that shows the vibe o
 
 How does this eventually turn into a Japanese roleplay group? Well, as an extension of Naruto, we were naturally interested in trying to play Naruto related games. Everything is pretty fuzzy, but I remember finding a small roleplay group that was showcasing itself to be a more grounded form of Konohoagakure. The group is defunct and the owner for it moved onto playing Star Wars roleplay stuff, but the group's remains still exist on the Internet. 
 
-![Konohagakure clan base](/images/showcase/konohagakura.png)
+![Konohagakure clan base](/images/showcase/konohagakure.png)
 https://www.roblox.com/communities/1091446/Konohagakure-The-Hidden-Leaf-Village#!/about
 https://www.roblox.com/games/157294923/Hidden-Leaf-Village
 
