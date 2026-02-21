@@ -10,7 +10,7 @@ publishedAt: 2026-02-13
 ## MAIN
 - Learn Japanese through watching Japanese shows/anime to a basic conversational level by May 2026 (i.e. I can go into Japanese VRchat worlds and interact)
 - Host a VPS through Hetzner and managed with Dokploy; migrate L-file backend to use self-hosted server rather than Flyio
-    - Create a Team Ninjaruss Fluxer server
+    - Create a Team Ninjaruss Fluxer server; perhaps weebcloset as well?
 - Migrate most of my accounts/tech use to more privacy-oriented solutions or more flexible options; i.e. Gmail -> Proton Mail?, already using 1Password, 
 
 ## SIDE
