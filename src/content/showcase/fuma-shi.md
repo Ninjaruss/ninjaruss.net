@@ -19,7 +19,7 @@ Luckily, the above video is one of the very few I can find that shows the vibe o
 How does this eventually turn into a Japanese roleplay group? Well, as an extension of Naruto, we were naturally interested in trying to play Naruto related games. Everything is pretty fuzzy, but I remember finding a small roleplay group that was showcasing itself to be a more grounded form of Konohoagakure. The group is defunct and the owner for it moved onto playing Star Wars roleplay stuff, but the group's remains still exist on the Internet. 
 
 ![Konohagakure clan base](/images/showcase/konohagakure.png)
-https://www.roblox.com/communities/1091446/ Konohagakure-The-Hidden-Leaf-Village#!/about  
+https://www.roblox.com/communities/1091446/Konohagakure-The-Hidden-Leaf-Village#!/about. 
 https://www.roblox.com/games/157294923/Hidden-Leaf-Village   
 
 This was where the idea of a ninja roleplay group started to take form in my head. They would host trainings and teach while having their very own Hidden Leaf village to use. The concept of a raidable base, where the goal of outsiders is to raid and win a skirmish against a group's base was super cool. Having like a full server of people using their tactics and whatever tools given in the game was something I wanted to replicate myself.
