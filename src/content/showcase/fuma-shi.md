@@ -29,9 +29,15 @@ https://www.roblox.com/communities/2857407/F-ma-shi#!/about
 https://www.roblox.com/games/701096792/Kotsubo-Kanagawa  
 https://www.roblox.com/games/434243843/Yamakita-Kanagawa  
 
-There's a whole history that I could attempt to parse through, but here are some highlights:
+There's a whole history that I could attempt to parse through, but here are a few highlights:
+- Was originally Uzushiogakure before major overhaul in 2016
+![Early concept of the Fuma-shi logo](/images/showcase/2016-06-10-Fuma-shi-old-logo.png)
 - Takeda clan vs Fuma-shi (Uzushiogakure)  
 https://www.roblox.com/games/547818361/Castle-Torin-In  
 ![Raid instructions against the Takeda clan](/images/showcase/2016-11-29-Takeda-raid.png)
+- Shogunate taken over by Taira makes way for Fuma-shi to be an independent clan
+![Clan exit from Feudal Japan affiliation](/images/showcase/2017-03-04-FeudalJapan-Exit.png)
 
-TBC
+Admittedtly, I was primarily a facilitator for developing the group's places and formatting the overall structure. Especially after 2016 was when I became more of a backend manager rather than active participant. The clan was thriving by how genuine everyone was by having fun with what we made here. Having trainings nearly every week with reports on what was done and even implementing formation commands made the experience immersive. I gotta say, in hindsight, this was a beautiful experience that I cherish even though it was for a very niche space on Roblox.
+
+If I really wanted to, I could probably continue on this legacy by playing something like Nin Online (which I did for a good bit of time), but it would be hard to replicate the simplicity of what was done during the era of Fuma-shi. The key thing I'm learning from this was how important it is to try making a community and connect with other people. Even if it is something as obscure as Fuma-shi or even now weebcloset, the social connection really helped with my understanding of how to communicate with different types of people and that it all starts with you.
