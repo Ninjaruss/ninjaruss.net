@@ -24,6 +24,21 @@ const nowMonthYearLocal = nowDate
   ? nowDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
   : '';
 
+const DEFAULT_EMBLEM = '/images/emblems/default.svg';
+
+// Recent entries with emblems for core tile thumbnails
+const recentShowcase = showcase
+  .filter(e => e.data.publishedAt)
+  .sort((a, b) => new Date(b.data.publishedAt!).getTime() - new Date(a.data.publishedAt!).getTime())
+  .slice(0, 3)
+  .map(e => ({ emblem: e.data.emblem ?? DEFAULT_EMBLEM, title: e.data.title }));
+
+const recentMedia = media
+  .filter(e => e.data.publishedAt)
+  .sort((a, b) => new Date(b.data.publishedAt!).getTime() - new Date(a.data.publishedAt!).getTime())
+  .slice(0, 2)
+  .map(e => ({ emblem: e.data.emblem ?? DEFAULT_EMBLEM, title: e.data.title }));
+
 // Find the most recently published content
 const allContent = [...notes, ...media, ...showcase];
 const sorted = allContent
@@ -40,6 +55,7 @@ const latestEntries = sameDateEntries.map(entry => ({
   title: entry.data.title,
   href: `/${entry.collection}/${entry.slug}`,
   publishedAt: entry.data.publishedAt!.toISOString(),
+  emblem: entry.data.emblem ?? DEFAULT_EMBLEM,
 }));
 ---
 
@@ -76,7 +92,17 @@ const latestEntries = sameDateEntries.map(entry => ({
         title="What I'm Building"
         description="Stuff I've created and that I am currently working on."
         class="bento-tile--core bento-tile--span-3x2"
-      />
+      >
+        {recentShowcase.length > 0 && (
+          <div class="tile-emblems tile-emblems--highlight">
+            {recentShowcase.map(entry => (
+              <div class="tile-emblem" title={entry.title}>
+                <img src={entry.emblem} alt="" class="tile-emblem__img" loading="lazy" aria-hidden="true" />
+              </div>
+            ))}
+          </div>
+        )}
+      </BentoTile>
 
       <BentoTile
         href="/notes"
@@ -95,7 +121,17 @@ const latestEntries = sameDateEntries.map(entry => ({
         title="Watched & Read"
         description="My thoughts on anime, manga, movies, and more."
         class="bento-tile--core bento-tile--span-2x2"
-      />
+      >
+        {recentMedia.length > 0 && (
+          <div class="tile-emblems">
+            {recentMedia.map(entry => (
+              <div class="tile-emblem" title={entry.title}>
+                <img src={entry.emblem} alt="" class="tile-emblem__img" loading="lazy" aria-hidden="true" />
+              </div>
+            ))}
+          </div>
+        )}
+      </BentoTile>
 
       {latestEntries.length > 0 && (
         <a
@@ -104,12 +140,25 @@ const latestEntries = sameDateEntries.map(entry => ({
           class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--accent bento-tile--span-2x1"
           data-entries={JSON.stringify(latestEntries)}
         >
-          <div class="bento-tile__header">
-            <span class="bento-tile__label">Latest</span>
-            <h3 class="bento-tile__title" id="latest-title">{latestEntries[0].title}</h3>
-          </div>
-          <div class="bento-tile__footer">
-            <span class="days-ago" id="latest-days-ago"></span>
+          <div class="latest-tile__inner">
+            <div class="latest-tile__text">
+              <div class="bento-tile__header">
+                <span class="bento-tile__label">Latest</span>
+                <h3 class="bento-tile__title" id="latest-title">{latestEntries[0].title}</h3>
+              </div>
+              <div class="bento-tile__footer">
+                <span class="days-ago" id="latest-days-ago"></span>
+              </div>
+            </div>
+            <div class="latest-tile__emblem-wrap">
+              <img
+                id="latest-emblem"
+                src={latestEntries[0].emblem}
+                alt=""
+                class="latest-tile__emblem"
+                aria-hidden="true"
+              />
+            </div>
           </div>
         </a>
       )}
@@ -423,6 +472,98 @@ const latestEntries = sameDateEntries.map(entry => ({
     transform: scale(1.1);
   }
 
+  /* Emblem thumbnail strip — used in core tile slots */
+  .tile-emblems {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-xs);
+    align-items: center;
+  }
+
+  .tile-emblem {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-bg-surface);
+    transition:
+      transform var(--transition-fast),
+      border-color var(--transition-fast);
+  }
+
+  .tile-emblem__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0.85;
+    transition: opacity var(--transition-fast);
+  }
+
+  .bento-tile:hover .tile-emblem__img {
+    opacity: 1;
+  }
+
+  /* Highlight variant: emblems on gold background need dark borders */
+  .tile-emblems--highlight .tile-emblem {
+    border-color: rgba(0, 0, 0, 0.25);
+    background: var(--color-black);
+  }
+
+  .tile-emblems--highlight .tile-emblem__img {
+    opacity: 0.9;
+  }
+
+  .bento-tile--highlight:hover .tile-emblems--highlight .tile-emblem {
+    border-color: rgba(0, 0, 0, 0.5);
+  }
+
+  /* Latest tile — flex row for text + emblem layout */
+  .latest-tile__inner {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+    flex: 1;
+    gap: var(--space-sm);
+  }
+
+  .latest-tile__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .latest-tile__emblem-wrap {
+    flex-shrink: 0;
+    width: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .latest-tile__emblem {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-bg-surface);
+    opacity: 0.85;
+    transition:
+      opacity var(--transition-fast),
+      border-color var(--transition-fast);
+  }
+
+  #latest-tile:hover .latest-tile__emblem {
+    opacity: 1;
+    border-color: var(--color-gold);
+  }
+
   /* Reduced Motion Support */
   @media (prefers-reduced-motion: reduce) {
     .title-tile__description,
@@ -433,6 +574,12 @@ const latestEntries = sameDateEntries.map(entry => ({
     .title-tile:hover .title-tile__description,
     .logo-tile:hover .logo-tile__description {
       transition-delay: 0ms;
+    }
+
+    .tile-emblem,
+    .tile-emblem__img,
+    .latest-tile__emblem {
+      transition: none;
     }
   }
 
@@ -455,6 +602,15 @@ const latestEntries = sameDateEntries.map(entry => ({
       width: 48px;
       height: 48px;
     }
+
+    .latest-tile__emblem-wrap {
+      width: 44px;
+    }
+
+    .latest-tile__emblem {
+      width: 44px;
+      height: 44px;
+    }
   }
 
   @media (max-width: 480px) {
@@ -471,6 +627,20 @@ const latestEntries = sameDateEntries.map(entry => ({
     }
 
     .image-tile__youtube-icon {
+      width: 40px;
+      height: 40px;
+    }
+
+    .tile-emblem {
+      width: 30px;
+      height: 30px;
+    }
+
+    .latest-tile__emblem-wrap {
+      width: 40px;
+    }
+
+    .latest-tile__emblem {
       width: 40px;
       height: 40px;
     }
@@ -491,6 +661,10 @@ const latestEntries = sameDateEntries.map(entry => ({
         latestTile.href = entry.href;
         const titleEl = document.getElementById('latest-title');
         if (titleEl) titleEl.textContent = entry.title;
+
+        // Update emblem
+        const emblemEl = document.getElementById('latest-emblem') as HTMLImageElement | null;
+        if (emblemEl && entry.emblem) emblemEl.src = entry.emblem;
 
         // Calculate "X days ago"
         const daysAgoEl = document.getElementById('latest-days-ago');
