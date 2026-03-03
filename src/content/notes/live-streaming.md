@@ -2,7 +2,8 @@
 title: "Live Streaming"
 tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
-publishedAt: 2026-02-28
+publishedAt: 2026-03-02
+updatedAt: 2026-03-03
 ---
 ## Live streaming is the best and worst thing to do for my brain.
 
