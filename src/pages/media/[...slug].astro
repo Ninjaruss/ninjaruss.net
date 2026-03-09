@@ -22,14 +22,20 @@ const { Content } = await entry.render();
 const sortedMedia = await getSortedEntries('media');
 const { allMedia, allNotes, allShowcase } = await getAllCollections();
 const hasContent = !hasMinimalContent(entry.body);
+
+const pageDescription = entry.data.description ?? stripMarkdown(entry.body || '').slice(0, 160);
+const pageOgImage = entry.data.image ?? '/social-default.svg';
 ---
 
 <SplitViewLayout
   title="Media"
-  description="Notes on anime, manga, films, and more."
+  description={pageDescription}
   section="media"
   initialSlug={entry.slug}
   initialEmblem={entry.data.emblem}
+  pageTitle={entry.data.title}
+  ogImage={pageOgImage}
+  ogType="article"
 >
   <Fragment slot="list">
     {sortedMedia.map((mediaEntry) => (

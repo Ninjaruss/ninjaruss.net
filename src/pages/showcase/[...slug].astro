@@ -22,14 +22,20 @@ const { Content } = await entry.render();
 const sortedShowcase = await getSortedEntries('showcase');
 const { allMedia, allNotes, allShowcase } = await getAllCollections();
 const hasContent = !hasMinimalContent(entry.body);
+
+const pageDescription = entry.data.description ?? stripMarkdown(entry.body).slice(0, 160);
+const pageOgImage = entry.data.image ?? '/social-default.svg';
 ---
 
 <SplitViewLayout
   title="Showcase"
-  description="Projects framed as inquiries."
+  description={pageDescription}
   section="showcase"
   initialSlug={entry.slug}
   initialEmblem={entry.data.emblem}
+  pageTitle={entry.data.title}
+  ogImage={pageOgImage}
+  ogType="article"
 >
   <Fragment slot="list">
     {sortedShowcase.map((exp) => (

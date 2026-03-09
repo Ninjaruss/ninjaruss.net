@@ -2,10 +2,10 @@
 title: "Japan's Special Aura"
 tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
-publishedAt: 2026-03-06
+publishedAt: 2026-03-09
 ---
 
-# What has fostered the growth and development of art in Japan?
+## What has fostered the growth and development of art in Japan?
 I have this feeling that there's more to Japan than it meets the eye when it comes to the culture that has exploded from there. Notably, all of the amazing stories from the anime/manga I enjoy. I understand that every culture around the world has its own major art works and communities, but to me there seems to be something special with the stuff that comes from Japan.
 
 The most direct way I can attempt to describe this feeling is with J-pop. From my time listening to different types of music, I enjoyed J-pop and J-rock the most. Could it just be the underlying roots of the genre? Perhaps I am more attuned to that sort of music, but I immediately didn't like K-pop when I tried listening to some of their songs. This isn't a very apt comparison and I understand how incredibly short sighted my perspective is, but the thing to describe the feeling I got was J-pop was often more unique than K-pop (which felt overproduced).
