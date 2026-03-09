@@ -10,13 +10,16 @@ interface Props {
   section: string;
   initialSlug?: string;
   initialEmblem?: string;
+  pageTitle?: string;
+  ogImage?: string;
+  ogType?: string;
 }
 
-const { title, description, section, initialSlug, initialEmblem } = Astro.props;
+const { title, description, section, initialSlug, initialEmblem, pageTitle, ogImage, ogType } = Astro.props;
 const hasInitialContent = Astro.slots.has('detail');
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={pageTitle ?? title} description={description} ogImage={ogImage} ogType={ogType}>
   <NavPill />
   <div
     class:list={['split-view', { 'has-selection': hasInitialContent }]}

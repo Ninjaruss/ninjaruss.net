@@ -9,6 +9,8 @@ const sharedSchema = z.object({
   updatedAt: z.coerce.date().optional(),
   draft: z.boolean().default(false),
   emblem: z.string().optional(), // Path to page-specific emblem image
+  description: z.string().optional(), // For meta/OG description
+  image: z.string().optional(), // Path to social share image
 });
 
 // Media collection — anime, manga, films, series, music, books, games, characters, and other inspirations

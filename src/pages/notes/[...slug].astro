@@ -22,14 +22,20 @@ const { Content } = await entry.render();
 const sortedNotes = await getSortedEntries('notes');
 const { allMedia, allNotes, allShowcase } = await getAllCollections();
 const hasContent = !hasMinimalContent(entry.body);
+
+const pageDescription = entry.data.description ?? stripMarkdown(entry.body).slice(0, 160);
+const pageOgImage = entry.data.image ?? '/social-default.svg';
 ---
 
 <SplitViewLayout
   title="Notes"
-  description="Philosophical fragments and beliefs in progress."
+  description={pageDescription}
   section="notes"
   initialSlug={entry.slug}
   initialEmblem={entry.data.emblem}
+  pageTitle={entry.data.title}
+  ogImage={pageOgImage}
+  ogType="article"
 >
   <Fragment slot="list">
     {sortedNotes.map((noteEntry) => (
