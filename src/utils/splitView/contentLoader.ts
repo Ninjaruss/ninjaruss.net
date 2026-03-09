@@ -4,6 +4,37 @@ import { triggerEmblemFlip } from './emblemAnimation';
 import { initMediaLightbox } from './mediaHandlers';
 
 /**
+ * Sync page-level metadata (title, description, OG tags) from a fetched document
+ */
+function syncPageMeta(doc: Document): void {
+  // Title
+  const newTitle = doc.title;
+  if (newTitle) document.title = newTitle;
+
+  // Helper to sync a single <meta> tag by attribute selector
+  const syncMeta = (selector: string, attr: 'content') => {
+    const src = doc.head.querySelector(selector) as HTMLMetaElement | null;
+    const dst = document.head.querySelector(selector) as HTMLMetaElement | null;
+    if (src && dst) dst[attr] = src[attr];
+  };
+
+  syncMeta('meta[name="description"]', 'content');
+  syncMeta('meta[property="og:title"]', 'content');
+  syncMeta('meta[property="og:description"]', 'content');
+  syncMeta('meta[property="og:image"]', 'content');
+  syncMeta('meta[property="og:type"]', 'content');
+  syncMeta('meta[property="og:url"]', 'content');
+  syncMeta('meta[name="twitter:title"]', 'content');
+  syncMeta('meta[name="twitter:description"]', 'content');
+  syncMeta('meta[name="twitter:image"]', 'content');
+
+  // Canonical URL
+  const srcCanonical = doc.head.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+  const dstCanonical = document.head.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+  if (srcCanonical && dstCanonical) dstCanonical.href = srcCanonical.href;
+}
+
+/**
  * Load detail content for a given slug
  */
 export async function loadContent(
@@ -45,6 +76,9 @@ export async function loadContent(
       contentArea.innerHTML = entryContent.outerHTML;
       contentArea.classList.add('is-active');
       history.pushState({ slug }, '', `/${state.section}/${slug}/`);
+
+      // Sync page metadata from the fetched document
+      syncPageMeta(doc);
       state.currentSlug = slug;
 
       const heading = contentArea.querySelector('h1, h2, .entry__title') as HTMLElement;
