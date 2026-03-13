@@ -70,6 +70,7 @@
   --opacity-heavy: 0.5;
 
   /* P4G uses ROUNDED corners — key characteristic */
+  --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;

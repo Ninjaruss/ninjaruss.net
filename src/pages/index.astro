@@ -64,7 +64,11 @@ const latestEntries = sameDateEntries.map(entry => ({
     <BentoGrid>
       <!-- Row 1-2: Title Hero (3x2) + YouTube Hero #1 (3x2) -->
       <div class="title-tile bento-tile--span-3x2 p3r-animate-left">
-        <span class="title-tile__name">Ninjaruss</span>
+        <div class="title-tile__inner">
+          <div class="title-tile__rule title-tile__rule--top" aria-hidden="true"></div>
+          <span class="title-tile__name">Ninjaruss</span>
+          <div class="title-tile__rule title-tile__rule--bottom" aria-hidden="true"></div>
+        </div>
         <p class="title-tile__description">Live without regret.</p>
       </div>
 
@@ -91,8 +95,9 @@ const latestEntries = sameDateEntries.map(entry => ({
         label="Showcase"
         title="What I'm Building"
         description="Stuff I've created and that I am currently working on."
-        class="bento-tile--core bento-tile--span-3x2"
+        class="bento-tile--core bento-tile--span-3x2 showcase-tile"
       >
+        <span class="tile-bg-glyph" aria-hidden="true">S</span>
         {recentShowcase.length > 0 && (
           <div class="tile-emblems tile-emblems--highlight">
             {recentShowcase.map(entry => (
@@ -110,7 +115,7 @@ const latestEntries = sameDateEntries.map(entry => ({
         label="Notes"
         title="Thoughts in Progress"
         description="An assortment of ideas I've been thinking about."
-        class="bento-tile--core bento-tile--span-3x2"
+        class="bento-tile--core bento-tile--span-3x2 notes-tile"
       />
 
       <!-- Row 5-6: Media (2x2) + Latest (2x1) + Now (2x1) -->
@@ -120,7 +125,7 @@ const latestEntries = sameDateEntries.map(entry => ({
         label="Media"
         title="Watched & Read"
         description="My thoughts on anime, manga, movies, and more."
-        class="bento-tile--core bento-tile--span-2x2"
+        class="bento-tile--core bento-tile--span-2x2 media-tile"
       >
         {recentMedia.length > 0 && (
           <div class="tile-emblems">
@@ -173,6 +178,7 @@ const latestEntries = sameDateEntries.map(entry => ({
         description="Where am I at right now?"
       >
         <span class="now-date" title={`Local: ${nowMonthYearLocal}`}>
+          <span class="now-dot" aria-hidden="true"></span>
           {nowMonthYearUTC}
           {nowMonthYearLocal !== nowMonthYearUTC ? ` — ${nowMonthYearLocal} locally` : ''}
         </span>
@@ -251,18 +257,9 @@ const latestEntries = sameDateEntries.map(entry => ({
     text-transform: lowercase;
   }
 
-  /* Month/year indicator for Now tile */
-  .now-date {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-black);
-    text-transform: lowercase;
-    display: inline-block;
-  }
-
   /* Optionally, make the local date more subtle */
   .now-date span.local {
-    color: var(--color-text-muted);
+    color: rgba(0, 0, 0, 0.5);
     font-size: 0.8em;
     margin-left: 0.25em;
   }
@@ -359,6 +356,31 @@ const latestEntries = sameDateEntries.map(entry => ({
     transition: opacity var(--transition-base);
   }
 
+  .title-tile__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    width: 100%;
+    max-width: 320px;
+  }
+
+  /* Animated gold rules flanking the name */
+  .title-tile__rule {
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(90deg, transparent 0%, var(--color-gold) 40%, var(--color-gold-orange) 60%, transparent 100%);
+    border-radius: 2px;
+  }
+
+  .title-tile__rule--top {
+    animation: p3r-wipe-reveal 500ms var(--animation-easing) 0ms backwards;
+  }
+
+  .title-tile__rule--bottom {
+    animation: p3r-wipe-reveal 500ms var(--animation-easing) 300ms backwards;
+  }
+
   .title-tile__name {
     font-family: var(--font-display);
     font-size: clamp(2.5rem, 5vw, 4rem);
@@ -368,32 +390,99 @@ const latestEntries = sameDateEntries.map(entry => ({
     text-shadow:
       0 0 30px rgba(255, 229, 44, 0.6),
       0 0 60px rgba(255, 229, 44, 0.3);
+    animation: p3r-animate-left 500ms var(--animation-easing) 100ms backwards;
   }
 
+  /* Tagline always subtly visible, sharpens on hover */
   .title-tile__description {
-    font-size: var(--text-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
     color: var(--color-text-muted);
-    margin-top: var(--space-xs);
+    margin-top: var(--space-sm);
     line-height: 1.4;
     text-align: center;
-
-    /* Hidden by default, revealed on hover with 400ms delay */
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition:
-      opacity 200ms ease-out 400ms,
-      max-height 300ms ease-out 0ms;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.5;
+    transition: opacity 200ms ease-out;
   }
 
   .title-tile:hover .title-tile__description {
     opacity: 1;
-    max-height: 100px;
   }
 
-  /* Instant hide on mouse out (remove delay) */
-  .title-tile:not(:hover) .title-tile__description {
-    transition-delay: 0ms;
+  /* Background glyph for showcase tile */
+  .tile-bg-glyph {
+    position: absolute;
+    bottom: -20px;
+    right: -10px;
+    font-family: var(--font-display);
+    font-size: 8rem;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.07);
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+
+  /* Notes tile diagonal hatching */
+  .notes-tile {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .notes-tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 8px,
+      rgba(255, 229, 44, 0.025) 8px,
+      rgba(255, 229, 44, 0.025) 9px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Media tile — slightly larger emblems */
+  .media-tile .tile-emblem {
+    width: 80px;
+    height: 80px;
+    border: 2px solid var(--color-gold-dim);
+  }
+
+  /* Now tile pulse dot */
+  .now-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-black);
+    text-transform: lowercase;
+  }
+
+  .now-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--color-black);
+    opacity: 0.6;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .now-dot {
+      animation: now-pulse 2s ease-in-out infinite;
+    }
+  }
+
+  @keyframes now-pulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.65); }
   }
 
   /* Image Tile */
@@ -579,14 +668,18 @@ const latestEntries = sameDateEntries.map(entry => ({
 
   /* Reduced Motion Support */
   @media (prefers-reduced-motion: reduce) {
-    .title-tile__description,
     .logo-tile__description {
       transition: opacity 100ms ease-out 0ms;
     }
 
-    .title-tile:hover .title-tile__description,
     .logo-tile:hover .logo-tile__description {
       transition-delay: 0ms;
+    }
+
+    .title-tile__rule--top,
+    .title-tile__rule--bottom,
+    .title-tile__name {
+      animation: none;
     }
 
     .tile-emblem,
