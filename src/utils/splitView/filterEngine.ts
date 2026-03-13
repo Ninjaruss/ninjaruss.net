@@ -28,4 +28,10 @@ export function applyFilters(
   });
 
   noResults.hidden = visibleCount > 0;
+
+  // Update count display
+  const countEl = document.getElementById('split-count');
+  if (countEl) {
+    countEl.textContent = `${visibleCount}`;
+  }
 }

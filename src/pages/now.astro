@@ -25,11 +25,13 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
 <BaseLayout title="Now" description="What I'm currently focused on.">
   <NavPill />
   <div class="container">
-    <article class="now">
+    <article class="now p3r-animate">
       <header class="now__header">
+        <div class="now__header-rule" aria-hidden="true"></div>
         <h1 class="now__title">Now</h1>
         <p class="now__updated" title="Date shown in UTC">
-          Last updated: {lastUpdated}
+          <span class="now__updated-icon" aria-hidden="true">◈</span>
+          {lastUpdated}
         </p>
       </header>
 
@@ -37,10 +39,14 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
         <Content />
       </div>
 
-      <footer class="now__footer">
-        <a href="/now/archive" class="now__archive-link">
-          View past "now" entries &rarr;
-        </a>
+      <footer class="now__footer p3r-animate" style="--stagger-delay: 200ms;">
+        <div class="now__footer-divider" aria-hidden="true"></div>
+        <div class="now__footer-content">
+          <span class="now__footer-label">Archive</span>
+          <a href="/now/archive" class="now__archive-link">
+            View past entries <span aria-hidden="true" class="now__archive-arrow">→</span>
+          </a>
+        </div>
       </footer>
     </article>
   </div>
@@ -53,36 +59,57 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
     padding-bottom: 80px; /* Space for floating nav */
   }
 
+  /* Gradient rule — sweeps in before the title */
+  .now__header-rule {
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-gold) 0%, var(--color-gold-orange) 50%, transparent 100%);
+    margin-bottom: var(--space-lg);
+    animation: p3r-wipe-reveal 500ms var(--animation-easing) backwards;
+    border-radius: 2px;
+  }
+
   .now__header {
     margin-bottom: var(--space-2xl);
     padding-bottom: var(--space-xl);
-    border-bottom: var(--border-thick) solid var(--color-gold-dim);
   }
 
   .now__title {
     font-family: var(--font-display);
-    font-size: var(--text-4xl);
+    font-size: var(--text-5xl);
     color: var(--color-gold);
-    margin-bottom: var(--space-sm);
+    margin-bottom: var(--space-md);
     text-shadow:
       0 0 30px rgba(255, 229, 44, 0.4),
       0 0 60px rgba(255, 229, 44, 0.2);
+    animation: p3r-animate-left 500ms var(--animation-easing) 100ms backwards;
   }
 
   .now__updated {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
     font-size: var(--text-sm);
-    color: var(--color-text-muted);
     font-family: var(--font-mono);
     background: var(--color-black);
     color: var(--color-gold);
-    display: inline-block;
-    padding: var(--space-xs) var(--space-sm);
+    padding: var(--space-xs) var(--space-md);
     border-radius: var(--radius-sm);
+    border: var(--border-thin) solid var(--color-gold-dim);
+    letter-spacing: 0.05em;
+    animation: p3r-animate 400ms var(--animation-easing) 250ms backwards;
   }
 
+  .now__updated-icon {
+    color: var(--color-gold-dim);
+    font-size: 0.85em;
+  }
+
+  /* Prose with left accent */
   .now__content {
     font-size: var(--text-lg);
     line-height: var(--leading-relaxed);
+    padding-left: var(--space-lg);
+    border-left: var(--border-thick) solid var(--color-gold-dim);
   }
 
   .now__content p {
@@ -93,42 +120,80 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
     margin-bottom: 0;
   }
 
+  /* Footer */
   .now__footer {
     margin-top: var(--space-3xl);
     padding-top: var(--space-xl);
-    border-top: var(--border-thin) dashed var(--color-border);
   }
 
-  .now__note {
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    font-style: italic;
+  .now__footer-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--color-gold-dim) 40%, transparent 100%);
+    margin-bottom: var(--space-lg);
+    border-radius: 2px;
   }
 
-  .now__note a {
-    color: var(--color-gold-orange);
-    text-decoration: underline;
-    text-decoration-color: var(--color-gold);
+  .now__footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
-  .now__note a:hover {
-    color: var(--color-gold-deep);
+  .now__footer-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
   }
 
   .now__archive-link {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-xs);
-    margin-top: var(--space-lg);
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--color-bg-elevated);
+    border: var(--border-medium) solid var(--color-gold-dim);
+    border-radius: var(--radius-sm);
     font-family: var(--font-display);
     font-size: var(--text-sm);
     text-transform: uppercase;
     letter-spacing: var(--tracking-label);
     color: var(--color-gold);
-    transition: color var(--transition-fast);
+    transition:
+      background var(--transition-base),
+      color var(--transition-base),
+      border-color var(--transition-base),
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast);
   }
 
   .now__archive-link:hover {
-    color: var(--color-gold-orange);
+    background: var(--color-gold);
+    color: var(--color-black);
+    border-color: var(--color-gold);
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-hard);
+  }
+
+  .now__archive-arrow {
+    transition: transform var(--transition-fast);
+  }
+
+  .now__archive-link:hover .now__archive-arrow {
+    transform: translateX(3px);
+  }
+
+  .now__archive-link:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .now__header-rule,
+    .now__title,
+    .now__updated {
+      animation: none;
+    }
   }
 </style>
