@@ -45,7 +45,7 @@ const hasContent = !hasMinimalContent(entry.body);
 
         {entry.data.emblem && (
           <div class="favorite-detail__emblem p3r-animate" style="--stagger-delay: 50ms;">
-            <EmblemCard emblemSrc={entry.data.emblem} isInitiallyFlipped={true} />
+            <EmblemCard emblemSrc={entry.data.emblem} />
           </div>
         )}
 
@@ -101,6 +101,18 @@ const hasContent = !hasMinimalContent(entry.body);
       )}
     </div>
   </article>
+<script>
+  // Auto-flip emblem on page enter (~300ms after astro:page-load,
+  // after the .p3r-animate stagger entrance settles)
+  document.addEventListener('astro:page-load', () => {
+    setTimeout(() => {
+      const card = document.querySelector('[data-emblem-card]');
+      if (card && !card.classList.contains('is-flipped')) {
+        card.classList.add('is-flipped');
+      }
+    }, 300);
+  });
+</script>
 </BaseLayout>
 
 <style>
