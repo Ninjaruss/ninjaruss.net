@@ -27,7 +27,8 @@
 .bento-grid:has(.image-tile:hover) .logo-tile:not(:hover),
 .bento-grid:has(.image-tile:hover) .title-tile:not(:hover),
 .bento-grid:has(.image-tile:hover) .image-tile:not(:hover) {
-  opacity: 0.3;
+  opacity: 0.25;
+  filter: blur(1px) brightness(0.7);
 }
 
 /* Dense asymmetric layout spans */
@@ -88,16 +89,128 @@
 }
 
 .bento-tile--interactive:hover {
-  transform: translate(-2px, -2px) rotate(-0.5deg) scale(1.01);
+  transform: translate(-4px, -4px) rotate(-0.8deg) scale(1.015);
   box-shadow:
     var(--shadow-hard-hover),
-    0 0 30px rgba(255, 229, 44, 0.25);
+    0 0 40px rgba(255, 229, 44, 0.3);
   border-color: var(--color-gold);
   filter: brightness(1.05);
 }
 
 .bento-tile--interactive:hover::before {
   opacity: 0.15;
+}
+
+/* P4G Corner Bracket Decorations — gold L-shapes at each corner on hover */
+.bento-tile--interactive::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  background-image:
+    /* TL H */ linear-gradient(var(--color-gold), var(--color-gold)),
+    /* TL V */ linear-gradient(var(--color-gold), var(--color-gold)),
+    /* TR H */ linear-gradient(var(--color-gold), var(--color-gold)),
+    /* TR V */ linear-gradient(var(--color-gold), var(--color-gold)),
+    /* BL H */ linear-gradient(var(--color-gold), var(--color-gold)),
+    /* BL V */ linear-gradient(var(--color-gold), var(--color-gold)),
+    /* BR H */ linear-gradient(var(--color-gold), var(--color-gold)),
+    /* BR V */ linear-gradient(var(--color-gold), var(--color-gold));
+  background-size:
+    16px 2px, 2px 16px,
+    16px 2px, 2px 16px,
+    16px 2px, 2px 16px,
+    16px 2px, 2px 16px;
+  background-position:
+    10px 10px,
+    10px 10px,
+    calc(100% - 10px) 10px,
+    calc(100% - 11px) 10px,
+    10px calc(100% - 11px),
+    10px calc(100% - 26px),
+    calc(100% - 10px) calc(100% - 11px),
+    calc(100% - 11px) calc(100% - 26px);
+  background-repeat: no-repeat;
+}
+
+.bento-tile--interactive:hover::after {
+  opacity: 1;
+}
+
+/* Corner brackets for dark tiles — gold */
+.bento-tile--dark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  background-image:
+    linear-gradient(var(--color-gold), var(--color-gold)),
+    linear-gradient(var(--color-gold), var(--color-gold)),
+    linear-gradient(var(--color-gold), var(--color-gold)),
+    linear-gradient(var(--color-gold), var(--color-gold)),
+    linear-gradient(var(--color-gold), var(--color-gold)),
+    linear-gradient(var(--color-gold), var(--color-gold)),
+    linear-gradient(var(--color-gold), var(--color-gold)),
+    linear-gradient(var(--color-gold), var(--color-gold));
+  background-size:
+    16px 2px, 2px 16px,
+    16px 2px, 2px 16px,
+    16px 2px, 2px 16px,
+    16px 2px, 2px 16px;
+  background-position:
+    10px 10px, 10px 10px,
+    calc(100% - 10px) 10px, calc(100% - 11px) 10px,
+    10px calc(100% - 11px), 10px calc(100% - 26px),
+    calc(100% - 10px) calc(100% - 11px), calc(100% - 11px) calc(100% - 26px);
+  background-repeat: no-repeat;
+}
+
+.bento-tile--dark:hover::after {
+  opacity: 1;
+}
+
+/* Corner brackets for highlight tiles — black */
+.bento-tile--highlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  background-image:
+    linear-gradient(var(--color-black), var(--color-black)),
+    linear-gradient(var(--color-black), var(--color-black)),
+    linear-gradient(var(--color-black), var(--color-black)),
+    linear-gradient(var(--color-black), var(--color-black)),
+    linear-gradient(var(--color-black), var(--color-black)),
+    linear-gradient(var(--color-black), var(--color-black)),
+    linear-gradient(var(--color-black), var(--color-black)),
+    linear-gradient(var(--color-black), var(--color-black));
+  background-size:
+    16px 2px, 2px 16px,
+    16px 2px, 2px 16px,
+    16px 2px, 2px 16px,
+    16px 2px, 2px 16px;
+  background-position:
+    10px 10px, 10px 10px,
+    calc(100% - 10px) 10px, calc(100% - 11px) 10px,
+    10px calc(100% - 11px), 10px calc(100% - 26px),
+    calc(100% - 10px) calc(100% - 11px), calc(100% - 11px) calc(100% - 26px);
+  background-repeat: no-repeat;
+}
+
+.bento-tile--highlight:hover::after {
+  opacity: 1;
 }
 
 .bento-tile--interactive:hover .bento-tile__title {
@@ -117,8 +230,13 @@
   .bento-tile--interactive::before {
     display: none;
   }
+  .bento-tile--interactive::after,
+  .bento-tile--dark::after,
+  .bento-tile--highlight::after {
+    display: none;
+  }
 
-  /* Disable neighbor dimming for reduced motion */
+  /* Disable neighbor dimming/blur for reduced motion */
   .bento-grid:has(.bento-tile:hover) .bento-tile:not(:hover),
   .bento-grid:has(.logo-tile:hover) .bento-tile:not(:hover),
   .bento-grid:has(.title-tile:hover) .bento-tile:not(:hover),
@@ -138,6 +256,7 @@
   .bento-grid:has(.image-tile:hover) .title-tile:not(:hover),
   .bento-grid:has(.image-tile:hover) .image-tile:not(:hover) {
     opacity: 1;
+    filter: none;
   }
 
   /* Instant subtitle reveal (no delay) */
@@ -175,7 +294,7 @@
 }
 
 .bento-tile--highlight:hover {
-  transform: translate(-2px, -2px);
+  transform: translate(-4px, -4px);
   box-shadow: var(--shadow-hard-hover);
   border-color: var(--color-black);
 }
@@ -201,7 +320,7 @@
 }
 
 .bento-tile--cyan:hover {
-  transform: translate(-2px, -2px);
+  transform: translate(-4px, -4px);
   box-shadow: var(--shadow-hard-hover);
   border-color: var(--color-black);
 }
@@ -232,8 +351,9 @@
 }
 
 .bento-tile--dark:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: var(--shadow-hard-hover);
+  transform: translate(-4px, -4px);
+  box-shadow: var(--shadow-hard-hover),
+    0 0 30px rgba(255, 229, 44, 0.2);
   border-color: var(--color-gold);
 }
 
