@@ -92,7 +92,7 @@ export async function loadContent(
       // Trigger emblem card flip animation
       // Skip animation on first load to avoid placeholder flash
       state.isAnimating = true;
-      await triggerEmblemFlip(doc, isFirstLoad);
+      await triggerEmblemFlip(doc, !isFirstLoad);
       state.isAnimating = false;
 
       // Start floating for newly loaded content
