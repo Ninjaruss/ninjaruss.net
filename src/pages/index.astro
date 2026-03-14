@@ -196,7 +196,7 @@ const latestEntries = sameDateEntries.map(entry => ({
         href="https://myanimelist.net/animelist/Ninjaruss_?status=7&order=4&order2=0"
         target="_blank"
         rel="noopener noreferrer"
-        class="logo-tile p3r-animate"
+        class="logo-tile logo-tile--mal p3r-animate"
         style="--stagger-delay: 100ms;"
       >
         <img
@@ -212,7 +212,7 @@ const latestEntries = sameDateEntries.map(entry => ({
         href="https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD?si=2b68cabcfc26451c"
         target="_blank"
         rel="noopener noreferrer"
-        class="logo-tile p3r-animate"
+        class="logo-tile logo-tile--spotify p3r-animate"
         style="--stagger-delay: 150ms;"
       >
         <img
@@ -253,8 +253,17 @@ const latestEntries = sameDateEntries.map(entry => ({
   .days-ago {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    color: var(--color-text-muted);
+    color: var(--color-gold-dim);
     text-transform: lowercase;
+    letter-spacing: 0.06em;
+    border-left: 2px solid var(--color-gold-dim);
+    padding-left: 6px;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  #latest-tile:hover .days-ago {
+    color: var(--color-gold);
+    border-color: var(--color-gold);
   }
 
   /* Optionally, make the local date more subtle */
@@ -281,11 +290,35 @@ const latestEntries = sameDateEntries.map(entry => ({
   }
 
   .logo-tile:hover {
-    transform: translate(-2px, -2px);
+    transform: translate(-4px, -4px);
     border-color: var(--color-gold);
     box-shadow:
       4px 4px 0 rgba(255, 229, 44, 0.3),
       0 0 20px rgba(255, 229, 44, 0.15);
+  }
+
+  /* MAL brand accent — deep blue */
+  .logo-tile--mal:hover {
+    border-color: #2e51a2;
+    box-shadow:
+      4px 4px 0 rgba(46, 81, 162, 0.4),
+      0 0 24px rgba(46, 81, 162, 0.25);
+  }
+
+  .logo-tile--mal:hover .logo-tile__label {
+    color: #5a88d4;
+  }
+
+  /* Spotify brand accent — signature green */
+  .logo-tile--spotify:hover {
+    border-color: #1db954;
+    box-shadow:
+      4px 4px 0 rgba(29, 185, 84, 0.4),
+      0 0 24px rgba(29, 185, 84, 0.25);
+  }
+
+  .logo-tile--spotify:hover .logo-tile__label {
+    color: #1db954;
   }
 
   .logo-tile:focus-visible {
@@ -338,19 +371,24 @@ const latestEntries = sameDateEntries.map(entry => ({
     transition-delay: 0ms;
   }
 
-  /* Title Tile - Part of the bento grid */
+  /* ─── Title Tile ─────────────────────────────────────── */
   .title-tile {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: var(--color-black);
+    background-color: var(--color-black);
+    /* Dot grid atmosphere */
+    background-image: radial-gradient(circle, rgba(255, 229, 44, 0.07) 1px, transparent 1px);
+    background-size: 22px 22px;
     border: var(--border-thick) solid var(--color-gold);
     border-radius: var(--radius-lg);
     padding: var(--space-md);
     grid-column: span 2;
     grid-row: span 1;
-    box-shadow: var(--shadow-glow);
+    box-shadow:
+      var(--shadow-glow),
+      inset 0 0 60px rgba(255, 229, 44, 0.04);
     overflow: hidden;
     opacity: 1;
     transition: opacity var(--transition-base);
@@ -365,20 +403,37 @@ const latestEntries = sameDateEntries.map(entry => ({
     max-width: 320px;
   }
 
-  /* Animated gold rules flanking the name */
+  /* Animated gold rules — shimmer sweep after initial reveal */
   .title-tile__rule {
     height: 2px;
     width: 100%;
-    background: linear-gradient(90deg, transparent 0%, var(--color-gold) 40%, var(--color-gold-orange) 60%, transparent 100%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--color-gold) 20%,
+      var(--color-gold-orange) 50%,
+      var(--color-gold) 80%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
     border-radius: 2px;
   }
 
   .title-tile__rule--top {
-    animation: p3r-wipe-reveal 500ms var(--animation-easing) 0ms backwards;
+    animation:
+      p3r-wipe-reveal 500ms var(--animation-easing) 0ms backwards,
+      rule-shimmer 5s ease-in-out 1.2s infinite;
   }
 
   .title-tile__rule--bottom {
-    animation: p3r-wipe-reveal 500ms var(--animation-easing) 300ms backwards;
+    animation:
+      p3r-wipe-reveal 500ms var(--animation-easing) 300ms backwards,
+      rule-shimmer 5s ease-in-out 2s infinite;
+  }
+
+  @keyframes rule-shimmer {
+    0%, 100% { background-position: 200% 0; opacity: 0.7; }
+    50% { background-position: -100% 0; opacity: 1; }
   }
 
   .title-tile__name {
@@ -393,7 +448,7 @@ const latestEntries = sameDateEntries.map(entry => ({
     animation: p3r-animate-left 500ms var(--animation-easing) 100ms backwards;
   }
 
-  /* Tagline always subtly visible, sharpens on hover */
+  /* Tagline: always subtly visible, sharpens on hover */
   .title-tile__description {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
@@ -402,35 +457,62 @@ const latestEntries = sameDateEntries.map(entry => ({
     line-height: 1.4;
     text-align: center;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
-    opacity: 0.5;
-    transition: opacity 200ms ease-out;
+    letter-spacing: 0.14em;
+    opacity: 0.45;
+    transition: opacity 300ms ease-out;
   }
 
   .title-tile:hover .title-tile__description {
     opacity: 1;
   }
 
-  /* Background glyph for showcase tile */
+  /* ─── Showcase Tile ───────────────────────────────────── */
+  /* Background glyph — bolder */
   .tile-bg-glyph {
     position: absolute;
     bottom: -20px;
     right: -10px;
     font-family: var(--font-display);
-    font-size: 8rem;
+    font-size: 9rem;
     line-height: 1;
-    color: rgba(0, 0, 0, 0.07);
+    color: rgba(0, 0, 0, 0.12);
     pointer-events: none;
     user-select: none;
     z-index: 0;
+    transition: transform var(--transition-base), opacity var(--transition-base);
   }
 
-  /* Notes tile diagonal hatching */
+  .showcase-tile:hover .tile-bg-glyph {
+    opacity: 0.18;
+    transform: translate(-4px, -4px) scale(1.06) rotate(-3deg);
+  }
+
+  /* Subtle diagonal stripe on gold background */
+  .showcase-tile {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 18px,
+      rgba(0, 0, 0, 0.035) 18px,
+      rgba(0, 0, 0, 0.035) 19px
+    );
+  }
+
+  /* ─── Notes Tile ──────────────────────────────────────── */
   .notes-tile {
     position: relative;
     overflow: hidden;
+    /* Notebook horizontal lines layered on the base bg */
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 27px,
+      rgba(255, 229, 44, 0.045) 27px,
+      rgba(255, 229, 44, 0.045) 28px
+    );
   }
 
+  /* Diagonal hatching on top */
   .notes-tile::before {
     content: '';
     position: absolute;
@@ -438,46 +520,88 @@ const latestEntries = sameDateEntries.map(entry => ({
     background-image: repeating-linear-gradient(
       45deg,
       transparent,
-      transparent 8px,
-      rgba(255, 229, 44, 0.025) 8px,
-      rgba(255, 229, 44, 0.025) 9px
+      transparent 10px,
+      rgba(255, 229, 44, 0.035) 10px,
+      rgba(255, 229, 44, 0.035) 11px
     );
     pointer-events: none;
     z-index: 0;
   }
 
-  /* Media tile — slightly larger emblems */
+  /* ─── Media Tile ──────────────────────────────────────── */
+  .media-tile {
+    /* Horizontal CRT scan-line texture */
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(255, 229, 44, 0.025) 3px,
+      rgba(255, 229, 44, 0.025) 4px
+    );
+  }
+
+  /* Slightly larger emblems */
   .media-tile .tile-emblem {
     width: 80px;
     height: 80px;
     border: 2px solid var(--color-gold-dim);
   }
 
-  /* Now tile pulse dot */
+  /* ─── Now Tile ────────────────────────────────────────── */
   .now-date {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-black);
     text-transform: lowercase;
   }
 
+  /* Radar ping dot */
   .now-dot {
+    position: relative;
     display: inline-block;
-    width: 8px;
-    height: 8px;
+    width: 9px;
+    height: 9px;
     flex-shrink: 0;
     border-radius: 50%;
     background: var(--color-black);
-    opacity: 0.6;
+  }
+
+  /* Two expanding rings for radar ping effect */
+  .now-dot::before,
+  .now-dot::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-black);
+    opacity: 0;
   }
 
   @media (prefers-reduced-motion: no-preference) {
     .now-dot {
-      animation: now-pulse 2s ease-in-out infinite;
+      animation: dot-breathe 2s ease-in-out infinite;
     }
+
+    .now-dot::before {
+      animation: radar-ping 2.4s ease-out 0.2s infinite;
+    }
+
+    .now-dot::after {
+      animation: radar-ping 2.4s ease-out 1.2s infinite;
+    }
+  }
+
+  @keyframes dot-breathe {
+    0%, 100% { opacity: 0.9; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.75); }
+  }
+
+  @keyframes radar-ping {
+    0% { transform: scale(0.6); opacity: 0.7; }
+    100% { transform: scale(3); opacity: 0; }
   }
 
   @keyframes now-pulse {
@@ -504,7 +628,7 @@ const latestEntries = sameDateEntries.map(entry => ({
   }
 
   .image-tile:hover {
-    transform: translate(-2px, -2px);
+    transform: translate(-4px, -4px);
     box-shadow: var(--shadow-hard-hover);
     border-color: var(--color-gold);
   }
@@ -533,16 +657,19 @@ const latestEntries = sameDateEntries.map(entry => ({
     filter: brightness(0.8);
   }
 
-  /* YouTube Overlay */
+  /* YouTube Overlay — cinematic gradient + centered icon */
   .image-tile__youtube-overlay {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.5);
+    /* Vignette from edges, darker at bottom */
+    background:
+      radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.55) 100%),
+      linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 50%);
     opacity: 0;
-    transition: opacity var(--transition-fast);
+    transition: opacity var(--transition-base);
   }
 
   .image-tile--youtube:hover .image-tile__youtube-overlay {
@@ -550,15 +677,17 @@ const latestEntries = sameDateEntries.map(entry => ({
   }
 
   .image-tile__youtube-icon {
-    width: 64px;
-    height: 64px;
-    color: #ff0000;
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
-    transition: transform var(--transition-fast);
+    width: 72px;
+    height: 72px;
+    color: #ffffff;
+    filter:
+      drop-shadow(0 0 12px rgba(255, 0, 0, 0.6))
+      drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
+    transition: transform var(--transition-base);
   }
 
   .image-tile--youtube:hover .image-tile__youtube-icon {
-    transform: scale(1.1);
+    transform: scale(1.15);
   }
 
   /* Emblem thumbnail strip — used in core tile slots */
@@ -812,13 +941,45 @@ const latestEntries = sameDateEntries.map(entry => ({
     });
   }
 
+  // Mouse-tracking 3D tilt for all tile types
+  function initializeTilt() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!window.matchMedia('(hover: hover)').matches) return;
+
+    const SELECTOR = '.bento-tile--interactive, .logo-tile, .image-tile, .title-tile';
+    const MAX_TILT = 6;
+
+    document.querySelectorAll<HTMLElement>(SELECTOR).forEach(tile => {
+      let rafId: number;
+
+      tile.addEventListener('mousemove', (e) => {
+        cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          const rect = tile.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const rx = ((e.clientY - cy) / (rect.height / 2)) * -MAX_TILT;
+          const ry = ((e.clientX - cx) / (rect.width / 2)) * MAX_TILT;
+          tile.style.transform = `perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg) translate(-4px, -4px)`;
+        });
+      });
+
+      tile.addEventListener('mouseleave', () => {
+        cancelAnimationFrame(rafId);
+        tile.style.transform = '';
+      });
+    });
+  }
+
   // Run on initial page load
   initializeLatestTile();
   initializeEmblemLinks();
+  initializeTilt();
 
   // Run after each view transition navigation
   document.addEventListener('astro:page-load', () => {
     initializeLatestTile();
     initializeEmblemLinks();
+    initializeTilt();
   });
 </script>
