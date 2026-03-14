@@ -3,9 +3,15 @@ interface Props {
   emblemSrc?: string;
   isInitiallyFlipped?: boolean;
   disableLightbox?: boolean;
+  size?: 'xs' | 'sm' | 'md';
 }
 
-const { emblemSrc, isInitiallyFlipped = false, disableLightbox = false } = Astro.props;
+const {
+  emblemSrc,
+  isInitiallyFlipped = false,
+  disableLightbox = false,
+  size = 'md',
+} = Astro.props;
 const defaultEmblem = '/images/emblems/default.svg';
 const cardBack = '/images/ygo-card-backing.png';
 ---
@@ -13,6 +19,7 @@ const cardBack = '/images/ygo-card-backing.png';
 <div
   class:list={['emblem-card', { 'is-flipped': isInitiallyFlipped }]}
   data-emblem-card
+  data-size={size}
   data-emblem-src={emblemSrc || defaultEmblem}
   data-disable-lightbox={disableLightbox ? 'true' : 'false'}
 >
@@ -21,10 +28,13 @@ const cardBack = '/images/ygo-card-backing.png';
       <img src={cardBack} alt="" class="emblem-card__img" />
     </div>
     <div class="emblem-card__face emblem-card__front">
+      <div class="emblem-bg"></div>
+      <div class="emblem-glow"></div>
+      <div class="emblem-shimmer"></div>
       <img
         src={emblemSrc || defaultEmblem}
         alt="Page emblem"
-        class="emblem-card__img"
+        class="emblem-card__img emblem-card__emblem"
         data-emblem-front
       />
     </div>
@@ -32,20 +42,26 @@ const cardBack = '/images/ygo-card-backing.png';
 </div>
 
 <style>
+  /* ── Size tokens ───────────────────────────────────────────────── */
   .emblem-card {
     perspective: 1000px;
     width: 100%;
     max-width: 240px;
-    aspect-ratio: 63 / 88; /* Standard card ratio */
+    aspect-ratio: 63 / 88;
     cursor: pointer;
   }
 
+  .emblem-card[data-size='xs'] { max-width: 60px; }
+  .emblem-card[data-size='sm'] { max-width: 120px; }
+  .emblem-card[data-size='md'] { max-width: 240px; }
+
+  /* ── Flipper ───────────────────────────────────────────────────── */
   .emblem-card__flipper {
     position: relative;
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
-    transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1);
     will-change: transform;
   }
 
@@ -53,6 +69,7 @@ const cardBack = '/images/ygo-card-backing.png';
     transform: rotateY(180deg);
   }
 
+  /* ── Faces ─────────────────────────────────────────────────────── */
   .emblem-card__face {
     position: absolute;
     inset: 0;
@@ -65,39 +82,141 @@ const cardBack = '/images/ygo-card-backing.png';
     transition: box-shadow var(--transition-base), border-color var(--transition-base);
   }
 
-  .emblem-card:hover .emblem-card__face {
-    border-color: var(--color-gold-dim);
-    box-shadow:
-      var(--shadow-hard),
-      0 0 25px rgba(255, 229, 44, 0.2);
-  }
-
   .emblem-card__back {
     transform: rotateY(0deg);
   }
 
   .emblem-card__front {
     transform: rotateY(180deg);
+    background: #0d0d0d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Note: position: absolute comes from .emblem-card__face — do NOT add position: relative here */
+    overflow: hidden;
   }
 
+  /* ── Inset geometric frame ─────────────────────────────────────── */
+  .emblem-card__front::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(255, 229, 44, 0.25);
+    border-radius: calc(var(--radius-md) - 4px);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* ── Corner gradient overlay ───────────────────────────────────── */
+  .emblem-card__front::after {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: calc(var(--radius-md) - 4px);
+    background:
+      radial-gradient(ellipse at top left, rgba(255, 229, 44, 0.12) 0%, transparent 45%),
+      radial-gradient(ellipse at bottom right, rgba(255, 229, 44, 0.07) 0%, transparent 45%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Breathing glow pulse (on isolated element — avoids box-shadow conflict with hover rules) */
+  /* Intentionally kept active under prefers-reduced-motion (shadow-only, no transform) */
+  /* z-index: 4 — above all decorative layers so inset shadow is visible */
+  .emblem-glow {
+    position: absolute;
+    inset: 0;
+    border-radius: calc(var(--radius-md) - 2px);
+    pointer-events: none;
+    z-index: 4;
+    animation: emblem-pulse 3s ease-in-out infinite;
+  }
+
+  /* ── Radial glow backdrop ──────────────────────────────────────── */
+  .emblem-bg {
+    position: absolute;
+    width: 65%;
+    height: 65%;
+    background: radial-gradient(circle, rgba(255, 229, 44, 0.12) 0%, rgba(255, 229, 44, 0.04) 45%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── Shimmer sweep ─────────────────────────────────────────────── */
+  .emblem-shimmer {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      105deg,
+      transparent 30%,
+      rgba(255, 229, 44, 0.06) 50%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 3;
+    animation: emblem-shimmer-periodic 4s ease-in-out infinite 1.5s;
+  }
+
+  .emblem-card__front:hover .emblem-shimmer {
+    animation: emblem-shimmer-once 0.6s ease forwards;
+  }
+
+  /* ── Emblem image ──────────────────────────────────────────────── */
   .emblem-card__img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  /* Floating animation container */
+  .emblem-card__emblem {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 0 8px rgba(255, 229, 44, 0.5)) drop-shadow(0 0 3px rgba(255, 229, 44, 0.8));
+  }
+
+  /* ── Hover effects ─────────────────────────────────────────────── */
+  .emblem-card:hover .emblem-card__face {
+    border-color: var(--color-gold-dim);
+  }
+
+  .emblem-card:hover .emblem-card__front {
+    box-shadow:
+      0 0 40px rgba(255, 229, 44, 0.3),
+      6px 6px 0 rgba(255, 229, 44, 0.2);
+  }
+
+  .emblem-card:hover .emblem-card__back {
+    box-shadow: var(--shadow-hard);
+  }
+
+  /* ── Flipped glow + float-glow sync (single rule — no duplicate selectors) */
+  .emblem-card.is-flipped .emblem-card__front {
+    box-shadow:
+      var(--shadow-glow),
+      var(--shadow-hard),
+      0 0 calc(15px * var(--float-glow, 0)) rgba(255, 229, 44, calc(0.1 * var(--float-glow, 0)));
+  }
+
+  /* ── Floating animation ────────────────────────────────────────── */
   .emblem-card {
     transform: translateY(var(--float-y, 0));
     transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    /* float glow synced with float position via --float-glow JS property */
+    --float-glow: 0;
   }
 
-  /* Override transition during active floating */
-  .emblem-card[style*="--float-y"] {
+  .emblem-card[style*='--float-y'] {
     transition: none;
   }
 
-  /* Hover tilt effect */
+  /* ── CSS hover tilt fallback (overridden by JS tilt on hover:hover) */
   .emblem-card:hover .emblem-card__flipper {
     transform: rotateY(180deg) scale(1.02);
   }
@@ -106,17 +225,46 @@ const cardBack = '/images/ygo-card-backing.png';
     transform: rotateY(0deg) scale(1.02);
   }
 
-  /* Glow effect when flipped */
-  .emblem-card.is-flipped .emblem-card__front {
-    box-shadow: var(--shadow-glow), var(--shadow-hard);
+  /* ── Keyframes ─────────────────────────────────────────────────── */
+  @keyframes emblem-pulse {
+    /* inset glow on .emblem-glow div — no conflict with outer box-shadow on .emblem-card__front */
+    0%, 100% {
+      box-shadow: inset 0 0 20px rgba(255, 229, 44, 0.06);
+    }
+    50% {
+      box-shadow: inset 0 0 40px rgba(255, 229, 44, 0.14);
+    }
   }
 
-  /* Reduced motion: instant flip */
+  @keyframes emblem-shimmer-periodic {
+    0% { left: -100%; opacity: 0; }
+    5% { opacity: 1; }
+    55% { left: 140%; opacity: 1; }
+    56% { opacity: 0; left: 140%; }
+    100% { left: 140%; opacity: 0; }
+  }
+
+  @keyframes emblem-shimmer-once {
+    0% { left: -100%; }
+    100% { left: 140%; }
+  }
+
+  /* ── Reduced motion ────────────────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
     .emblem-card__flipper {
       transition: none;
       transform: rotateY(0deg) !important;
     }
+
+    .emblem-shimmer {
+      animation: none;
+    }
+
+    .emblem-card__front:hover .emblem-shimmer {
+      animation: none;
+    }
+
+    /* emblem-pulse intentionally kept (shadow-only, no transform) */
   }
 </style>
 
@@ -127,6 +275,9 @@ const cardBack = '/images/ygo-card-backing.png';
     emblemCards.forEach((card) => {
       const flipper = card.querySelector('.emblem-card__flipper');
       if (!flipper) return;
+
+      // Suppress tilt on xs cards (too small to be meaningful)
+      if ((card as HTMLElement).dataset.size === 'xs') return;
 
       let isHovering = false;
       let rafId: number | null = null;
@@ -167,7 +318,7 @@ const cardBack = '/images/ygo-card-backing.png';
 
         const baseRotation = card.classList.contains('is-flipped') ? 180 : 0;
         (flipper as HTMLElement).style.transform = `rotateY(${baseRotation}deg) scale3d(1, 1, 1)`;
-        (flipper as HTMLElement).style.transition = 'transform 600ms cubic-bezier(0.4, 0, 0.2, 1)';
+        (flipper as HTMLElement).style.transition = 'transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1)';
       }
 
       // Only on hover-capable devices
@@ -185,6 +336,9 @@ const cardBack = '/images/ygo-card-backing.png';
     const emblemCards = document.querySelectorAll('.emblem-card');
 
     emblemCards.forEach((card) => {
+      // Suppress float on xs cards
+      if ((card as HTMLElement).dataset.size === 'xs') return;
+
       let floatRafId: number | null = null;
       let isFloating = false;
       let startTime: number | null = null;
@@ -200,9 +354,11 @@ const cardBack = '/images/ygo-card-backing.png';
             if (Math.abs(currentY) > 0.1) {
               const targetY = currentY * 0.9;
               (card as HTMLElement).style.setProperty('--float-y', `${targetY}px`);
+              (card as HTMLElement).style.setProperty('--float-glow', `${Math.abs(targetY) / FLOAT_AMPLITUDE}`);
               floatRafId = requestAnimationFrame(animate);
             } else {
               (card as HTMLElement).style.removeProperty('--float-y');
+              (card as HTMLElement).style.removeProperty('--float-glow');
               floatRafId = null;
             }
           }
@@ -220,6 +376,9 @@ const cardBack = '/images/ygo-card-backing.png';
         const translateY = (eased * 2 - 1) * FLOAT_AMPLITUDE;
 
         (card as HTMLElement).style.setProperty('--float-y', `${translateY}px`);
+        // Sync glow intensity with float position (0 at bottom, 1 at peak)
+        const glowIntensity = (sineValue + 1) / 2; // normalize sine -1..1 → 0..1
+        (card as HTMLElement).style.setProperty('--float-glow', `${glowIntensity}`);
         floatRafId = requestAnimationFrame(animate);
       }
 
