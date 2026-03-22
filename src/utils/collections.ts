@@ -31,7 +31,7 @@ export async function getSortedEntries<T extends SectionName>(
 ): Promise<CollectionEntry<T>[]> {
   const entries = await getCollection(section, ({ data }) => !data.draft);
   return entries.sort((a, b) =>
-    new Date(b.data.publishedAt || 0).getTime() -
-    new Date(a.data.publishedAt || 0).getTime()
+    new Date(b.data.updatedAt || b.data.publishedAt || 0).getTime() -
+    new Date(a.data.updatedAt || a.data.publishedAt || 0).getTime()
   ) as CollectionEntry<T>[];
 }
