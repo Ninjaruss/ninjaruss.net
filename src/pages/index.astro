@@ -26,28 +26,30 @@ const nowMonthYearLocal = nowDate
 
 const DEFAULT_EMBLEM = '/images/emblems/default.svg';
 
+const effectiveDate = (e: { data: { updatedAt?: Date; publishedAt?: Date } }) =>
+  new Date(e.data.updatedAt || e.data.publishedAt || 0).getTime();
+
 // Recent entries with emblems for core tile thumbnails
 const recentShowcase = showcase
   .filter(e => e.data.publishedAt)
-  .sort((a, b) => new Date(b.data.publishedAt!).getTime() - new Date(a.data.publishedAt!).getTime())
+  .sort((a, b) => effectiveDate(b) - effectiveDate(a))
   .slice(0, 3)
   .map(e => ({ href: `/showcase/${e.slug}`, emblem: e.data.emblem ?? DEFAULT_EMBLEM, title: e.data.title }));
 
 const recentMedia = media
   .filter(e => e.data.publishedAt)
-  .sort((a, b) => new Date(b.data.publishedAt!).getTime() - new Date(a.data.publishedAt!).getTime())
+  .sort((a, b) => effectiveDate(b) - effectiveDate(a))
   .slice(0, 2)
   .map(e => ({ href: `/media/${e.slug}`, emblem: e.data.emblem ?? DEFAULT_EMBLEM, title: e.data.title }));
 
-// Find the most recently published content
+// Find the most recently published/updated content
 const allContent = [...notes, ...media, ...showcase];
-const sorted = allContent
-  .sort((a, b) => new Date(b.data.publishedAt!).getTime() - new Date(a.data.publishedAt!).getTime());
+const sorted = allContent.sort((a, b) => effectiveDate(b) - effectiveDate(a));
 
 // Get entries with the most recent date for client-side randomization
-const mostRecentDate = sorted[0] ? new Date(sorted[0].data.publishedAt!).getTime() : null;
+const mostRecentDate = sorted[0] ? effectiveDate(sorted[0]) : null;
 const sameDateEntries = mostRecentDate
-  ? sorted.filter(entry => new Date(entry.data.publishedAt!).getTime() === mostRecentDate)
+  ? sorted.filter(entry => effectiveDate(entry) === mostRecentDate)
   : [];
 
 // Prepare data for client-side randomization
@@ -97,7 +99,6 @@ const latestEntries = sameDateEntries.map(entry => ({
         description="Stuff I've created and that I am currently working on."
         class="bento-tile--core bento-tile--span-3x2 showcase-tile"
       >
-        <span class="tile-bg-glyph" aria-hidden="true">S</span>
         {recentShowcase.length > 0 && (
           <div class="tile-emblems tile-emblems--highlight">
             {recentShowcase.map(entry => (

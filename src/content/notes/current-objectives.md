@@ -20,7 +20,6 @@ updatedAt: 2026-03-19
 ## SIDE
 - ~~Edit and publish Tokyo June 2025 vlog Part 2~~
 - Edit and publish Tokyo June 2025 Vlog Part 3 (Finale)
-- Catch up to the latest chapter of One Piece
 - Write more blurbs for the Favorites section in ninjaruss.net
 - Create Scrivner plugin to export data to my website (show my work publicly)?
 
