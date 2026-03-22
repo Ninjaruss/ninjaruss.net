@@ -2,6 +2,7 @@
 title: "L-file - Usogui Database"
 tags: ["web dev"]
 publishedAt: 2026-02-07
+updatedAt: 2026-03-22
 emblem: /images/showcase/Usogui_Volume_2_popout.png
 collections: ["web dev"]
 ---
@@ -32,3 +33,24 @@ Overall, I sort of downplay how neat this website is after completing it. Even t
 Hopefully, a frontend overhaul may be planned in the future, but the real struggle now is to get attention to this site. The ideal scenario is that it inspires others to contribute to this site and really make it a premier resource for newcomers and those that plan to reread the story. 
 
 ![Yes, this is a real panel.](/images/showcase/2026-02-07-Usogui-feet-meme.jpg)
+
+## EDIT 2026-03-22
+So perfectionism might be grabbing me by the throat, but I spent even more time trying to clean up the website. Primarily, I was just not satisfied with the look of the initial appearance of the website. As I mentioned earlier in this post, I am no frontend developer that likes fiddling around with designs, but that isn't excuse with making a less than polished look to the site.
+
+After some research, I decided to try out using Claude Code skills which are self contained prompts that help the LLM to be really focused in its scope. The two skills I utilized is the superpowers skill (focuses on making a proper plan and implementation task list) and the frontend design skill (focuses on making more consistent and aligned designs). I realize that I was doing what was essentially making skills earlier as I ended up feeding my ideas to a different model like Deepseek and ChatGPT to turn what I wanted into a more defined plan for Claude to execute.
+
+![Updated home page design.](/images/showcase/2026-03-22-L-file-homepage.png)
+
+What occurred was surprisingly cool but also frustrating to spend additional time on. The biggest surprise was while using the superpowers skill, it now asks to show you a live mockup of what it thinks you want and gives you options. I think it's a recent addition to Claude or something, but this made figuring out what I wanted so much easier. But the drawback is the amount of additional time I had to spend on making these adjustments. Namely, the token usage was significantly higher that the Claude Code Pro limits felt as strict as if I was relying on a freemium software. Not only this, there would be minor errors every now and then like the model forgetting to include the components that interacts/relies on the stuff it changed. Let's just say I spent probably additional week or two for unintended changes that would have been avoided if I was very specific and knew what I wanted.
+
+Perhaps I need to spend more time with something like Figma or drawing as I focus more on functionality and experience rather than aesthetics. Either way, I am pleasantly surpised with what was implemented by the LLM even though I wasn't very sure on the site's look.
+
+![Updated look to character detail](/images/showcase/2026-03-22-Character-detail.png)
+
+Oh that reminds me, I forgot to mention that I spent some time migrating the server from using Vercel frontend and Flyio backend to using my own self funded server on Hetzner managed with Dokploy. I am absolutely amazed that something like Dokploy exists as it turns what I liked about Vercel and similar platforms into something self managed: the ease of use user interface to avoid terminal commands and config text editing. Long story short, everything about the L-file website is now contained in the Hetzner server. 
+
+A key thing that I should note: Github Actions setup. A big issue I ran into was that whenever I pushed a change to the frontend, the server would get overloaded while trying to build the frontend. I learned that you can turn it into a Docker file that can be pre built through Github Actions so the server only needs to pull that imaged file. After a lot of trial and error, the workflow is automated so any push will rebuild the frontend image and automatically use the new one. However, there's a small issue where the server still gets occasionally overloaded when pushing changes that it fails for the last step in the Github Action flow; luckily, that step just needs to be rerun when the server is less overloaded like 5 minutes later.
+
+![Overview of Github action workflow](/images/showcase/2026-03-22-Github-actions.png)
+
+I still expect to make a lot of adjustments for stuff I haven't taken into account for. Even now, there's a few places that need to be polished like the detail page sub sections, but NOW the site looks like something compontent that I am happy to properly showcase now.
