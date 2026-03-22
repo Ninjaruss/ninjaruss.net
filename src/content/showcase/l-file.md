@@ -54,3 +54,7 @@ A key thing that I should note: Github Actions setup. A big issue I ran into was
 ![Overview of Github action workflow](/images/showcase/2026-03-22-Github-actions.png)
 
 I still expect to make a lot of adjustments for stuff I haven't taken into account for. Even now, there's a few places that need to be polished like the detail page sub sections, but NOW the site looks like something compontent that I am happy to properly showcase now.
+
+All there is to do is the long road of actually adding data and hoping it doesn't break! Hopefully this might inspire someone or really me to continue making stuff even if it's niche and obscure.
+
+Remember 99% of gamblers give up before they shine, so keep on gambling!
