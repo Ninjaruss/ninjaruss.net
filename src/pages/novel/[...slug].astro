@@ -80,9 +80,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
   </main>
 
   {/* Inline data — no client fetches */}
-  <script type="application/json" id="novel-tree">
-    {JSON.stringify(novelTree)}
-  </script>
+  <script type="application/json" id="novel-tree" set:html={JSON.stringify(novelTree)}></script>
 </BaseLayout>
 
 <style>
