@@ -294,6 +294,107 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       }
     });
   });
+
+  // ── Content panel ───────────────────────────────────────────
+
+  /** Look up a NovelFile by folder slug and subPath (e.g. "magic-system/magic-overview"). */
+  function findFile(folderSlug: string, subPath: string): NovelFile | null {
+    const folder = tree[folderSlug];
+    if (!folder) return null;
+    const parts = subPath.split('/');
+
+    if (parts.length === 1) {
+      return folder.files.find((f) => f.slug === parts[0]) ?? null;
+    }
+    // Navigate subfolders
+    let current: NovelFolder = folder;
+    for (let i = 0; i < parts.length - 1; i++) {
+      current = current.subfolders[parts[i]];
+      if (!current) return null;
+    }
+    return current.files.find((f) => f.slug === parts[parts.length - 1]) ?? null;
+  }
+
+  /** Build the breadcrumb string from folderSlug + subPath. */
+  function buildBreadcrumb(folderSlug: string, subPath: string): string {
+    const folder = tree[folderSlug];
+    const parts = subPath.split('/');
+    const labels = [folder?.title ?? folderSlug];
+    if (parts.length > 1) {
+      // Include subfolder name
+      const sub = folder?.subfolders[parts[0]];
+      if (sub) labels.push(sub.title);
+    }
+    return labels.join(' / ');
+  }
+
+  /** Open a file: expand its sub-shard and inject content. */
+  function openFile(folderSlug: string, subPath: string, pushState = true) {
+    const file = findFile(folderSlug, subPath);
+    if (!file) return;
+
+    // Mark page state
+    page.classList.add('file-open');
+
+    // Find the sub-shard element for this file
+    const subShard = document.querySelector<HTMLElement>(
+      `.sub-shard[data-sub-path="${subPath}"]`
+    );
+    if (!subShard) return;
+
+    // Deactivate any previously active file
+    document.querySelector('.sub-shard.is-active-file')?.classList.remove('is-active-file');
+    clearContentPanel();
+
+    // Activate this sub-shard
+    subShard.classList.add('is-active-file');
+
+    // Build and inject content
+    const content = document.createElement('div');
+    content.className = 'novel-content';
+    content.innerHTML = `
+      <button class="novel-content__back" type="button" aria-label="Back to folder">
+        ← back
+      </button>
+      <div class="novel-content__breadcrumb">${buildBreadcrumb(folderSlug, subPath)}</div>
+      <h1 class="novel-content__title">${file.title}</h1>
+      <div class="novel-content__dates">
+        ${file.created ? `<span>Created ${file.created}</span>` : ''}
+        ${file.modified ? `<span>Modified ${file.modified}</span>` : ''}
+      </div>
+      <div class="novel-content__body"></div>
+    `;
+
+    // Set body HTML (trusted content — own Scrivener exports)
+    const bodyEl = content.querySelector('.novel-content__body') as HTMLElement;
+    bodyEl.innerHTML = file.body;
+
+    subShard.querySelector('.sub-shard__inner')!.appendChild(content);
+
+    // Back button
+    content.querySelector('.novel-content__back')!.addEventListener('click', () => {
+      closeFile(folderSlug);
+    });
+
+    if (pushState) {
+      history.pushState(
+        { folderSlug, fileSubPath: subPath },
+        '',
+        `/novel/${folderSlug}/${subPath}`
+      );
+    }
+  }
+
+  /** Close file view and return to folder sub-shards. */
+  function closeFile(folderSlug: string, pushState = true) {
+    page.classList.remove('file-open');
+    document.querySelector('.sub-shard.is-active-file')?.classList.remove('is-active-file');
+    clearContentPanel();
+
+    if (pushState) {
+      history.pushState({ folderSlug, fileSubPath: null }, '', `/novel/${folderSlug}`);
+    }
+  }
 </script>
 
 <style>
