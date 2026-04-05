@@ -85,6 +85,59 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
   }></script>
 </BaseLayout>
 
+<script>
+  // Types inline — do NOT import from novel.ts (it uses Node fs, unsafe in client scripts)
+  interface NovelFile {
+    slug: string; title: string; body: string;
+    created: string | null; modified: string | null; path: string[];
+  }
+  interface NovelFolder {
+    slug: string; title: string;
+    files: NovelFile[]; subfolders: Record<string, NovelFolder>;
+  }
+  type NovelTree = Record<string, NovelFolder>;
+
+  // ── Read embedded data ──────────────────────────────────────
+  const treeEl = document.getElementById('novel-tree');
+  if (!treeEl) throw new Error('novel-tree data missing');
+  const tree: NovelTree = JSON.parse(treeEl.textContent!);
+
+  const page = document.querySelector('.novel-page') as HTMLElement;
+  const scatter = document.querySelector('.novel-scatter') as HTMLElement;
+
+  // ── Hover tilt (desktop only) ───────────────────────────────
+  // Only activate on devices that support hover
+  const canHover = window.matchMedia('(hover: hover)').matches;
+
+  if (canHover) {
+    let rafId: number | null = null;
+
+    document.querySelectorAll<HTMLElement>('.shard').forEach((shard) => {
+      shard.addEventListener('mousemove', (e: MouseEvent) => {
+        if (rafId !== null) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          const rect = shard.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const dx = (e.clientX - cx) / (rect.width / 2);  // -1 to 1
+          const dy = (e.clientY - cy) / (rect.height / 2); // -1 to 1
+          const maxTilt = 10;
+          const tiltX = -dy * maxTilt;
+          const tiltY = dx * maxTilt;
+          const baseRotate = getComputedStyle(shard).getPropertyValue('--rotate').trim() || '0deg';
+          shard.style.transform = `rotate(${baseRotate}) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.02)`;
+        });
+      });
+
+      shard.addEventListener('mouseleave', () => {
+        if (rafId !== null) cancelAnimationFrame(rafId);
+        const baseRotate = getComputedStyle(shard).getPropertyValue('--rotate').trim() || '0deg';
+        shard.style.transform = `rotate(${baseRotate})`;
+      });
+    });
+  }
+</script>
+
 <style>
   @import '../../styles/novel.css';
 </style>
