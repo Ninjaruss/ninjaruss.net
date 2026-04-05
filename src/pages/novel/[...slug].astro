@@ -1,0 +1,90 @@
+---
+import { join } from 'path';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NavPill from '../../components/NavPill.astro';
+import { buildNovelTree, slugify } from '../../utils/novel';
+import type { NovelFolder } from '../../utils/novel';
+
+export async function getStaticPaths() {
+  // Collect all URL path strings from the tree
+  function collectPaths(folder: NovelFolder, prefix: string): string[] {
+    const paths: string[] = [prefix];
+    for (const file of folder.files) {
+      paths.push(`${prefix}/${file.slug}`);
+    }
+    for (const sub of Object.values(folder.subfolders)) {
+      paths.push(...collectPaths(sub, `${prefix}/${sub.slug}`));
+    }
+    return paths;
+  }
+
+  const novelDir = join(process.cwd(), 'src/content/novel');
+  const tree = await buildNovelTree(novelDir);
+
+  const allPaths: string[] = [];
+  for (const folder of Object.values(tree)) {
+    allPaths.push(...collectPaths(folder, folder.slug));
+  }
+
+  return [
+    // /novel index — slug is undefined (rest param matches parent)
+    { params: { slug: undefined }, props: { tree, initialSlug: null } },
+    ...allPaths.map((s) => ({
+      params: { slug: s },
+      props: { tree, initialSlug: s },
+    })),
+  ];
+}
+
+interface Props {
+  tree: import('../../utils/novel').NovelTree;
+  initialSlug: string | null;
+}
+
+const { tree: novelTree, initialSlug } = Astro.props;
+
+// Determine initial UI state from slug
+const slugParts = initialSlug ? initialSlug.split('/') : [];
+const initialFolder = slugParts[0] ?? null;
+const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : null;
+---
+
+<BaseLayout
+  title="Remember Rain"
+  description="A novel in progress — characters, lore, locations, and themes."
+>
+  <NavPill />
+  <main
+    class="novel-page"
+    data-initial-folder={initialFolder}
+    data-initial-subpath={initialSubPath}
+  >
+    <div class="novel-scatter">
+      {Object.values(novelTree).map((folder) => (
+        <div
+          class="shard"
+          data-folder={folder.slug}
+          role="button"
+          tabindex="0"
+          aria-label={`Open ${folder.title}`}
+        >
+          <div class="shard__inner">
+            <span class="shard__label">{folder.title}</span>
+            <span class="shard__count">
+              {folder.files.length + Object.values(folder.subfolders).reduce((n, s) => n + s.files.length, 0)} files
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </main>
+
+  {/* Inline data — no client fetches */}
+  <script type="application/json" id="novel-tree">
+    {JSON.stringify(novelTree)}
+  </script>
+</BaseLayout>
+
+<style>
+  @import '../../styles/novel.css';
+</style>
