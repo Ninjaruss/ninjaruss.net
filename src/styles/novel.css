@@ -170,3 +170,148 @@
 .sub-shard:hover .sub-shard__inner {
   box-shadow: 0 0 16px color-mix(in srgb, currentColor 20%, transparent);
 }
+
+/* === State Transitions === */
+
+.novel-page.folder-selected .shard:not(.is-active-folder) {
+  opacity: 0.18;
+  pointer-events: auto;
+}
+
+.novel-page.folder-selected [data-folder="characters"]:not(.is-active-folder) {
+  transform: rotate(var(--rotate)) translate(-55%, -50%) scale(0.4);
+}
+.novel-page.folder-selected [data-folder="locations"]:not(.is-active-folder) {
+  transform: rotate(var(--rotate)) translate(0%, -70%) scale(0.4);
+}
+.novel-page.folder-selected [data-folder="lore"]:not(.is-active-folder) {
+  transform: rotate(var(--rotate)) translate(55%, -50%) scale(0.4);
+}
+.novel-page.folder-selected [data-folder="scenes"]:not(.is-active-folder) {
+  transform: rotate(var(--rotate)) translate(-55%, 50%) scale(0.4);
+}
+.novel-page.folder-selected [data-folder="themes"]:not(.is-active-folder) {
+  transform: rotate(var(--rotate)) translate(55%, 45%) scale(0.4);
+}
+
+.shard.is-active-folder {
+  z-index: 10;
+  transform: rotate(var(--rotate)) scale(1.04);
+}
+
+.novel-page.folder-selected .sub-shard.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.novel-page.file-open .sub-shard:not(.is-active-file) {
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.sub-shard.is-active-file {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  pointer-events: auto;
+  transition: all 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sub-shard.is-active-file .sub-shard__inner {
+  clip-path: polygon(2% 2%, 98% 1%, 99% 98%, 1% 99%);
+  justify-content: flex-start;
+  padding: 3rem 4rem;
+  overflow-y: auto;
+  background: color-mix(in srgb, currentColor 5%, var(--color-bg-deep) 95%);
+}
+
+.novel-content__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: currentColor;
+  opacity: 0.5;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  margin-bottom: 2rem;
+  transition: opacity 200ms ease;
+}
+.novel-content__back:hover { opacity: 1; }
+
+.novel-content__breadcrumb {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: currentColor;
+  opacity: 0.4;
+  margin-bottom: 0.5rem;
+}
+
+.novel-content__title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  color: currentColor;
+  line-height: 1.1;
+  margin: 0 0 0.75rem;
+}
+
+.novel-content__dates {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: currentColor;
+  opacity: 0.45;
+  margin-bottom: 2.5rem;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.novel-content__body {
+  color: var(--color-text);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  max-width: 680px;
+}
+
+.novel-content__body p { margin: 0 0 1.25em; }
+.novel-content__body strong { color: currentColor; font-weight: 700; }
+.novel-content__body h2, .novel-content__body h3 {
+  font-family: 'Archivo Black', sans-serif;
+  color: currentColor;
+  margin: 2em 0 0.75em;
+}
+.novel-content__body ul, .novel-content__body ol {
+  padding-left: 1.5em;
+  margin: 0 0 1.25em;
+}
+.novel-content__body li { margin-bottom: 0.4em; }
+
+.novel-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: currentColor;
+  opacity: 0.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shard, .sub-shard {
+    transition: opacity 200ms ease;
+  }
+}
