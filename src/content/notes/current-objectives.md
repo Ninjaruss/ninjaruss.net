@@ -21,7 +21,7 @@ updatedAt: 2026-03-19
 - ~~Edit and publish Tokyo June 2025 vlog Part 2~~
 - Edit and publish Tokyo June 2025 Vlog Part 3 (Finale)
 - Write more blurbs for the Favorites section in ninjaruss.net
-- Create Scrivner plugin to export data to my website (show my work publicly)?
+- Make a website for Remember Rain to hold the progress and notes of what I am trying to express as well as the visual aesthetics for the story and the characters
 
 ## LIVESTREAM
 - ~~I reviewed my Internet account history. (deleting old accounts and resetting passwords found on my 1Password)~~

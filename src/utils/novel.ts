@@ -104,6 +104,7 @@ async function buildFolder(
  * Only top-level subdirectories become tree entries.
  */
 export async function buildNovelTree(baseDir: string): Promise<NovelTree> {
+  if (!existsSync(baseDir)) return {};
   const entries = readdirSync(baseDir);
   const tree: NovelTree = {};
 

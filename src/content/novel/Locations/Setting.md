@@ -1,0 +1,9 @@
+What should the setting of my story take place in?
+
+Originally, my want was to make the story take heavy inspiration from the idea of steampunk aesthetics. There is something that speaks to me from that look; perhaps it’s the mechanical nature of things and the creative but somewhat grounded look of the technology there.
+
+What I’ve been heavily interested in was this idea of making the setting take place in an impossible location. Think Las Vegas, where the city is a “paradise” that was built in the middle of the desert. My current idea is a city that is built on an island that constantly rains. I’m thinking of combining this with the sort of mythological advancement of Atlantis. It’s a city that thrives from the water in spite of the intense environment it is in.
+
+I am also considering to have the city be built within or near a dormant volcano… not really sure why outside of it being a cool environmental addition. The city resides on a large island similar to Japan, but not sure on if this will be the case (mainly due to not sure if I’m not inspired enough or it’s something in me that wants to combine Japan into the setting). 
+
+The biggest issue right now is determining if Rain was growing up within this new city or some circumstances allowed him to move there recently. I myself am trying to move to Japan so there’s an aspect where I could make the city symbolize the change that challenges Rain (more like he moves to there as an independent act at the start of the story). Problem is, that sort of contradicts the big part of the story that I want to express in that everything that once viewed him good immediately turns on him (not directly, but unknowingly like from false media or half truths of what he did).  
