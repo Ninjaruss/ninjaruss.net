@@ -395,6 +395,78 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       history.pushState({ folderSlug, fileSubPath: null }, '', `/novel/${folderSlug}`);
     }
   }
+
+  // ── popstate — browser back/forward ────────────────────────
+  window.addEventListener('popstate', (e) => {
+    const state = e.state as { folderSlug: string | null; fileSubPath: string | null } | null;
+
+    if (!state || !state.folderSlug) {
+      // Return to scatter
+      page.classList.remove('folder-selected', 'file-open');
+      document.querySelectorAll('.shard').forEach((s) => s.classList.remove('is-active-folder'));
+      clearSubShards();
+      clearContentPanel();
+      currentFolderSlug = null;
+      return;
+    }
+
+    if (state.fileSubPath) {
+      // Restore folder first (no pushState), then file
+      if (currentFolderSlug !== state.folderSlug) {
+        selectFolder(state.folderSlug, false);
+      }
+      // Wait one frame for sub-shards to render
+      requestAnimationFrame(() => openFile(state.folderSlug!, state.fileSubPath!, false));
+    } else {
+      selectFolder(state.folderSlug, false);
+    }
+  });
+
+  // ── Initial state from server-rendered props ────────────────
+  // The Astro page sets data-initial-folder and data-initial-subpath
+  // to reflect the URL the user landed on directly.
+  const initFolder = page.dataset.initialFolder;
+  const initSubPath = page.dataset.initialSubpath;
+
+  if (initFolder) {
+    // Snap to state without animation on direct URL visit
+    page.style.transition = 'none';
+    document.querySelectorAll<HTMLElement>('.shard, .sub-shard').forEach((el) => {
+      el.style.transition = 'none';
+    });
+
+    selectFolder(initFolder, false);
+
+    if (initSubPath) {
+      requestAnimationFrame(() => {
+        openFile(initFolder, initSubPath, false);
+        // Restore transitions after initial snap
+        requestAnimationFrame(() => {
+          page.style.transition = '';
+          document.querySelectorAll<HTMLElement>('.shard, .sub-shard').forEach((el) => {
+            el.style.transition = '';
+          });
+        });
+      });
+    } else {
+      requestAnimationFrame(() => {
+        page.style.transition = '';
+        document.querySelectorAll<HTMLElement>('.shard, .sub-shard').forEach((el) => {
+          el.style.transition = '';
+        });
+      });
+    }
+
+    // Set initial history state so back works from here
+    history.replaceState(
+      { folderSlug: initFolder, fileSubPath: initSubPath ?? null },
+      '',
+      window.location.pathname
+    );
+  } else {
+    // /novel root — set initial state
+    history.replaceState({ folderSlug: null, fileSubPath: null }, '', '/novel');
+  }
 </script>
 
 <style>
