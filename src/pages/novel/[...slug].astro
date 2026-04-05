@@ -159,8 +159,10 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     count: number
   ): Array<{ top: number; left: number; width: number; height: number; rotate: number }> {
     const rect = folderEl.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+    const scatterRect = scatter.getBoundingClientRect();
+    // Convert viewport coords to scatter-relative coords
+    const centerX = rect.left + rect.width / 2 - scatterRect.left;
+    const centerY = rect.top + rect.height / 2 - scatterRect.top;
     const positions = [];
 
     for (let i = 0; i < count; i++) {
@@ -371,8 +373,9 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
 
     subShard.querySelector('.sub-shard__inner')!.appendChild(content);
 
-    // Back button
-    content.querySelector('.novel-content__back')!.addEventListener('click', () => {
+    // Back button — stopPropagation prevents bubbling to sub-shard click handler
+    content.querySelector('.novel-content__back')!.addEventListener('click', (e) => {
+      e.stopPropagation();
       closeFile(folderSlug);
     });
 
