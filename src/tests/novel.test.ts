@@ -69,5 +69,8 @@ describe('buildNovelTree', () => {
 
     // Dates are parsed
     expect(tree.characters.files[0].created).not.toBeNull();
+
+    // Path field drives URL construction
+    expect(tree.characters.files[0].path).toEqual(['characters', 'rain']);
   });
 });

@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync, statSync, existsSync } from 'fs';
-import { join, basename, extname } from 'path';
+import { join, basename, dirname } from 'path';
 import { marked } from 'marked';
 
 export interface NovelFile {
@@ -49,7 +49,7 @@ export function parseMetaData(content: string): MetaData {
 /** Read a MetaData.txt sidecar file next to a given .md file, if it exists. */
 function readSidecarMeta(mdFilePath: string): MetaData {
   // MetaData file is named "<Title> MetaData.txt" in the same directory
-  const dir = mdFilePath.replace(/\/[^/]+$/, '');
+  const dir = dirname(mdFilePath);
   const title = basename(mdFilePath, '.md');
   const metaPath = join(dir, `${title} MetaData.txt`);
   if (existsSync(metaPath)) {
