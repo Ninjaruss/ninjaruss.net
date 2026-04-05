@@ -32,7 +32,8 @@ export function slugify(name: string): string {
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
-    .trim();
+    .trim()
+    .replace(/^-+|-+$/g, '');
 }
 
 /** Parse a Scrivener MetaData.txt file content for created and modified dates. */

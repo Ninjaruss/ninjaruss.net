@@ -7,7 +7,7 @@ describe('slugify', () => {
   });
 
   it('removes special characters', () => {
-    expect(slugify('Focus Questions')).toBe('focus-questions');
+    expect(slugify("Rain's End!")).toBe('rains-end');
   });
 
   it('handles single word', () => {
