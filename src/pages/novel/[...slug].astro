@@ -136,6 +136,164 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       });
     });
   }
+
+  // ── Sub-shard positioning helpers ──────────────────────────
+
+  /** Get all files from a folder including files in immediate subfolders. */
+  function getAllFiles(folder: NovelFolder): Array<{ file: NovelFile; subPath: string }> {
+    const result: Array<{ file: NovelFile; subPath: string }> = [];
+    for (const file of folder.files) {
+      result.push({ file, subPath: file.slug });
+    }
+    for (const sub of Object.values(folder.subfolders)) {
+      for (const file of sub.files) {
+        result.push({ file, subPath: `${sub.slug}/${file.slug}` });
+      }
+    }
+    return result;
+  }
+
+  /** Compute scattered positions for sub-shards around a folder shard. */
+  function getSubShardPositions(
+    folderEl: HTMLElement,
+    count: number
+  ): Array<{ top: number; left: number; width: number; height: number; rotate: number }> {
+    const rect = folderEl.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const positions = [];
+
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 1.4 - 0.2; // spread in an arc
+      const radius = 160 + i * 20;
+      const width = 220 + (i % 3) * 30;
+      const height = 160 + (i % 2) * 20;
+      positions.push({
+        left: centerX + Math.cos(angle) * radius - width / 2,
+        top: centerY + Math.sin(angle) * radius - height / 2,
+        width,
+        height,
+        rotate: -3 + i * 1.5,
+      });
+    }
+    return positions;
+  }
+
+  // ── State: current selection ────────────────────────────────
+  let currentFolderSlug: string | null = null;
+  let subShardEls: HTMLElement[] = [];
+
+  /** Remove all existing sub-shards from the DOM. */
+  function clearSubShards() {
+    subShardEls.forEach((el) => el.remove());
+    subShardEls = [];
+  }
+
+  /** Remove content from any open file sub-shard. */
+  function clearContentPanel() {
+    const existing = document.querySelector('.novel-content');
+    existing?.remove();
+  }
+
+  /** Render sub-shards for the given folder into the scatter container. */
+  function renderSubShards(folderSlug: string) {
+    clearSubShards();
+    const folder = tree[folderSlug];
+    if (!folder) return;
+
+    const folderEl = document.querySelector<HTMLElement>(`[data-folder="${folderSlug}"]`);
+    if (!folderEl) return;
+
+    const allFiles = getAllFiles(folder);
+    if (allFiles.length === 0) {
+      // Empty folder — show placeholder inside the active shard
+      const empty = document.createElement('div');
+      empty.className = 'novel-empty';
+      empty.textContent = 'No files yet';
+      folderEl.appendChild(empty);
+      subShardEls.push(empty);
+      return;
+    }
+
+    const positions = getSubShardPositions(folderEl, allFiles.length);
+
+    allFiles.forEach(({ file, subPath }, i) => {
+      const el = document.createElement('div');
+      el.className = 'sub-shard';
+      el.dataset.subPath = subPath;
+      el.dataset.fileSlug = file.slug;
+      el.style.color = getComputedStyle(
+        document.querySelector<HTMLElement>(`[data-folder="${folderSlug}"]`)!
+      ).color;
+
+      const pos = positions[i];
+      el.style.left = `${pos.left}px`;
+      el.style.top = `${pos.top}px`;
+      el.style.width = `${pos.width}px`;
+      el.style.height = `${pos.height}px`;
+      el.style.transform = `rotate(${pos.rotate}deg)`;
+
+      el.innerHTML = `
+        <div class="sub-shard__inner">
+          <span class="sub-shard__title">${file.title}</span>
+          ${file.modified ? `<span class="sub-shard__meta">Modified ${file.modified}</span>` : ''}
+        </div>
+      `;
+
+      el.addEventListener('click', () => openFile(folderSlug, subPath));
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') openFile(folderSlug, subPath);
+      });
+      el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('aria-label', `Open ${file.title}`);
+
+      scatter.appendChild(el);
+      subShardEls.push(el);
+
+      // Stagger the appearance
+      setTimeout(() => {
+        el.classList.add('is-visible');
+      }, i * 50);
+    });
+  }
+
+  /** Select a folder: update classes, render sub-shards. */
+  function selectFolder(folderSlug: string, pushState = true) {
+    // Clear file-open state
+    page.classList.remove('file-open');
+    document.querySelector('.sub-shard.is-active-file')?.classList.remove('is-active-file');
+    clearContentPanel();
+
+    currentFolderSlug = folderSlug;
+    page.classList.add('folder-selected');
+
+    // Mark the active folder shard
+    document.querySelectorAll('.shard').forEach((s) => {
+      s.classList.toggle('is-active-folder', (s as HTMLElement).dataset.folder === folderSlug);
+    });
+
+    renderSubShards(folderSlug);
+
+    if (pushState) {
+      history.pushState({ folderSlug, fileSubPath: null }, '', `/novel/${folderSlug}`);
+    }
+  }
+
+  // ── Bind folder shard clicks ────────────────────────────────
+  document.querySelectorAll<HTMLElement>('.shard').forEach((shard) => {
+    shard.addEventListener('click', () => {
+      const slug = shard.dataset.folder;
+      if (!slug) return;
+      selectFolder(slug);
+    });
+    shard.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        const slug = shard.dataset.folder;
+        if (slug) selectFolder(slug);
+      }
+    });
+  });
 </script>
 
 <style>
