@@ -1,8 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
+import { join } from 'path';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 import BentoTile from '../components/BentoTile.astro';
+import { buildNovelTree } from '../utils/novel';
 
 // Query all content collections for items with publishedAt dates
 const notes = await getCollection('notes', ({ data }) => !data.draft && data.publishedAt);
@@ -51,6 +53,26 @@ const mostRecentDate = sorted[0] ? effectiveDate(sorted[0]) : null;
 const sameDateEntries = mostRecentDate
   ? sorted.filter(entry => effectiveDate(entry) === mostRecentDate)
   : [];
+
+// Novel — find most recently modified file date from MetaData.txt
+const novelDir = join(process.cwd(), 'src/content/novel');
+const novelTree = await buildNovelTree(novelDir);
+let novelLastModified: Date | null = null;
+for (const folder of Object.values(novelTree)) {
+  const allFiles = [
+    ...folder.files,
+    ...Object.values(folder.subfolders).flatMap(s => s.files),
+  ];
+  for (const file of allFiles) {
+    if (file.modified) {
+      const d = new Date(file.modified);
+      if (!isNaN(d.getTime()) && (!novelLastModified || d > novelLastModified)) {
+        novelLastModified = d;
+      }
+    }
+  }
+}
+const novelLastModifiedISO = novelLastModified?.toISOString() ?? null;
 
 // Prepare data for client-side randomization
 const latestEntries = sameDateEntries.map(entry => ({
@@ -226,6 +248,26 @@ const latestEntries = sameDateEntries.map(entry => ({
         <p class="logo-tile__description">The bangers I listen to every day.</p>
       </a>
 
+      <!-- Novel tile — spans right 3 columns of the logo row -->
+      <a
+        href="/novel"
+        class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--interactive novel-tile"
+        id="novel-tile"
+        style="grid-column: span 3;"
+      >
+        <div class="bento-tile__header">
+          <span class="bento-tile__label">Novel</span>
+          <h3 class="bento-tile__title">Remember Rain</h3>
+        </div>
+        <div class="bento-tile__footer">
+          <span
+            class="days-ago"
+            id="novel-days-ago"
+            data-novel-date={novelLastModifiedISO ?? ''}
+          ></span>
+        </div>
+      </a>
+
       <!-- Row 7-8: YouTube Hero #2 (3x2) + Mini Tiles (2x1 each) -->
       <div class="image-tile image-tile--youtube bento-tile--span-3x2 p3r-animate" style="--stagger-delay: 100ms;">
         <a href="https://www.youtube.com/@kaima-mask" target="_blank" rel="noopener noreferrer">
@@ -263,7 +305,8 @@ const latestEntries = sameDateEntries.map(entry => ({
     transition: color var(--transition-fast), border-color var(--transition-fast);
   }
 
-  #latest-tile:hover .days-ago {
+  #latest-tile:hover .days-ago,
+  #novel-tile:hover .days-ago {
     color: var(--color-gold);
     border-color: var(--color-gold);
   }
@@ -925,6 +968,24 @@ const latestEntries = sameDateEntries.map(entry => ({
     }
   }
 
+  // Initialize Novel tile days-ago counter
+  function initializeNovelTile() {
+    const el = document.getElementById('novel-days-ago') as HTMLElement | null;
+    if (!el) return;
+    const isoDate = el.dataset.novelDate;
+    if (!isoDate) return;
+
+    const today = new Date();
+    const modDate = new Date(isoDate);
+    const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+    const modUTC = Date.UTC(modDate.getUTCFullYear(), modDate.getUTCMonth(), modDate.getUTCDate());
+    const diffDays = Math.floor((todayUTC - modUTC) / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) el.textContent = 'updated today';
+    else if (diffDays === 1) el.textContent = 'updated yesterday';
+    else el.textContent = `updated ${diffDays} days ago`;
+  }
+
   // Emblem click navigation — handles data-href elements inside <a> tiles
   function initializeEmblemLinks() {
     document.querySelectorAll<HTMLElement>('.tile-emblem[data-href]').forEach(el => {
@@ -975,12 +1036,14 @@ const latestEntries = sameDateEntries.map(entry => ({
 
   // Run on initial page load
   initializeLatestTile();
+  initializeNovelTile();
   initializeEmblemLinks();
   initializeTilt();
 
   // Run after each view transition navigation
   document.addEventListener('astro:page-load', () => {
     initializeLatestTile();
+    initializeNovelTile();
     initializeEmblemLinks();
     initializeTilt();
   });
