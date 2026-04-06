@@ -161,451 +161,401 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
   }
   type NovelTree = Record<string, NovelFolder>;
 
-  // ── Read embedded data ──────────────────────────────────────
+  // ── Read embedded tree data ─────────────────────────────────
   const treeEl = document.getElementById('novel-tree');
   if (!treeEl) throw new Error('novel-tree data missing');
   const tree: NovelTree = JSON.parse(treeEl.textContent!);
 
-  const page = document.querySelector('.novel-page') as HTMLElement;
-  const scatter = document.querySelector('.novel-scatter') as HTMLElement;
+  // ── Rain canvas ─────────────────────────────────────────────
+  (function () {
+    const canvas = document.getElementById('bg-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d')!;
+    let w = 0, h = 0;
 
-  // ── Hover tilt (desktop only) ───────────────────────────────
-  // Only activate on devices that support hover
-  const canHover = window.matchMedia('(hover: hover)').matches;
+    function resize() {
+      w = canvas!.width = window.innerWidth;
+      h = canvas!.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
 
-  if (canHover) {
-    let rafId: number | null = null;
+    const towers = Array.from({ length: 16 }, (_, i) => ({
+      x: (i / 15) * 1.1 - 0.05,
+      height: 0.2 + Math.random() * 0.4,
+      width: 0.4 + Math.random() * 1.8,
+      opacity: 0.025 + Math.random() * 0.035,
+    }));
+    const struts = Array.from({ length: 5 }, () => ({
+      y: 0.45 + Math.random() * 0.45,
+      opacity: 0.015 + Math.random() * 0.015,
+    }));
+    const drops = Array.from({ length: 110 }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      speed: (1.8 + Math.random() * 2.2) / 800,
+      len: (7 + Math.random() * 16) / 800,
+      opacity: 0.07 + Math.random() * 0.18,
+      lean: -0.035 + Math.random() * 0.02,
+    }));
 
-    document.querySelectorAll<HTMLElement>('.shard').forEach((shard) => {
-      shard.addEventListener('mousemove', (e: MouseEvent) => {
-        if (rafId !== null) cancelAnimationFrame(rafId);
-        rafId = requestAnimationFrame(() => {
-          const rect = shard.getBoundingClientRect();
-          const cx = rect.left + rect.width / 2;
-          const cy = rect.top + rect.height / 2;
-          const dx = (e.clientX - cx) / (rect.width / 2);  // -1 to 1
-          const dy = (e.clientY - cy) / (rect.height / 2); // -1 to 1
-          const maxTilt = 10;
-          const tiltX = -dy * maxTilt;
-          const tiltY = dx * maxTilt;
-          const baseRotate = getComputedStyle(shard).getPropertyValue('--rotate').trim() || '0deg';
-          shard.style.transform = `rotate(${baseRotate}) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.02)`;
-        });
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+
+      // Volcanic glow
+      const grd = ctx.createRadialGradient(w * 0.5, h * 0.92, 0, w * 0.5, h * 0.65, h * 0.7);
+      grd.addColorStop(0, 'rgba(180,75,15,0.08)');
+      grd.addColorStop(0.5, 'rgba(140,55,10,0.04)');
+      grd.addColorStop(1, 'transparent');
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, w, h);
+
+      // City silhouette
+      towers.forEach((t) => {
+        ctx.fillStyle = `rgba(90,130,200,${t.opacity})`;
+        const tw = t.width;
+        const tx = t.x * w - tw / 2;
+        const th = t.height * h;
+        ctx.fillRect(tx, h - th, tw, th);
+      });
+      struts.forEach((s) => {
+        ctx.strokeStyle = `rgba(90,130,200,${s.opacity})`;
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(0, s.y * h);
+        ctx.lineTo(w, s.y * h);
+        ctx.stroke();
       });
 
-      shard.addEventListener('mouseleave', () => {
-        if (rafId !== null) cancelAnimationFrame(rafId);
-        const baseRotate = getComputedStyle(shard).getPropertyValue('--rotate').trim() || '0deg';
-        shard.style.transform = `rotate(${baseRotate})`;
+      // Rain drops
+      drops.forEach((d) => {
+        const px = d.x * w;
+        const py = d.y * h;
+        const plen = d.len * h;
+        ctx.strokeStyle = `rgba(130,180,255,${d.opacity})`;
+        ctx.lineWidth = 0.55;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(px + Math.sin(d.lean) * plen, py + plen);
+        ctx.stroke();
+        d.y += d.speed;
+        if (d.y > 1) { d.y = -d.len; d.x = Math.random(); }
       });
-    });
-  }
 
-  // ── Inline-style save/restore helpers ──────────────────────
-  // When a sub-shard becomes the active file overlay we must clear its
-  // inline positional styles (left/top/width/height/transform) so the
-  // `.is-active-file` CSS class rules (position:fixed, 100%×100%, no rotate)
-  // can take effect — inline styles otherwise win the specificity battle.
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
 
-  const SAVED_STYLE_PROPS = ['left', 'top', 'width', 'height', 'transform'] as const;
+  // ── Accent color map ────────────────────────────────────────
+  const ACCENT_MAP: Record<string, string> = {
+    characters: '255,229,44',
+    locations:  '122,184,255',
+    lore:       '255,136,34',
+    scenes:     '255,102,102',
+    themes:     '170,170,255',
+  };
 
-  function saveSubShardStyles(el: HTMLElement) {
-    SAVED_STYLE_PROPS.forEach((p) => {
-      el.dataset[`saved_${p}`] = el.style[p];
-    });
-  }
+  // ── Helpers ─────────────────────────────────────────────────
 
-  function restoreSubShardStyles(el: HTMLElement) {
-    el.classList.remove('is-active-file');
-    SAVED_STYLE_PROPS.forEach((p) => {
-      const saved = el.dataset[`saved_${p}`];
-      if (saved !== undefined) {
-        el.style[p] = saved;
-        delete el.dataset[`saved_${p}`];
-      }
-    });
-  }
-
-  // ── Sub-shard positioning helpers ──────────────────────────
-
-  /** Get all files from a folder including files in immediate subfolders. */
-  function getAllFiles(folder: NovelFolder): Array<{ file: NovelFile; subPath: string }> {
-    const result: Array<{ file: NovelFile; subPath: string }> = [];
+  /** Collect all files from a folder, recursing into subfolders. */
+  function getAllFiles(folder: NovelFolder): Array<{ file: NovelFile; breadcrumb: string }> {
+    const result: Array<{ file: NovelFile; breadcrumb: string }> = [];
     for (const file of folder.files) {
-      result.push({ file, subPath: file.slug });
+      result.push({ file, breadcrumb: folder.title });
+    }
+    function recurse(sub: NovelFolder, parentBc: string) {
+      for (const file of sub.files) {
+        result.push({ file, breadcrumb: `${parentBc} / ${sub.title}` });
+      }
+      for (const nested of Object.values(sub.subfolders)) {
+        recurse(nested, `${parentBc} / ${sub.title}`);
+      }
     }
     for (const sub of Object.values(folder.subfolders)) {
-      for (const file of sub.files) {
-        result.push({ file, subPath: `${sub.slug}/${file.slug}` });
-      }
+      recurse(sub, folder.title);
     }
     return result;
   }
 
-  /** Compute scattered positions for sub-shards around a folder shard. */
-  function getSubShardPositions(
-    folderEl: HTMLElement,
-    count: number
-  ): Array<{ top: number; left: number; width: number; height: number; rotate: number }> {
-    const rect = folderEl.getBoundingClientRect();
-    const scatterRect = scatter.getBoundingClientRect();
-    // Convert viewport coords to scatter-relative coords
-    const centerX = rect.left + rect.width / 2 - scatterRect.left;
-    const centerY = rect.top + rect.height / 2 - scatterRect.top;
-    const scatterW = scatterRect.width || window.innerWidth;
-    const scatterH = scatterRect.height || window.innerHeight;
-    const margin = 20;
-    const positions = [];
-
-    // Choose arc direction that points away from the nearest horizontal edge
-    // so sub-shards spread toward the center of the viewport.
-    const arcOffset = centerX > scatterW / 2
-      ? Math.PI - 0.7   // folder is right-half: arc opens leftward
-      : -0.2;           // folder is left-half: arc opens rightward
-
-    for (let i = 0; i < count; i++) {
-      const angle = arcOffset + (i / Math.max(count - 1, 1)) * Math.PI * 1.2;
-      const radius = 160 + i * 20;
-      const width = 220 + (i % 3) * 30;
-      const height = 160 + (i % 2) * 20;
-
-      let left = centerX + Math.cos(angle) * radius - width / 2;
-      let top = centerY + Math.sin(angle) * radius - height / 2;
-
-      // Clamp within scatter bounds so nothing is clipped
-      left = Math.max(margin, Math.min(left, scatterW - width - margin));
-      top = Math.max(margin, Math.min(top, scatterH - height - margin));
-
-      positions.push({ left, top, width, height, rotate: -3 + i * 1.5 });
-    }
-    return positions;
+  /**
+   * Extract <img> elements from an HTML string.
+   * Returns the cleaned body (images removed) and the image list separately
+   * so images can be shown in the right column of the reading overlay.
+   */
+  function extractImages(bodyHtml: string): {
+    cleanBody: string;
+    images: Array<{ src: string; alt: string }>;
+  } {
+    const div = document.createElement('div');
+    div.innerHTML = bodyHtml;
+    const imgs = Array.from(div.querySelectorAll('img'));
+    const images = imgs.map((img) => ({
+      src: img.getAttribute('src') || '',
+      alt: img.getAttribute('alt') || '',
+    }));
+    imgs.forEach((img) => img.remove());
+    return { cleanBody: div.innerHTML, images };
   }
 
-  // ── State: current selection ────────────────────────────────
+  /** Format a one-line date string. */
+  function formatDate(created: string | null, modified: string | null): string {
+    if (!created && !modified) return '';
+    if (!created) return modified!;
+    if (!modified || created === modified) return created;
+    return `${created} · edited ${modified}`;
+  }
+
+  // ── Folder cluster interaction ──────────────────────────────
+
   let currentFolderSlug: string | null = null;
-  let subShardEls: HTMLElement[] = [];
 
-  /** Remove all existing sub-shards from the DOM. */
-  function clearSubShards() {
-    subShardEls.forEach((el) => el.remove());
-    subShardEls = [];
-  }
+  function toggleFolder(clusterEl: HTMLElement, pushState = true) {
+    if (clusterEl.classList.contains('empty')) return;
 
-  /** Remove content from any open file sub-shard. */
-  function clearContentPanel() {
-    const existing = document.querySelector('.novel-content');
-    existing?.remove();
-  }
+    const folderKey   = clusterEl.dataset.folder!;
+    const list        = document.getElementById('folder-list')!;
+    const panel       = document.getElementById('shard-panel')!;
+    const panelName   = document.getElementById('shard-panel-name')!;
+    const panelCount  = document.getElementById('shard-panel-count')!;
+    const panelList   = document.getElementById('shard-panel-list')!;
+    const isAlreadyOpen = clusterEl.classList.contains('is-open');
+    const rgb = ACCENT_MAP[folderKey] || '80,120,200';
 
-  /** Render sub-shards for the given folder into the scatter container. */
-  function renderSubShards(folderSlug: string) {
-    clearSubShards();
-    const folder = tree[folderSlug];
-    if (!folder) return;
+    // Deselect all clusters
+    document.querySelectorAll<HTMLElement>('.folder-cluster').forEach((c) =>
+      c.classList.remove('is-open')
+    );
+    list.classList.remove('has-open');
 
-    const folderEl = document.querySelector<HTMLElement>(`[data-folder="${folderSlug}"]`);
-    if (!folderEl) return;
+    if (!isAlreadyOpen) {
+      clusterEl.classList.add('is-open');
+      list.classList.add('has-open');
+      currentFolderSlug = folderKey;
 
-    const allFiles = getAllFiles(folder);
-    if (allFiles.length === 0) {
-      // Empty folder — show placeholder inside the active shard
-      const empty = document.createElement('div');
-      empty.className = 'novel-empty';
-      empty.textContent = 'No files yet';
-      folderEl.appendChild(empty);
-      subShardEls.push(empty);
-      return;
-    }
+      // Style panel with folder accent
+      panel.style.borderColor     = `rgba(${rgb}, 0.35)`;
+      panel.style.backgroundColor = `rgba(${rgb}, 0.025)`;
+      panelName.style.color       = `rgba(${rgb}, 0.85)`;
 
-    const positions = getSubShardPositions(folderEl, allFiles.length);
+      // Populate panel
+      const folder = tree[folderKey];
+      const allFiles = folder ? getAllFiles(folder) : [];
+      const count = allFiles.length;
 
-    allFiles.forEach(({ file, subPath }, i) => {
-      const el = document.createElement('div');
-      el.className = 'sub-shard';
-      el.dataset.subPath = subPath;
-      el.dataset.fileSlug = file.slug;
-      el.style.color = getComputedStyle(
-        document.querySelector<HTMLElement>(`[data-folder="${folderSlug}"]`)!
-      ).color;
+      panelName.textContent  = folder?.title ?? folderKey;
+      panelCount.textContent = count === 1 ? '1 shard' : `${count} shards`;
 
-      const pos = positions[i];
-      el.style.left = `${pos.left}px`;
-      el.style.top = `${pos.top}px`;
-      el.style.width = `${pos.width}px`;
-      el.style.height = `${pos.height}px`;
-      el.style.transform = `rotate(${pos.rotate}deg)`;
+      panelList.innerHTML = allFiles.map(({ file, breadcrumb }) => {
+        const safeData = encodeURIComponent(
+          JSON.stringify({ file, breadcrumb, folderKey })
+        );
+        const dateStr = file.modified || file.created || '';
+        return `<div
+          class="memory-shard"
+          style="color:rgba(${rgb},0.95); --panel-accent-rgb:${rgb};"
+          role="button"
+          tabindex="0"
+          data-shard-encoded="${safeData}"
+        >
+          <span class="shard-title">${file.title}</span>
+          <span class="shard-date">${dateStr}</span>
+        </div>`;
+      }).join('');
 
-      el.innerHTML = `
-        <div class="sub-shard__inner">
-          <span class="sub-shard__title">${file.title}</span>
-          ${file.modified ? `<span class="sub-shard__meta">Modified ${file.modified}</span>` : ''}
-        </div>
-      `;
+      panel.classList.add('is-visible');
 
-      el.addEventListener('click', () => openFile(folderSlug, subPath));
-      el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') openFile(folderSlug, subPath);
-      });
-      el.setAttribute('role', 'button');
-      el.setAttribute('tabindex', '0');
-      el.setAttribute('aria-label', `Open ${file.title}`);
-
-      scatter.appendChild(el);
-      subShardEls.push(el);
-
-      // Stagger the appearance
-      setTimeout(() => {
-        el.classList.add('is-visible');
-      }, i * 50);
-    });
-  }
-
-  /** Select a folder: update classes, render sub-shards. */
-  function selectFolder(folderSlug: string, pushState = true) {
-    // Clear file-open state
-    page.classList.remove('file-open');
-    document.querySelector('.sub-shard.is-active-file')?.classList.remove('is-active-file');
-    clearContentPanel();
-
-    currentFolderSlug = folderSlug;
-    page.classList.add('folder-selected');
-
-    // Mark the active folder shard
-    document.querySelectorAll('.shard').forEach((s) => {
-      s.classList.toggle('is-active-folder', (s as HTMLElement).dataset.folder === folderSlug);
-    });
-
-    renderSubShards(folderSlug);
-
-    if (pushState) {
-      history.pushState({ folderSlug, fileSubPath: null }, '', `/novel/${folderSlug}`);
-    }
-  }
-
-  /** Collapse back to the scatter (no folder selected). */
-  function deselectFolder(pushState = true) {
-    page.classList.remove('folder-selected', 'file-open');
-    document.querySelectorAll('.shard').forEach((s) => s.classList.remove('is-active-folder'));
-    clearSubShards();
-    clearContentPanel();
-    currentFolderSlug = null;
-    if (pushState) {
-      history.pushState({ folderSlug: null, fileSubPath: null }, '', '/novel');
-    }
-  }
-
-  // ── Bind folder shard clicks ────────────────────────────────
-  document.querySelectorAll<HTMLElement>('.shard').forEach((shard) => {
-    shard.addEventListener('click', () => {
-      const slug = shard.dataset.folder;
-      if (!slug) return;
-      if (slug === currentFolderSlug) {
-        deselectFolder();
-      } else {
-        selectFolder(slug);
+      if (pushState) {
+        history.pushState(
+          { folderSlug: folderKey, fileSubPath: null },
+          '',
+          `/novel/${folderKey}`
+        );
       }
-    });
-    shard.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        const slug = shard.dataset.folder;
-        if (!slug) return;
-        if (slug === currentFolderSlug) {
-          deselectFolder();
-        } else {
-          selectFolder(slug);
-        }
+    } else {
+      // Clicking the open cluster collapses it
+      currentFolderSlug = null;
+      panel.classList.remove('is-visible');
+      if (pushState) {
+        history.pushState({ folderSlug: null, fileSubPath: null }, '', '/novel');
       }
-    });
+    }
+  }
+
+  // Event delegation — folder list
+  document.getElementById('folder-list')!.addEventListener('click', (e) => {
+    const cluster = (e.target as Element).closest<HTMLElement>('.folder-cluster');
+    if (cluster) toggleFolder(cluster);
+  });
+  document.getElementById('folder-list')!.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const cluster = (e.target as Element).closest<HTMLElement>('.folder-cluster');
+    if (cluster) { e.preventDefault(); toggleFolder(cluster); }
   });
 
-  // ── Content panel ───────────────────────────────────────────
+  // Event delegation — shard panel list
+  document.getElementById('shard-panel-list')!.addEventListener('click', (e) => {
+    const shardEl = (e.target as Element).closest<HTMLElement>('.memory-shard');
+    if (!shardEl) return;
+    const encoded = shardEl.dataset.shardEncoded;
+    if (encoded) openShardEncoded(encoded);
+  });
+  document.getElementById('shard-panel-list')!.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const shardEl = (e.target as Element).closest<HTMLElement>('.memory-shard');
+    if (!shardEl) return;
+    e.preventDefault();
+    const encoded = shardEl.dataset.shardEncoded;
+    if (encoded) openShardEncoded(encoded);
+  });
 
-  /** Look up a NovelFile by folder slug and subPath (e.g. "magic-system/magic-overview"). */
-  function findFile(folderSlug: string, subPath: string): NovelFile | null {
-    const folder = tree[folderSlug];
-    if (!folder) return null;
-    const parts = subPath.split('/');
+  // ── Reading overlay ─────────────────────────────────────────
 
-    if (parts.length === 1) {
-      return folder.files.find((f) => f.slug === parts[0]) ?? null;
-    }
-    // Navigate subfolders
-    let current: NovelFolder = folder;
-    for (let i = 0; i < parts.length - 1; i++) {
-      current = current.subfolders[parts[i]];
-      if (!current) return null;
-    }
-    return current.files.find((f) => f.slug === parts[parts.length - 1]) ?? null;
+  function openShardEncoded(encoded: string, pushState = true) {
+    const { file, breadcrumb, folderKey } = JSON.parse(decodeURIComponent(encoded)) as {
+      file: NovelFile;
+      breadcrumb: string;
+      folderKey: string;
+    };
+    openShard(folderKey, file.title, breadcrumb, file.created, file.modified, file.body, pushState, file.slug);
   }
 
-  /** Build the breadcrumb string from folderSlug + subPath. */
-  function buildBreadcrumb(folderSlug: string, subPath: string): string {
-    const folder = tree[folderSlug];
-    const parts = subPath.split('/');
-    const labels = [folder?.title ?? folderSlug];
-    if (parts.length > 1) {
-      // Include subfolder name
-      const sub = folder?.subfolders[parts[0]];
-      if (sub) labels.push(sub.title);
+  function openShard(
+    folderKey: string,
+    title: string,
+    breadcrumb: string,
+    created: string | null,
+    modified: string | null,
+    bodyHtml: string,
+    pushState = true,
+    fileSlug = ''
+  ) {
+    const overlay  = document.getElementById('reading-overlay')!;
+    const shard    = document.getElementById('reading-shard')!;
+    const imagesEl = document.getElementById('reading-images')!;
+    const titleEl  = document.getElementById('reading-title')!;
+    const bodyEl   = document.getElementById('reading-body')!;
+
+    const rgb = ACCENT_MAP[folderKey] || '80,120,200';
+    overlay.style.setProperty('--overlay-accent-rgb', rgb);
+    shard.style.borderColor = `rgba(${rgb}, 0.4)`;
+
+    document.getElementById('reading-breadcrumb')!.textContent = breadcrumb;
+    titleEl.textContent = title;
+    titleEl.style.color = `rgba(${rgb}, 1)`;
+    document.getElementById('reading-date')!.textContent = formatDate(created, modified);
+
+    // Extract images from body HTML and place in right column
+    const { cleanBody, images } = extractImages(bodyHtml);
+    bodyEl.innerHTML = cleanBody;
+
+    if (images.length > 0) {
+      imagesEl.style.display = 'flex';
+      imagesEl.innerHTML = images
+        .map((img) => `<img src="${img.src}" alt="${img.alt}">`)
+        .join('');
+    } else {
+      imagesEl.style.display = 'none';
+      imagesEl.innerHTML = '';
     }
-    return labels.join(' / ');
-  }
 
-  /** Open a file: expand its sub-shard and inject content. */
-  function openFile(folderSlug: string, subPath: string, pushState = true) {
-    const file = findFile(folderSlug, subPath);
-    if (!file) return;
+    overlay.classList.add('is-open');
+    overlay.querySelector('.reading-content')!.scrollTop = 0;
 
-    // Mark page state
-    page.classList.add('file-open');
-
-    // Find the sub-shard element for this file
-    const subShard = document.querySelector<HTMLElement>(
-      `.sub-shard[data-sub-path="${subPath}"]`
-    );
-    if (!subShard) return;
-
-    // Deactivate any previously active file
-    const prevActive = document.querySelector<HTMLElement>('.sub-shard.is-active-file');
-    if (prevActive) restoreSubShardStyles(prevActive);
-    clearContentPanel();
-
-    // Save then clear inline positional styles so CSS fixed-position rules take over.
-    // Inline styles have higher specificity than class rules, so without this the
-    // is-active-file overlay would inherit the shard's scattered position/size/rotation.
-    saveSubShardStyles(subShard);
-    subShard.style.left = '';
-    subShard.style.top = '';
-    subShard.style.width = '';
-    subShard.style.height = '';
-    subShard.style.transform = '';
-
-    // Activate this sub-shard
-    subShard.classList.add('is-active-file');
-
-    // Build and inject content
-    const content = document.createElement('div');
-    content.className = 'novel-content';
-    content.innerHTML = `
-      <button class="novel-content__back" type="button" aria-label="Back to folder">
-        ← back
-      </button>
-      <div class="novel-content__breadcrumb">${buildBreadcrumb(folderSlug, subPath)}</div>
-      <h1 class="novel-content__title">${file.title}</h1>
-      <div class="novel-content__dates">
-        ${file.created ? `<span>Created ${file.created}</span>` : ''}
-        ${file.modified ? `<span>Modified ${file.modified}</span>` : ''}
-      </div>
-      <div class="novel-content__body"></div>
-    `;
-
-    // Set body HTML (trusted content — own Scrivener exports)
-    const bodyEl = content.querySelector('.novel-content__body') as HTMLElement;
-    bodyEl.innerHTML = file.body;
-
-    subShard.querySelector('.sub-shard__inner')!.appendChild(content);
-
-    // Back button — stopPropagation prevents bubbling to sub-shard click handler
-    content.querySelector('.novel-content__back')!.addEventListener('click', (e) => {
-      e.stopPropagation();
-      closeFile(folderSlug);
-    });
-
-    if (pushState) {
+    if (pushState && currentFolderSlug) {
       history.pushState(
-        { folderSlug, fileSubPath: subPath },
+        { folderSlug: currentFolderSlug, fileSubPath: fileSlug },
         '',
-        `/novel/${folderSlug}/${subPath}`
+        `/novel/${currentFolderSlug}/${fileSlug}`
       );
     }
   }
 
-  /** Close file view and return to folder sub-shards. */
-  function closeFile(folderSlug: string, pushState = true) {
-    page.classList.remove('file-open');
-    const activeShard = document.querySelector<HTMLElement>('.sub-shard.is-active-file');
-    if (activeShard) restoreSubShardStyles(activeShard);
-    clearContentPanel();
-
-    if (pushState) {
-      history.pushState({ folderSlug, fileSubPath: null }, '', `/novel/${folderSlug}`);
+  function closeReading(pushState = true) {
+    document.getElementById('reading-overlay')!.classList.remove('is-open');
+    if (pushState && currentFolderSlug) {
+      history.pushState(
+        { folderSlug: currentFolderSlug, fileSubPath: null },
+        '',
+        `/novel/${currentFolderSlug}`
+      );
     }
   }
+
+  // Bridge for inline onclick in overlay HTML
+  (window as any).__novelCloseReading = () => closeReading();
 
   // ── popstate — browser back/forward ────────────────────────
   window.addEventListener('popstate', (e) => {
     const state = e.state as { folderSlug: string | null; fileSubPath: string | null } | null;
 
+    // Always close reading overlay on navigation
+    document.getElementById('reading-overlay')!.classList.remove('is-open');
+
     if (!state || !state.folderSlug) {
-      // Return to scatter
-      page.classList.remove('folder-selected', 'file-open');
-      document.querySelectorAll('.shard').forEach((s) => s.classList.remove('is-active-folder'));
-      clearSubShards();
-      clearContentPanel();
+      // Return to index — collapse all
+      document.querySelectorAll<HTMLElement>('.folder-cluster').forEach((c) =>
+        c.classList.remove('is-open')
+      );
+      document.getElementById('folder-list')!.classList.remove('has-open');
+      document.getElementById('shard-panel')!.classList.remove('is-visible');
       currentFolderSlug = null;
       return;
     }
 
+    // Restore folder selection
+    if (currentFolderSlug !== state.folderSlug) {
+      const clusterEl = document.querySelector<HTMLElement>(
+        `[data-folder="${state.folderSlug}"]`
+      );
+      if (clusterEl) toggleFolder(clusterEl, false);
+    }
+
+    // Restore file if needed
     if (state.fileSubPath) {
-      // Restore folder first (no pushState), then file
-      if (currentFolderSlug !== state.folderSlug) {
-        selectFolder(state.folderSlug, false);
-      }
-      // Wait one frame for sub-shards to render
-      requestAnimationFrame(() => openFile(state.folderSlug!, state.fileSubPath!, false));
-    } else {
-      selectFolder(state.folderSlug, false);
+      document.querySelectorAll<HTMLElement>('.memory-shard[data-shard-encoded]').forEach((el) => {
+        const encoded = el.dataset.shardEncoded!;
+        const { file } = JSON.parse(decodeURIComponent(encoded)) as {
+          file: NovelFile; folderKey: string; breadcrumb: string;
+        };
+        if (file.slug === state.fileSubPath) {
+          openShardEncoded(encoded, false);
+        }
+      });
     }
   });
 
-  // ── Initial state from server-rendered props ────────────────
-  // The Astro page sets data-initial-folder and data-initial-subpath
-  // to reflect the URL the user landed on directly.
-  const initFolder = page.dataset.initialFolder;
-  const initSubPath = page.dataset.initialSubpath;
+  // ── Initial state from server-rendered URL props ────────────
+  const page = document.querySelector('.novel-page') as HTMLElement;
+  const initFolder  = page.dataset.initialFolder  || null;
+  const initSubPath = page.dataset.initialSubpath || null;
 
   if (initFolder) {
-    // Set initial history state so back works from here
     history.replaceState(
       { folderSlug: initFolder, fileSubPath: initSubPath ?? null },
       '',
       window.location.pathname
     );
 
-    // Defer until after the browser has performed layout so getBoundingClientRect()
-    // returns real pixel values — without this, rects are all zero on initial load
-    // and every sub-shard clamps to the top-left corner (20px, 20px).
     requestAnimationFrame(() => {
-      // Snap to state without animation on direct URL visit
-      page.style.transition = 'none';
-      document.querySelectorAll<HTMLElement>('.shard, .sub-shard').forEach((el) => {
-        el.style.transition = 'none';
-      });
-
-      selectFolder(initFolder, false);
+      const clusterEl = document.querySelector<HTMLElement>(`[data-folder="${initFolder}"]`);
+      if (clusterEl) toggleFolder(clusterEl, false);
 
       if (initSubPath) {
         requestAnimationFrame(() => {
-          openFile(initFolder, initSubPath, false);
-          // Restore transitions after initial snap
-          requestAnimationFrame(() => {
-            page.style.transition = '';
-            document.querySelectorAll<HTMLElement>('.shard, .sub-shard').forEach((el) => {
-              el.style.transition = '';
-            });
-          });
-        });
-      } else {
-        requestAnimationFrame(() => {
-          page.style.transition = '';
-          document.querySelectorAll<HTMLElement>('.shard, .sub-shard').forEach((el) => {
-            el.style.transition = '';
+          document.querySelectorAll<HTMLElement>('.memory-shard[data-shard-encoded]').forEach((el) => {
+            const encoded = el.dataset.shardEncoded!;
+            const { file } = JSON.parse(decodeURIComponent(encoded)) as {
+              file: NovelFile; folderKey: string; breadcrumb: string;
+            };
+            if (file.slug === initSubPath) {
+              openShardEncoded(encoded, false);
+            }
           });
         });
       }
     });
   } else {
-    // /novel root — set initial state
     history.replaceState({ folderSlug: null, fileSubPath: null }, '', '/novel');
   }
 </script>
