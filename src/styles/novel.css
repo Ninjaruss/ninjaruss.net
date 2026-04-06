@@ -225,7 +225,7 @@
 }
 .shard-panel.is-visible {
   opacity: 1;
-  pointer-events: all;
+  pointer-events: auto;
 }
 
 .shard-panel-header {
@@ -312,7 +312,7 @@
   transition: opacity 200ms ease;
 }
 .reading-overlay.is-open {
-  pointer-events: all;
+  pointer-events: auto;
   opacity: 1;
 }
 
