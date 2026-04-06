@@ -318,17 +318,38 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     }
   }
 
+  /** Collapse back to the scatter (no folder selected). */
+  function deselectFolder(pushState = true) {
+    page.classList.remove('folder-selected', 'file-open');
+    document.querySelectorAll('.shard').forEach((s) => s.classList.remove('is-active-folder'));
+    clearSubShards();
+    clearContentPanel();
+    currentFolderSlug = null;
+    if (pushState) {
+      history.pushState({ folderSlug: null, fileSubPath: null }, '', '/novel');
+    }
+  }
+
   // ── Bind folder shard clicks ────────────────────────────────
   document.querySelectorAll<HTMLElement>('.shard').forEach((shard) => {
     shard.addEventListener('click', () => {
       const slug = shard.dataset.folder;
       if (!slug) return;
-      selectFolder(slug);
+      if (slug === currentFolderSlug) {
+        deselectFolder();
+      } else {
+        selectFolder(slug);
+      }
     });
     shard.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         const slug = shard.dataset.folder;
-        if (slug) selectFolder(slug);
+        if (!slug) return;
+        if (slug === currentFolderSlug) {
+          deselectFolder();
+        } else {
+          selectFolder(slug);
+        }
       }
     });
   });

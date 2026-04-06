@@ -146,7 +146,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 1rem;
+  padding: 1.5rem;
   clip-path: polygon(5% 8%, 94% 3%, 92% 90%, 6% 95%);
 }
 
@@ -180,19 +180,19 @@
 }
 
 .novel-page.folder-selected [data-folder="characters"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(-45%, -40%) scale(0.55);
+  transform: rotate(var(--rotate)) translate(-1vw, -2vh) scale(0.55);
 }
 .novel-page.folder-selected [data-folder="locations"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(0%, -55%) scale(0.55);
+  transform: rotate(var(--rotate)) translate(0vw, -3vh) scale(0.55);
 }
 .novel-page.folder-selected [data-folder="lore"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(45%, -40%) scale(0.55);
+  transform: rotate(var(--rotate)) translate(1vw, -2vh) scale(0.55);
 }
 .novel-page.folder-selected [data-folder="scenes"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(-45%, 40%) scale(0.55);
+  transform: rotate(var(--rotate)) translate(-1vw, 2vh) scale(0.55);
 }
 .novel-page.folder-selected [data-folder="themes"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(45%, 35%) scale(0.55);
+  transform: rotate(var(--rotate)) translate(1vw, 2vh) scale(0.55);
 }
 
 .shard.is-active-folder {
@@ -229,6 +229,11 @@
   padding: 3rem 4rem;
   overflow-y: auto;
   background: color-mix(in srgb, currentColor 5%, var(--color-bg-deep) 95%);
+}
+
+.sub-shard.is-active-file .sub-shard__title,
+.sub-shard.is-active-file .sub-shard__meta {
+  display: none;
 }
 
 .novel-content__back {
