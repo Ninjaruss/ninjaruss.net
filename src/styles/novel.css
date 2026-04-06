@@ -203,6 +203,11 @@
 .folder-cluster.is-open .cluster-face::before { opacity: 0; }
 .folder-cluster.is-open .cluster-meta { opacity: 0.6; }
 
+/* Empty folder state */
+.folder-cluster.empty { cursor: default; }
+.folder-cluster.empty .cluster-name { opacity: 0.38; }
+.folder-cluster.empty .cluster-meta { font-style: italic; opacity: 0.18; }
+
 /* Dim non-selected folders when one is open */
 .folder-list.has-open .folder-cluster:not(.is-open):not(.empty) .cluster-face {
   opacity: 0.45;
