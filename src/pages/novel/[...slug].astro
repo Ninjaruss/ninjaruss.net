@@ -54,30 +54,94 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
   description="A novel in progress — characters, lore, locations, and themes."
 >
   <NavPill />
+
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
   <main
     class="novel-page"
     data-initial-folder={initialFolder}
     data-initial-subpath={initialSubPath}
   >
-    <div class="novel-scatter">
-      {Object.values(novelTree).map((folder) => (
-        <div
-          class="shard"
-          data-folder={folder.slug}
-          role="button"
-          tabindex="0"
-          aria-label={`Open ${folder.title}`}
-        >
-          <div class="shard__inner">
-            <span class="shard__label">{folder.title}</span>
-            <span class="shard__count">
-              {folder.files.length + Object.values(folder.subfolders).reduce((n, s) => n + s.files.length, 0)} files
-            </span>
-          </div>
-        </div>
-      ))}
+    <!-- Title block: Rain's afterimage motif -->
+    <div class="title-block">
+      <div class="title-text-group">
+        <span class="title-main">Remember Rain</span>
+        <span class="waterline" aria-hidden="true"></span>
+        <span class="title-reflection" aria-hidden="true">Remember Rain</span>
+      </div>
+      <span class="title-eyebrow">a novel in progress · memory shards</span>
     </div>
+
+    <!-- Two-panel navigator -->
+    <div class="navigator">
+
+      <!-- Left: folder cluster list -->
+      <div class="folder-list" id="folder-list">
+        {Object.values(novelTree).map((folder) => {
+          const totalFiles = folder.files.length +
+            Object.values(folder.subfolders).reduce((n, s) => n + s.files.length, 0);
+          const isEmpty = totalFiles === 0;
+          return (
+            <div
+              class={`folder-cluster${isEmpty ? ' empty' : ''}`}
+              data-folder={folder.slug}
+            >
+              <div class="cluster-face" style={isEmpty ? 'cursor:default;' : undefined}>
+                <span
+                  class="cluster-name"
+                  style={isEmpty ? 'opacity:0.38;' : undefined}
+                >
+                  {folder.title}
+                </span>
+                <span
+                  class="cluster-meta"
+                  style={isEmpty ? 'font-style:italic;opacity:0.18;' : undefined}
+                >
+                  {isEmpty
+                    ? 'no shards yet'
+                    : `${totalFiles} ${totalFiles === 1 ? 'shard' : 'shards'}`}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div><!-- /folder-list -->
+
+      <!-- Right: shard panel (populated by JS) -->
+      <div class="shard-panel" id="shard-panel">
+        <div class="shard-panel-header">
+          <span class="shard-panel-name" id="shard-panel-name"></span>
+          <span class="shard-panel-count" id="shard-panel-count"></span>
+        </div>
+        <div class="shard-panel-list" id="shard-panel-list"></div>
+      </div><!-- /shard-panel -->
+
+    </div><!-- /navigator -->
   </main>
+
+  <!-- Full-screen reading overlay -->
+  <div class="reading-overlay" id="reading-overlay">
+    <div class="reading-shard" id="reading-shard">
+      <div class="reading-content" id="reading-content">
+        <button
+          class="reading-back"
+          type="button"
+          id="reading-back"
+        >
+          ← return shard
+        </button>
+        <div class="reading-inner" onclick="event.stopPropagation()">
+          <div style="flex:1;min-width:0;">
+            <div class="reading-breadcrumb" id="reading-breadcrumb"></div>
+            <h1 class="reading-title" id="reading-title"></h1>
+            <div class="reading-date" id="reading-date"></div>
+            <div class="reading-body" id="reading-body"></div>
+          </div>
+          <div class="reading-images" id="reading-images" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   {/* Inline data — no client fetches */}
   <script type="application/json" id="novel-tree" set:html={
