@@ -137,6 +137,31 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     });
   }
 
+  // ── Inline-style save/restore helpers ──────────────────────
+  // When a sub-shard becomes the active file overlay we must clear its
+  // inline positional styles (left/top/width/height/transform) so the
+  // `.is-active-file` CSS class rules (position:fixed, 100%×100%, no rotate)
+  // can take effect — inline styles otherwise win the specificity battle.
+
+  const SAVED_STYLE_PROPS = ['left', 'top', 'width', 'height', 'transform'] as const;
+
+  function saveSubShardStyles(el: HTMLElement) {
+    SAVED_STYLE_PROPS.forEach((p) => {
+      el.dataset[`saved_${p}`] = el.style[p];
+    });
+  }
+
+  function restoreSubShardStyles(el: HTMLElement) {
+    el.classList.remove('is-active-file');
+    SAVED_STYLE_PROPS.forEach((p) => {
+      const saved = el.dataset[`saved_${p}`];
+      if (saved !== undefined) {
+        el.style[p] = saved;
+        delete el.dataset[`saved_${p}`];
+      }
+    });
+  }
+
   // ── Sub-shard positioning helpers ──────────────────────────
 
   /** Get all files from a folder including files in immediate subfolders. */
@@ -163,20 +188,31 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     // Convert viewport coords to scatter-relative coords
     const centerX = rect.left + rect.width / 2 - scatterRect.left;
     const centerY = rect.top + rect.height / 2 - scatterRect.top;
+    const scatterW = scatterRect.width || window.innerWidth;
+    const scatterH = scatterRect.height || window.innerHeight;
+    const margin = 20;
     const positions = [];
 
+    // Choose arc direction that points away from the nearest horizontal edge
+    // so sub-shards spread toward the center of the viewport.
+    const arcOffset = centerX > scatterW / 2
+      ? Math.PI - 0.7   // folder is right-half: arc opens leftward
+      : -0.2;           // folder is left-half: arc opens rightward
+
     for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 1.4 - 0.2; // spread in an arc
+      const angle = arcOffset + (i / Math.max(count - 1, 1)) * Math.PI * 1.2;
       const radius = 160 + i * 20;
       const width = 220 + (i % 3) * 30;
       const height = 160 + (i % 2) * 20;
-      positions.push({
-        left: centerX + Math.cos(angle) * radius - width / 2,
-        top: centerY + Math.sin(angle) * radius - height / 2,
-        width,
-        height,
-        rotate: -3 + i * 1.5,
-      });
+
+      let left = centerX + Math.cos(angle) * radius - width / 2;
+      let top = centerY + Math.sin(angle) * radius - height / 2;
+
+      // Clamp within scatter bounds so nothing is clipped
+      left = Math.max(margin, Math.min(left, scatterW - width - margin));
+      top = Math.max(margin, Math.min(top, scatterH - height - margin));
+
+      positions.push({ left, top, width, height, rotate: -3 + i * 1.5 });
     }
     return positions;
   }
@@ -345,8 +381,19 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     if (!subShard) return;
 
     // Deactivate any previously active file
-    document.querySelector('.sub-shard.is-active-file')?.classList.remove('is-active-file');
+    const prevActive = document.querySelector<HTMLElement>('.sub-shard.is-active-file');
+    if (prevActive) restoreSubShardStyles(prevActive);
     clearContentPanel();
+
+    // Save then clear inline positional styles so CSS fixed-position rules take over.
+    // Inline styles have higher specificity than class rules, so without this the
+    // is-active-file overlay would inherit the shard's scattered position/size/rotation.
+    saveSubShardStyles(subShard);
+    subShard.style.left = '';
+    subShard.style.top = '';
+    subShard.style.width = '';
+    subShard.style.height = '';
+    subShard.style.transform = '';
 
     // Activate this sub-shard
     subShard.classList.add('is-active-file');
@@ -391,7 +438,8 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
   /** Close file view and return to folder sub-shards. */
   function closeFile(folderSlug: string, pushState = true) {
     page.classList.remove('file-open');
-    document.querySelector('.sub-shard.is-active-file')?.classList.remove('is-active-file');
+    const activeShard = document.querySelector<HTMLElement>('.sub-shard.is-active-file');
+    if (activeShard) restoreSubShardStyles(activeShard);
     clearContentPanel();
 
     if (pushState) {
@@ -432,40 +480,45 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
   const initSubPath = page.dataset.initialSubpath;
 
   if (initFolder) {
-    // Snap to state without animation on direct URL visit
-    page.style.transition = 'none';
-    document.querySelectorAll<HTMLElement>('.shard, .sub-shard').forEach((el) => {
-      el.style.transition = 'none';
-    });
-
-    selectFolder(initFolder, false);
-
-    if (initSubPath) {
-      requestAnimationFrame(() => {
-        openFile(initFolder, initSubPath, false);
-        // Restore transitions after initial snap
-        requestAnimationFrame(() => {
-          page.style.transition = '';
-          document.querySelectorAll<HTMLElement>('.shard, .sub-shard').forEach((el) => {
-            el.style.transition = '';
-          });
-        });
-      });
-    } else {
-      requestAnimationFrame(() => {
-        page.style.transition = '';
-        document.querySelectorAll<HTMLElement>('.shard, .sub-shard').forEach((el) => {
-          el.style.transition = '';
-        });
-      });
-    }
-
     // Set initial history state so back works from here
     history.replaceState(
       { folderSlug: initFolder, fileSubPath: initSubPath ?? null },
       '',
       window.location.pathname
     );
+
+    // Defer until after the browser has performed layout so getBoundingClientRect()
+    // returns real pixel values — without this, rects are all zero on initial load
+    // and every sub-shard clamps to the top-left corner (20px, 20px).
+    requestAnimationFrame(() => {
+      // Snap to state without animation on direct URL visit
+      page.style.transition = 'none';
+      document.querySelectorAll<HTMLElement>('.shard, .sub-shard').forEach((el) => {
+        el.style.transition = 'none';
+      });
+
+      selectFolder(initFolder, false);
+
+      if (initSubPath) {
+        requestAnimationFrame(() => {
+          openFile(initFolder, initSubPath, false);
+          // Restore transitions after initial snap
+          requestAnimationFrame(() => {
+            page.style.transition = '';
+            document.querySelectorAll<HTMLElement>('.shard, .sub-shard').forEach((el) => {
+              el.style.transition = '';
+            });
+          });
+        });
+      } else {
+        requestAnimationFrame(() => {
+          page.style.transition = '';
+          document.querySelectorAll<HTMLElement>('.shard, .sub-shard').forEach((el) => {
+            el.style.transition = '';
+          });
+        });
+      }
+    });
   } else {
     // /novel root — set initial state
     history.replaceState({ folderSlug: null, fileSubPath: null }, '', '/novel');

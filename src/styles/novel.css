@@ -175,24 +175,24 @@
 /* === State Transitions === */
 
 .novel-page.folder-selected .shard:not(.is-active-folder) {
-  opacity: 0.18;
+  opacity: 0.38;
   pointer-events: auto;
 }
 
 .novel-page.folder-selected [data-folder="characters"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(-55%, -50%) scale(0.4);
+  transform: rotate(var(--rotate)) translate(-45%, -40%) scale(0.55);
 }
 .novel-page.folder-selected [data-folder="locations"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(0%, -70%) scale(0.4);
+  transform: rotate(var(--rotate)) translate(0%, -55%) scale(0.55);
 }
 .novel-page.folder-selected [data-folder="lore"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(55%, -50%) scale(0.4);
+  transform: rotate(var(--rotate)) translate(45%, -40%) scale(0.55);
 }
 .novel-page.folder-selected [data-folder="scenes"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(-55%, 50%) scale(0.4);
+  transform: rotate(var(--rotate)) translate(-45%, 40%) scale(0.55);
 }
 .novel-page.folder-selected [data-folder="themes"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(55%, 45%) scale(0.4);
+  transform: rotate(var(--rotate)) translate(45%, 35%) scale(0.55);
 }
 
 .shard.is-active-folder {
