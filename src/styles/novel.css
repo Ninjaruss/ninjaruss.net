@@ -1,413 +1,485 @@
 /* ============================================================
    Novel Page — Remember Rain
-   Memory Shards visual system
+   Two-panel frosted glass navigator + reading overlay
    ============================================================ */
 
+/* ══ Background canvas ══ */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ══ Main layout — full viewport, title row above navigator ══ */
 .novel-page {
   position: relative;
+  z-index: 1;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  padding: 3rem 4rem;
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
   width: 100%;
-  min-height: 100vh;
-  background: var(--color-bg-deep);
+  box-sizing: border-box;
   overflow: hidden;
 }
 
-.novel-scatter {
-  position: relative;
-  width: 100%;
-  height: 100vh;
+/* ══ Two-panel navigator — fills remaining height ══ */
+.navigator {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 4px;
+  min-height: 0;
+  overflow: hidden;
 }
 
-.shard {
-  --rotate: 0deg;
-  position: absolute;
-  cursor: pointer;
-  transition:
-    transform 400ms cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 400ms ease-out,
-    box-shadow 200ms ease;
-  transform-origin: center center;
-  will-change: transform, opacity;
-}
-
-.shard__inner {
-  width: 100%;
-  height: 100%;
-  border: 1.5px solid currentColor;
-  background: color-mix(in srgb, currentColor 8%, transparent);
+/* ══ Title block ══ */
+.title-block {
+  text-align: left;
+  user-select: none;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1.5rem;
+  align-items: flex-end;
+  gap: 2.5rem;
 }
+.title-text-group { display: flex; flex-direction: column; }
 
-.shard__label {
+.title-eyebrow {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: currentColor;
-  text-align: center;
+  color: rgba(122,184,255,0.55);
+  display: block;
+  padding-bottom: 2px;
 }
 
-.shard__count {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.1em;
-  color: currentColor;
-  opacity: 0.5;
+.title-main {
+  font-family: 'Archivo Black', 'Arial Black', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #eef2fa;
+  line-height: 1;
+  display: block;
+  text-shadow:
+    0 0 40px rgba(100,160,240,0.2),
+    0 2px 16px rgba(100,160,240,0.1);
 }
 
-.shard:hover {
-  filter: drop-shadow(0 0 12px color-mix(in srgb, currentColor 40%, transparent));
-}
-
-[data-folder="characters"] {
-  color: #ffe52c;
-  width: 320px;
-  height: 240px;
-  top: 8%;
-  left: 4%;
-  --rotate: -3deg;
-  transform: rotate(var(--rotate));
-}
-[data-folder="characters"] .shard__inner {
-  clip-path: polygon(4% 6%, 95% 2%, 92% 91%, 7% 95%);
-}
-
-[data-folder="locations"] {
-  color: #7ab8ff;
-  width: 340px;
-  height: 220px;
-  top: 15%;
-  left: 36%;
-  --rotate: 2deg;
-  transform: rotate(var(--rotate));
-}
-[data-folder="locations"] .shard__inner {
-  clip-path: polygon(2% 5%, 93% 8%, 97% 90%, 4% 93%);
-}
-
-[data-folder="lore"] {
-  color: #ff8822;
-  width: 300px;
-  height: 250px;
-  top: 6%;
-  left: 63%;
-  --rotate: -4deg;
-  transform: rotate(var(--rotate));
-}
-[data-folder="lore"] .shard__inner {
-  clip-path: polygon(6% 3%, 96% 5%, 91% 93%, 3% 91%);
-}
-
-[data-folder="scenes"] {
-  color: #ff6666;
-  width: 360px;
-  height: 230px;
-  top: 55%;
-  left: 10%;
-  --rotate: 3deg;
-  transform: rotate(var(--rotate));
-}
-[data-folder="scenes"] .shard__inner {
-  clip-path: polygon(3% 7%, 94% 3%, 96% 94%, 5% 97%);
-}
-
-[data-folder="themes"] {
-  color: #aaaaff;
-  width: 310px;
-  height: 260px;
-  top: 50%;
-  left: 56%;
-  --rotate: -2deg;
-  transform: rotate(var(--rotate));
-}
-[data-folder="themes"] .shard__inner {
-  clip-path: polygon(7% 4%, 97% 6%, 93% 92%, 2% 89%);
-}
-
-.sub-shard {
-  position: absolute;
-  cursor: pointer;
-  transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1), opacity 300ms ease;
-  will-change: transform, opacity;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.sub-shard__inner {
+/* Rain's passive ability — ghostly afterimage of himself */
+.waterline {
+  display: block;
   width: 100%;
-  height: 100%;
-  border: 1px solid currentColor;
-  background: color-mix(in srgb, currentColor 6%, transparent);
+  height: 1px;
+  margin: 4px 0 0;
+  background: linear-gradient(to right,
+    transparent,
+    rgba(122,184,255,0.3) 15%,
+    rgba(160,210,255,0.5) 50%,
+    rgba(122,184,255,0.3) 85%,
+    transparent
+  );
+}
+
+.title-reflection {
+  font-family: 'Archivo Black', 'Arial Black', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #eef2fa;
+  line-height: 1;
+  display: block;
+  transform: scaleY(-1);
+  opacity: 0.13;
+  filter: blur(0.8px);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.25) 45%, transparent 80%);
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.25) 45%, transparent 80%);
+  pointer-events: none;
+  margin-top: 1px;
+}
+
+/* ══ Folder clusters — left panel ══ */
+.folder-list {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 1.5rem;
-  clip-path: polygon(5% 8%, 94% 3%, 92% 90%, 6% 95%);
+  gap: 3px;
+  overflow-y: auto;
+  height: 100%;
+  align-content: start;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(80,120,200,0.2) transparent;
 }
 
-.sub-shard__title {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: currentColor;
+.folder-cluster {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
 }
 
-.sub-shard__meta {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.08em;
-  color: currentColor;
-  opacity: 0.45;
-  margin-top: 0.25rem;
+/* Frosted glass face — Vesper's memory extraction as glass shards */
+.cluster-face {
+  position: relative;
+  padding: 1.1rem 1.6rem;
+  background: rgba(80,120,200,0.045);
+  border: 1px solid rgba(80,120,200,0.16);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  transition:
+    background 350ms cubic-bezier(0.16,1,0.3,1),
+    border-color 350ms cubic-bezier(0.16,1,0.3,1);
+  clip-path: polygon(0 0, 100% 0.6%, 99.6% 99%, 0.2% 100%);
 }
 
-.sub-shard:hover {
-  filter: drop-shadow(0 0 8px color-mix(in srgb, currentColor 35%, transparent));
-}
-
-/* === State Transitions === */
-
-.novel-page.folder-selected .shard:not(.is-active-folder) {
-  opacity: 0.38;
-  pointer-events: auto;
-}
-
-.novel-page.folder-selected [data-folder="characters"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(-1vw, -2vh) scale(0.55);
-}
-.novel-page.folder-selected [data-folder="locations"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(0vw, -3vh) scale(0.55);
-}
-.novel-page.folder-selected [data-folder="lore"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(1vw, -2vh) scale(0.55);
-}
-.novel-page.folder-selected [data-folder="scenes"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(-1vw, 2vh) scale(0.55);
-}
-.novel-page.folder-selected [data-folder="themes"]:not(.is-active-folder) {
-  transform: rotate(var(--rotate)) translate(1vw, 2vh) scale(0.55);
-}
-
-.shard.is-active-folder {
-  z-index: 10;
-  transform: rotate(var(--rotate)) scale(1.04);
-}
-
-.novel-page.folder-selected .sub-shard.is-visible {
+/* Frost texture lines */
+.cluster-face::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(91deg, transparent 0, rgba(190,215,255,0.016) 1px, transparent 2px, transparent 10px),
+    repeating-linear-gradient(180deg, transparent 0, rgba(190,215,255,0.01) 1px, transparent 2px, transparent 15px);
+  pointer-events: none;
+  transition: opacity 400ms ease;
   opacity: 1;
-  pointer-events: auto;
 }
 
-.novel-page.file-open .sub-shard:not(.is-active-file) {
-  opacity: 0.15;
+/* Glass glint */
+.cluster-face::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 6%; right: 6%; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(210,230,255,0.3) 30%, rgba(220,240,255,0.45) 50%, rgba(210,230,255,0.3) 70%, transparent);
+  transition: opacity 300ms ease;
+}
+
+.cluster-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: color 300ms ease;
+}
+
+.cluster-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+  transition: opacity 300ms ease;
+}
+
+/* Per-folder accent colors */
+[data-folder="characters"] { --accent: #ffe52c; --accent-rgb: 255,229,44; }
+[data-folder="locations"]  { --accent: #7ab8ff; --accent-rgb: 122,184,255; }
+[data-folder="lore"]       { --accent: #ff8822; --accent-rgb: 255,136,34; }
+[data-folder="scenes"]     { --accent: #ff6666; --accent-rgb: 255,102,102; }
+[data-folder="themes"]     { --accent: #aaaaff; --accent-rgb: 170,170,255; }
+
+.folder-cluster .cluster-name { color: var(--accent); }
+.folder-cluster .cluster-face { border-color: rgba(var(--accent-rgb), 0.2); }
+
+/* Hover */
+.folder-cluster:not(.empty):hover .cluster-face {
+  background: rgba(var(--accent-rgb), 0.06);
+  border-color: rgba(var(--accent-rgb), 0.45);
+}
+.folder-cluster:not(.empty):hover .cluster-face::before { opacity: 0.35; }
+.folder-cluster:not(.empty):hover .cluster-meta { opacity: 0.55; }
+
+/* Open state */
+.folder-cluster.is-open .cluster-face {
+  background: rgba(var(--accent-rgb), 0.09);
+  border-color: rgba(var(--accent-rgb), 0.7);
+}
+.folder-cluster.is-open .cluster-face::before { opacity: 0; }
+.folder-cluster.is-open .cluster-meta { opacity: 0.6; }
+
+/* Dim non-selected folders when one is open */
+.folder-list.has-open .folder-cluster:not(.is-open):not(.empty) .cluster-face {
+  opacity: 0.45;
+  transition: opacity 350ms ease, background 350ms ease;
+}
+
+/* ══ Shard panel — right column ══ */
+.shard-panel {
+  border: 1px solid rgba(80,120,200,0.1);
+  background: rgba(80,120,200,0.02);
+  clip-path: polygon(0 0, 100% 0.3%, 99.8% 99.8%, 0.1% 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 350ms cubic-bezier(0.16,1,0.3,1),
+              border-color 350ms ease;
   pointer-events: none;
 }
-
-.sub-shard.is-active-file {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 100;
-  pointer-events: auto;
-  transition: opacity 350ms cubic-bezier(0.16, 1, 0.3, 1),
-              width 350ms cubic-bezier(0.16, 1, 0.3, 1),
-              height 350ms cubic-bezier(0.16, 1, 0.3, 1);
+.shard-panel.is-visible {
+  opacity: 1;
+  pointer-events: all;
 }
 
-.sub-shard.is-active-file .sub-shard__inner {
-  clip-path: polygon(2% 2%, 98% 1%, 99% 98%, 1% 99%);
-  justify-content: flex-start;
-  padding: 3rem 4rem;
-  overflow-y: auto;
-  background: color-mix(in srgb, currentColor 5%, var(--color-bg-deep) 95%);
+.shard-panel-header {
+  padding: 0.85rem 1.2rem 0.75rem;
+  border-bottom: 1px solid rgba(80,120,200,0.1);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-shrink: 0;
 }
-
-.sub-shard.is-active-file .sub-shard__title,
-.sub-shard.is-active-file .sub-shard__meta {
-  display: none;
-}
-
-.novel-content__back {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.15em;
+.shard-panel-name {
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: currentColor;
-  opacity: 0.5;
-  cursor: pointer;
-  border: none;
-  background: none;
-  padding: 0;
-  margin-bottom: 2rem;
-  transition: opacity 200ms ease;
-}
-.novel-content__back:hover { opacity: 1; }
-
-.novel-content__breadcrumb {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.55rem;
+}
+.shard-panel-count {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  opacity: 0.5;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.shard-panel-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 0.4rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(80,120,200,0.2) transparent;
+}
+.shard-panel-list::-webkit-scrollbar { width: 2px; }
+.shard-panel-list::-webkit-scrollbar-thumb { background: rgba(80,120,200,0.25); }
+
+/* ══ Memory shards — rows inside right panel ══ */
+.memory-shard {
+  position: relative;
+  padding: 0.75rem 1.2rem 0.75rem 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  transition: background 150ms ease;
+  overflow: hidden;
+}
+.memory-shard::before {
+  content: '◇';
+  position: absolute;
+  left: 0.75rem;
+  font-size: 0.48rem;
+  opacity: 0.3;
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+.memory-shard:hover { background: rgba(var(--panel-accent-rgb, 80,120,200), 0.08); }
+.memory-shard:hover::before { opacity: 0.75; transform: rotate(45deg); }
+
+.shard-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: currentColor;
-  opacity: 0.4;
+}
+.shard-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  opacity: 0.5;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ══ Full-screen reading overlay ══ */
+.reading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: stretch;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.reading-overlay.is-open {
+  pointer-events: all;
+  opacity: 1;
+}
+
+.reading-shard {
+  position: absolute;
+  inset: 0;
+  background: rgba(3,6,16,0.97);
+  border: 1px solid rgba(var(--overlay-accent-rgb, 80,120,200), 0.4);
+  clip-path: polygon(0.3% 0.2%, 99.7% 0, 100% 99.8%, 0 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Entire overlay is a dismiss target; inner column stops propagation */
+.reading-content {
+  position: relative;
+  z-index: 1;
+  padding: 3rem 0;
+  overflow-y: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  cursor: pointer;
+}
+
+/* Back button — sits above the centered column, same max-width */
+.reading-back {
+  width: 100%;
+  max-width: 720px;
+  padding: 0 2rem 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(var(--overlay-accent-rgb, 80,120,200), 0.45);
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin: 0;
+  transition: color 200ms ease;
+  display: block;
+  text-align: left;
+}
+.reading-back:hover { color: rgba(var(--overlay-accent-rgb, 80,120,200), 0.9); }
+
+/* Centered column — clicking inside does NOT dismiss */
+.reading-inner {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 720px;
+  padding: 0 2rem;
+  cursor: default;
+}
+
+.reading-breadcrumb {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(var(--overlay-accent-rgb, 80,120,200), 0.6);
   margin-bottom: 0.5rem;
 }
 
-.novel-content__title {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: clamp(1.8rem, 4vw, 3rem);
-  color: currentColor;
-  line-height: 1.1;
-  margin: 0 0 0.75rem;
+.reading-title {
+  font-family: 'Archivo Black', 'Arial Black', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 900;
+  line-height: 1.05;
+  margin-bottom: 0.5rem;
 }
 
-.novel-content__dates {
+.reading-date {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  color: currentColor;
-  opacity: 0.45;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: rgba(var(--overlay-accent-rgb, 80,120,200), 0.55);
   margin-bottom: 2.5rem;
-  display: flex;
-  gap: 1.5rem;
 }
 
-.novel-content__body {
-  color: var(--color-text);
+.reading-body {
   font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
-  line-height: 1.75;
-  max-width: 680px;
+  font-size: 1rem;
+  line-height: 1.85;
+  color: rgba(200,215,235,0.85);
+  max-width: 620px;
+  flex: 1;
+  min-width: 0;
 }
-
-.novel-content__body p { margin: 0 0 1.25em; }
-.novel-content__body strong { color: currentColor; font-weight: 700; }
-.novel-content__body h2, .novel-content__body h3 {
+.reading-body p { margin-bottom: 1.25em; }
+.reading-body strong { color: rgba(var(--overlay-accent-rgb, 200,220,255), 0.95); }
+.reading-body em { color: rgba(200,215,235,0.65); }
+.reading-body h2, .reading-body h3 {
   font-family: 'Archivo Black', sans-serif;
-  color: currentColor;
+  color: rgba(var(--overlay-accent-rgb, 200,220,255), 0.9);
   margin: 2em 0 0.75em;
+  font-size: 1.1rem;
 }
-.novel-content__body ul, .novel-content__body ol {
-  padding-left: 1.5em;
-  margin: 0 0 1.25em;
-}
-.novel-content__body li { margin-bottom: 0.4em; }
+.reading-body ul, .reading-body ol { padding-left: 1.5em; margin-bottom: 1.25em; }
+.reading-body li { margin-bottom: 0.4em; }
+.reading-body img { max-width: 100%; display: block; margin: 1.5em 0; }
 
-.novel-empty {
+/* Image column — only shown when images are extracted from body */
+.reading-images {
+  flex-shrink: 0;
+  width: 220px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: currentColor;
-  opacity: 0.35;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 0.5rem;
+}
+.reading-images img {
+  width: 100%;
+  border: 1px solid rgba(var(--overlay-accent-rgb, 80,120,200), 0.25);
+  display: block;
 }
 
+/* ══ Reduced motion ══ */
 @media (prefers-reduced-motion: reduce) {
-  .shard, .sub-shard, .sub-shard.is-active-file {
-    transition: opacity 200ms ease;
+  .shard-panel,
+  .reading-overlay,
+  .folder-cluster .cluster-face,
+  .folder-list.has-open .folder-cluster .cluster-face,
+  .memory-shard,
+  .memory-shard::before {
+    transition: none;
   }
 }
 
-/* === Mobile (below 768px) === */
-
+/* ══ Mobile (below 768px) ══ */
 @media (max-width: 768px) {
-  .novel-scatter {
+  .novel-page {
+    padding: 1.5rem;
     height: auto;
     min-height: 100vh;
-    padding: 1.5rem;
-    display: flex;
+    overflow: visible;
+  }
+
+  .navigator {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 8px;
+    overflow: visible;
+    height: auto;
+  }
+
+  .folder-list {
+    height: auto;
+    overflow: visible;
+  }
+
+  .shard-panel {
+    clip-path: none;
+    height: auto;
+    min-height: 180px;
+  }
+
+  .reading-inner {
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
   }
 
-  .shard {
-    position: static;
-    width: 100% !important;
-    height: auto !important;
-    transform: none !important;
-    --rotate: 0deg;
-  }
-
-  .shard__inner {
-    clip-path: none !important;
-    border-radius: 2px;
-    padding: 1.25rem 1.5rem;
-    align-items: flex-start;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .novel-page.folder-selected .shard:not(.is-active-folder) {
-    opacity: 0.35;
-    transform: none !important;
-  }
-
-  .novel-page.folder-selected .shard.is-active-folder {
-    transform: none !important;
-  }
-
-  .sub-shard {
-    position: static;
-    width: 100% !important;
-    height: auto !important;
-    opacity: 0;
-    pointer-events: none;
-    max-height: 0;
-    overflow: hidden;
-    transition: opacity 300ms ease, max-height 350ms ease;
-  }
-
-  .novel-page.folder-selected .sub-shard.is-visible {
-    max-height: 80px;
-    pointer-events: auto;
-  }
-
-  .sub-shard__inner {
-    clip-path: none !important;
-    border-radius: 2px;
-    padding: 0.75rem 1.25rem;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .sub-shard.is-active-file {
-    position: fixed;
-    top: 0;
-    left: 0;
+  .reading-images {
     width: 100%;
-    height: 100%;
-  }
-
-  .sub-shard.is-active-file .sub-shard__inner {
-    clip-path: none !important;
-    padding: 2rem 1.5rem;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-  }
-
-  .novel-content__title {
-    font-size: 1.6rem;
-  }
-
-  .novel-content__body {
-    font-size: 0.9rem;
   }
 }
