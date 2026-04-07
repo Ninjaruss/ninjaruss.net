@@ -3,7 +3,7 @@
 .bento-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-auto-rows: minmax(80px, auto);
+  grid-auto-rows: minmax(100px, auto);
   gap: var(--space-sm);
   width: 100%;
 }
@@ -50,6 +50,11 @@
 .bento-tile--span-2x1 {
   grid-column: span 2;
   grid-row: span 1;
+}
+
+.bento-tile--span-1x2 {
+  grid-column: span 1;
+  grid-row: span 2;
 }
 
 /* Tile Base Styles — Dark mode with gold accents */
