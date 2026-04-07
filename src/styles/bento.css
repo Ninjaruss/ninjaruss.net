@@ -3,7 +3,7 @@
 .bento-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-auto-rows: minmax(120px, auto);
+  grid-auto-rows: minmax(80px, auto);
   gap: var(--space-sm);
   width: 100%;
 }
