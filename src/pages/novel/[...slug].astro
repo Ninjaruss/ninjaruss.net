@@ -274,26 +274,50 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
 
   // ── Helpers ─────────────────────────────────────────────────
 
-  /** Collect all files from a folder, recursing into subfolders. */
-  function getAllFiles(folder: NovelFolder): Array<{ file: NovelFile; breadcrumb: string; subPath: string }> {
-    const result: Array<{ file: NovelFile; breadcrumb: string; subPath: string }> = [];
-    for (const file of folder.files) {
-      result.push({ file, breadcrumb: folder.title, subPath: file.slug });
+  interface ShardEntry { file: NovelFile; breadcrumb: string; subPath: string; }
+  interface ShardGroup { label: string | null; entries: ShardEntry[]; }
+
+  /**
+   * Return files grouped by subfolder.
+   * Top-level files (no subfolder) come first with label=null.
+   * Each subfolder gets its own group with label=subfolder.title.
+   */
+  function getGroupedFiles(folder: NovelFolder): ShardGroup[] {
+    const groups: ShardGroup[] = [];
+
+    if (folder.files.length > 0) {
+      groups.push({
+        label: null,
+        entries: folder.files.map((file) => ({
+          file,
+          breadcrumb: folder.title,
+          subPath: file.slug,
+        })),
+      });
     }
-    function recurse(sub: NovelFolder, parentBc: string) {
-      for (const file of sub.files) {
-        // file.path is e.g. ['lore', 'magic-system', 'magic-overview']
-        // subPath is everything after the top-level folder slug
-        result.push({ file, breadcrumb: `${parentBc} / ${sub.title}`, subPath: file.path.slice(1).join('/') });
-      }
-      for (const nested of Object.values(sub.subfolders)) {
-        recurse(nested, `${parentBc} / ${sub.title}`);
-      }
-    }
+
     for (const sub of Object.values(folder.subfolders)) {
-      recurse(sub, folder.title);
+      const entries: ShardEntry[] = [];
+      function collect(s: NovelFolder, parentBc: string) {
+        for (const file of s.files) {
+          entries.push({ file, breadcrumb: `${parentBc} / ${s.title}`, subPath: file.path.slice(1).join('/') });
+        }
+        for (const nested of Object.values(s.subfolders)) {
+          collect(nested, `${parentBc} / ${s.title}`);
+        }
+      }
+      collect(sub, folder.title);
+      if (entries.length > 0) {
+        groups.push({ label: sub.title, entries });
+      }
     }
-    return result;
+
+    return groups;
+  }
+
+  /** Flat list of all entries across groups — used for popstate/URL matching. */
+  function getAllEntries(folder: NovelFolder): ShardEntry[] {
+    return getGroupedFiles(folder).flatMap((g) => g.entries);
   }
 
   /**
@@ -358,27 +382,31 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
 
       // Populate panel
       const folder = tree[folderKey];
-      const allFiles = folder ? getAllFiles(folder) : [];
-      const count = allFiles.length;
+      const groups = folder ? getGroupedFiles(folder) : [];
+      const count = groups.reduce((n, g) => n + g.entries.length, 0);
 
       panelName.textContent  = folder?.title ?? folderKey;
       panelCount.textContent = count === 1 ? '1 shard' : `${count} shards`;
 
-      panelList.innerHTML = allFiles.map(({ file, breadcrumb, subPath }) => {
-        const safeData = encodeURIComponent(
-          JSON.stringify({ file, breadcrumb, folderKey, subPath })
-        );
-        const dateStr = file.modified || file.created || '';
-        return `<div
-          class="memory-shard"
-          style="color:rgba(${rgb},0.95); --panel-accent-rgb:${rgb};"
-          role="button"
-          tabindex="0"
-          data-shard-encoded="${safeData}"
-        >
-          <span class="shard-title">${esc(file.title)}</span>
-          <span class="shard-date">${esc(dateStr)}</span>
-        </div>`;
+      panelList.innerHTML = groups.map((group) => {
+        const header = group.label
+          ? `<div class="shard-subfolder-label" style="--panel-accent-rgb:${rgb};">${esc(group.label)}</div>`
+          : '';
+        const shards = group.entries.map(({ file, breadcrumb, subPath }) => {
+          const safeData = encodeURIComponent(
+            JSON.stringify({ file, breadcrumb, folderKey, subPath })
+          );
+          return `<div
+            class="memory-shard"
+            style="color:rgba(${rgb},0.95); --panel-accent-rgb:${rgb};"
+            role="button"
+            tabindex="0"
+            data-shard-encoded="${safeData}"
+          >
+            <span class="shard-title">${esc(file.title)}</span>
+          </div>`;
+        }).join('');
+        return header + shards;
       }).join('');
 
       panel.classList.add('is-visible');
@@ -415,6 +443,9 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
   document.getElementById('shard-panel-list')!.addEventListener('click', (e) => {
     const shardEl = (e.target as Element).closest<HTMLElement>('.memory-shard');
     if (!shardEl) return;
+    // Click flash: briefly highlight the shard before the overlay opens
+    shardEl.classList.add('is-clicked');
+    setTimeout(() => shardEl.classList.remove('is-clicked'), 350);
     const encoded = shardEl.dataset.shardEncoded;
     if (encoded) openShardEncoded(encoded);
   });
