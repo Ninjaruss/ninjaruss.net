@@ -263,6 +263,29 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     themes:     '170,170,255',
   };
 
+  // ── Shard shape pool ────────────────────────────────────────
+  // 8 irregular clip-path polygons — different fracture patterns.
+  // clip-path is applied inline per shard via shapeIndex().
+  const SHARD_SHAPES: string[] = [
+    'polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%)',
+    'polygon(0 0, 100% 0, 100% 100%, 14px 100%, 0 calc(100% - 12px))',
+    'polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
+    'polygon(0 4px, 100% 0, 100% calc(100% - 4px), 0 100%)',
+    'polygon(10px 0, calc(100% - 8px) 0, 100% 10px, 100% 100%, 0 100%, 0 8px)',
+    'polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%)',
+    'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%)',
+    'polygon(10px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 10px)',
+  ];
+
+  /** Deterministic index into SHARD_SHAPES derived from a file slug. */
+  function shapeIndex(slug: string, count: number): number {
+    let h = 0;
+    for (let i = 0; i < slug.length; i++) {
+      h = (h * 31 + slug.charCodeAt(i)) >>> 0;
+    }
+    return h % count;
+  }
+
   /** Minimal HTML escape for injecting content into innerHTML templates. */
   function esc(s: string): string {
     return s
@@ -392,13 +415,18 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
         const header = group.label
           ? `<div class="shard-subfolder-label" style="--panel-accent-rgb:${rgb};">${esc(group.label)}</div>`
           : '';
+        const isSubGroup = group.label !== null;
         const shards = group.entries.map(({ file, breadcrumb, subPath }) => {
           const safeData = encodeURIComponent(
             JSON.stringify({ file, breadcrumb, folderKey, subPath })
           );
+          const shardClass = isSubGroup ? 'memory-shard memory-shard--sub' : 'memory-shard';
+          const clipStyle = isSubGroup
+            ? ''
+            : `clip-path:${SHARD_SHAPES[shapeIndex(file.slug, SHARD_SHAPES.length)]};`;
           return `<div
-            class="memory-shard"
-            style="color:rgba(${rgb},0.95); --panel-accent-rgb:${rgb};"
+            class="${shardClass}"
+            style="color:rgba(${rgb},0.95); --panel-accent-rgb:${rgb}; ${clipStyle}"
             role="button"
             tabindex="0"
             data-shard-encoded="${safeData}"
