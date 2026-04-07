@@ -199,6 +199,8 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       lean: -0.035 + Math.random() * 0.02,
     }));
 
+    let rafId = 0;
+
     function draw() {
       ctx.clearRect(0, 0, w, h);
 
@@ -242,9 +244,14 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
         if (d.y > 1) { d.y = -d.len; d.x = Math.random(); }
       });
 
-      requestAnimationFrame(draw);
+      rafId = requestAnimationFrame(draw);
     }
-    draw();
+    rafId = requestAnimationFrame(draw);
+
+    // Cancel loop on Astro view transitions to avoid CPU drain on detached canvas
+    document.addEventListener('astro:before-swap', () => {
+      cancelAnimationFrame(rafId);
+    }, { once: true });
   })();
 
   // ── Accent color map ────────────────────────────────────────
@@ -256,17 +263,28 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     themes:     '170,170,255',
   };
 
+  /** Minimal HTML escape for injecting content into innerHTML templates. */
+  function esc(s: string): string {
+    return s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
   // ── Helpers ─────────────────────────────────────────────────
 
   /** Collect all files from a folder, recursing into subfolders. */
-  function getAllFiles(folder: NovelFolder): Array<{ file: NovelFile; breadcrumb: string }> {
-    const result: Array<{ file: NovelFile; breadcrumb: string }> = [];
+  function getAllFiles(folder: NovelFolder): Array<{ file: NovelFile; breadcrumb: string; subPath: string }> {
+    const result: Array<{ file: NovelFile; breadcrumb: string; subPath: string }> = [];
     for (const file of folder.files) {
-      result.push({ file, breadcrumb: folder.title });
+      result.push({ file, breadcrumb: folder.title, subPath: file.slug });
     }
     function recurse(sub: NovelFolder, parentBc: string) {
       for (const file of sub.files) {
-        result.push({ file, breadcrumb: `${parentBc} / ${sub.title}` });
+        // file.path is e.g. ['lore', 'magic-system', 'magic-overview']
+        // subPath is everything after the top-level folder slug
+        result.push({ file, breadcrumb: `${parentBc} / ${sub.title}`, subPath: file.path.slice(1).join('/') });
       }
       for (const nested of Object.values(sub.subfolders)) {
         recurse(nested, `${parentBc} / ${sub.title}`);
@@ -346,9 +364,9 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       panelName.textContent  = folder?.title ?? folderKey;
       panelCount.textContent = count === 1 ? '1 shard' : `${count} shards`;
 
-      panelList.innerHTML = allFiles.map(({ file, breadcrumb }) => {
+      panelList.innerHTML = allFiles.map(({ file, breadcrumb, subPath }) => {
         const safeData = encodeURIComponent(
-          JSON.stringify({ file, breadcrumb, folderKey })
+          JSON.stringify({ file, breadcrumb, folderKey, subPath })
         );
         const dateStr = file.modified || file.created || '';
         return `<div
@@ -358,8 +376,8 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
           tabindex="0"
           data-shard-encoded="${safeData}"
         >
-          <span class="shard-title">${file.title}</span>
-          <span class="shard-date">${dateStr}</span>
+          <span class="shard-title">${esc(file.title)}</span>
+          <span class="shard-date">${esc(dateStr)}</span>
         </div>`;
       }).join('');
 
@@ -412,12 +430,13 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
   // ── Reading overlay ─────────────────────────────────────────
 
   function openShardEncoded(encoded: string, pushState = true) {
-    const { file, breadcrumb, folderKey } = JSON.parse(decodeURIComponent(encoded)) as {
+    const { file, breadcrumb, folderKey, subPath } = JSON.parse(decodeURIComponent(encoded)) as {
       file: NovelFile;
       breadcrumb: string;
       folderKey: string;
+      subPath: string;
     };
-    openShard(folderKey, file.title, breadcrumb, file.created, file.modified, file.body, pushState, file.slug);
+    openShard(folderKey, file.title, breadcrumb, file.created, file.modified, file.body, pushState, subPath ?? file.slug);
   }
 
   function openShard(
@@ -452,7 +471,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     if (images.length > 0) {
       imagesEl.style.display = 'flex';
       imagesEl.innerHTML = images
-        .map((img) => `<img src="${img.src}" alt="${img.alt}">`)
+        .map((img) => `<img src="${esc(img.src)}" alt="${esc(img.alt)}">`)
         .join('');
     } else {
       imagesEl.style.display = 'none';
@@ -518,7 +537,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
         const { file } = JSON.parse(decodeURIComponent(encoded)) as {
           file: NovelFile; folderKey: string; breadcrumb: string;
         };
-        if (file.slug === state.fileSubPath) {
+        if ((file.path.slice(1).join('/') || file.slug) === state.fileSubPath) {
           openShardEncoded(encoded, false);
         }
       });
@@ -548,7 +567,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
             const { file } = JSON.parse(decodeURIComponent(encoded)) as {
               file: NovelFile; folderKey: string; breadcrumb: string;
             };
-            if (file.slug === initSubPath) {
+            if ((file.path.slice(1).join('/') || file.slug) === initSubPath) {
               openShardEncoded(encoded, false);
             }
           });
