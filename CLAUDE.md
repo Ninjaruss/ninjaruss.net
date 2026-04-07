@@ -81,13 +81,14 @@ The homepage uses a visual hierarchy pattern:
 
 Tile variants: `interactive` (default), `highlight` (gold bg), `dark`, `static`
 Sizes: `dominant` (2x2), `medium-wide` (2x1), `medium-tall` (1x2), `small` (1x1)
-Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--span-2x2`, `.bento-tile--span-2x1`
+Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--span-2x2`, `.bento-tile--span-2x1`, `.bento-tile--span-1x2`
 
 **Current Homepage Grid Pattern:**
-- Rows 1-2: Title (2×2) + YouTube Hero #1 (4×2)
-- Rows 3-4: Showcase (4×2, core) + Notes (2×2, core)
-- Row 5: Media (2×2, cont) + Latest (2×1) + Now (1×1) + Novel (1×2)
-- Row 6: Media (cont) + Favorites (1×1) + MAL Logo (1×1) + Spotify Logo (1×1) + Novel (cont)
+- Row 1: Title (4×1) + YouTube (1×1) + Now (1×1)
+- Rows 2-3: Showcase (3×2, core) + Notes (2×2, core) + Favorites (1×2)
+- Rows 4-5: Media (2×2, core) + Latest (2×1, row 4) + Novel (1×2) + MAL (1×1, row 4) + 2× decorative (1×1, row 5) + Spotify (1×1, row 5)
+
+Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title-tile { grid-column: span 4 }`), not a span class.
 
 ### List/Detail
 - `ListItem.astro` — Left panel items in SplitViewLayout
