@@ -308,7 +308,8 @@
     background 200ms cubic-bezier(0.16,1,0.3,1),
     border-color 200ms cubic-bezier(0.16,1,0.3,1),
     transform 200ms cubic-bezier(0.16,1,0.3,1),
-    filter 200ms ease;
+    filter 200ms ease,
+    opacity 200ms ease;
   will-change: transform, filter;
 }
 .memory-shard * {
@@ -374,7 +375,6 @@
   opacity: 0.72;
   padding-left: 1.4rem;
   clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
-  transition: opacity 200ms ease;
 }
 .memory-shard--sub::before {
   content: '◇';
