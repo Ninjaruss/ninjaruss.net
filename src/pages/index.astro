@@ -87,8 +87,8 @@ const latestEntries = sameDateEntries.map(entry => ({
 <BaseLayout title="Home" description="Fragments, media, and showcase.">
   <div class="container">
     <BentoGrid>
-      <!-- Row 1-2: Title Hero (2x2) + YouTube Hero #1 (4x2) -->
-      <div class="title-tile bento-tile--span-2x2 p3r-animate-left">
+      <!-- Row 1-2: Title (3x2) + YouTube (1x1) + empty cells (visual separator) -->
+      <div class="title-tile bento-tile--span-3x2 p3r-animate-left">
         <div class="title-tile__inner">
           <div class="title-tile__rule title-tile__rule--top" aria-hidden="true"></div>
           <span class="title-tile__name">Ninjaruss</span>
@@ -97,7 +97,7 @@ const latestEntries = sameDateEntries.map(entry => ({
         <p class="title-tile__description">Live without regret.</p>
       </div>
 
-      <div class="image-tile image-tile--youtube bento-tile--span-4x2 p3r-animate" style="--stagger-delay: 100ms;">
+      <div class="image-tile image-tile--youtube p3r-animate" style="--stagger-delay: 100ms;">
         <a href="https://www.youtube.com/@Ninjaruss_" target="_blank" rel="noopener noreferrer">
           <img
             src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FHCc3Ol7adcw%2Fmaxresdefault.jpg&f=1&nofb=1&ipt=3af1979f6b60ed9a8bb7f3ff02d25d81b2b98005b38c7a5b9f2bc4d6f8bb3aa9"
