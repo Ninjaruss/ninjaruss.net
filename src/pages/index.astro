@@ -198,7 +198,6 @@ const latestEntries = sameDateEntries.map(entry => ({
         variant="highlight"
         label="Now"
         title="Current Focus"
-        class="bento-tile--span-2x1"
         description="Where am I at right now?"
       >
         <span class="now-date" title={`Local: ${nowMonthYearLocal}`}>
@@ -207,6 +206,26 @@ const latestEntries = sameDateEntries.map(entry => ({
           {nowMonthYearLocal !== nowMonthYearUTC ? ` — ${nowMonthYearLocal} locally` : ''}
         </span>
       </BentoTile>
+
+      <!-- Novel tile — 1x2, auto-places at col 6 rows 5-6 -->
+      <a
+        href="/novel"
+        class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--interactive novel-tile"
+        id="novel-tile"
+        style="grid-column: span 1; grid-row: span 2;"
+      >
+        <div class="bento-tile__header">
+          <span class="bento-tile__label">Novel</span>
+          <h3 class="bento-tile__title">Remember Rain</h3>
+        </div>
+        <div class="bento-tile__footer">
+          <span
+            class="days-ago"
+            id="novel-days-ago"
+            data-novel-date={novelLastModifiedISO ?? ''}
+          ></span>
+        </div>
+      </a>
 
       <BentoTile
         href="/favorites"
@@ -247,42 +266,6 @@ const latestEntries = sameDateEntries.map(entry => ({
         <span class="logo-tile__label">Spotify</span>
         <p class="logo-tile__description">The bangers I listen to every day.</p>
       </a>
-
-      <!-- Novel tile — spans right 3 columns of the logo row -->
-      <a
-        href="/novel"
-        class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--interactive novel-tile"
-        id="novel-tile"
-        style="grid-column: span 1; grid-row: span 2;"
-      >
-        <div class="bento-tile__header">
-          <span class="bento-tile__label">Novel</span>
-          <h3 class="bento-tile__title">Remember Rain</h3>
-        </div>
-        <div class="bento-tile__footer">
-          <span
-            class="days-ago"
-            id="novel-days-ago"
-            data-novel-date={novelLastModifiedISO ?? ''}
-          ></span>
-        </div>
-      </a>
-
-      <!-- Row 7-8: YouTube Hero #2 (3x2) + Mini Tiles (2x1 each) -->
-      <div class="image-tile image-tile--youtube bento-tile--span-3x2 p3r-animate" style="--stagger-delay: 100ms;">
-        <a href="https://www.youtube.com/@kaima-mask" target="_blank" rel="noopener noreferrer">
-          <img
-            src="https://yt3.ggpht.com/1ThFXMWuqv4QV_DlxmGVxKgNNW6bWWSpETC5uEOleDcM_T07zT3xtueJ-fW1-SCQhgaXA7DtrQ=s600-c-k-c0x00ffffff-no-rj-rp-mo"
-            alt="Hero visual"
-            class="image-tile__img"
-          />
-          <div class="image-tile__youtube-overlay">
-            <svg class="image-tile__youtube-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-            </svg>
-          </div>
-        </a>
-      </div>
     </BentoGrid>
   </div>
 </BaseLayout>
