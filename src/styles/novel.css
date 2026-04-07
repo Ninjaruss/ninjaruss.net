@@ -287,25 +287,25 @@
   background: rgba(var(--panel-accent-rgb, 80,120,200), 0.18);
 }
 
-/* ══ Memory shards — glass fragment cards inside right panel ══ */
+/* ══ Memory shards — glass fragment tiles in the right panel ══ */
 /*
- * clip-path clips box-shadow, so we use filter:drop-shadow() for the hover
- * glow — it renders outside the clip boundary and follows the shard shape.
- * user-select:none + cursor:pointer on the element AND all children fixes
- * the text-select cursor that spans inherit by default.
+ * Shape: top-right corner is cut at 14px — clearly visible at any card height.
+ * clip-path clips box-shadow, so hover glow uses filter:drop-shadow() which
+ * renders outside the clip boundary and follows the shard outline.
+ * cursor/user-select applied to * so child <span>s don't show text cursor.
  */
 .memory-shard {
   position: relative;
-  padding: 0.85rem 1.2rem 0.85rem 1.1rem;
+  padding: 0.9rem 1.1rem 0.9rem 1rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.7rem;
   cursor: pointer;
   user-select: none;
-  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.08);
-  border: 1px solid rgba(var(--panel-accent-rgb, 80,120,200), 0.38);
-  /* Parallelogram shard — right edge leans in, clearly visible */
-  clip-path: polygon(0 0, 100% 5%, 100% 95%, 0 100%);
+  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.1);
+  border: 1px solid rgba(var(--panel-accent-rgb, 80,120,200), 0.45);
+  /* Cut top-right corner 14px — unmistakable glass shard shape */
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
   transition:
     background 200ms cubic-bezier(0.16,1,0.3,1),
     border-color 200ms cubic-bezier(0.16,1,0.3,1),
@@ -313,40 +313,50 @@
     filter 200ms ease;
   will-change: transform, filter;
 }
-/* Force pointer cursor on all child elements (spans default to text cursor) */
 .memory-shard * {
   cursor: pointer;
   user-select: none;
 }
+/* Glint line along the cut edge */
+.memory-shard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 14px;
+  width: 20px;
+  height: 1px;
+  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.5);
+  transform: rotate(45deg) translateX(7px) translateY(-3px);
+  pointer-events: none;
+}
 .memory-shard::before {
   content: '◈';
   font-size: 0.54rem;
-  opacity: 0.4;
+  opacity: 0.45;
   flex-shrink: 0;
   transition: opacity 200ms ease, transform 220ms cubic-bezier(0.16,1,0.3,1);
 }
 .memory-shard:hover {
-  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.18);
-  border-color: rgba(var(--panel-accent-rgb, 80,120,200), 0.75);
+  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.22);
+  border-color: rgba(var(--panel-accent-rgb, 80,120,200), 0.85);
   transform: translateX(5px);
-  /* drop-shadow works outside clip-path boundary — box-shadow does not */
-  filter: drop-shadow(-4px 0 10px rgba(var(--panel-accent-rgb, 80,120,200), 0.3));
+  filter: drop-shadow(-4px 0 10px rgba(var(--panel-accent-rgb, 80,120,200), 0.35));
 }
 .memory-shard:hover::before {
   opacity: 1;
-  transform: rotate(45deg) scale(1.25);
+  transform: rotate(45deg) scale(1.2);
 }
 .memory-shard:active {
-  transform: translateX(3px) scale(0.975);
-  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.26);
-  border-color: rgba(var(--panel-accent-rgb, 80,120,200), 0.9);
-  filter: drop-shadow(-2px 0 6px rgba(var(--panel-accent-rgb, 80,120,200), 0.4));
+  transform: translateX(3px) scale(0.97);
+  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.3);
+  border-color: rgba(var(--panel-accent-rgb, 80,120,200), 1);
+  filter: drop-shadow(-2px 0 6px rgba(var(--panel-accent-rgb, 80,120,200), 0.45));
   transition-duration: 60ms;
 }
 .memory-shard.is-clicked {
-  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.22);
-  border-color: rgba(var(--panel-accent-rgb, 80,120,200), 0.85);
-  filter: drop-shadow(-3px 0 12px rgba(var(--panel-accent-rgb, 80,120,200), 0.45));
+  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.25);
+  border-color: rgba(var(--panel-accent-rgb, 80,120,200), 0.9);
+  filter: drop-shadow(-3px 0 14px rgba(var(--panel-accent-rgb, 80,120,200), 0.5));
 }
 
 .shard-title {
@@ -355,6 +365,7 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   line-height: 1.3;
+  pointer-events: none;
 }
 
 /* ══ Full-screen reading overlay ══ */
