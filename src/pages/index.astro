@@ -87,8 +87,8 @@ const latestEntries = sameDateEntries.map(entry => ({
 <BaseLayout title="Home" description="Fragments, media, and showcase.">
   <div class="container">
     <BentoGrid>
-      <!-- Row 1-2: Title (3x2) + YouTube (1x1) + empty cells (visual separator) -->
-      <div class="title-tile bento-tile--span-3x2 p3r-animate-left">
+      <!-- Row 1: Title (4×1) + YouTube (1×1) + Now (1×1) -->
+      <div class="title-tile p3r-animate-left">
         <div class="title-tile__inner">
           <div class="title-tile__rule title-tile__rule--top" aria-hidden="true"></div>
           <span class="title-tile__name">Ninjaruss</span>
@@ -112,7 +112,22 @@ const latestEntries = sameDateEntries.map(entry => ({
         </a>
       </div>
 
-      <!-- Row 3-4: Showcase (4x2) + Notes (2x2) -->
+      <!-- Now tile — row 1 col 6 -->
+      <BentoTile
+        href="/now"
+        variant="highlight"
+        label="Now"
+        title="Current Focus"
+        description="Where am I at right now?"
+      >
+        <span class="now-date" title={`Local: ${nowMonthYearLocal}`}>
+          <span class="now-dot" aria-hidden="true"></span>
+          {nowMonthYearUTC}
+          {nowMonthYearLocal !== nowMonthYearUTC ? ` — ${nowMonthYearLocal} locally` : ''}
+        </span>
+      </BentoTile>
+
+      <!-- Rows 2-3: Showcase (3×2) + Notes (2×2) + Favorites (1×2) -->
       <BentoTile
         href="/showcase"
         variant="highlight"
@@ -120,7 +135,7 @@ const latestEntries = sameDateEntries.map(entry => ({
         label="Showcase"
         title="What I'm Building"
         description="Stuff I've created and that I am currently working on."
-        class="bento-tile--core bento-tile--span-4x2 showcase-tile"
+        class="bento-tile--core bento-tile--span-3x2 showcase-tile"
       >
         {recentShowcase.length > 0 && (
           <div class="tile-emblems tile-emblems--highlight">
@@ -142,7 +157,16 @@ const latestEntries = sameDateEntries.map(entry => ({
         class="bento-tile--core bento-tile--span-2x2 notes-tile"
       />
 
-      <!-- Row 5-6: Media (2x2) + Latest (2x1) + Now (1x1) + Novel (1x2) + Favs + MAL + Spotify -->
+      <BentoTile
+        href="/favorites"
+        variant="dark"
+        label="Favorites"
+        title="Inspirations"
+        description="My favorite characters, series, and soundtracks."
+        class="bento-tile--span-1x2"
+      />
+
+      <!-- Rows 4-5: Media (2×2) + Latest (2×1) + Novel (1×2) + MAL/Spotify (stacked 1×1) -->
       <BentoTile
         href="/media"
         variant="dark"
@@ -192,27 +216,11 @@ const latestEntries = sameDateEntries.map(entry => ({
         </a>
       )}
 
-      <!-- Now Tile -->
-      <BentoTile
-        href="/now"
-        variant="highlight"
-        label="Now"
-        title="Current Focus"
-        description="Where am I at right now?"
-      >
-        <span class="now-date" title={`Local: ${nowMonthYearLocal}`}>
-          <span class="now-dot" aria-hidden="true"></span>
-          {nowMonthYearUTC}
-          {nowMonthYearLocal !== nowMonthYearUTC ? ` — ${nowMonthYearLocal} locally` : ''}
-        </span>
-      </BentoTile>
-
-      <!-- Novel tile — 1x2, auto-places at col 6 rows 5-6 -->
+      <!-- Novel tile — 1×2 -->
       <a
         href="/novel"
-        class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--interactive novel-tile"
+        class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--interactive bento-tile--span-1x2 novel-tile"
         id="novel-tile"
-        style="grid-column: span 1; grid-row: span 2;"
       >
         <div class="bento-tile__header">
           <span class="bento-tile__label">Novel</span>
@@ -226,14 +234,6 @@ const latestEntries = sameDateEntries.map(entry => ({
           ></span>
         </div>
       </a>
-
-      <BentoTile
-        href="/favorites"
-        variant="dark"
-        label="Favorites"
-        title="Inspirations"
-        description="My favorite characters, series, and soundtracks."
-      />
 
       <a
         href="https://myanimelist.net/animelist/Ninjaruss_?status=7&order=4&order2=0"
@@ -250,6 +250,10 @@ const latestEntries = sameDateEntries.map(entry => ({
         <span class="logo-tile__label">MyAnimeList</span>
         <p class="logo-tile__description">Anime I've watched and rated based on personal enjoyment.</p>
       </a>
+
+      <!-- Row 5 decorative fillers (cols 3-4) -->
+      <div class="bento-tile bento-tile--static" aria-hidden="true"></div>
+      <div class="bento-tile bento-tile--static" aria-hidden="true"></div>
 
       <a
         href="https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD?si=2b68cabcfc26451c"
@@ -412,7 +416,7 @@ const latestEntries = sameDateEntries.map(entry => ({
     border: var(--border-thick) solid var(--color-gold);
     border-radius: var(--radius-lg);
     padding: var(--space-md);
-    grid-column: span 2;
+    grid-column: span 4;
     grid-row: span 1;
     box-shadow:
       var(--shadow-glow),
