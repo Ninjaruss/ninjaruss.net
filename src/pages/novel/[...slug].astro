@@ -264,17 +264,26 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
   };
 
   // ── Shard shape pool ────────────────────────────────────────
-  // 8 irregular clip-path polygons — different fracture patterns.
+  // 8 irregular clip-path polygons — visibly different fracture patterns.
+  // Cuts are 20–28px so they're clearly legible at tile height (~42–46px).
   // clip-path is applied inline per shard via shapeIndex().
   const SHARD_SHAPES: string[] = [
-    'polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%)',
-    'polygon(0 0, 100% 0, 100% 100%, 14px 100%, 0 calc(100% - 12px))',
-    'polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
-    'polygon(0 4px, 100% 0, 100% calc(100% - 4px), 0 100%)',
-    'polygon(10px 0, calc(100% - 8px) 0, 100% 10px, 100% 100%, 0 100%, 0 8px)',
-    'polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%)',
-    'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%)',
-    'polygon(10px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 10px)',
+    // A: top-right cut (24px) + bottom-left nick (10px)
+    'polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
+    // B: bottom-right cut (22px) + top-left nick (8px)
+    'polygon(8px 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%, 0 8px)',
+    // C: top-left + top-right both cut, asymmetric (14px / 20px)
+    'polygon(14px 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%, 0 14px)',
+    // D: parallelogram — top shifted right by 10px, bottom shifted left by 10px
+    'polygon(0 10px, calc(100% - 2px) 0, 100% calc(100% - 10px), 2px 100%)',
+    // E: top-right cut only, large (26px) — clean single-slash shard
+    'polygon(0 0, calc(100% - 26px) 0, 100% 26px, 100% 100%, 0 100%)',
+    // F: bottom two corners cut, both 20px — V-notch bottom
+    'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 20px 100%, 0 calc(100% - 20px))',
+    // G: top-right (26px) + bottom-right continuation (12px) — serrated right edge
+    'polygon(0 0, calc(100% - 26px) 0, 100% 26px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%)',
+    // H: three-cut complex — top-right (18px), bottom-right (14px), bottom-left (12px)
+    'polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 12px 100%, 0 calc(100% - 12px))',
   ];
 
   /** Deterministic index into SHARD_SHAPES derived from a file slug. */
@@ -411,22 +420,23 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       panelName.textContent  = folder?.title ?? folderKey;
       panelCount.textContent = count === 1 ? '1 shard' : `${count} shards`;
 
+      let shardIndex = 0;
       panelList.innerHTML = groups.map((group) => {
         const header = group.label
           ? `<div class="shard-subfolder-label" style="--panel-accent-rgb:${rgb};">${esc(group.label)}</div>`
           : '';
         const isSubGroup = group.label !== null;
         const shards = group.entries.map(({ file, breadcrumb, subPath }) => {
+          const i = shardIndex++;
           const safeData = encodeURIComponent(
             JSON.stringify({ file, breadcrumb, folderKey, subPath })
           );
           const shardClass = isSubGroup ? 'memory-shard memory-shard--sub' : 'memory-shard';
-          const clipStyle = isSubGroup
-            ? ''
-            : `clip-path:${SHARD_SHAPES[shapeIndex(file.slug, SHARD_SHAPES.length)]};`;
+          // All shards get a shape from the pool — sub-shards included
+          const clipStyle = `clip-path:${SHARD_SHAPES[shapeIndex(file.slug, SHARD_SHAPES.length)]};`;
           return `<div
             class="${shardClass}"
-            style="color:rgba(${rgb},0.95); --panel-accent-rgb:${rgb}; ${clipStyle}"
+            style="--panel-accent-rgb:${rgb}; --shard-i:${i}; ${clipStyle}"
             role="button"
             tabindex="0"
             data-shard-encoded="${safeData}"
@@ -638,6 +648,6 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
   }
 </script>
 
-<style>
+<style is:global>
   @import '../../styles/novel.css';
 </style>

@@ -257,18 +257,20 @@
 .shard-panel-list {
   flex: 1;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 0.6rem 0.65rem 0.6rem 0.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+  gap: 7px;
+  padding: 0.65rem;
   scrollbar-width: thin;
   scrollbar-color: rgba(80,120,200,0.2) transparent;
 }
 .shard-panel-list::-webkit-scrollbar { width: 2px; }
 .shard-panel-list::-webkit-scrollbar-thumb { background: rgba(80,120,200,0.25); }
 
-/* ══ Subfolder group label ══ */
+/* ══ Subfolder group label — spans full grid width ══ */
 .shard-subfolder-label {
+  grid-column: 1 / -1;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.52rem;
   letter-spacing: 0.22em;
@@ -292,92 +294,137 @@
  * Shape: top-right corner is cut at 14px — clearly visible at any card height.
  * clip-path clips box-shadow, so hover glow uses filter:drop-shadow() which
  * renders outside the clip boundary and follows the shard outline.
+ * Glint is inset box-shadow (clip-path trims it to the shard outline — correct).
+ * ::after is reserved for the shimmer sweep animation on hover.
  * cursor/user-select applied to * so child <span>s don't show text cursor.
  */
+
+@keyframes shard-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes shard-sweep {
+  from { left: -70%; opacity: 0.9; }
+  to   { left: 130%; opacity: 0; }
+}
+
 .memory-shard {
   position: relative;
-  padding: 0.9rem 1.1rem 0.9rem 1rem;
+  padding: 1.1rem 0.8rem 1rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.7rem;
+  justify-content: center;
+  text-align: center;
+  min-height: 78px;
+  gap: 0.35rem;
   cursor: pointer;
   user-select: none;
-  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.1);
-  border: 1px solid rgba(var(--panel-accent-rgb, 80,120,200), 0.45);
+  overflow: hidden;
+  /*
+   * Glass: translucent frosted surface.
+   * backdrop-filter blurs what's behind (rain canvas) for a frosted-glass look.
+   * Background is mostly transparent — the shape itself (clip-path) is what
+   * makes it read as a shard. Accent color appears only in the border/edge.
+   */
+  backdrop-filter: blur(6px) brightness(1.15);
+  -webkit-backdrop-filter: blur(6px) brightness(1.15);
+  background-color: rgba(255,255,255, 0.07);
+  background-image: linear-gradient(
+    155deg,
+    rgba(255,255,255, 0.1) 0%,
+    rgba(255,255,255, 0.04) 45%,
+    transparent 100%
+  );
+  /* Colored glass edge — distinguishes folder category */
+  border: 1px solid rgba(var(--panel-accent-rgb, 180,210,255), 0.45);
+  /* Top specular highlight (light on glass face) + grounded shadow below */
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255, 0.5),
+    0 3px 12px rgba(0,0,0,0.45);
   transition:
-    background 200ms cubic-bezier(0.16,1,0.3,1),
+    background-color 200ms cubic-bezier(0.16,1,0.3,1),
     border-color 200ms cubic-bezier(0.16,1,0.3,1),
+    box-shadow 200ms cubic-bezier(0.16,1,0.3,1),
     transform 200ms cubic-bezier(0.16,1,0.3,1),
     filter 200ms ease,
     opacity 200ms ease;
   will-change: transform, filter;
+  animation: shard-in 320ms cubic-bezier(0.16,1,0.3,1) both;
+  animation-delay: calc(var(--shard-i, 0) * 40ms);
 }
 .memory-shard * {
   cursor: pointer;
   user-select: none;
 }
-/* Top-edge glint — works across all shard polygon shapes */
+
+/* White light-sweep on hover — like a light source passing across glass */
 .memory-shard::after {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0; height: 1px;
+  top: 0; left: -70%;
+  width: 50%; height: 100%;
   background: linear-gradient(
-    to right,
-    transparent,
-    rgba(var(--panel-accent-rgb, 80,120,200), 0.4) 20%,
-    rgba(var(--panel-accent-rgb, 80,120,200), 0.6) 50%,
-    rgba(var(--panel-accent-rgb, 80,120,200), 0.4) 80%,
-    transparent
+    90deg,
+    transparent 0%,
+    rgba(255,255,255, 0.12) 50%,
+    transparent 100%
   );
   pointer-events: none;
+  opacity: 0;
 }
-.memory-shard::before {
-  content: '◈';
-  font-size: 0.54rem;
-  opacity: 0.45;
-  flex-shrink: 0;
-  transition: opacity 200ms ease, transform 220ms cubic-bezier(0.16,1,0.3,1);
-}
+
+/* No ::before icon */
+.memory-shard::before { display: none; }
+
 .memory-shard:hover {
-  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.22);
-  border-color: rgba(var(--panel-accent-rgb, 80,120,200), 0.85);
-  transform: translateX(5px);
-  filter: drop-shadow(-4px 0 10px rgba(var(--panel-accent-rgb, 80,120,200), 0.35));
+  background-color: rgba(255,255,255, 0.12);
+  border-color: rgba(var(--panel-accent-rgb, 180,210,255), 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255, 0.75),
+    0 10px 28px rgba(0,0,0,0.6);
+  transform: translateY(-4px) scale(1.03);
+  /* Soft shadow beneath — glass casting a shadow, not glowing */
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,0.5));
 }
-.memory-shard:hover::before {
-  opacity: 1;
-  transform: rotate(45deg) scale(1.2);
+.memory-shard:hover::after {
+  animation: shard-sweep 480ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
 .memory-shard:active {
-  transform: translateX(3px) scale(0.97);
-  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.3);
-  border-color: rgba(var(--panel-accent-rgb, 80,120,200), 1);
-  filter: drop-shadow(-2px 0 6px rgba(var(--panel-accent-rgb, 80,120,200), 0.45));
+  transform: translateY(1px) scale(0.975);
+  background-color: rgba(255,255,255, 0.15);
+  border-color: rgba(var(--panel-accent-rgb, 180,210,255), 1);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255, 0.6),
+    0 1px 5px rgba(0,0,0,0.3);
   transition-duration: 60ms;
 }
 .memory-shard.is-clicked {
-  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.25);
-  border-color: rgba(var(--panel-accent-rgb, 80,120,200), 0.9);
-  filter: drop-shadow(-3px 0 14px rgba(var(--panel-accent-rgb, 80,120,200), 0.5));
+  background-color: rgba(255,255,255, 0.13);
+  border-color: rgba(var(--panel-accent-rgb, 180,210,255), 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255, 0.65),
+    0 6px 18px rgba(0,0,0,0.5);
 }
 
 .shard-title {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   line-height: 1.3;
+  text-align: center;
+  color: rgba(255,255,255, 0.88);
+  cursor: pointer;
+  user-select: none;
   pointer-events: none;
 }
 
-/* ══ Subfolder shards — subdued, simpler shape, hollow icon ══ */
+/* ══ Subfolder shards — same glass look, slightly subdued ══ */
 .memory-shard--sub {
-  opacity: 0.72;
-  padding-left: 1.4rem;
-  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
-}
-.memory-shard--sub::before {
-  content: '◇';
+  opacity: 0.7;
 }
 .memory-shard--sub:hover {
   opacity: 1;
@@ -525,8 +572,10 @@
   .folder-list.has-open .folder-cluster .cluster-face,
   .memory-shard,
   .memory-shard::before,
+  .memory-shard::after,
   .memory-shard--sub {
     transition: none;
+    animation: none;
   }
 }
 
