@@ -81,7 +81,7 @@ The homepage uses a visual hierarchy pattern:
 
 Tile variants: `interactive` (default), `highlight` (gold bg), `dark`, `static`
 Sizes: `dominant` (2x2), `medium-wide` (2x1), `medium-tall` (1x2), `small` (1x1)
-Span classes: `.bento-tile--span-3x2`, `.bento-tile--span-2x2`, `.bento-tile--span-2x1`
+Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--span-2x2`, `.bento-tile--span-2x1`
 
 **Current Homepage Grid Pattern:**
 - Rows 1-2: Title (2×2) + YouTube Hero #1 (4×2)
