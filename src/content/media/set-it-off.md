@@ -3,6 +3,7 @@ title: "Set It Off"
 tags: ["peak"]
 emblem: "/images/media/set-it-off.jpg"
 content_type: "music"
+publishedAt: 2026-04-08
 isFavorite: true
 ---
 ## I don't think I've truly leaned into edgy teenager vibes until I found Set It Off...
