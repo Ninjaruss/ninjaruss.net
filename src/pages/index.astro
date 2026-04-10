@@ -44,6 +44,14 @@ const recentMedia = media
   .slice(0, 2)
   .map(e => ({ href: `/media/${e.slug}`, emblem: e.data.emblem ?? DEFAULT_EMBLEM, title: e.data.title }));
 
+const recentNotes = notes
+  .filter(e => e.data.publishedAt)
+  .sort((a, b) => effectiveDate(b) - effectiveDate(a))
+  .slice(0, 3)
+  .map(e => ({ href: `/notes/${e.slug}`, title: e.data.title }));
+
+const favoritesCount = media.filter(e => e.data.isFavorite).length;
+
 // Find the most recently published/updated content
 const allContent = [...notes, ...media, ...showcase];
 const sorted = allContent.sort((a, b) => effectiveDate(b) - effectiveDate(a));
