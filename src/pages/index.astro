@@ -163,7 +163,23 @@ const latestEntries = sameDateEntries.map(entry => ({
         title="Reflections"
         description="An assortment of ideas I've been thinking about."
         class="bento-tile--core bento-tile--span-2x2 notes-tile"
-      />
+      >
+        {recentNotes.length > 0 && (
+          <div class="tile-notes-list">
+            {recentNotes.map(entry => (
+              <div
+                class="tile-note-link"
+                data-href={entry.href}
+                role="link"
+                tabindex="0"
+                title={entry.title}
+              >
+                {entry.title}
+              </div>
+            ))}
+          </div>
+        )}
+      </BentoTile>
 
       <BentoTile
         href="/favorites"
@@ -566,6 +582,41 @@ const latestEntries = sameDateEntries.map(entry => ({
     );
     pointer-events: none;
     z-index: 0;
+  }
+
+  /* Notes tile fragment list */
+  .tile-notes-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .tile-note-link {
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+    color: rgba(255, 229, 44, 0.5);
+    padding: var(--space-xs) 0;
+    border-top: 1px solid rgba(255, 229, 44, 0.08);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    transition: color var(--transition-fast);
+  }
+
+  .tile-note-link::before {
+    content: '→ ';
+    opacity: 0.6;
+  }
+
+  .tile-note-link:hover {
+    color: var(--color-gold);
+  }
+
+  .tile-note-link:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 
   /* ─── Media Tile ──────────────────────────────────────── */
