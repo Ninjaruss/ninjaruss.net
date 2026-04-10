@@ -202,6 +202,14 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     }));
 
     let rafId = 0;
+    let cleanedUp = false;
+
+    function cleanup() {
+      if (cleanedUp) return;
+      cleanedUp = true;
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', resize);
+    }
 
     function draw() {
       ctx.clearRect(0, 0, w, h);
@@ -250,10 +258,8 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     }
     rafId = requestAnimationFrame(draw);
 
-    // Cancel loop on Astro view transitions to avoid CPU drain on detached canvas
-    document.addEventListener('astro:before-swap', () => {
-      cancelAnimationFrame(rafId);
-    }, { once: true });
+    // Cancel loop and remove resize listener on Astro view transitions
+    document.addEventListener('astro:before-swap', cleanup, { once: true });
   })();
 
   // ── Accent color map ────────────────────────────────────────
@@ -595,7 +601,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
   (window as any).__novelCloseReading = () => closeReading();
 
   // ── popstate — browser back/forward ────────────────────────
-  window.addEventListener('popstate', (e) => {
+  function handlePopstate(e: PopStateEvent) {
     const state = e.state as { folderSlug: string | null; fileSubPath: string | null } | null;
 
     // Always close reading overlay on navigation
@@ -632,16 +638,32 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
         }
       });
     }
-  });
+  }
+  window.addEventListener('popstate', handlePopstate);
+  // Clean up on Astro view transition so listeners don't accumulate across revisits
+  document.addEventListener('astro:before-swap', () => {
+    window.removeEventListener('popstate', handlePopstate);
+  }, { once: true });
 
   // ── Initial state from server-rendered URL props ────────────
   const page = document.querySelector('.novel-page') as HTMLElement;
   const initFolder  = page.dataset.initialFolder  || null;
   const initSubPath = page.dataset.initialSubpath || null;
 
+  // ── Mouse-tracking light hotspot on shards ──────────────────
+  // Updates --shard-gx / --shard-gy so the radial gradient follows the cursor.
+  document.getElementById('shard-panel-list')!.addEventListener('mousemove', (e) => {
+    const shardEl = (e.target as Element).closest<HTMLElement>('.memory-shard');
+    if (!shardEl) return;
+    const rect = shardEl.getBoundingClientRect();
+    shardEl.style.setProperty('--shard-gx', ((e.clientX - rect.left) / rect.width * 100).toFixed(1) + '%');
+    shardEl.style.setProperty('--shard-gy', ((e.clientY - rect.top) / rect.height * 100).toFixed(1) + '%');
+  });
+
   if (initFolder) {
+    // Merge with Astro's ClientRouter state so back/forward transitions remain intact
     history.replaceState(
-      { folderSlug: initFolder, fileSubPath: initSubPath ?? null },
+      { ...(history.state ?? {}), folderSlug: initFolder, fileSubPath: initSubPath ?? null },
       '',
       window.location.pathname
     );
@@ -665,7 +687,8 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       }
     });
   } else {
-    history.replaceState({ folderSlug: null, fileSubPath: null }, '', '/novel');
+    // Merge with Astro's ClientRouter state so back/forward transitions remain intact
+    history.replaceState({ ...(history.state ?? {}), folderSlug: null, fileSubPath: null }, '', '/novel');
   }
 </script>
 
