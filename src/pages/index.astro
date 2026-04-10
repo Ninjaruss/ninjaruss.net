@@ -1039,7 +1039,7 @@ const latestEntries = sameDateEntries.map(entry => ({
 
   // Emblem click navigation — handles data-href elements inside <a> tiles
   function initializeEmblemLinks() {
-    document.querySelectorAll<HTMLElement>('.tile-emblem[data-href]').forEach(el => {
+    document.querySelectorAll<HTMLElement>('.tile-emblem[data-href], .tile-note-link[data-href]').forEach(el => {
       el.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
