@@ -150,6 +150,8 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
 </BaseLayout>
 
 <script>
+  import VanillaTilt from 'vanilla-tilt';
+
   // Types inline — do NOT import from novel.ts (it uses Node fs, unsafe in client scripts)
   interface NovelFile {
     slug: string; title: string; body: string;
@@ -408,9 +410,15 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       currentFolderSlug = folderKey;
 
       // Style panel with folder accent
+      panel.style.setProperty('--panel-accent-rgb', rgb);
       panel.style.borderColor     = `rgba(${rgb}, 0.35)`;
       panel.style.backgroundColor = `rgba(${rgb}, 0.025)`;
       panelName.style.color       = `rgba(${rgb}, 0.85)`;
+
+      // Destroy VanillaTilt instances before replacing innerHTML
+      panelList.querySelectorAll<HTMLElement>('.memory-shard').forEach((el) => {
+        (el as any).vanillaTilt?.destroy();
+      });
 
       // Populate panel
       const folder = tree[folderKey];
@@ -446,6 +454,19 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
         }).join('');
         return header + shards;
       }).join('');
+
+      // Init VanillaTilt on freshly rendered shards
+      VanillaTilt.init(
+        Array.from(panelList.querySelectorAll<HTMLElement>('.memory-shard')),
+        {
+          max: 12,
+          speed: 400,
+          glare: true,
+          'max-glare': 0.22,
+          scale: 1.05,
+          gyroscope: true,
+        }
+      );
 
       panel.classList.add('is-visible');
 

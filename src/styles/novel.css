@@ -233,23 +233,40 @@
   pointer-events: auto;
 }
 
+/* Panel header — accent bar on the left edge + gradient wash */
 .shard-panel-header {
-  padding: 0.85rem 1.2rem 0.75rem;
-  border-bottom: 1px solid rgba(80,120,200,0.1);
+  padding: 0.9rem 1.2rem 0.8rem 1.4rem;
+  border-bottom: 1px solid rgba(var(--panel-accent-rgb, 80,120,200), 0.14);
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
+  position: relative;
+  background: linear-gradient(
+    to right,
+    rgba(var(--panel-accent-rgb, 80,120,200), 0.07),
+    transparent 65%
+  );
+}
+/* Vertical accent bar on the left */
+.shard-panel-header::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 22%; bottom: 22%;
+  width: 2px;
+  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.75);
+  box-shadow: 0 0 8px rgba(var(--panel-accent-rgb, 80,120,200), 0.5);
+  border-radius: 1px;
 }
 .shard-panel-name {
-  font-size: 0.78rem;
-  letter-spacing: 0.18em;
+  font-size: 0.82rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   font-family: 'JetBrains Mono', monospace;
 }
 .shard-panel-count {
-  font-size: 0.65rem;
-  letter-spacing: 0.08em;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
   opacity: 0.5;
   font-family: 'JetBrains Mono', monospace;
 }
@@ -260,33 +277,52 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-content: start;
-  gap: 7px;
-  padding: 0.65rem;
+  gap: 8px;
+  padding: 0.75rem;
   scrollbar-width: thin;
   scrollbar-color: rgba(80,120,200,0.2) transparent;
 }
 .shard-panel-list::-webkit-scrollbar { width: 2px; }
 .shard-panel-list::-webkit-scrollbar-thumb { background: rgba(80,120,200,0.25); }
 
-/* ══ Subfolder group label — spans full grid width ══ */
+/* ══ Subfolder group label — accent bar + glowing divider line ══ */
 .shard-subfolder-label {
   grid-column: 1 / -1;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.52rem;
-  letter-spacing: 0.22em;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(var(--panel-accent-rgb, 80,120,200), 0.45);
-  padding: 0.9rem 0.4rem 0.3rem;
+  color: rgba(var(--panel-accent-rgb, 80,120,200), 0.9);
+  padding: 1rem 0.5rem 0.4rem;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.65rem;
   user-select: none;
+  margin-top: 0.2rem;
 }
+/* Left accent bar — glowing, like a shard edge catching light */
+.shard-subfolder-label::before {
+  content: '';
+  flex-shrink: 0;
+  width: 2px;
+  height: 0.85em;
+  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.9);
+  box-shadow:
+    0 0 6px rgba(var(--panel-accent-rgb, 80,120,200), 0.7),
+    0 0 12px rgba(var(--panel-accent-rgb, 80,120,200), 0.3);
+  border-radius: 1px;
+}
+/* Right fade-out divider */
 .shard-subfolder-label::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.18);
+  background: linear-gradient(
+    to right,
+    rgba(var(--panel-accent-rgb, 80,120,200), 0.4),
+    rgba(var(--panel-accent-rgb, 80,120,200), 0.12) 55%,
+    transparent
+  );
 }
 
 /* ══ Memory shards — glass fragment tiles in the right panel ══ */
@@ -323,32 +359,43 @@
   user-select: none;
   overflow: hidden;
   /*
-   * Glass: translucent frosted surface.
-   * backdrop-filter blurs what's behind (rain canvas) for a frosted-glass look.
-   * Background is mostly transparent — the shape itself (clip-path) is what
-   * makes it read as a shard. Accent color appears only in the border/edge.
+   * Glass: 3D frosted shard.
+   * backdrop-filter creates the frosted depth behind the shard face.
+   * Dynamic radial gradient (--shard-gx / --shard-gy) simulates a light
+   * hotspot that tracks the mouse — updated by JS on mousemove.
+   * Static diagonal gradient is the ambient glass sheen.
+   * JS applies perspective() + rotateX/Y inline for the 3D tilt.
    */
-  backdrop-filter: blur(6px) brightness(1.15);
-  -webkit-backdrop-filter: blur(6px) brightness(1.15);
-  background-color: rgba(255,255,255, 0.07);
-  background-image: linear-gradient(
-    155deg,
-    rgba(255,255,255, 0.1) 0%,
-    rgba(255,255,255, 0.04) 45%,
-    transparent 100%
-  );
+  backdrop-filter: blur(8px) brightness(1.18) saturate(1.25);
+  -webkit-backdrop-filter: blur(8px) brightness(1.18) saturate(1.25);
+  background-color: rgba(255,255,255, 0.065);
+  background-image:
+    radial-gradient(
+      circle at var(--shard-gx, 30%) var(--shard-gy, 25%),
+      rgba(255,255,255, 0.17) 0%,
+      rgba(255,255,255, 0.07) 38%,
+      transparent 62%
+    ),
+    linear-gradient(
+      155deg,
+      rgba(255,255,255, 0.12) 0%,
+      rgba(255,255,255, 0.04) 42%,
+      transparent 100%
+    );
   /* Colored glass edge — distinguishes folder category */
-  border: 1px solid rgba(var(--panel-accent-rgb, 180,210,255), 0.45);
-  /* Top specular highlight (light on glass face) + grounded shadow below */
+  border: 1px solid rgba(var(--panel-accent-rgb, 180,210,255), 0.42);
+  /* Top specular (light catches the rim) + bottom grounding shadow + thin inner shadow for thickness */
   box-shadow:
     inset 0 1px 0 rgba(255,255,255, 0.5),
-    0 3px 12px rgba(0,0,0,0.45);
+    inset 0 -1px 0 rgba(0,0,0, 0.2),
+    0 4px 16px rgba(0,0,0, 0.5),
+    0 1px 3px rgba(0,0,0, 0.3);
   transition:
-    background-color 200ms cubic-bezier(0.16,1,0.3,1),
-    border-color 200ms cubic-bezier(0.16,1,0.3,1),
-    box-shadow 200ms cubic-bezier(0.16,1,0.3,1),
-    transform 200ms cubic-bezier(0.16,1,0.3,1),
-    filter 200ms ease,
+    background-color 220ms cubic-bezier(0.16,1,0.3,1),
+    border-color 220ms cubic-bezier(0.16,1,0.3,1),
+    box-shadow 220ms cubic-bezier(0.16,1,0.3,1),
+    transform 300ms cubic-bezier(0.16,1,0.3,1),
+    filter 220ms ease,
     opacity 200ms ease;
   will-change: transform, filter;
   animation: shard-in 320ms cubic-bezier(0.16,1,0.3,1) both;
@@ -379,14 +426,18 @@
 .memory-shard::before { display: none; }
 
 .memory-shard:hover {
-  background-color: rgba(255,255,255, 0.12);
-  border-color: rgba(var(--panel-accent-rgb, 180,210,255), 0.85);
+  background-color: rgba(255,255,255, 0.11);
+  border-color: rgba(var(--panel-accent-rgb, 180,210,255), 0.9);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255, 0.75),
-    0 10px 28px rgba(0,0,0,0.6);
-  transform: translateY(-4px) scale(1.03);
-  /* Soft shadow beneath — glass casting a shadow, not glowing */
-  filter: drop-shadow(0 6px 14px rgba(0,0,0,0.5));
+    inset 0 1px 0 rgba(255,255,255, 0.8),
+    inset 0 -1px 0 rgba(0,0,0, 0.15),
+    0 14px 36px rgba(0,0,0, 0.65),
+    0 2px 8px rgba(0,0,0, 0.4);
+  /* JS controls the transform (perspective + rotateX/Y + translateY + scale) */
+  /* Colored edge halo — light refracting through glass thickness */
+  filter:
+    drop-shadow(0 10px 22px rgba(0,0,0, 0.6))
+    drop-shadow(0 0 8px rgba(var(--panel-accent-rgb, 180,210,255), 0.3));
 }
 .memory-shard:hover::after {
   animation: shard-sweep 480ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
@@ -420,6 +471,9 @@
   cursor: pointer;
   user-select: none;
   pointer-events: none;
+  /* Stay above VanillaTilt's injected .js-tilt-glare div */
+  position: relative;
+  z-index: 1;
 }
 
 /* ══ Subfolder shards — same glass look, slightly subdued ══ */
