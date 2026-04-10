@@ -188,7 +188,12 @@ const latestEntries = sameDateEntries.map(entry => ({
         title="Inspirations"
         description="My favorite characters, series, and soundtracks."
         class="bento-tile--span-1x2"
-      />
+      >
+        <div class="tile-favorites-count">
+          <span class="tile-favorites-count__num">{favoritesCount}</span>
+          <span class="tile-favorites-count__label">curated<br />entries</span>
+        </div>
+      </BentoTile>
 
       <!-- Rows 4-5: Media (2×2) + Latest (2×1) + Novel (1×2) + MAL/Spotify (stacked 1×1) -->
       <BentoTile
@@ -617,6 +622,34 @@ const latestEntries = sameDateEntries.map(entry => ({
     outline: 2px solid var(--color-gold);
     outline-offset: 2px;
     border-radius: 2px;
+  }
+
+  /* Favorites tile count display */
+  .tile-favorites-count {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .tile-favorites-count__num {
+    font-family: var(--font-mono);
+    font-size: 2rem;
+    font-weight: 700;
+    color: rgba(255, 229, 44, 0.35);
+    line-height: 1;
+    transition: color var(--transition-fast);
+  }
+
+  .bento-tile:hover .tile-favorites-count__num {
+    color: rgba(255, 229, 44, 0.6);
+  }
+
+  .tile-favorites-count__label {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    line-height: 1.4;
   }
 
   /* ─── Media Tile ──────────────────────────────────────── */
