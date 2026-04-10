@@ -279,10 +279,6 @@
   align-content: start;
   gap: 8px;
   padding: 0.75rem;
-  /* CSS perspective establishes the 3D depth context for child rotateX/Y transforms.
-     This works correctly even with overflow-y:auto and child clip-path. */
-  perspective: 800px;
-  perspective-origin: 50% 50%;
   scrollbar-width: thin;
   scrollbar-color: rgba(80,120,200,0.2) transparent;
 }
@@ -403,7 +399,7 @@
     box-shadow 220ms cubic-bezier(0.16,1,0.3,1),
     filter 220ms ease,
     opacity 200ms ease;
-  animation: shard-in 320ms cubic-bezier(0.16,1,0.3,1) both;
+  animation: shard-in 320ms cubic-bezier(0.16,1,0.3,1) backwards;
   animation-delay: calc(var(--shard-i, 0) * 40ms);
 }
 .memory-shard * {

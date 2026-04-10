@@ -150,6 +150,8 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
 </BaseLayout>
 
 <script>
+  import VanillaTilt from 'vanilla-tilt';
+
   // ── Types (module-level) ─────────────────────────────────────
   interface NovelFile {
     slug: string; title: string; body: string;
@@ -315,16 +317,6 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     // ── Folder cluster interaction ─────────────────────────────
     let currentFolderSlug: string | null = null;
 
-    // Tracks the currently-tilted shard so we can reset it when the mouse
-    // leaves or a new folder is opened. Scoped to init() so toggleFolder and
-    // the tilt handler share the same reference.
-    let prevShard: HTMLElement | null = null;
-
-    function resetTilt(el: HTMLElement) {
-      el.style.transition = 'transform 400ms cubic-bezier(0.16,1,0.3,1)';
-      el.style.transform = '';
-    }
-
     function toggleFolder(clusterEl: HTMLElement, pushState = true) {
       if (clusterEl.classList.contains('empty')) return;
 
@@ -350,9 +342,6 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
         panel.style.backgroundColor = `rgba(${rgb}, 0.025)`;
         panelName.style.color       = `rgba(${rgb}, 0.85)`;
 
-        // Reset any active tilt before wiping innerHTML
-        if (prevShard) { prevShard.style.transform = ''; prevShard = null; }
-
         const folder = tree[folderKey];
         const groups = folder ? getGroupedFiles(folder) : [];
         const count  = groups.reduce((n, g) => n + g.entries.length, 0);
@@ -375,6 +364,12 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
           }).join('');
           return header + shards;
         }).join('');
+
+        VanillaTilt.init(panelList.querySelectorAll<HTMLElement>('.memory-shard'), {
+          max: 15, speed: 300, scale: 1.04,
+          glare: true, 'max-glare': 0.25,
+          gyroscope: false,
+        });
 
         panel.classList.add('is-visible');
 
@@ -522,45 +517,19 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     }
     window.addEventListener('popstate', handlePopstate);
 
-    // ── 3D tilt + glass hotspot — event delegation on shard list ──
-    // CSS perspective on .shard-panel-list provides the depth context.
-    // rotateX/Y is applied directly inline; no VanillaTilt needed.
-    // The light hotspot (--shard-gx/gy) drives the radial gradient in CSS.
+    // ── Glass light-hotspot — delegated mousemove on shard list ──
+    // VanillaTilt handles the 3D tilt; we only need to track cursor position
+    // for the CSS radial gradient hotspot (--shard-gx/gy).
     const panelListEl = document.getElementById('shard-panel-list')!;
 
     panelListEl.addEventListener('mousemove', (e) => {
       const shard = (e.target as Element).closest<HTMLElement>('.memory-shard');
-
-      // Reset the previous shard when the mouse moves to a different shard
-      if (prevShard && prevShard !== shard) {
-        resetTilt(prevShard);
-        prevShard = null;
-      }
-
       if (!shard) return;
-
-      // First entry on this shard: remove transition so tilt tracks instantly
-      if (prevShard !== shard) {
-        prevShard = shard;
-        shard.style.transition = 'none';
-      }
-
       const rect = shard.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;   // 0..1 left→right
-      const y = (e.clientY - rect.top)  / rect.height;  // 0..1 top→bottom
-
-      // Update CSS light hotspot
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top)  / rect.height;
       shard.style.setProperty('--shard-gx', (x * 100).toFixed(1) + '%');
       shard.style.setProperty('--shard-gy', (y * 100).toFixed(1) + '%');
-
-      // Apply 3D tilt — max ±12 degrees on each axis
-      const tiltX = ((0.5 - y) * 24).toFixed(2);
-      const tiltY = ((x - 0.5) * 24).toFixed(2);
-      shard.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.04)`;
-    });
-
-    panelListEl.addEventListener('mouseleave', () => {
-      if (prevShard) { resetTilt(prevShard); prevShard = null; }
     });
 
     // ── Tear down window listeners before next navigation ─────
