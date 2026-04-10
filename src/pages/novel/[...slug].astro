@@ -72,50 +72,29 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       <span class="title-eyebrow">a novel in progress · memory shards</span>
     </div>
 
-    <!-- Two-panel navigator -->
-    <div class="navigator">
+    <!-- Category filter tabs -->
+    <div class="filter-tabs" id="filter-tabs">
+      {Object.values(novelTree).map((folder) => {
+        function countFiles(f: typeof folder): number {
+          return f.files.length + Object.values(f.subfolders).reduce((n, s) => n + countFiles(s), 0);
+        }
+        const count = countFiles(folder);
+        return (
+          <button
+            class="filter-tab"
+            data-folder={folder.slug}
+            type="button"
+            aria-pressed="false"
+          >
+            {folder.title}
+            {count > 0 && <span class="tab-count">{count}</span>}
+          </button>
+        );
+      })}
+    </div>
 
-      <!-- Left: folder cluster list -->
-      <div class="folder-list" id="folder-list">
-        {Object.values(novelTree).map((folder) => {
-          function countFiles(f: typeof folder): number {
-            return f.files.length + Object.values(f.subfolders).reduce((n, s) => n + countFiles(s), 0);
-          }
-          const totalFiles = countFiles(folder);
-          const isEmpty = totalFiles === 0;
-          return (
-            <div
-              class={`folder-cluster${isEmpty ? ' empty' : ''}`}
-              data-folder={folder.slug}
-              role={isEmpty ? undefined : 'button'}
-              tabindex={isEmpty ? undefined : 0}
-              aria-label={isEmpty ? undefined : `Open ${folder.title}`}
-            >
-              <div class="cluster-face">
-                <span class="cluster-name">
-                  {folder.title}
-                </span>
-                <span class="cluster-meta">
-                  {isEmpty
-                    ? 'no shards yet'
-                    : `${totalFiles} ${totalFiles === 1 ? 'shard' : 'shards'}`}
-                </span>
-              </div>
-            </div>
-          );
-        })}
-      </div><!-- /folder-list -->
-
-      <!-- Right: shard panel (populated by JS) -->
-      <div class="shard-panel" id="shard-panel">
-        <div class="shard-panel-header">
-          <span class="shard-panel-name" id="shard-panel-name"></span>
-          <span class="shard-panel-count" id="shard-panel-count"></span>
-        </div>
-        <div class="shard-panel-list" id="shard-panel-list"></div>
-      </div><!-- /shard-panel -->
-
-    </div><!-- /navigator -->
+    <!-- Scatter canvas: populated entirely by JS -->
+    <div class="scatter-canvas" id="scatter-canvas"></div>
   </main>
 
   <!-- Full-screen reading overlay -->
