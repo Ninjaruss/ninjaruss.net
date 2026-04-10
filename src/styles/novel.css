@@ -218,7 +218,7 @@
 .shard-panel {
   border: 1px solid rgba(80,120,200,0.1);
   background: rgba(80,120,200,0.02);
-  clip-path: polygon(0 0, 100% 0.3%, 99.8% 99.8%, 0.1% 100%);
+  /* No clip-path here — it creates a stacking context that flattens 3D child transforms */
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -279,6 +279,10 @@
   align-content: start;
   gap: 8px;
   padding: 0.75rem;
+  /* CSS perspective establishes the 3D depth context for child rotateX/Y transforms.
+     This works correctly even with overflow-y:auto and child clip-path. */
+  perspective: 800px;
+  perspective-origin: 50% 50%;
   scrollbar-width: thin;
   scrollbar-color: rgba(80,120,200,0.2) transparent;
 }
@@ -364,7 +368,10 @@
    * Dynamic radial gradient (--shard-gx / --shard-gy) simulates a light
    * hotspot that tracks the mouse — updated by JS on mousemove.
    * Static diagonal gradient is the ambient glass sheen.
-   * JS applies perspective() + rotateX/Y inline for the 3D tilt.
+   * JS applies rotateX/Y inline for the 3D tilt (perspective comes from
+   * .shard-panel-list — keeps transforms compatible with child clip-path).
+   * No will-change:transform — compositor promotion interferes with the
+   * parent CSS perspective property.
    */
   backdrop-filter: blur(8px) brightness(1.18) saturate(1.25);
   -webkit-backdrop-filter: blur(8px) brightness(1.18) saturate(1.25);
@@ -396,7 +403,6 @@
     box-shadow 220ms cubic-bezier(0.16,1,0.3,1),
     filter 220ms ease,
     opacity 200ms ease;
-  will-change: transform, filter;
   animation: shard-in 320ms cubic-bezier(0.16,1,0.3,1) both;
   animation-delay: calc(var(--shard-i, 0) * 40ms);
 }
