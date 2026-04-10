@@ -572,11 +572,16 @@ const latestEntries = sameDateEntries.map(entry => ({
     );
   }
 
-  /* Slightly larger emblems */
+  /* Larger emblems centered in filled footer area */
   .media-tile .tile-emblem {
+    width: 96px;
+    height: 96px;
+    border: 2px solid var(--color-gold-dim);
+  }
+
+  .showcase-tile .tile-emblem {
     width: 80px;
     height: 80px;
-    border: 2px solid var(--color-gold-dim);
   }
 
   /* ─── Now Tile ────────────────────────────────────────── */
