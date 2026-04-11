@@ -74,3 +74,31 @@ describe('buildNovelTree', () => {
     expect(tree.characters.files[0].path).toEqual(['characters', 'rain']);
   });
 });
+
+// hashSlug — deterministic hash used for scatter positioning
+describe('hashSlug', () => {
+  // Inline the same algorithm used in the client script
+  function hashSlug(slug: string): number {
+    let h = 0;
+    for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) >>> 0;
+    return h;
+  }
+
+  it('returns a non-negative integer', () => {
+    expect(hashSlug('rain')).toBeGreaterThanOrEqual(0);
+    expect(Number.isInteger(hashSlug('rain'))).toBe(true);
+  });
+
+  it('is deterministic', () => {
+    expect(hashSlug('vesper')).toBe(hashSlug('vesper'));
+  });
+
+  it('produces different values for different slugs', () => {
+    expect(hashSlug('rain')).not.toBe(hashSlug('vesper'));
+  });
+
+  it('handles empty string without throwing', () => {
+    expect(() => hashSlug('')).not.toThrow();
+    expect(hashSlug('')).toBe(0);
+  });
+});
