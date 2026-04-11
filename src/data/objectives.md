@@ -1,3 +1,7 @@
+---
+publishedAt: 2026-04-11
+---
+
 ## Japanese
 - [ ] Daily Anki reviews (kanji + vocab)
 - [ ] Work through Bunpro N4 grammar

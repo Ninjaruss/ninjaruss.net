@@ -26,11 +26,13 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
 });
 
 // Load objectives billboard
-const objectivesPath = join(process.cwd(), 'src/content/now/objectives.md');
+const objectivesPath = join(process.cwd(), 'src/data/objectives.md');
 const objectivesSections = existsSync(objectivesPath)
   ? parseObjectives(readFileSync(objectivesPath, 'utf-8'))
   : null;
 
+// Month label for the billboard header — uses the latest now entry's month.
+// objectives.md should be updated in the same month as the now entry.
 const objectivesMonth = latestPost.data.publishedAt.toLocaleDateString('en-US', {
   timeZone: 'UTC',
   month: 'long',
