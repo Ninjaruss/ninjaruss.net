@@ -230,6 +230,60 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
   }
 
   /**
+   * Push overlapping shard positions apart until no two shards overlap.
+   * Mutates the `pos` objects in-place. Runs at most `maxIter` passes.
+   */
+  function resolveOverlaps(
+    positions: Array<{ x: number; y: number }>,
+    shardW: number,
+    shardH: number,
+    canvasW: number,
+    canvasH: number
+  ): void {
+    const pad    = 14;            // extra breathing room (accounts for rotation)
+    const minDX  = shardW + pad;
+    const minDY  = shardH + pad;
+    const marginX       = 60;
+    const marginYTop    = 16;
+    const marginYBottom = 40;
+    const maxX = canvasW - shardW - marginX;
+    const maxY = canvasH - shardH - marginYBottom;
+
+    for (let iter = 0; iter < 120; iter++) {
+      let moved = false;
+      for (let i = 0; i < positions.length; i++) {
+        for (let j = i + 1; j < positions.length; j++) {
+          const dx = positions[j].x - positions[i].x;
+          const dy = positions[j].y - positions[i].y;
+          const overlapX = minDX - Math.abs(dx);
+          const overlapY = minDY - Math.abs(dy);
+          if (overlapX <= 0 || overlapY <= 0) continue;   // no overlap
+
+          moved = true;
+          // Separate along the axis of smallest overlap (least-effort push)
+          if (overlapX < overlapY) {
+            const push = overlapX / 2;
+            const sign = dx >= 0 ? 1 : -1;
+            positions[i].x -= push * sign;
+            positions[j].x += push * sign;
+          } else {
+            const push = overlapY / 2;
+            const sign = dy >= 0 ? 1 : -1;
+            positions[i].y -= push * sign;
+            positions[j].y += push * sign;
+          }
+          // Clamp both to canvas bounds
+          positions[i].x = Math.max(marginX, Math.min(maxX, positions[i].x));
+          positions[j].x = Math.max(marginX, Math.min(maxX, positions[j].x));
+          positions[i].y = Math.max(marginYTop, Math.min(maxY, positions[i].y));
+          positions[j].y = Math.max(marginYTop, Math.min(maxY, positions[j].y));
+        }
+      }
+      if (!moved) break;
+    }
+  }
+
+  /**
    * Populate the scatter canvas with shards for the given folder.
    * Clears existing content first. Does NOT animate — caller handles animation.
    */
@@ -248,33 +302,53 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     const shardW = 200;
     const shardH = 128;
 
-    let idx = 0;
+    // ── Phase 1: collect all shard data + initial positions ──────────
+    type ShardEntry = {
+      file: NovelFile; breadcrumb: string; subPath: string;
+      groupLabel: string | null;
+      pos: { x: number; y: number; rotation: number };
+      clip: string;
+    };
+    const entries: ShardEntry[] = [];
     for (const group of groups) {
       for (const { file, breadcrumb, subPath } of group.entries) {
-        const pos = shardPosition(file.slug, canvasRect.width, canvasRect.height, shardW, shardH);
-        const safeData = encodeURIComponent(JSON.stringify({ file, breadcrumb, folderKey, subPath }));
-        const clip = SHARD_SHAPES[shapeIndex(file.slug, SHARD_SHAPES.length)];
-
-        const el = document.createElement('div');
-        el.className = 'memory-shard';
-        el.setAttribute('role', 'button');
-        el.setAttribute('tabindex', '0');
-        el.dataset.shardEncoded = safeData;
-        // Use CSS `rotate` property (not transform) so VanillaTilt's inline `transform` doesn't clobber the rotation
-        el.style.left = `${pos.x}px`;
-        el.style.top  = `${pos.y}px`;
-        el.style.rotate = `${pos.rotation}deg`;
-        el.style.setProperty('--panel-accent-rgb', rgb);
-        el.style.setProperty('--shard-i', String(idx));
-        el.style.clipPath = clip;
-
-        el.innerHTML = group.label
-          ? `<span class="shard-subfolder">${esc(group.label)}</span><span class="shard-title">${esc(file.title)}</span>`
-          : `<span class="shard-title">${esc(file.title)}</span>`;
-        canvas.appendChild(el);
-        idx++;
+        entries.push({
+          file, breadcrumb, subPath,
+          groupLabel: group.label ?? null,
+          pos: shardPosition(file.slug, canvasRect.width, canvasRect.height, shardW, shardH),
+          clip: SHARD_SHAPES[shapeIndex(file.slug, SHARD_SHAPES.length)],
+        });
       }
     }
+
+    // ── Phase 2: resolve overlaps ────────────────────────────────────
+    resolveOverlaps(
+      entries.map((e) => e.pos),   // pos objects are shared references — mutated in place
+      shardW, shardH, canvasRect.width, canvasRect.height
+    );
+
+    // ── Phase 3: build DOM ───────────────────────────────────────────
+    entries.forEach(({ file, breadcrumb, subPath, groupLabel, pos, clip }, idx) => {
+      const safeData = encodeURIComponent(JSON.stringify({ file, breadcrumb, folderKey, subPath }));
+
+      const el = document.createElement('div');
+      el.className = 'memory-shard';
+      el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
+      el.dataset.shardEncoded = safeData;
+      // Use CSS `rotate` property (not transform) so VanillaTilt's inline `transform` doesn't clobber the rotation
+      el.style.left = `${pos.x}px`;
+      el.style.top  = `${pos.y}px`;
+      el.style.rotate = `${pos.rotation}deg`;
+      el.style.setProperty('--panel-accent-rgb', rgb);
+      el.style.setProperty('--shard-i', String(idx));
+      el.style.clipPath = clip;
+
+      el.innerHTML = groupLabel
+        ? `<span class="shard-subfolder">${esc(groupLabel)}</span><span class="shard-title">${esc(file.title)}</span>`
+        : `<span class="shard-title">${esc(file.title)}</span>`;
+      canvas.appendChild(el);
+    });
 
     // Re-initialize VanillaTilt on newly inserted shards
     VanillaTilt.init(canvas.querySelectorAll<HTMLElement>('.memory-shard'), {
