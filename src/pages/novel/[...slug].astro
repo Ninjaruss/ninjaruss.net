@@ -282,6 +282,15 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     });
   }
 
+  function decodeShard(encoded: string): { file: NovelFile; breadcrumb: string; folderKey: string; subPath: string } | null {
+    try {
+      return JSON.parse(decodeURIComponent(encoded));
+    } catch {
+      console.warn('[novel] malformed shard data', encoded);
+      return null;
+    }
+  }
+
   /**
    * Delegated mousemove handler on the scatter canvas.
    * Updates --shard-gx/gy on the hovered shard for the light hotspot effect.
@@ -377,6 +386,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     pushState = true
   ): void {
     const overlay    = document.getElementById('reading-overlay')!;
+    if (overlay.classList.contains('is-open')) return;
     const shardDiv   = document.getElementById('reading-shard')!;
     const imagesEl   = document.getElementById('reading-images')!;
     const titleEl    = document.getElementById('reading-title')!;
@@ -509,10 +519,9 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     canvas.addEventListener('click', (e) => {
       const shardEl = (e.target as Element).closest<HTMLElement>('.memory-shard');
       if (!shardEl?.dataset.shardEncoded) return;
-      const { file, breadcrumb, folderKey, subPath } = JSON.parse(
-        decodeURIComponent(shardEl.dataset.shardEncoded)
-      ) as { file: NovelFile; breadcrumb: string; folderKey: string; subPath: string };
-      openShard(folderKey, file, breadcrumb, subPath, shardEl);
+      const data = decodeShard(shardEl.dataset.shardEncoded);
+      if (!data) return;
+      openShard(data.folderKey, data.file, data.breadcrumb, data.subPath, shardEl);
     });
 
     canvas.addEventListener('keydown', (e) => {
@@ -520,10 +529,9 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       const shardEl = (e.target as Element).closest<HTMLElement>('.memory-shard');
       if (!shardEl?.dataset.shardEncoded) return;
       e.preventDefault();
-      const { file, breadcrumb, folderKey, subPath } = JSON.parse(
-        decodeURIComponent(shardEl.dataset.shardEncoded)
-      ) as { file: NovelFile; breadcrumb: string; folderKey: string; subPath: string };
-      openShard(folderKey, file, breadcrumb, subPath, shardEl);
+      const data = decodeShard(shardEl.dataset.shardEncoded);
+      if (!data) return;
+      openShard(data.folderKey, data.file, data.breadcrumb, data.subPath, shardEl);
     });
 
     // Initial folder — auto-select first non-empty folder
