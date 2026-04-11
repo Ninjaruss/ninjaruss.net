@@ -1,6 +1,6 @@
 /* ============================================================
    Novel Page — Remember Rain
-   Two-panel frosted glass navigator + reading overlay
+   Scatter canvas navigator + clip-path reading overlay
    ============================================================ */
 
 /* ══ Background canvas ══ */
@@ -177,11 +177,6 @@
  * cursor/user-select applied to * so child <span>s don't show text cursor.
  */
 
-@keyframes shard-in {
-  from { opacity: 0; transform: translateY(6px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
 @keyframes shard-sweep {
   from { left: -70%; opacity: 0.9; }
   to   { left: 130%; opacity: 0; }
@@ -207,7 +202,7 @@
    * hotspot that tracks the mouse — updated by JS on mousemove.
    * Static diagonal gradient is the ambient glass sheen.
    * JS applies rotateX/Y inline for the 3D tilt (perspective comes from
-   * .shard-panel-list — keeps transforms compatible with child clip-path).
+   * the .scatter-canvas container — keeps transforms compatible with child clip-path).
    * No will-change:transform — compositor promotion interferes with the
    * parent CSS perspective property.
    */
