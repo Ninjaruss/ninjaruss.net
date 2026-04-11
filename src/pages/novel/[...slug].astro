@@ -245,8 +245,8 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     const rgb = ACCENT_MAP[folderKey] || '80,120,200';
     const groups = getGroupedFiles(folder);
     const canvasRect = canvas.getBoundingClientRect();
-    const shardW = 110;
-    const shardH = 56;
+    const shardW = 200;
+    const shardH = 128;
 
     let idx = 0;
     for (const group of groups) {
