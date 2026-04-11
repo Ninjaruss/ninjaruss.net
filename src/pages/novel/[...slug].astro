@@ -268,7 +268,9 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
         el.style.setProperty('--shard-i', String(idx));
         el.style.clipPath = clip;
 
-        el.innerHTML = `<span class="shard-title">${esc(file.title)}</span>`;
+        el.innerHTML = group.label
+          ? `<span class="shard-subfolder">${esc(group.label)}</span><span class="shard-title">${esc(file.title)}</span>`
+          : `<span class="shard-title">${esc(file.title)}</span>`;
         canvas.appendChild(el);
         idx++;
       }
