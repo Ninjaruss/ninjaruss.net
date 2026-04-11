@@ -1,0 +1,147 @@
+---
+import type { ObjectiveSection } from '../utils/objectives';
+
+interface Props {
+  sections: ObjectiveSection[];
+  month: string;
+}
+
+const { sections, month } = Astro.props;
+---
+
+<details class="objectives">
+  <summary class="objectives__toggle">
+    <span class="objectives__icon" aria-hidden="true">◈</span>
+    <span class="objectives__label">{month} Objectives</span>
+    <span class="objectives__chevron" aria-hidden="true">▾</span>
+  </summary>
+
+  <div class="objectives__grid">
+    {sections.map((section) => (
+      <div class="objectives__card">
+        <div class="objectives__card-label">{section.heading}</div>
+        <ul class="objectives__list">
+          {section.items.map((item) => (
+            <li class={`objectives__item${item.done ? ' objectives__item--done' : ''}`}>
+              <span class="objectives__bullet" aria-hidden="true">·</span>
+              {item.text}
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</details>
+
+<style>
+  .objectives {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .objectives__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    cursor: pointer;
+    list-style: none;
+    padding: var(--space-xs) var(--space-md) var(--space-xs) 0;
+    border: none;
+    background: none;
+    user-select: none;
+  }
+
+  /* Remove default triangle in WebKit */
+  .objectives__toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .objectives__icon {
+    color: var(--color-gold-dim);
+    font-size: 0.85em;
+  }
+
+  .objectives__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  .objectives__chevron {
+    color: var(--color-gold-dim);
+    font-size: 0.8em;
+    transition: transform 200ms var(--animation-easing);
+  }
+
+  details[open] .objectives__chevron {
+    transform: rotate(180deg);
+  }
+
+  .objectives__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+    padding-top: var(--space-md);
+  }
+
+  .objectives__card {
+    background: var(--color-bg-elevated);
+    border: var(--border-hairline) solid rgba(255, 229, 44, 0.1);
+    border-radius: var(--radius-sm);
+    padding: var(--space-md);
+  }
+
+  .objectives__card-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: var(--space-sm);
+  }
+
+  .objectives__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .objectives__item {
+    display: flex;
+    gap: var(--space-xs);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: var(--leading-snug);
+  }
+
+  .objectives__bullet {
+    color: var(--color-gold-dim);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .objectives__item--done {
+    color: var(--color-text-subtle);
+    text-decoration: line-through;
+  }
+
+  .objectives__item--done .objectives__bullet {
+    color: var(--color-text-subtle);
+  }
+
+  @media (max-width: 480px) {
+    .objectives__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .objectives__chevron {
+      transition: none;
+    }
+  }
+</style>
