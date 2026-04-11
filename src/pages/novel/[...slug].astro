@@ -224,8 +224,8 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     const rangeX = Math.max(canvasW - shardW - marginX * 2, 1);
     const rangeY = Math.max(canvasH - shardH - marginYTop - marginYBottom, 1);
     const x = marginX + (h % rangeX);
-    const y = marginYTop + ((h >> 8) % rangeY);
-    const rotation = ((h >> 16) % 17) - 8;   // −8° to +8°
+    const y = marginYTop + ((h >>> 8) % rangeY);
+    const rotation = ((h >>> 16) % 17) - 8;   // −8° to +8°
     return { x, y, rotation };
   }
 
@@ -234,6 +234,9 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
    * Clears existing content first. Does NOT animate — caller handles animation.
    */
   function renderScatter(folderKey: string, tree: NovelTree, canvas: HTMLElement): void {
+    canvas.querySelectorAll<HTMLElement>('.memory-shard').forEach((el) => {
+      (el as HTMLElement & { vanillaTilt?: { destroy(): void } }).vanillaTilt?.destroy();
+    });
     canvas.innerHTML = '';
 
     const folder = tree[folderKey];
