@@ -50,8 +50,12 @@ const { sections, month } = Astro.props;
     user-select: none;
   }
 
-  /* Remove default triangle in WebKit */
+  /* Remove default disclosure triangle across all browsers */
   .objectives__toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .objectives__toggle::marker {
     display: none;
   }
 
@@ -87,7 +91,7 @@ const { sections, month } = Astro.props;
 
   .objectives__card {
     background: var(--color-bg-elevated);
-    border: var(--border-hairline) solid rgba(255, 229, 44, 0.1);
+    border: var(--border-hairline) solid rgba(255, 229, 44, var(--opacity-subtle));
     border-radius: var(--radius-sm);
     padding: var(--space-md);
   }
