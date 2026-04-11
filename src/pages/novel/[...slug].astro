@@ -633,20 +633,22 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       }
 
       // Switch to folder (no history push — this IS the popstate handler)
-      if (currentFolderSlug !== state.folderSlug) {
-        switchFolder(state.folderSlug, tree, canvas, false);
-      }
+      const folderSwitchPromise = (currentFolderSlug !== state.folderSlug)
+        ? switchFolder(state.folderSlug, tree, canvas, false)
+        : Promise.resolve();
 
-      // Re-open shard if fileSubPath is in state
+      // Re-open shard if fileSubPath is in state — must wait for folder shards to render
       if (state.fileSubPath) {
-        // Find the shard element matching the subPath
-        requestAnimationFrame(() => {
-          canvas.querySelectorAll<HTMLElement>('.memory-shard[data-shard-encoded]').forEach((el) => {
-            const data = decodeShard(el.dataset.shardEncoded!);
-            if (!data) return;
-            if ((data.file.path.slice(1).join('/') || data.file.slug) === state.fileSubPath) {
-              openShard(data.folderKey, data.file, data.breadcrumb, data.subPath, el, false);
-            }
+        const targetSubPath = state.fileSubPath;
+        folderSwitchPromise.then(() => {
+          requestAnimationFrame(() => {
+            canvas.querySelectorAll<HTMLElement>('.memory-shard[data-shard-encoded]').forEach((el) => {
+              const data = decodeShard(el.dataset.shardEncoded!);
+              if (!data) return;
+              if ((data.file.path.slice(1).join('/') || data.file.slug) === targetSubPath) {
+                openShard(data.folderKey, data.file, data.breadcrumb, data.subPath, el, false);
+              }
+            });
           });
         });
       }
