@@ -365,6 +365,124 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     }
   }
 
+  // Stored so closeReading can contract back to the shard's origin position
+  let _openRect: { top: number; right: number; bottom: number; left: number } | null = null;
+
+  function openShard(
+    folderKey: string,
+    file: NovelFile,
+    breadcrumb: string,
+    subPath: string,
+    shardEl: HTMLElement,
+    pushState = true
+  ): void {
+    const overlay    = document.getElementById('reading-overlay')!;
+    const shardDiv   = document.getElementById('reading-shard')!;
+    const imagesEl   = document.getElementById('reading-images')!;
+    const titleEl    = document.getElementById('reading-title')!;
+    const bodyEl     = document.getElementById('reading-body')!;
+    const rgb        = ACCENT_MAP[folderKey] || '80,120,200';
+
+    // Populate content
+    overlay.style.setProperty('--overlay-accent-rgb', rgb);
+    shardDiv.style.borderColor = `rgba(${rgb},0.4)`;
+    document.getElementById('reading-breadcrumb')!.textContent = breadcrumb;
+    titleEl.textContent  = file.title;
+    titleEl.style.color  = `rgba(${rgb},1)`;
+    document.getElementById('reading-date')!.textContent = formatDate(file.created, file.modified);
+
+    const div  = document.createElement('div');
+    div.innerHTML = file.body;
+    const imgs   = Array.from(div.querySelectorAll('img'));
+    const images = imgs.map((img) => ({ src: img.getAttribute('src') || '', alt: img.getAttribute('alt') || '' }));
+    imgs.forEach((img) => img.remove());
+    bodyEl.innerHTML = div.innerHTML;
+
+    if (images.length > 0) {
+      imagesEl.style.display  = 'flex';
+      imagesEl.innerHTML = images.map((img) => `<img src="${esc(img.src)}" alt="${esc(img.alt)}">`).join('');
+    } else {
+      imagesEl.style.display  = 'none';
+      imagesEl.innerHTML = '';
+    }
+
+    // Capture shard rect relative to viewport for clip-path start point
+    const rect   = shardEl.getBoundingClientRect();
+    const top    = rect.top;
+    const right  = window.innerWidth  - rect.right;
+    const bottom = window.innerHeight - rect.bottom;
+    const left   = rect.left;
+    _openRect    = { top, right, bottom, left };
+
+    // Set initial clip-path to shard rect, hide reading content
+    shardDiv.style.opacity    = '0';
+    shardDiv.style.transition = 'none';
+    overlay.style.clipPath    = `inset(${top}px ${right}px ${bottom}px ${left}px)`;
+    overlay.style.transition  = 'none';
+    overlay.classList.add('is-open');
+    overlay.querySelector('.reading-content')!.scrollTop = 0;
+
+    // Two rAF frames ensure the initial clip-path is painted before animating
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        overlay.style.transition = 'clip-path 280ms ease-out';
+        overlay.style.clipPath   = 'inset(0px)';
+
+        setTimeout(() => {
+          shardDiv.style.transition = 'opacity 150ms ease';
+          shardDiv.style.opacity    = '1';
+        }, 260);
+      });
+    });
+
+    if (pushState && currentFolderSlug) {
+      history.pushState(
+        { folderSlug: currentFolderSlug, fileSubPath: subPath ?? file.slug },
+        '',
+        `/novel/${currentFolderSlug}/${subPath ?? file.slug}`
+      );
+    }
+  }
+
+  function closeReading(pushState = true): void {
+    const overlay  = document.getElementById('reading-overlay')!;
+    const shardDiv = document.getElementById('reading-shard')!;
+
+    // Fade content out first
+    shardDiv.style.transition = 'opacity 100ms ease';
+    shardDiv.style.opacity    = '0';
+
+    setTimeout(() => {
+      if (_openRect) {
+        const { top, right, bottom, left } = _openRect;
+        overlay.style.transition = 'clip-path 250ms ease-in';
+        overlay.style.clipPath   = `inset(${top}px ${right}px ${bottom}px ${left}px)`;
+        setTimeout(() => {
+          overlay.classList.remove('is-open');
+          overlay.style.clipPath    = '';
+          overlay.style.transition  = '';
+          shardDiv.style.opacity    = '';
+          shardDiv.style.transition = '';
+          _openRect = null;
+        }, 260);
+      } else {
+        overlay.classList.remove('is-open');
+        shardDiv.style.opacity    = '';
+        shardDiv.style.transition = '';
+      }
+
+      if (pushState && currentFolderSlug) {
+        history.pushState(
+          { folderSlug: currentFolderSlug, fileSubPath: null },
+          '',
+          `/novel/${currentFolderSlug}`
+        );
+      }
+    }, 110);
+  }
+
+  (window as any).__novelCloseReading = () => closeReading();
+
   function init() {
     const treeEl = document.getElementById('novel-tree');
     if (!treeEl) return;
@@ -388,11 +506,24 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       switchFolder(tab.dataset.folder, tree, canvas);
     });
 
-    // Shard click/keydown — placeholder; openShard added in Task 6
     canvas.addEventListener('click', (e) => {
       const shardEl = (e.target as Element).closest<HTMLElement>('.memory-shard');
       if (!shardEl?.dataset.shardEncoded) return;
-      // openShard wired in Task 6
+      const { file, breadcrumb, folderKey, subPath } = JSON.parse(
+        decodeURIComponent(shardEl.dataset.shardEncoded)
+      ) as { file: NovelFile; breadcrumb: string; folderKey: string; subPath: string };
+      openShard(folderKey, file, breadcrumb, subPath, shardEl);
+    });
+
+    canvas.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const shardEl = (e.target as Element).closest<HTMLElement>('.memory-shard');
+      if (!shardEl?.dataset.shardEncoded) return;
+      e.preventDefault();
+      const { file, breadcrumb, folderKey, subPath } = JSON.parse(
+        decodeURIComponent(shardEl.dataset.shardEncoded)
+      ) as { file: NovelFile; breadcrumb: string; folderKey: string; subPath: string };
+      openShard(folderKey, file, breadcrumb, subPath, shardEl);
     });
 
     // Initial folder — auto-select first non-empty folder
