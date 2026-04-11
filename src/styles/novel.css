@@ -321,7 +321,8 @@
   display: flex;
   align-items: stretch;
   pointer-events: none;
-  /* clip-path set by JS to animate expand from shard rect */
+  /* Collapsed by default — JS overrides clip-path to animate expand from shard rect */
+  clip-path: inset(100%);
 }
 
 .reading-overlay.is-open {
