@@ -498,8 +498,81 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     if (!treeEl) return;
 
     const tree: NovelTree = JSON.parse(treeEl.textContent!);
-    const canvas = document.getElementById('scatter-canvas')!;
 
+    // ── Rain canvas ──────────────────────────────────────────────────
+    (function () {
+      const canvas = document.getElementById('bg-canvas') as HTMLCanvasElement | null;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d')!;
+      let w = 0, h = 0;
+
+      function resize() {
+        w = canvas!.width  = window.innerWidth;
+        h = canvas!.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const towers = Array.from({ length: 16 }, (_, i) => ({
+        x: (i / 15) * 1.1 - 0.05,
+        height: 0.2 + Math.random() * 0.4,
+        width: 0.4 + Math.random() * 1.8,
+        opacity: 0.025 + Math.random() * 0.035,
+      }));
+      const struts = Array.from({ length: 5 }, () => ({
+        y: 0.45 + Math.random() * 0.45,
+        opacity: 0.015 + Math.random() * 0.015,
+      }));
+      const drops = Array.from({ length: 110 }, () => ({
+        x: Math.random(), y: Math.random(),
+        speed: (1.8 + Math.random() * 2.2) / 800,
+        len: (7 + Math.random() * 16) / 800,
+        opacity: 0.07 + Math.random() * 0.18,
+        lean: -0.035 + Math.random() * 0.02,
+      }));
+
+      let rafId = 0;
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+        const grd = ctx.createRadialGradient(w * 0.5, h * 0.92, 0, w * 0.5, h * 0.65, h * 0.7);
+        grd.addColorStop(0, 'rgba(180,75,15,0.08)');
+        grd.addColorStop(0.5, 'rgba(140,55,10,0.04)');
+        grd.addColorStop(1, 'transparent');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, w, h);
+
+        towers.forEach((t) => {
+          ctx.fillStyle = `rgba(90,130,200,${t.opacity})`;
+          ctx.fillRect(t.x * w - t.width / 2, h - t.height * h, t.width, t.height * h);
+        });
+        struts.forEach((s) => {
+          ctx.strokeStyle = `rgba(90,130,200,${s.opacity})`;
+          ctx.lineWidth = 0.5;
+          ctx.beginPath(); ctx.moveTo(0, s.y * h); ctx.lineTo(w, s.y * h); ctx.stroke();
+        });
+        drops.forEach((d) => {
+          const px = d.x * w, py = d.y * h, plen = d.len * h;
+          ctx.strokeStyle = `rgba(130,180,255,${d.opacity})`;
+          ctx.lineWidth = 0.55;
+          ctx.beginPath(); ctx.moveTo(px, py);
+          ctx.lineTo(px + Math.sin(d.lean) * plen, py + plen); ctx.stroke();
+          d.y += d.speed;
+          if (d.y > 1) { d.y = -d.len; d.x = Math.random(); }
+        });
+
+        rafId = requestAnimationFrame(draw);
+      }
+      rafId = requestAnimationFrame(draw);
+
+      document.addEventListener('astro:before-swap', () => {
+        cancelAnimationFrame(rafId);
+        window.removeEventListener('resize', resize);
+      }, { once: true });
+    })();
+
+    // ── Tab + canvas wiring ──────────────────────────────────────────
+    const canvas = document.getElementById('scatter-canvas')!;
     initHotspot(canvas);
 
     document.getElementById('filter-tabs')!.addEventListener('click', (e) => {
@@ -534,9 +607,63 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       openShard(data.folderKey, data.file, data.breadcrumb, data.subPath, shardEl);
     });
 
-    // Initial folder — auto-select first non-empty folder
-    const page = document.querySelector('.novel-page') as HTMLElement;
-    const initFolder = page.dataset.initialFolder || null;
+    // ── Popstate — browser back/forward ─────────────────────────────
+    function handlePopstate(e: PopStateEvent) {
+      const state = e.state as { folderSlug: string | null; fileSubPath: string | null } | null;
+      const overlay = document.getElementById('reading-overlay')!;
+
+      // Always close reading overlay on navigation
+      overlay.classList.remove('is-open');
+      overlay.style.clipPath   = '';
+      overlay.style.transition = '';
+      const shardDiv = document.getElementById('reading-shard')!;
+      shardDiv.style.opacity   = '';
+      shardDiv.style.transition = '';
+      _openRect = null;
+
+      if (!state?.folderSlug) {
+        // No folder — clear scatter
+        canvas.innerHTML = '';
+        currentFolderSlug = null;
+        document.querySelectorAll<HTMLElement>('.filter-tab').forEach((t) => {
+          t.classList.remove('is-active');
+          t.setAttribute('aria-pressed', 'false');
+        });
+        return;
+      }
+
+      // Switch to folder (no history push — this IS the popstate handler)
+      if (currentFolderSlug !== state.folderSlug) {
+        switchFolder(state.folderSlug, tree, canvas, false);
+      }
+
+      // Re-open shard if fileSubPath is in state
+      if (state.fileSubPath) {
+        // Find the shard element matching the subPath
+        requestAnimationFrame(() => {
+          canvas.querySelectorAll<HTMLElement>('.memory-shard[data-shard-encoded]').forEach((el) => {
+            const data = decodeShard(el.dataset.shardEncoded!);
+            if (!data) return;
+            if ((data.file.path.slice(1).join('/') || data.file.slug) === state.fileSubPath) {
+              openShard(data.folderKey, data.file, data.breadcrumb, data.subPath, el, false);
+            }
+          });
+        });
+      }
+    }
+
+    window.addEventListener('popstate', handlePopstate);
+
+    document.addEventListener('astro:before-swap', () => {
+      window.removeEventListener('popstate', handlePopstate);
+    }, { once: true });
+
+    // ── Initial state from server-rendered URL props ─────────────────
+    const page        = document.querySelector('.novel-page') as HTMLElement;
+    const initFolder  = page.dataset.initialFolder  || null;
+    const initSubPath = page.dataset.initialSubpath || null;
+
+    // Default to first non-empty folder if no folder in URL
     const firstFolder = initFolder
       ?? Object.values(tree).find((f) =>
           f.files.length > 0 || Object.keys(f.subfolders).length > 0
@@ -545,11 +672,23 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
 
     if (firstFolder) {
       history.replaceState(
-        { folderSlug: firstFolder, fileSubPath: null },
+        { folderSlug: firstFolder, fileSubPath: initSubPath ?? null },
         '',
         window.location.pathname
       );
-      switchFolder(firstFolder, tree, canvas, false);
+      switchFolder(firstFolder, tree, canvas, false).then(() => {
+        if (initSubPath) {
+          requestAnimationFrame(() => {
+            canvas.querySelectorAll<HTMLElement>('.memory-shard[data-shard-encoded]').forEach((el) => {
+              const data = decodeShard(el.dataset.shardEncoded!);
+              if (!data) return;
+              if ((data.file.path.slice(1).join('/') || data.file.slug) === initSubPath) {
+                openShard(data.folderKey, data.file, data.breadcrumb, data.subPath, el, false);
+              }
+            });
+          });
+        }
+      });
     } else {
       history.replaceState({ folderSlug: null, fileSubPath: null }, '', '/novel');
     }
