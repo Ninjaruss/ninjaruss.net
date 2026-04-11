@@ -1,7 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NavPill from '../components/NavPill.astro';
+import ObjectivesBillboard from '../components/ObjectivesBillboard.astro';
+import { parseObjectives } from '../utils/objectives';
 
 // Get the latest now entry from the collection
 const allNowPosts = await getCollection('now', ({ data }) => !data.draft);
@@ -20,6 +24,17 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
   month: 'long',
   day: 'numeric',
 });
+
+// Load objectives billboard
+const objectivesPath = join(process.cwd(), 'src/content/now/objectives.md');
+const objectivesSections = existsSync(objectivesPath)
+  ? parseObjectives(readFileSync(objectivesPath, 'utf-8'))
+  : null;
+
+const objectivesMonth = latestPost.data.publishedAt.toLocaleDateString('en-US', {
+  timeZone: 'UTC',
+  month: 'long',
+});
 ---
 
 <BaseLayout title="Now" description="What I'm currently focused on.">
@@ -34,6 +49,10 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
           {lastUpdated}
         </p>
       </header>
+
+      {objectivesSections && objectivesSections.length > 0 && (
+        <ObjectivesBillboard sections={objectivesSections} month={objectivesMonth} />
+      )}
 
       <div class="now__content prose">
         <Content />
