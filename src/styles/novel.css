@@ -153,224 +153,18 @@
   margin-left: 5px;
 }
 
-/* ══ Folder clusters — left panel ══ */
-.folder-list {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  overflow-y: auto;
-  height: 100%;
-  align-content: start;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(80,120,200,0.2) transparent;
-}
-
-.folder-cluster {
+/* ══ Scatter canvas — full remaining viewport ══ */
+.scatter-canvas {
   position: relative;
-  cursor: pointer;
-  user-select: none;
-}
-
-/* Frosted glass face — Vesper's memory extraction as glass shards */
-.cluster-face {
-  position: relative;
-  padding: 1.1rem 1.6rem;
-  background: rgba(80,120,200,0.045);
-  border: 1px solid rgba(80,120,200,0.16);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  overflow: hidden;
-  transition:
-    background 350ms cubic-bezier(0.16,1,0.3,1),
-    border-color 350ms cubic-bezier(0.16,1,0.3,1);
-  clip-path: polygon(0 0, 100% 0.6%, 99.6% 99%, 0.2% 100%);
-}
-
-/* Frost texture lines */
-.cluster-face::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    repeating-linear-gradient(91deg, transparent 0, rgba(190,215,255,0.016) 1px, transparent 2px, transparent 10px),
-    repeating-linear-gradient(180deg, transparent 0, rgba(190,215,255,0.01) 1px, transparent 2px, transparent 15px);
-  pointer-events: none;
-  transition: opacity 400ms ease;
-  opacity: 1;
-}
-
-/* Glass glint */
-.cluster-face::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 6%; right: 6%; height: 1px;
-  background: linear-gradient(to right, transparent, rgba(210,230,255,0.3) 30%, rgba(220,240,255,0.45) 50%, rgba(210,230,255,0.3) 70%, transparent);
-  transition: opacity 300ms ease;
-}
-
-.cluster-name {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  transition: color 300ms ease;
-}
-
-.cluster-meta {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  opacity: 0.5;
-  transition: opacity 300ms ease;
-}
-
-/* Per-folder accent colors */
-[data-folder="characters"] { --accent: #ffe52c; --accent-rgb: 255,229,44; }
-[data-folder="locations"]  { --accent: #7ab8ff; --accent-rgb: 122,184,255; }
-[data-folder="lore"]       { --accent: #ff8822; --accent-rgb: 255,136,34; }
-[data-folder="scenes"]     { --accent: #ff6666; --accent-rgb: 255,102,102; }
-[data-folder="themes"]     { --accent: #aaaaff; --accent-rgb: 170,170,255; }
-
-.folder-cluster .cluster-name { color: var(--accent); }
-.folder-cluster .cluster-face { border-color: rgba(var(--accent-rgb), 0.2); }
-
-/* Hover */
-.folder-cluster:not(.empty):hover .cluster-face {
-  background: rgba(var(--accent-rgb), 0.06);
-  border-color: rgba(var(--accent-rgb), 0.45);
-}
-.folder-cluster:not(.empty):hover .cluster-face::before { opacity: 0.35; }
-.folder-cluster:not(.empty):hover .cluster-meta { opacity: 0.55; }
-
-/* Open state */
-.folder-cluster.is-open .cluster-face {
-  background: rgba(var(--accent-rgb), 0.09);
-  border-color: rgba(var(--accent-rgb), 0.7);
-}
-.folder-cluster.is-open .cluster-face::before { opacity: 0; }
-.folder-cluster.is-open .cluster-meta { opacity: 0.6; }
-
-/* Empty folder state */
-.folder-cluster.empty { cursor: default; }
-.folder-cluster.empty .cluster-name { opacity: 0.38; }
-.folder-cluster.empty .cluster-meta { font-style: italic; opacity: 0.18; }
-
-/* Dim non-selected folders when one is open */
-.folder-list.has-open .folder-cluster:not(.is-open):not(.empty) .cluster-face {
-  opacity: 0.45;
-  transition: opacity 350ms ease, background 350ms ease;
-}
-
-/* ══ Shard panel — right column ══ */
-.shard-panel {
-  border: 1px solid rgba(80,120,200,0.1);
-  background: rgba(80,120,200,0.02);
-  /* No clip-path here — it creates a stacking context that flattens 3D child transforms */
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 350ms cubic-bezier(0.16,1,0.3,1),
-              border-color 350ms ease;
-  pointer-events: none;
-}
-.shard-panel.is-visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* Panel header — accent bar on the left edge + gradient wash */
-.shard-panel-header {
-  padding: 0.9rem 1.2rem 0.8rem 1.4rem;
-  border-bottom: 1px solid rgba(var(--panel-accent-rgb, 80,120,200), 0.14);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-  position: relative;
-  background: linear-gradient(
-    to right,
-    rgba(var(--panel-accent-rgb, 80,120,200), 0.07),
-    transparent 65%
-  );
-}
-/* Vertical accent bar on the left */
-.shard-panel-header::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 22%; bottom: 22%;
-  width: 2px;
-  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.75);
-  box-shadow: 0 0 8px rgba(var(--panel-accent-rgb, 80,120,200), 0.5);
-  border-radius: 1px;
-}
-.shard-panel-name {
-  font-size: 0.82rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  font-family: 'JetBrains Mono', monospace;
-}
-.shard-panel-count {
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-  opacity: 0.5;
-  font-family: 'JetBrains Mono', monospace;
-}
-
-.shard-panel-list {
   flex: 1;
-  overflow-y: auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-content: start;
-  gap: 8px;
-  padding: 0.75rem;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(80,120,200,0.2) transparent;
+  min-height: 0;
+  overflow: hidden;
 }
-.shard-panel-list::-webkit-scrollbar { width: 2px; }
-.shard-panel-list::-webkit-scrollbar-thumb { background: rgba(80,120,200,0.25); }
 
-/* ══ Subfolder group label — accent bar + glowing divider line ══ */
-.shard-subfolder-label {
-  grid-column: 1 / -1;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(var(--panel-accent-rgb, 80,120,200), 0.9);
-  padding: 1rem 0.5rem 0.4rem;
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  user-select: none;
-  margin-top: 0.2rem;
-}
-/* Left accent bar — glowing, like a shard edge catching light */
-.shard-subfolder-label::before {
-  content: '';
-  flex-shrink: 0;
-  width: 2px;
-  height: 0.85em;
-  background: rgba(var(--panel-accent-rgb, 80,120,200), 0.9);
-  box-shadow:
-    0 0 6px rgba(var(--panel-accent-rgb, 80,120,200), 0.7),
-    0 0 12px rgba(var(--panel-accent-rgb, 80,120,200), 0.3);
-  border-radius: 1px;
-}
-/* Right fade-out divider */
-.shard-subfolder-label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    rgba(var(--panel-accent-rgb, 80,120,200), 0.4),
-    rgba(var(--panel-accent-rgb, 80,120,200), 0.12) 55%,
-    transparent
-  );
+/* Shards are absolutely positioned within the scatter canvas */
+.scatter-canvas .memory-shard {
+  position: absolute;
+  width: 110px;
 }
 
 /* ══ Memory shards — glass fragment tiles in the right panel ══ */
@@ -447,8 +241,6 @@
     box-shadow 220ms cubic-bezier(0.16,1,0.3,1),
     filter 220ms ease,
     opacity 200ms ease;
-  animation: shard-in 320ms cubic-bezier(0.16,1,0.3,1) backwards;
-  animation-delay: calc(var(--shard-i, 0) * 40ms);
 }
 .memory-shard * {
   cursor: pointer;
@@ -533,7 +325,7 @@
   opacity: 1;
 }
 
-/* ══ Full-screen reading overlay ══ */
+/* ══ Full-screen reading overlay — clip-path expand animation ══ */
 .reading-overlay {
   position: fixed;
   inset: 0;
@@ -541,12 +333,11 @@
   display: flex;
   align-items: stretch;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 200ms ease;
+  /* clip-path set by JS to animate expand from shard rect */
 }
+
 .reading-overlay.is-open {
   pointer-events: auto;
-  opacity: 1;
 }
 
 .reading-shard {
@@ -669,14 +460,19 @@
 
 /* ══ Reduced motion ══ */
 @media (prefers-reduced-motion: reduce) {
-  .shard-panel,
-  .reading-overlay,
-  .folder-cluster .cluster-face,
-  .folder-list.has-open .folder-cluster .cluster-face,
+  /* Reduced motion: reading overlay falls back to opacity fade */
+  .reading-overlay {
+    opacity: 0;
+    transition: opacity 200ms ease;
+    clip-path: none !important;
+  }
+  .reading-overlay.is-open {
+    opacity: 1;
+  }
+
+  .filter-tab,
   .memory-shard,
-  .memory-shard::before,
-  .memory-shard::after,
-  .memory-shard--sub {
+  .memory-shard::after {
     transition: none;
     animation: none;
   }
@@ -691,15 +487,34 @@
     overflow: visible;
   }
 
-  .folder-list {
-    height: auto;
-    overflow: visible;
+  .filter-tabs {
+    gap: 4px;
   }
 
-  .shard-panel {
-    clip-path: none;
+  .filter-tab {
+    font-size: 0.58rem;
+    padding: 4px 8px;
+  }
+
+  /* On mobile: scatter canvas becomes a two-column grid instead of freeform absolute */
+  .scatter-canvas {
+    overflow: visible;
+    flex: none;
     height: auto;
-    min-height: 180px;
+  }
+
+  .scatter-canvas .memory-shard {
+    position: static;
+    rotate: none !important;
+    width: auto;
+  }
+
+  /* Two-column grid layout for mobile shards */
+  #scatter-canvas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 0.25rem 0;
   }
 
   .reading-inner {
