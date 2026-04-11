@@ -119,6 +119,8 @@
   cursor: pointer;
   transition: border-color 180ms ease, color 180ms ease, background 180ms ease, box-shadow 180ms ease;
   user-select: none;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .filter-tab[data-folder="characters"] { --tab-accent-rgb: 255,229,44; }
@@ -131,6 +133,11 @@
   border-color: rgba(var(--tab-accent-rgb, 80,120,200), 0.6);
   color: rgba(var(--tab-accent-rgb, 80,120,200), 0.8);
   background: rgba(var(--tab-accent-rgb, 80,120,200), 0.07);
+}
+
+.filter-tab:active {
+  transform: translateY(1px);
+  transition-duration: 60ms;
 }
 
 .filter-tab.is-active {
