@@ -299,12 +299,114 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     });
   }
 
-  // Placeholder for init — Tasks 5, 6, 7 will add the full implementation.
-  // This stub prevents errors from the astro:page-load handler below.
+  function animateOut(shards: NodeListOf<HTMLElement>): Promise<void> {
+    return new Promise((resolve) => {
+      if (shards.length === 0) { resolve(); return; }
+      shards.forEach((s) => {
+        s.style.transition = 'opacity 180ms ease-in, transform 180ms ease-in';
+        s.style.opacity = '0';
+        s.style.transform = `${s.style.transform || ''} translateY(12px)`;
+      });
+      setTimeout(resolve, 190);
+    });
+  }
+
+  function animateIn(canvas: HTMLElement): void {
+    const shards = canvas.querySelectorAll<HTMLElement>('.memory-shard');
+    shards.forEach((s, i) => {
+      s.style.opacity = '0';
+      s.style.transform = 'translateY(-20px)';
+      s.style.transition = 'none';
+      void s.offsetHeight; // force reflow so initial state is painted before transition
+      setTimeout(() => {
+        s.style.transition = 'opacity 220ms cubic-bezier(0.16,1,0.3,1), transform 220ms cubic-bezier(0.16,1,0.3,1)';
+        s.style.opacity = '1';
+        s.style.transform = '';
+      }, i * 30);
+    });
+  }
+
+  let currentFolderSlug: string | null = null;
+
+  async function switchFolder(
+    folderKey: string,
+    tree: NovelTree,
+    canvas: HTMLElement,
+    pushState = true
+  ): Promise<void> {
+    // Update tab active states immediately
+    document.querySelectorAll<HTMLElement>('.filter-tab').forEach((tab) => {
+      const isActive = tab.dataset.folder === folderKey;
+      tab.classList.toggle('is-active', isActive);
+      tab.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+
+    currentFolderSlug = folderKey;
+
+    // Animate existing shards out, then render + animate new ones in
+    const existing = canvas.querySelectorAll<HTMLElement>('.memory-shard');
+    await animateOut(existing);
+    renderScatter(folderKey, tree, canvas);
+    animateIn(canvas);
+
+    if (pushState) {
+      history.pushState(
+        { folderSlug: folderKey, fileSubPath: null },
+        '',
+        `/novel/${folderKey}`
+      );
+    }
+  }
+
   function init() {
     const treeEl = document.getElementById('novel-tree');
     if (!treeEl) return;
-    // Full implementation added in Tasks 5–7
+
+    const tree: NovelTree = JSON.parse(treeEl.textContent!);
+    const canvas = document.getElementById('scatter-canvas')!;
+
+    initHotspot(canvas);
+
+    document.getElementById('filter-tabs')!.addEventListener('click', (e) => {
+      const tab = (e.target as Element).closest<HTMLElement>('.filter-tab');
+      if (!tab || !tab.dataset.folder) return;
+      switchFolder(tab.dataset.folder, tree, canvas);
+    });
+
+    document.getElementById('filter-tabs')!.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const tab = (e.target as Element).closest<HTMLElement>('.filter-tab');
+      if (!tab || !tab.dataset.folder) return;
+      e.preventDefault();
+      switchFolder(tab.dataset.folder, tree, canvas);
+    });
+
+    // Shard click/keydown — placeholder; openShard added in Task 6
+    canvas.addEventListener('click', (e) => {
+      const shardEl = (e.target as Element).closest<HTMLElement>('.memory-shard');
+      if (!shardEl?.dataset.shardEncoded) return;
+      // openShard wired in Task 6
+    });
+
+    // Initial folder — auto-select first non-empty folder
+    const page = document.querySelector('.novel-page') as HTMLElement;
+    const initFolder = page.dataset.initialFolder || null;
+    const firstFolder = initFolder
+      ?? Object.values(tree).find((f) =>
+          f.files.length > 0 || Object.keys(f.subfolders).length > 0
+        )?.slug
+      ?? null;
+
+    if (firstFolder) {
+      history.replaceState(
+        { folderSlug: firstFolder, fileSubPath: null },
+        '',
+        window.location.pathname
+      );
+      switchFolder(firstFolder, tree, canvas, false);
+    } else {
+      history.replaceState({ folderSlug: null, fileSubPath: null }, '', '/novel');
+    }
   }
 
   document.addEventListener('astro:page-load', init);
