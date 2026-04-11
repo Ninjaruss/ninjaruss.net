@@ -164,7 +164,7 @@
 /* Shards are absolutely positioned within the scatter canvas */
 .scatter-canvas .memory-shard {
   position: absolute;
-  width: 110px;
+  width: 200px;
 }
 
 /* ══ Memory shards — glass fragment tiles in the right panel ══ */
@@ -190,7 +190,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  min-height: 78px;
+  min-height: 128px;
   gap: 0.35rem;
   cursor: pointer;
   user-select: none;
