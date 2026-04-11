@@ -305,7 +305,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       shards.forEach((s) => {
         s.style.transition = 'opacity 180ms ease-in, transform 180ms ease-in';
         s.style.opacity = '0';
-        s.style.transform = `${s.style.transform || ''} translateY(12px)`;
+        s.style.transform = 'translateY(12px)';
       });
       setTimeout(resolve, 190);
     });
@@ -322,11 +322,12 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
         s.style.transition = 'opacity 220ms cubic-bezier(0.16,1,0.3,1), transform 220ms cubic-bezier(0.16,1,0.3,1)';
         s.style.opacity = '1';
         s.style.transform = '';
-      }, i * 30);
+      }, Math.min(i * 30, 300));
     });
   }
 
   let currentFolderSlug: string | null = null;
+  let isSwitching = false;
 
   async function switchFolder(
     folderKey: string,
@@ -334,27 +335,33 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     canvas: HTMLElement,
     pushState = true
   ): Promise<void> {
-    // Update tab active states immediately
-    document.querySelectorAll<HTMLElement>('.filter-tab').forEach((tab) => {
-      const isActive = tab.dataset.folder === folderKey;
-      tab.classList.toggle('is-active', isActive);
-      tab.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-    });
+    if (isSwitching) return;
+    isSwitching = true;
+    try {
+      // Update tab active states immediately
+      document.querySelectorAll<HTMLElement>('.filter-tab').forEach((tab) => {
+        const isActive = tab.dataset.folder === folderKey;
+        tab.classList.toggle('is-active', isActive);
+        tab.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
 
-    currentFolderSlug = folderKey;
+      currentFolderSlug = folderKey;
 
-    // Animate existing shards out, then render + animate new ones in
-    const existing = canvas.querySelectorAll<HTMLElement>('.memory-shard');
-    await animateOut(existing);
-    renderScatter(folderKey, tree, canvas);
-    animateIn(canvas);
+      // Animate existing shards out, then render + animate new ones in
+      const existing = canvas.querySelectorAll<HTMLElement>('.memory-shard');
+      await animateOut(existing);
+      renderScatter(folderKey, tree, canvas);
+      animateIn(canvas);
 
-    if (pushState) {
-      history.pushState(
-        { folderSlug: folderKey, fileSubPath: null },
-        '',
-        `/novel/${folderKey}`
-      );
+      if (pushState) {
+        history.pushState(
+          { folderSlug: folderKey, fileSubPath: null },
+          '',
+          `/novel/${folderKey}`
+        );
+      }
+    } finally {
+      isSwitching = false;
     }
   }
 
