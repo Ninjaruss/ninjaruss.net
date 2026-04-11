@@ -406,6 +406,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     const imgs   = Array.from(div.querySelectorAll('img'));
     const images = imgs.map((img) => ({ src: img.getAttribute('src') || '', alt: img.getAttribute('alt') || '' }));
     imgs.forEach((img) => img.remove());
+    // file.body is build-time-rendered Markdown from the repository — not runtime user input
     bodyEl.innerHTML = div.innerHTML;
 
     if (images.length > 0) {
