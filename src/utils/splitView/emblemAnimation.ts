@@ -35,6 +35,10 @@ export function triggerEmblemFlip(doc?: Document, instant = true): Promise<void>
     // Subsequent content change: full 360° spin (back → new emblem)
     const totalDuration = 800;
 
+    // Kick off image fetch immediately so it's cached by the time we swap src at 120ms
+    const preloadImg = new Image();
+    preloadImg.src = emblemSrc;
+
     emblemCards.forEach((card) => {
       const frontImg = card.querySelector('[data-emblem-front]') as HTMLImageElement;
       const flipper = card.querySelector('.emblem-card__flipper') as HTMLElement;
