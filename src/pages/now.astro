@@ -26,7 +26,7 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
 });
 
 // Load objectives billboard
-const objectivesPath = join(process.cwd(), 'src/content/now/objectives.md');
+const objectivesPath = join(process.cwd(), 'src/content/now/_objectives.md');
 const objectivesSections = existsSync(objectivesPath)
   ? parseObjectives(readFileSync(objectivesPath, 'utf-8'))
   : null;

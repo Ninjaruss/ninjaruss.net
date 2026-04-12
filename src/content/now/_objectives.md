@@ -1,10 +1,6 @@
----
-publishedAt: 2026-04-11
----
-
 ## Japanese
 - [ ] Learn 5 Kanji vocab
-- [ ] Stream: Hand writing in Hirigana practice
+- [ ] Stream: Hand writing in Hiragana practice
 - [ ] Stream: Hand writing in Katakana practice
 
 ## Novel
