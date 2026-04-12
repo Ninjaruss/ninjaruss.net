@@ -1,17 +1,16 @@
 ---
-draft: true
 publishedAt: 2026-04-11
 ---
 
 ## Japanese
-- [ ] Daily Anki reviews (kanji + vocab)
-- [ ] Work through Bunpro N4 grammar
-- [ ] Watch Comprehensible Japanese immersion content daily
+- [ ] Learn 5 Kanji vocab
+- [ ] Stream: Hand writing in Hirigana practice
+- [ ] Stream: Hand writing in Katakana practice
 
 ## Novel
-- [ ] Write at least 3 scenes in Scrivener
-- [ ] Outline act 2 structure
-- [ ] Review and add notes to existing scenes
+- [ ] Lies, motivation, character chain for Rain
+- [ ] Refined description of Vesper's memory shard ability
+- [ ] Gather setting locations and potential names
 
 ## Other
 - [ ] Reduce gaming and coping time to occasional on weekends
