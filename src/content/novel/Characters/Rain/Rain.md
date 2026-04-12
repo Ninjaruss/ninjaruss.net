@@ -1,36 +1,20 @@
-**Rain**
+**Rain Overview**
 
-**\#\# Overview**
+\#\# **Overview**
 
- 	
+Main protagonist of the story. He is a young man (roughly 23 years old) who works at Nimbus Co., a place of 
 
-**Core Identity**
+\#\# Character Chain
 
-•	Role in story: Protagonist
+| **Fundamental Lie** | “I need to be certain and justified before I can act.” |
+| :----- | :----- |
+| **Core Fear** | Irreversible action. |
+| **Behavioral Pattern** | Avoid through analysis, wait for permission, use clones to act at a distance. |
+| **Line He Won’t Cross** | I will not surrender my agency to avoid risk. |
 
-* Enneagram (type + wing): 4 (Self Preservation)
-* Default emotional state: Drifting / Coasting (Doing just enough but feeling you’re not making actual progress)
-
-**Belief Engine**
-
-* Core belief about the world: 
-* Core belief about self: I am missing a certain essence or event that would actually allow me to change and become my best self. 
-* Lie they’re living by (what they pretend is true): Once I understand myself better and remove any of my internal blocks, I will finally act 
-* Secret desire (what they really want to be true):
-
-**Behavior Under Pressure**
-
-* How they act when stressed or threatened:
-* What they avoid:
-* What they overdo or exaggerate:
-
-**Story Function**
-
-* What they want (goal/desire):
-* What blocks them internally (fear, self-doubt, flaw):
-* What blocks them externally (other characters, society, events):
-
-
+| **Motivation** | **Boundary** | **Fault Line** |
+| :-----: | :-----: | :-----: |
+| Desire to create, change, become authentic  | Fear of irreversible action; need for justification  | He will only act if he can be sure he won’t regret it. |
 
 \#\# Expression
 
