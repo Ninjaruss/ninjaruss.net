@@ -48,6 +48,17 @@ const { sections, month } = Astro.props;
     border: none;
     background: none;
     user-select: none;
+    transition: opacity var(--transition-base);
+  }
+
+  .objectives__toggle:hover {
+    opacity: 0.75;
+  }
+
+  .objectives__toggle:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 4px;
+    border-radius: var(--radius-xs);
   }
 
   /* Remove default disclosure triangle across all browsers */
@@ -75,7 +86,14 @@ const { sections, month } = Astro.props;
   .objectives__chevron {
     color: var(--color-gold-dim);
     font-size: 0.8em;
-    transition: transform 200ms var(--animation-easing);
+    transition:
+      transform 200ms var(--animation-easing),
+      color var(--transition-base);
+  }
+
+  .objectives__toggle:hover .objectives__icon,
+  .objectives__toggle:hover .objectives__chevron {
+    color: var(--color-gold);
   }
 
   details[open] .objectives__chevron {
