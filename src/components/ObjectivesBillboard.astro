@@ -3,18 +3,16 @@ import type { ObjectiveSection } from '../utils/objectives';
 
 interface Props {
   sections: ObjectiveSection[];
-  month: string;
 }
 
-const { sections, month } = Astro.props;
+const { sections } = Astro.props;
 ---
 
-<details class="objectives">
-  <summary class="objectives__toggle">
+<div class="objectives">
+  <div class="objectives__header">
     <span class="objectives__icon" aria-hidden="true">◈</span>
-    <span class="objectives__label">{month} Objectives</span>
-    <span class="objectives__chevron" aria-hidden="true">▾</span>
-  </summary>
+    <span class="objectives__label">Objectives</span>
+  </div>
 
   <div class="objectives__grid">
     {sections.map((section) => (
@@ -31,43 +29,18 @@ const { sections, month } = Astro.props;
       </div>
     ))}
   </div>
-</details>
+</div>
 
 <style>
   .objectives {
     margin-bottom: var(--space-2xl);
   }
 
-  .objectives__toggle {
-    display: inline-flex;
+  .objectives__header {
+    display: flex;
     align-items: center;
-    gap: var(--space-sm);
-    cursor: pointer;
-    list-style: none;
-    padding: var(--space-xs) var(--space-md) var(--space-xs) 0;
-    border: none;
-    background: none;
-    user-select: none;
-    transition: opacity var(--transition-base);
-  }
-
-  .objectives__toggle:hover {
-    opacity: 0.75;
-  }
-
-  .objectives__toggle:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 4px;
-    border-radius: var(--radius-xs);
-  }
-
-  /* Remove default disclosure triangle across all browsers */
-  .objectives__toggle::-webkit-details-marker {
-    display: none;
-  }
-
-  .objectives__toggle::marker {
-    display: none;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
   }
 
   .objectives__icon {
@@ -83,28 +56,10 @@ const { sections, month } = Astro.props;
     letter-spacing: 0.15em;
   }
 
-  .objectives__chevron {
-    color: var(--color-gold-dim);
-    font-size: 0.8em;
-    transition:
-      transform 200ms var(--animation-easing),
-      color var(--transition-base);
-  }
-
-  .objectives__toggle:hover .objectives__icon,
-  .objectives__toggle:hover .objectives__chevron {
-    color: var(--color-gold);
-  }
-
-  details[open] .objectives__chevron {
-    transform: rotate(180deg);
-  }
-
   .objectives__grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-md);
-    padding-top: var(--space-md);
   }
 
   .objectives__card {
@@ -158,12 +113,6 @@ const { sections, month } = Astro.props;
   @media (max-width: 480px) {
     .objectives__grid {
       grid-template-columns: 1fr;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .objectives__chevron {
-      transition: none;
     }
   }
 </style>

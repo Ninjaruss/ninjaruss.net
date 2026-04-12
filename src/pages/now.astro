@@ -31,12 +31,6 @@ const objectivesSections = existsSync(objectivesPath)
   ? parseObjectives(readFileSync(objectivesPath, 'utf-8'))
   : null;
 
-// Month label for the billboard header — uses the latest now entry's month.
-// objectives.md should be updated in the same month as the now entry.
-const objectivesMonth = latestPost.data.publishedAt.toLocaleDateString('en-US', {
-  timeZone: 'UTC',
-  month: 'long',
-});
 ---
 
 <BaseLayout title="Now" description="What I'm currently focused on.">
@@ -45,18 +39,20 @@ const objectivesMonth = latestPost.data.publishedAt.toLocaleDateString('en-US', 
     <article class="now p3r-animate">
       <header class="now__header">
         <div class="now__header-rule" aria-hidden="true"></div>
-        <h1 class="now__title">Now</h1>
+        <div class="now__header-top">
+          <h1 class="now__title">Now</h1>
+          <p class="now__updated" title="Date shown in UTC">
+            <span class="now__updated-icon" aria-hidden="true">◈</span>
+            {lastUpdated}
+          </p>
+        </div>
         {latestPost.data.title && latestPost.data.title !== 'Now' && (
           <p class="now__entry-title">{latestPost.data.title}</p>
         )}
-        <p class="now__updated" title="Date shown in UTC">
-          <span class="now__updated-icon" aria-hidden="true">◈</span>
-          {lastUpdated}
-        </p>
       </header>
 
       {objectivesSections && objectivesSections.length > 0 && (
-        <ObjectivesBillboard sections={objectivesSections} month={objectivesMonth} />
+        <ObjectivesBillboard sections={objectivesSections} />
       )}
 
       <div class="now__content prose">
@@ -93,15 +89,21 @@ const objectivesMonth = latestPost.data.publishedAt.toLocaleDateString('en-US', 
   }
 
   .now__header {
-    margin-bottom: var(--space-2xl);
-    padding-bottom: var(--space-xl);
+    margin-bottom: var(--space-xl);
+  }
+
+  .now__header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-bottom: var(--space-sm);
   }
 
   .now__title {
     font-family: var(--font-display);
     font-size: var(--text-5xl);
     color: var(--color-gold);
-    margin-bottom: var(--space-md);
     text-shadow:
       0 0 30px rgba(255, 229, 44, 0.4),
       0 0 60px rgba(255, 229, 44, 0.2);
@@ -120,6 +122,8 @@ const objectivesMonth = latestPost.data.publishedAt.toLocaleDateString('en-US', 
     border-radius: var(--radius-sm);
     border: var(--border-thin) solid var(--color-gold-dim);
     letter-spacing: 0.05em;
+    white-space: nowrap;
+    flex-shrink: 0;
     animation: p3r-animate 400ms var(--animation-easing) 300ms backwards;
   }
 
@@ -227,6 +231,12 @@ const objectivesMonth = latestPost.data.publishedAt.toLocaleDateString('en-US', 
     .now__entry-title,
     .now__updated {
       animation: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .now__header-top {
+      flex-wrap: wrap;
     }
   }
 </style>
