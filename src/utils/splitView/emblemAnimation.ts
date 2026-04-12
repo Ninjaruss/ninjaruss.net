@@ -51,10 +51,12 @@ export function triggerEmblemFlip(doc?: Document, instant = true): Promise<void>
       flipper.style.transition = `transform ${totalDuration}ms cubic-bezier(0.34, 1.56, 0.64, 1)`;
       flipper.style.transform = 'rotateY(540deg)';
 
-      // Update image near midpoint (card backing visible, new emblem not yet)
+      // Update image early in the backing-visible window.
+      // Spring easing is fast: the front re-emerges at ~25% of totalDuration (~200ms),
+      // so 0.5 is too late. 0.15 lands at ~120ms — solidly mid-backing, ~70° before reveal.
       setTimeout(() => {
         if (frontImg && emblemSrc) frontImg.src = emblemSrc;
-      }, totalDuration * 0.5);
+      }, totalDuration * 0.15);
 
       // Normalize to 180deg after spin completes
       setTimeout(() => {
