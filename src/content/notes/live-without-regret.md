@@ -1,0 +1,17 @@
+---
+title: "Live Without Regret"
+tags: ["life"]
+emblem: "/images/emblems/lightbulb.svg"
+publishedAt: 2026-04-11
+---
+
+## What does it mean to live without regret?
+I've now clung onto this as my own mantra for living at the moment. Before, I did not really have a singular mantra outside of combinations of the stuff I've observered, learned, and experienced over the years. The closest thing to one would be the cheesy one I made for [Fuma-shi](/showcase/fuma-shi) which was "Failure is not fatal, nor is success final". A mantra like that is pretty cool to say, but honestly is difficult to really evaluate and apply to your life. However, having a mantra that you have found the meaning for yourself to is one of the most valuable things to add to your own psyche. It's a sort of stated through line that you can constantly reaffirm to yourself without being lost in the infinity of trying to define a full definition.
+
+At this point, why is "Live without regret" the one I've chosen? I believe that my life so far is a cluster full of the most mundane and repetitive stuff imaginable like playing the same video game (Marvel Rivals, League, etc.) for far too long and chaotic entropy of things that happened because I put myself in a situation to let randomness occur (Otakon livestream, social gatherings, etc.). What seems to be consistently the key thing for me is that what I truly regret from any singular experience was really the fact I don't let myself truly "live". To live being to freely experience without any fears or doubts. Any perceived or potential *regrets* from stopping me from enjoying or feeling the moment.
+
+The consistent coping mechanism that occurs in my life is the act of trying to feel numb. This is shown though my long hours of playing something like Deadlock or Slay the Spire 2 as well as my search for more informational content on YouTube to help guide my life. I believe that this is an extension of me trying to avoid the feeling of regret that I didn't do anything meaningful for the day. Except, it's not like I necessarily really regret my wastes of time. Real regrets would be the amount of time I spent watching Dragon Ball Super or the lack of time I spent on stuff that truly matters to me. In a sense, it's more like a vague feeling regret rather than any singular thing.
+
+This is why I believe I want to live without *regret* rather than specifically saying regrets. I want to avoid the feeling that I will live a life of someone with little value or of no notable things done. Maybe not necessarily a super impactful legacy, but definitely one that persists through the people I've impacted. I question if my yearning to finish a novel was a search for fame and fortune, but I believe it's a simple want of trying to replicate the same lingering feelings I got after playing Persona 4 Golden or finishing Tengen Toppa Gurren Lagann.
+
+The solution is to live rather than to survive. Even though I've been working in a worse job now compared to my cushy office job, I am trying to make the most out of it and reframing everything towards the more defined goal of my living without regret. I may not be at the dream life yet, but the reality in front of me is what I can experience right now. So I should do my best to interact with it and perhaps change it towards the reality I can barely even dream of. To live without regret.

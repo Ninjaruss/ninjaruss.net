@@ -26,7 +26,7 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
 });
 
 // Load objectives billboard
-const objectivesPath = join(process.cwd(), 'src/data/objectives.md');
+const objectivesPath = join(process.cwd(), 'src/content/now/objectives.md');
 const objectivesSections = existsSync(objectivesPath)
   ? parseObjectives(readFileSync(objectivesPath, 'utf-8'))
   : null;
@@ -46,6 +46,9 @@ const objectivesMonth = latestPost.data.publishedAt.toLocaleDateString('en-US', 
       <header class="now__header">
         <div class="now__header-rule" aria-hidden="true"></div>
         <h1 class="now__title">Now</h1>
+        {latestPost.data.title && latestPost.data.title !== 'Now' && (
+          <p class="now__entry-title">{latestPost.data.title}</p>
+        )}
         <p class="now__updated" title="Date shown in UTC">
           <span class="now__updated-icon" aria-hidden="true">◈</span>
           {lastUpdated}
@@ -117,7 +120,15 @@ const objectivesMonth = latestPost.data.publishedAt.toLocaleDateString('en-US', 
     border-radius: var(--radius-sm);
     border: var(--border-thin) solid var(--color-gold-dim);
     letter-spacing: 0.05em;
-    animation: p3r-animate 400ms var(--animation-easing) 250ms backwards;
+    animation: p3r-animate 400ms var(--animation-easing) 300ms backwards;
+  }
+
+  .now__entry-title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-md);
+    animation: p3r-animate-left 500ms var(--animation-easing) 175ms backwards;
   }
 
   .now__updated-icon {
@@ -213,6 +224,7 @@ const objectivesMonth = latestPost.data.publishedAt.toLocaleDateString('en-US', 
   @media (prefers-reduced-motion: reduce) {
     .now__header-rule,
     .now__title,
+    .now__entry-title,
     .now__updated {
       animation: none;
     }

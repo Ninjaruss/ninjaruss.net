@@ -1,4 +1,5 @@
 ---
+draft: true
 publishedAt: 2026-04-11
 ---
 
@@ -12,6 +13,8 @@ publishedAt: 2026-04-11
 - [ ] Outline act 2 structure
 - [ ] Review and add notes to existing scenes
 
-## Site
-- [ ] Keep writing notes consistently
+## Other
+- [ ] Reduce gaming and coping time to occasional on weekends
+- [ ] Read a chapter of "We Need Your Art"
 - [x] Integrate novel content into site
+- [ ] Write 1 Favorites note
