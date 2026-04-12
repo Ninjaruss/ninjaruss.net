@@ -213,19 +213,39 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
   /**
    * Compute a stable absolute position for a shard within the canvas.
    * Uses hashSlug so positions are deterministic across visits.
+   * When groupLabel is provided, shards cluster near a subfolder-derived anchor.
    */
   function shardPosition(
-    slug: string, canvasW: number, canvasH: number, shardW: number, shardH: number
+    slug: string, canvasW: number, canvasH: number, shardW: number, shardH: number,
+    groupLabel?: string | null
   ): { x: number; y: number; rotation: number } {
     const h = hashSlug(slug);
     const marginX = 60;
     const marginYTop = 16;
     const marginYBottom = 40;
+    const rotation = ((h >>> 16) % 17) - 8;   // −8° to +8°
+
+    if (groupLabel) {
+      // Cluster shards near a deterministic anchor derived from the subfolder name
+      const gh = hashSlug(groupLabel);
+      const clusterPad = 120;
+      const clusterRangeX = Math.max(canvasW - shardW - clusterPad * 2, 1);
+      const clusterRangeY = Math.max(canvasH - shardH - clusterPad * 2, 1);
+      const anchorX = clusterPad + (gh % clusterRangeX);
+      const anchorY = clusterPad + ((gh >>> 8) % clusterRangeY);
+      // Small per-shard scatter around the anchor
+      const scatter = 90;
+      const offsetX = (h % (scatter * 2)) - scatter;
+      const offsetY = ((h >>> 8) % (scatter * 2)) - scatter;
+      const x = Math.max(marginX, Math.min(canvasW - shardW - marginX, anchorX + offsetX));
+      const y = Math.max(marginYTop, Math.min(canvasH - shardH - marginYBottom, anchorY + offsetY));
+      return { x, y, rotation };
+    }
+
     const rangeX = Math.max(canvasW - shardW - marginX * 2, 1);
     const rangeY = Math.max(canvasH - shardH - marginYTop - marginYBottom, 1);
     const x = marginX + (h % rangeX);
     const y = marginYTop + ((h >>> 8) % rangeY);
-    const rotation = ((h >>> 16) % 17) - 8;   // −8° to +8°
     return { x, y, rotation };
   }
 
@@ -315,7 +335,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
         entries.push({
           file, breadcrumb, subPath,
           groupLabel: group.label ?? null,
-          pos: shardPosition(file.slug, canvasRect.width, canvasRect.height, shardW, shardH),
+          pos: shardPosition(file.slug, canvasRect.width, canvasRect.height, shardW, shardH, group.label),
           clip: SHARD_SHAPES[shapeIndex(file.slug, SHARD_SHAPES.length)],
         });
       }

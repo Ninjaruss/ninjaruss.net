@@ -56,22 +56,26 @@ describe('buildNovelTree', () => {
     expect(tree).toHaveProperty('lore');
     expect(tree).toHaveProperty('themes');
 
-    // Characters folder has Rain file
-    expect(tree.characters.files).toHaveLength(1);
-    expect(tree.characters.files[0].slug).toBe('rain');
-    expect(tree.characters.files[0].title).toBe('Rain');
-    expect(tree.characters.files[0].body).toBeTruthy(); // HTML rendered
-    expect(typeof tree.characters.files[0].body).toBe('string');
+    // Characters folder has root-level character files (Claire, Roxana, Vesper)
+    expect(tree.characters.files.length).toBeGreaterThanOrEqual(3);
+    const vesper = tree.characters.files.find((f) => f.slug === 'vesper');
+    expect(vesper).toBeDefined();
+    expect(vesper!.title).toBe('Vesper');
+    expect(vesper!.body).toBeTruthy(); // HTML rendered
+    expect(typeof vesper!.body).toBe('string');
+
+    // Characters has Rain subfolder
+    expect(tree.characters.subfolders).toHaveProperty('rain');
 
     // Lore has Magic System subfolder
     expect(tree.lore.subfolders).toHaveProperty('magic-system');
     expect(tree.lore.subfolders['magic-system'].files.length).toBeGreaterThan(0);
 
     // Dates are parsed
-    expect(tree.characters.files[0].created).not.toBeNull();
+    expect(vesper!.created).not.toBeNull();
 
     // Path field drives URL construction
-    expect(tree.characters.files[0].path).toEqual(['characters', 'rain']);
+    expect(vesper!.path).toEqual(['characters', 'vesper']);
   });
 });
 
