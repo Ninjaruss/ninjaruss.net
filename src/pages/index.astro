@@ -66,16 +66,20 @@ const sameDateEntries = mostRecentDate
 const novelDir = join(process.cwd(), 'src/content/novel');
 const novelTree = await buildNovelTree(novelDir);
 let novelLastModified: Date | null = null;
+let novelRecentFileTitle: string | null = null;
+let novelRecentFolderTitle: string | null = null;
 for (const folder of Object.values(novelTree)) {
   const allFiles = [
-    ...folder.files,
-    ...Object.values(folder.subfolders).flatMap(s => s.files),
+    ...folder.files.map(f => ({ file: f, folderTitle: folder.title })),
+    ...Object.values(folder.subfolders).flatMap(s => s.files.map(f => ({ file: f, folderTitle: folder.title }))),
   ];
-  for (const file of allFiles) {
+  for (const { file, folderTitle } of allFiles) {
     if (file.modified) {
       const d = new Date(file.modified);
       if (!isNaN(d.getTime()) && (!novelLastModified || d > novelLastModified)) {
         novelLastModified = d;
+        novelRecentFileTitle = file.title;
+        novelRecentFolderTitle = folderTitle;
       }
     }
   }
@@ -255,6 +259,13 @@ const latestEntries = sameDateEntries.map(entry => ({
           <span class="bento-tile__label">Novel</span>
           <h3 class="bento-tile__title">Remember Rain</h3>
         </div>
+        {novelRecentFolderTitle && novelRecentFileTitle && (
+          <p class="novel-tile__recent">
+            <span class="novel-tile__folder">{novelRecentFolderTitle}</span>
+            <span class="novel-tile__sep">›</span>
+            <span class="novel-tile__file">{novelRecentFileTitle}</span>
+          </p>
+        )}
         <div class="bento-tile__footer">
           <span
             class="days-ago"
@@ -922,6 +933,27 @@ const latestEntries = sameDateEntries.map(entry => ({
   .novel-tile {
     justify-content: center;
     gap: var(--space-md);
+  }
+
+  .novel-tile__recent {
+    margin: 0;
+    font-size: 0.7rem;
+    color: var(--color-text-muted, rgba(245, 245, 245, 0.45));
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .novel-tile__sep {
+    opacity: 0.5;
+  }
+
+  .novel-tile__file {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   #latest-tile:hover .latest-tile__emblem {

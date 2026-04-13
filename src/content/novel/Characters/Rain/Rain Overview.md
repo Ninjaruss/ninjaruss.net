@@ -1,22 +1,28 @@
 **Rain Overview**
 
-## **Overview**
+\#\# **Overview**
 
 Main protagonist of the story. He is a young man (roughly 23 years old) who works at Nimbus Co., a place of 
 
-## Character Chain
+\#\# Character Chain
 
-| **Fundamental Lie** | “I need to be certain and justified before I can act.” |
-| :----- | :----- |
-| **Core Fear** | Irreversible action. |
-| **Behavioral Pattern** | Avoid through analysis, wait for permission, use clones to act at a distance. |
-| **Line He Won’t Cross** | I will not surrender my agency to avoid risk. |
+History	Gifted praise, discouraged dreams, waiting for permission.
 
-| **Motivation** | **Boundary** | **Fault Line** |
-| :-----: | :-----: | :-----: |
-| Desire to create, change, become authentic  | Fear of irreversible action; need for justification  | He will only act if he can be sure he won’t regret it. |
+Interpretation (Lie)	**My worth comes from my infinite potential, not from anything I actually do. The moment I commit to one path, I become finite – and finite means I might fail.**
 
-## Expression
+Motivation (Fear & Fix)	
+
+\- Fear: That choosing one finite path will prove he’s not special and will kill all his other potential selves.
+
+\- Fix: Avoid commitment by staying in preparation mode, seeking perfect certainty, and using proxies (the clone) to act at a distance.
+
+Behavioral Pattern	Analysis, waiting, using clones as proxy, retreating into comfort. Dislikes ordinary tasks and defers them until they need to be addressed.
+
+Boundary	“I will not let anyone else define my story or erase my memories.”
+
+Collision	Follows the ghost without permission, becomes a fugitive from him taking action, forced to act without certainty.
+
+\#\# Expression
 
 I want to express this issue where I want to become someone that can create without restraint. Or basically, someone who wants to become their true authentic self, but is unable to access it.
 
@@ -46,21 +52,21 @@ Vesper believes memory, especially painful ones, are the issue that needs to be 
 
 While Rain and Vesper are mirrors to each other, Roxana and Claire are more of the ideals I myself would like to follow, but with included drawbacks for their extreme level of competence. Claire is the prime example of someone who can do the (visual) calculus of predicting all potential issues and to act accordingly to them. Basically, what if I was able to make such good plans that everything would fall in place? However, the thing I want to explore with her is the overthinking aspect of myself and the constant hesitation of not feeling like I can proceed with the plan unless everything is accounted for. As a possible addition, I want to sort of argue that even if you had the highest ability of rationalization, you cannot account for every single possible thing. Sometimes, it is dependent on your own beliefs and the sheer determination to make them into reality. A key thing I will probably explore for Claire is what will she do when faced with a dead end scenario. Maybe something like an inevitable death? How do you convince someone who is more than likely going to die that there is still hope? How do I convince her that by giving into the limiting belief ensures a sort of self fulfilling prophecy? Claire’s main motif is a visual calculus prediction combined with her sniper where she must get an overwhelming amount of data to execute to execute a single precise move. 
 
-- A fun scene I want to write into the story is where Claire shoots several bullets out of the air. 
+\- A fun scene I want to write into the story is where Claire shoots several bullets out of the air. 
 
 Roxana is more so a more confident version of myself in that she has a more unyielding tenacity and conviction in herself. Even though she is physically impaired (tbd, probably has severe burns on her arms), she continues to push herself to overcome those limitations and will not burden others with these limits. The issue is, having that much conviction in yourself can backfire if you don’t have anyone to fall back on. I want to show that despite being such an independent person, there is no replacement for human connection. She is basically what I envy from very confident and amazing people who have actualized their full identity into the world and become a shining symbol for others. Her main motif is that of a small flame or a spark where she seems to not have much actual intensity, but proceeds to burn as bright as she can in a lonely, dark world. 
 
-- A likely scene to add is one where Roxana loses the ability to use her entire body properly. This is due to the antagonist removing her memories of core mobility functions (temporarily?). 
+\- A likely scene to add is one where Roxana loses the ability to use her entire body properly. This is due to the antagonist removing her memories of core mobility functions (temporarily?). 
 
 After some further reflection on my own writing so far for this idea of Remember Rain, there seems to be a through line that focuses on this idea of requiring further self understanding of my self or needing some justification before taking action. Almost as if I need an entire thesis or provable valid set of reasons before I can actually commit to a specific goal. “Waiting to feel morally justified before acting as yourself.” This sentence has made it all click in my mind in that I continue to intellectualize and think so much on how to do things in a way that will justify myself to everyone else around me. 
 
 I felt stagnant and lost for a time, but never really forgot all the things I want to do. The issue is, a lot of what I value seemingly conflicts with each other:
 
-- Identity vs responsibility, 
+\- Identity vs responsibility, 
 
-- truth vs stability, 
+\- truth vs stability, 
 
-- movement vs safety
+\- movement vs safety
 
 I initially thought I was trying to find myself; to find that “thing” that I am fully aligned with and can stick to. Instead, I am learning that I am sort of trying to earn the right to exist as myself without apology. This idea on the surface doesn’t seem to be something I struggle with. I do things I like for example watching anime, yapping on stream, singing to myself, etc. But I actually struggle with these things in the sense that I am doing these things out of comfort. What I need is to become someone who can be unfiltered in their self expression; where I pursue deeper ambitions in spite of any fears and stakes trying to sway my actions away from trying. I must do things in spite of being ready or having complete understanding. To allow myself to take a chance on the pursuits with the highest stakes and fully exist as my most authentic self. 
 
