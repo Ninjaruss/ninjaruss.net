@@ -2,9 +2,10 @@
 - [ ] Learn 5 Kanji vocab
 - [ ] Stream: Hand writing in Hiragana practice
 - [ ] Stream: Hand writing in Katakana practice
+- [ ] 1 Hour Daily Immersion through comprehensible JP YouTube
 
 ## Novel
-- [ ] Lies, motivation, character chain for Rain
+- [x] Lies, motivation, character chain for Rain
 - [ ] Refined description of Vesper's memory shard ability
 - [ ] Gather setting locations and potential names
 
