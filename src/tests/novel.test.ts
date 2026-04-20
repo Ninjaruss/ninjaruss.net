@@ -56,11 +56,14 @@ describe('buildNovelTree', () => {
     expect(tree).toHaveProperty('lore');
     expect(tree).toHaveProperty('themes');
 
-    // Characters folder has root-level character files (Claire, Roxana, Vesper)
-    expect(tree.characters.files.length).toBeGreaterThanOrEqual(3);
-    const vesper = tree.characters.files.find((f) => f.slug === 'vesper');
+    // Characters folder has subfolders for each character (Claire, Rain, Roxana, Vesper)
+    expect(Object.keys(tree.characters.subfolders).length).toBeGreaterThanOrEqual(3);
+    const vesperFolder = tree.characters.subfolders['vesper'];
+    expect(vesperFolder).toBeDefined();
+
+    const vesper = vesperFolder.files.find((f) => f.slug === 'vesper-overview');
     expect(vesper).toBeDefined();
-    expect(vesper!.title).toBe('Vesper');
+    expect(vesper!.title).toBe('Vesper Overview');
     expect(vesper!.body).toBeTruthy(); // HTML rendered
     expect(typeof vesper!.body).toBe('string');
 
@@ -75,7 +78,7 @@ describe('buildNovelTree', () => {
     expect(vesper!.created).not.toBeNull();
 
     // Path field drives URL construction
-    expect(vesper!.path).toEqual(['characters', 'vesper']);
+    expect(vesper!.path).toEqual(['characters', 'vesper', 'vesper-overview']);
   });
 });
 
