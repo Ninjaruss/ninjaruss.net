@@ -1222,7 +1222,7 @@ const latestEntries = sameDateEntries.map(entry => ({
         `https://www.googleapis.com/youtube/v3/search` +
         `?part=id&channelId=${CHANNEL_ID}&type=video&eventType=live&key=${YOUTUBE_API_KEY}`;
       const res = await fetch(url);
-      if (!res.ok) return;
+      if (!res.ok) { applyLiveState(false, null); return; }
       const data: unknown = await res.json();
       const { isLive, videoId } = parseYouTubeLiveResponse(data);
       applyLiveState(isLive, videoId);
@@ -1257,6 +1257,7 @@ const latestEntries = sameDateEntries.map(entry => ({
   }
 
   function startLivePolling(): void {
+    stopLivePolling();
     checkYouTubeLive();
     liveInterval = setInterval(checkYouTubeLive, 60_000);
   }
