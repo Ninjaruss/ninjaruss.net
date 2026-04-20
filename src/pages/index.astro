@@ -1227,7 +1227,7 @@ const latestEntries = sameDateEntries.map(entry => ({
       const { isLive, videoId } = parseYouTubeLiveResponse(data);
       applyLiveState(isLive, videoId);
     } catch {
-      // silently stay offline on any error
+      applyLiveState(false, null);
     }
   }
 
