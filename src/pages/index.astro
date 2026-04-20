@@ -1207,6 +1207,67 @@ const latestEntries = sameDateEntries.map(entry => ({
 </style>
 
 <script>
+  import { parseYouTubeLiveResponse } from '../utils/liveStatus';
+
+  const YOUTUBE_API_KEY = import.meta.env.PUBLIC_YOUTUBE_API_KEY as string;
+  const CHANNEL_ID = 'UCjgsr8Oki5_CPwx53tdnwCg';
+  const CHANNEL_URL = 'https://www.youtube.com/@kaima-mask';
+
+  let liveInterval: ReturnType<typeof setInterval> | undefined;
+
+  async function checkYouTubeLive(): Promise<void> {
+    if (!YOUTUBE_API_KEY) return;
+    try {
+      const url =
+        `https://www.googleapis.com/youtube/v3/search` +
+        `?part=id&channelId=${CHANNEL_ID}&type=video&eventType=live&key=${YOUTUBE_API_KEY}`;
+      const res = await fetch(url);
+      if (!res.ok) return;
+      const data: unknown = await res.json();
+      const { isLive, videoId } = parseYouTubeLiveResponse(data);
+      applyLiveState(isLive, videoId);
+    } catch {
+      // silently stay offline on any error
+    }
+  }
+
+  function applyLiveState(isLive: boolean, videoId: string | null): void {
+    const tile = document.getElementById('live-tile') as HTMLAnchorElement | null;
+    const container = document.querySelector<HTMLElement>('.container');
+    const badge = document.getElementById('live-badge');
+    const cta = document.getElementById('live-cta');
+
+    if (!tile || !container) return;
+
+    if (isLive) {
+      tile.href = videoId
+        ? `https://www.youtube.com/watch?v=${videoId}`
+        : CHANNEL_URL;
+      tile.classList.add('is-live');
+      container.classList.add('is-live');
+      if (badge) badge.textContent = '● Live';
+      if (cta) cta.textContent = 'watch live now →';
+    } else {
+      tile.href = CHANNEL_URL;
+      tile.classList.remove('is-live');
+      container.classList.remove('is-live');
+      if (badge) badge.textContent = 'Stream';
+      if (cta) cta.textContent = 'not streaming right now';
+    }
+  }
+
+  function startLivePolling(): void {
+    checkYouTubeLive();
+    liveInterval = setInterval(checkYouTubeLive, 60_000);
+  }
+
+  function stopLivePolling(): void {
+    if (liveInterval !== undefined) {
+      clearInterval(liveInterval);
+      liveInterval = undefined;
+    }
+  }
+
   // Initialize Latest tile - runs on initial load and after view transitions
   function initializeLatestTile() {
     const latestTile = document.getElementById('latest-tile') as HTMLAnchorElement | null;
@@ -1313,6 +1374,7 @@ const latestEntries = sameDateEntries.map(entry => ({
   initializeNovelTile();
   initializeEmblemLinks();
   initializeTilt();
+  startLivePolling();
 
   // Run after each view transition navigation
   document.addEventListener('astro:page-load', () => {
@@ -1320,5 +1382,9 @@ const latestEntries = sameDateEntries.map(entry => ({
     initializeNovelTile();
     initializeEmblemLinks();
     initializeTilt();
+    startLivePolling();
   });
+
+  // Clean up interval before navigating away
+  document.addEventListener('astro:before-preparation', stopLivePolling);
 </script>
