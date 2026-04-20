@@ -291,9 +291,23 @@ const latestEntries = sameDateEntries.map(entry => ({
         <p class="logo-tile__description">Anime I've watched and rated based on personal enjoyment.</p>
       </a>
 
-      <!-- Row 5 decorative fillers (cols 3-4) -->
-      <div class="bento-tile bento-tile--static" aria-hidden="true"></div>
-      <div class="bento-tile bento-tile--static" aria-hidden="true"></div>
+      <!-- Row 5: Live stream tile (cols 3-4) -->
+      <a
+        id="live-tile"
+        href="https://www.youtube.com/@kaima-mask"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="bento-tile bento-tile--dark bento-tile--span-2x1 live-tile"
+      >
+        <div class="live-tile__header">
+          <span class="live-tile__badge" id="live-badge" aria-live="polite">Stream</span>
+          <span class="live-tile__platform">YouTube</span>
+        </div>
+        <div class="live-tile__channel">KAIMA 悔魔</div>
+        <div class="live-tile__handle">@kaima-mask</div>
+        <hr class="live-tile__divider" />
+        <div class="live-tile__cta" id="live-cta">not streaming right now</div>
+      </a>
 
       <a
         href="https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD?si=2b68cabcfc26451c"
