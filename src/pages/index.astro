@@ -1261,7 +1261,7 @@ const latestEntries = sameDateEntries.map(entry => ({
   function startLivePolling(): void {
     stopLivePolling();
     checkYouTubeLive();
-    liveInterval = setInterval(checkYouTubeLive, 60_000);
+    liveInterval = setInterval(checkYouTubeLive, 300_000);
   }
 
   function stopLivePolling(): void {
