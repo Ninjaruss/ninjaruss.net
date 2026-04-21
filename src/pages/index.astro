@@ -824,7 +824,7 @@ const latestEntries = sameDateEntries.map(entry => ({
     padding: 2px 7px;
     border-radius: var(--radius-xs);
     background: var(--color-bg-surface);
-    color: var(--color-text-subtle);
+    color: var(--color-text-muted);
     transition: background var(--transition-fast), color var(--transition-fast);
   }
 
@@ -832,7 +832,7 @@ const latestEntries = sameDateEntries.map(entry => ({
     margin-left: auto;
     font-family: var(--font-mono);
     font-size: 0.5rem;
-    color: var(--color-text-subtle);
+    color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     transition: color var(--transition-fast);
@@ -841,7 +841,7 @@ const latestEntries = sameDateEntries.map(entry => ({
   .live-tile__channel {
     font-family: var(--font-display);
     font-size: 1rem;
-    color: var(--color-text-subtle);
+    color: var(--color-text-muted);
     line-height: 1.2;
     transition: color var(--transition-fast);
   }
@@ -849,8 +849,8 @@ const latestEntries = sameDateEntries.map(entry => ({
   .live-tile__handle {
     font-family: var(--font-mono);
     font-size: 0.55rem;
-    color: var(--color-text-subtle);
-    opacity: 0.5;
+    color: var(--color-text-muted);
+    opacity: 0.7;
     letter-spacing: 0.04em;
     transition: color var(--transition-fast), opacity var(--transition-fast);
   }
@@ -865,10 +865,10 @@ const latestEntries = sameDateEntries.map(entry => ({
   .live-tile__cta {
     font-family: var(--font-mono);
     font-size: 0.6rem;
-    color: var(--color-text-subtle);
+    color: var(--color-text-muted);
     text-transform: lowercase;
     letter-spacing: 0.06em;
-    opacity: 0.4;
+    opacity: 0.65;
     transition: color var(--transition-fast), opacity var(--transition-fast);
   }
 
@@ -1073,6 +1073,8 @@ const latestEntries = sameDateEntries.map(entry => ({
     width: 56px;
     display: flex;
     align-items: stretch;
+    margin-top: 8px;
+    margin-bottom: 8px;
   }
 
   .latest-tile__emblem {
