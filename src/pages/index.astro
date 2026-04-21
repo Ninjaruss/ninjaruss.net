@@ -1218,17 +1218,27 @@ const latestEntries = sameDateEntries.map(entry => ({
   let liveInterval: ReturnType<typeof setInterval> | undefined;
 
   async function checkYouTubeLive(): Promise<void> {
-    if (!YOUTUBE_API_KEY) return;
+    if (!YOUTUBE_API_KEY) {
+      console.error('[live] PUBLIC_YOUTUBE_API_KEY is not set — live check skipped');
+      return;
+    }
     try {
       const url =
         `https://www.googleapis.com/youtube/v3/search` +
         `?part=id&channelId=${CHANNEL_ID}&type=video&eventType=live&key=${YOUTUBE_API_KEY}`;
       const res = await fetch(url);
-      if (!res.ok) { applyLiveState(false, null); return; }
+      if (!res.ok) {
+        const body = await res.text();
+        console.error(`[live] YouTube API error ${res.status}:`, body);
+        applyLiveState(false, null);
+        return;
+      }
       const data: unknown = await res.json();
       const { isLive, videoId } = parseYouTubeLiveResponse(data);
+      console.log('[live] check result:', { isLive, videoId });
       applyLiveState(isLive, videoId);
-    } catch {
+    } catch (err) {
+      console.error('[live] fetch failed:', err);
       applyLiveState(false, null);
     }
   }
