@@ -1,8 +1,7 @@
 ## Japanese
-- [ ] Learn 5 Kanji vocab
+- [x] Learn 5 Kanji vocab
 - [ ] Stream: Hand writing in Hiragana practice
-- [ ] Stream: Hand writing in Katakana practice
-- [ ] 1 Hour Daily Immersion through comprehensible JP YouTube
+- [x] 1 Hour Daily Immersion through comprehensible JP YouTube
 
 ## Novel
 - [x] Lies, motivation, character chain for Rain
@@ -10,8 +9,8 @@
 - [ ] Gather setting locations and potential names
 
 ## Other
-- [ ] Reduce gaming and coping time to occasional on weekends
-- [ ] Read a chapter of "We Need Your Art"
+- [x] Reduce gaming and coping time to occasional on weekends
+- [x] Read a chapter of "We Need Your Art"
 - [x] Integrate novel content into site
 - [ ] Write 1 Favorites note
 - [ ] Stream: L-file Research - Usogui Abandoned Building Arc
