@@ -1324,15 +1324,21 @@ const latestEntries = sameDateEntries.map(entry => ({
     });
   }
 
+  let kaimaWatchBtnHandler: ((e: Event) => void) | null = null;
+
   function initializeKaimaWatchBtn(): void {
     const btn = document.getElementById('kaima-watch-btn');
     if (!btn) return;
-    btn.addEventListener('click', (e) => {
+    if (kaimaWatchBtnHandler) {
+      btn.removeEventListener('click', kaimaWatchBtnHandler);
+    }
+    kaimaWatchBtnHandler = (e: Event) => {
       e.preventDefault();
       e.stopPropagation();
-      const href = btn.dataset.href;
+      const href = (btn as HTMLElement).dataset.href;
       if (href) window.open(href, '_blank', 'noopener,noreferrer');
-    });
+    };
+    btn.addEventListener('click', kaimaWatchBtnHandler);
   }
 
   // Mouse-tracking 3D tilt for all tile types
