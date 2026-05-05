@@ -81,7 +81,7 @@ Collection-specific extensions:
 The homepage uses a visual hierarchy pattern:
 - **Core tiles** (`.bento-tile--core`): Main entry points (Showcase, Notes, Media) with elevated gold glow and larger typography
 - **Signal tiles**: Current activity indicators (Now, Latest) - smaller, secondary visual weight
-- **Favorites tile**: Gold highlight variant for curated inspirations collection (shows `isFavorite: true` entries)
+- **KAIMA tile**: Dark 1×2 tile linking to the KAIMA YouTube channel; shows a "Watch Live" button when streaming is detected
 - **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) with 48x48px logos and hover effects
 - **YouTube tiles**: Video embeds with custom aspect ratios
 
@@ -91,7 +91,7 @@ Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--sp
 
 **Current Homepage Grid Pattern:**
 - Row 1: Title (4×1) + YouTube (1×1) + Now (1×1)
-- Rows 2-3: Showcase (3×2, core) + Notes (2×2, core) + Favorites (1×2)
+- Rows 2-3: Showcase (3×2, core) + Notes (2×2, core) + KAIMA (1×2)
 - Rows 4-5: Media (2×2, core) + Latest (2×1, row 4) + Novel (1×2) + MAL (1×1, row 4) + 2× decorative (1×1, row 5) + Spotify (1×1, row 5)
 
 Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title-tile { grid-column: span 4 }`), not a span class.
@@ -152,17 +152,16 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 ## Pages & Routes
 
 ### Content Collection Pages
-- `/media` — SplitViewLayout with all media (anime, manga, films, series, characters, etc.)
+- `/media` — Full-width emblem card grid with filter bar (★ favorites pill + type pills) and inline quick-view panel. URL state: `?type=anime&fav=1&open=slug`. Progressive enhancement: cards link to `/media/[slug]` without JS.
 - `/media/[slug]` — Individual media detail pages
 - `/notes` — SplitViewLayout with philosophical fragments
 - `/notes/[slug]` — Individual note detail pages
 - `/showcase` — SplitViewLayout with project inquiries
 - `/showcase/[slug]` — Individual project detail pages
-- `/favorites` — Grid layout showing media entries with `isFavorite: true`
-- `/favorites/[slug]` — Centered single-column detail with prominent emblem
 
-### Legacy Routes
-- `/media` — Redirects to `/media` (301 redirect for backward compatibility)
+### Legacy Routes (301 Redirects)
+- `/favorites` → redirects to `/media?fav=1`
+- `/favorites/[slug]` → redirects to `/media/[slug]`
 
 ### Novel Pages
 - `/novel` — "Remember Rain" novel index (two-panel frosted glass navigator)
@@ -173,20 +172,14 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 - `/now` — Latest "Now" entry (current focus)
 - `/now/archive` — Historical "Now" entries list
 
-### Favorites Page Features
-- Shows media entries where `isFavorite: true`
-- Responsive grid: `auto-fill minmax(220px, 1fr)` → `minmax(160px, 1fr)` → 2 columns on mobile
-- Type filter pills with client-side filtering (based on `content_type`)
-- EmblemCards initially flipped to show emblems
-- Staggered animations (50ms increments)
-- Accessible (ARIA-pressed states)
-
-### Favorites Detail Page Features
-- Max-width: 800px centered layout
-- Prominent EmblemCard at top (max 240px, centered)
-- Type badge, tags, dates (Added/Updated)
-- Collections footer if collections exist
-- Back navigation to favorites index
+### Media Page Features (`/media`)
+- Full-width emblem card grid: `repeat(auto-fill, minmax(160px, 1fr))`
+- **Filter bar**: `★ favorites` pill (filters `isFavorite: true`) + type pills (all, anime, manga, film, series, music, book, game, character, other). Filters stack. State persisted in URL: `?type=anime&fav=1`.
+- **Quick-view panel**: clicking a card slides in a panel from the right (`grid-template-columns: 1fr 340px`). Panel shows emblem, type, title, tags, excerpt, and link to full entry. URL updates to `?open=[slug]`. ESC/✕ closes.
+- Cards are `<a>` tags linking to `/media/[slug]` (works without JS). JS intercepts click to open quick-view instead.
+- Entry data pre-rendered as JSON in `data-entries` attribute — no client fetch needed.
+- Filter/open state read from URL on page load (bookmarkable, shareable).
+- `src/utils/mediaGrid/filterEngine.ts` — shared pure functions: `filterEntries`, `parseFilterState`, `buildFilterURL`. Imported by both the page script and tests.
 
 ## Novel System ("Remember Rain")
 
@@ -231,7 +224,7 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 
 6. **Latest Tile**: Homepage shows most recent content across all collections with "X days ago" indicator
 
-7. **Favorites Page**: Shows media entries where `isFavorite: true`. Grid layout with client-side type filtering by `content_type` (anime, manga, film, series, music, book, game, character, other). Filter pills use ARIA-pressed states. Staggered animations reset on filter change. EmblemCards start flipped (showing emblem front).
+7. **Media Page Grid**: `/media` is a full emblem card grid (not SplitViewLayout). `isFavorite: true` entries are surfaced via the `★ favorites` filter pill. Quick-view panel opens on card click without navigating away. Filter and open state live in URL params. See `src/utils/mediaGrid/filterEngine.ts` for the shared filter utility.
 
 8. **Related Content System**: Uses `collections` field in frontmatter for cross-referencing. Calculates relevance scores based on matching collections, displays up to 6 related entries in card grid at bottom of detail pages. Shows emblem thumbnail, section badge, and title.
 
@@ -264,13 +257,13 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 3. Add `emblem: '/images/emblems/your-emblem.svg'` for custom emblem (optional)
 4. Use `collections: ['tag1', 'tag2']` field to cross-reference related content (enables RelatedContent component)
 5. Set `draft: true` while working, remove for publishing
-6. For media entries: Set `isFavorite: true` to show in favorites gallery (optional, defaults to false)
+6. For media entries: Set `isFavorite: true` to surface the entry via the `★ favorites` filter on `/media` (optional, defaults to false)
 7. Run `npm run build` to validate schema
 
 ### Content Type Guidelines
 - **Media**: All reviews, consumption logs, and inspirational content (anime, manga, film, series, music, book, game, character, other)
   - Set `isFavorite: false` (or omit) for reviews/notes that appear only in /media
-  - Set `isFavorite: true` for curated highlights that appear in both /media and /favorites
+  - Set `isFavorite: true` for curated highlights; surfaced via the `★ favorites` filter on `/media`
 - **Notes**: Philosophical fragments and thoughts
 - **Showcase**: Project inquiries and experiments
 - **Now**: Current focus snapshots (time-based)
