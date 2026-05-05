@@ -1309,16 +1309,18 @@ const latestEntries = sameDateEntries.map(entry => ({
   // Emblem click navigation — handles data-href elements inside <a> tiles
   function initializeEmblemLinks() {
     document.querySelectorAll<HTMLElement>('.tile-emblem[data-href], .tile-note-link[data-href]').forEach(el => {
-      el.addEventListener('click', (e) => {
+      const fresh = el.cloneNode(true) as HTMLElement;
+      el.parentNode?.replaceChild(fresh, el);
+      fresh.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        window.location.href = el.dataset.href!;
+        window.location.href = fresh.dataset.href!;
       });
-      el.addEventListener('keydown', (e) => {
+      fresh.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           e.stopPropagation();
-          window.location.href = el.dataset.href!;
+          window.location.href = fresh.dataset.href!;
         }
       });
     });
