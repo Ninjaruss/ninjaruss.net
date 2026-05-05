@@ -74,6 +74,21 @@ describe('parseFilterState', () => {
     const state = parseFilterState('?fav=1');
     expect(state.type).toBe('all');
   });
+
+  it('treats unknown type param as "all"', () => {
+    const state = parseFilterState('?type=invalid');
+    expect(state.type).toBe('all');
+  });
+
+  it('treats fav=0 as favOnly false', () => {
+    const state = parseFilterState('?fav=0');
+    expect(state.favOnly).toBe(false);
+  });
+
+  it('treats non-numeric fav value as favOnly false', () => {
+    const state = parseFilterState('?fav=xyz');
+    expect(state.favOnly).toBe(false);
+  });
 });
 
 // ─── buildFilterURL ──────────────────────────────────────────────────────────
