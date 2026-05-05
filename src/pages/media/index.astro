@@ -1,44 +1,481 @@
 ---
 import { getCollection } from 'astro:content';
-import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
-import ListItem from '../../components/ListItem.astro';
-import { hasMinimalContent } from '../../utils/content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EmblemCard from '../../components/EmblemCard.astro';
+import { stripMarkdown } from '../../utils/content';
 
 const allMedia = await getCollection('media', ({ data }) => !data.draft);
 const sortedMedia = allMedia.sort((a, b) =>
-  new Date(b.data.updatedAt || b.data.publishedAt || 0).getTime() - new Date(a.data.updatedAt || a.data.publishedAt || 0).getTime()
+  new Date(b.data.updatedAt || b.data.publishedAt || 0).getTime() -
+  new Date(a.data.updatedAt || a.data.publishedAt || 0).getTime()
 );
+
+const entryData = sortedMedia.map((entry) => ({
+  slug: entry.slug,
+  title: entry.data.title,
+  type: entry.data.content_type,
+  isFavorite: entry.data.isFavorite ?? false,
+  emblem: entry.data.emblem ?? '/images/emblems/default.svg',
+  tags: entry.data.tags ?? [],
+  excerpt: stripMarkdown(entry.body ?? '').slice(0, 150),
+}));
+
+const count = sortedMedia.length;
 ---
 
-<SplitViewLayout
-  title="Media"
-  description="Notes on anime, manga, films, and more."
-  section="media"
-  ogImage="/social-default.svg"
->
-  <Fragment slot="list">
-    {sortedMedia.length > 0 ? (
-      sortedMedia.map((entry) => (
-        <ListItem
-          href={`/media/${entry.slug}`}
-          slug={entry.slug}
-          title={entry.data.title}
-          tags={entry.data.tags}
-          contentType={entry.data.content_type}
-          hasMinimalContent={hasMinimalContent(entry.body)}
-        />
-      ))
-    ) : (
-      <p class="empty-state">No media entries yet.</p>
-    )}
-  </Fragment>
-</SplitViewLayout>
+<BaseLayout title="Media" description="My thoughts on anime, manga, movies, and more — favorites included." ogImage="/social-default.svg">
+  <!-- Hidden JSON data for JS to consume -->
+  <div id="entry-data" data-entries={JSON.stringify(entryData)} hidden></div>
+
+  <main class="media-page" data-animate>
+    <!-- ── Editorial header ────────────────────────── -->
+    <header class="media-header">
+      <span class="media-header__label">Media</span>
+      <h1 class="media-header__title">Logbook</h1>
+      <span class="media-header__count">{count} entries</span>
+    </header>
+
+    <!-- ── Filter bar ──────────────────────────────── -->
+    <div class="filter-bar" role="toolbar" aria-label="Filter media entries">
+      <button class="filter-pill filter-pill--fav" data-filter-fav aria-pressed="false">
+        ★ favorites
+      </button>
+      <div class="filter-bar__divider" aria-hidden="true"></div>
+      <div class="filter-bar__types" role="group" aria-label="Filter by type">
+        {(['all', 'anime', 'manga', 'film', 'series', 'music', 'book', 'game', 'character', 'other']).map((type) => (
+          <button
+            class:list={['filter-pill', { 'is-active': type === 'all' }]}
+            data-filter-type={type}
+            aria-pressed={type === 'all' ? 'true' : 'false'}
+          >
+            {type}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- ── Main layout: grid + optional panel ─────── -->
+    <div class="media-layout" id="media-layout">
+      <!-- Card grid -->
+      <div class="media-grid" id="media-grid" role="list">
+        {sortedMedia.map((entry, i) => (
+          <a
+            href={`/media/${entry.slug}`}
+            class:list={['media-card', { 'media-card--fav': entry.data.isFavorite }]}
+            data-slug={entry.slug}
+            data-type={entry.data.content_type}
+            data-fav={entry.data.isFavorite ? 'true' : 'false'}
+            role="listitem"
+            style={`--card-index: ${i}`}
+          >
+            <EmblemCard
+              emblemSrc={entry.data.emblem}
+              isInitiallyFlipped={true}
+              disableLightbox={true}
+              size="sm"
+            />
+            <span class="media-card__title">{entry.data.title}</span>
+            {entry.data.isFavorite && (
+              <span class="media-card__star" aria-label="Favorite">★</span>
+            )}
+          </a>
+        ))}
+      </div>
+
+      <!-- Quick-view panel (hidden until JS opens it) -->
+      <aside class="quick-view-panel" id="quick-view-panel" hidden aria-label="Quick view">
+        <button class="quick-view-panel__close" id="quick-view-close" aria-label="Close panel">✕</button>
+        <div class="quick-view-panel__content" id="quick-view-content">
+          <!-- Populated by JS -->
+        </div>
+      </aside>
+    </div>
+  </main>
+</BaseLayout>
 
 <style>
-  .empty-state {
+  /* ── Page layout ───────────────────────────────── */
+  .media-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-lg);
+  }
+
+  /* ── Editorial header ──────────────────────────── */
+  .media-header {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+    flex-wrap: wrap;
+  }
+  .media-header__label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
     color: var(--color-muted);
-    font-style: italic;
+  }
+  .media-header__title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: var(--color-text);
+    line-height: 1;
+  }
+  .media-header__count {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-muted);
+    margin-left: auto;
+  }
+
+  /* ── Filter bar ────────────────────────────────── */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-xl);
+  }
+  .filter-bar__divider {
+    width: 1px;
+    height: 20px;
+    background: var(--color-border, #2a2a2a);
+  }
+  .filter-bar__types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+  .filter-pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--color-border, #2a2a2a);
+    background: transparent;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: border-color 200ms, color 200ms, background 200ms;
+  }
+  .filter-pill:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+  }
+  .filter-pill.is-active,
+  .filter-pill[aria-pressed="true"] {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+    background: rgba(255, 229, 44, 0.08);
+  }
+  .filter-pill--fav {
+    border-color: rgba(255, 229, 44, 0.4);
+    color: rgba(255, 229, 44, 0.6);
+  }
+  .filter-pill--fav.is-active,
+  .filter-pill--fav[aria-pressed="true"] {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+    background: rgba(255, 229, 44, 0.12);
+  }
+
+  /* ── Media layout (grid + panel side-by-side) ─── */
+  .media-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+    transition: grid-template-columns 350ms var(--animation-easing, ease);
+  }
+  .media-layout.panel-open {
+    grid-template-columns: 1fr 340px;
+  }
+
+  /* ── Card grid ─────────────────────────────────── */
+  .media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--space-lg);
+    align-content: start;
+  }
+
+  /* ── Individual card ───────────────────────────── */
+  .media-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    text-decoration: none;
+    color: var(--color-text);
+    cursor: pointer;
+    /* Staggered entrance */
+    animation: card-in 400ms var(--animation-easing, ease) both;
+    animation-delay: calc(var(--card-index, 0) * 50ms);
+  }
+  @keyframes card-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .media-card:hover {
+    color: var(--color-gold);
+  }
+  .media-card__title {
+    font-size: 12px;
+    font-family: var(--font-mono);
     text-align: center;
-    padding: var(--space-xl);
+    line-height: 1.4;
+    max-width: 100%;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .media-card__star {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 11px;
+    color: var(--color-gold);
+    line-height: 1;
+  }
+
+  /* ── Quick-view panel ──────────────────────────── */
+  .quick-view-panel {
+    position: sticky;
+    top: var(--space-xl);
+    height: fit-content;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    background: var(--color-bg-elevated, #1a1a1a);
+    border: 1px solid var(--color-border, #2a2a2a);
+    border-radius: 10px;
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+  .quick-view-panel[hidden] {
+    display: none;
+  }
+  .quick-view-panel__close {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    color: var(--color-muted);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    line-height: 1;
+  }
+  .quick-view-panel__close:hover {
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* ── Hidden entries for no-JS ──────────────────── */
+  .media-card[data-hidden="true"] {
+    display: none;
+  }
+
+  /* ── Responsive ────────────────────────────────── */
+  @media (max-width: 768px) {
+    .media-layout.panel-open {
+      grid-template-columns: 1fr;
+    }
+    .quick-view-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: auto;
+      border-radius: 10px 10px 0 0;
+      max-height: 60vh;
+      z-index: 100;
+    }
+    .media-header__count {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  function initMediaFilters() {
+    const layout = document.getElementById('media-layout');
+    const grid = document.getElementById('media-grid');
+    const panel = document.getElementById('quick-view-panel') as HTMLElement | null;
+    const closeBtn = document.getElementById('quick-view-close');
+    const entryDataEl = document.getElementById('entry-data');
+
+    if (!grid) return;
+
+    // Parse entry data
+    let entries: Array<{
+      slug: string;
+      title: string;
+      type: string;
+      isFavorite: boolean;
+      emblem: string;
+      tags: string[];
+      excerpt: string;
+    }> = [];
+    if (entryDataEl) {
+      try {
+        entries = JSON.parse(entryDataEl.dataset.entries || '[]');
+      } catch {}
+    }
+
+    // Build lookup map
+    const entryMap = new Map(entries.map((e) => [e.slug, e]));
+
+    let activeType = 'all';
+    let favOnly = false;
+
+    function applyFilters() {
+      const cards = grid!.querySelectorAll<HTMLElement>('.media-card');
+      let visibleIndex = 0;
+
+      cards.forEach((card) => {
+        const type = card.dataset.type ?? '';
+        const isFav = card.dataset.fav === 'true';
+
+        const typeMatch = activeType === 'all' || type === activeType;
+        const favMatch = !favOnly || isFav;
+        const visible = typeMatch && favMatch;
+
+        card.dataset.hidden = visible ? 'false' : 'true';
+
+        if (visible) {
+          card.style.setProperty('--card-index', String(visibleIndex));
+          visibleIndex++;
+        }
+      });
+    }
+
+    // Type filter pills
+    const typePills = document.querySelectorAll<HTMLButtonElement>('[data-filter-type]');
+    typePills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        const type = pill.dataset.filterType ?? 'all';
+        activeType = type;
+
+        typePills.forEach((p) => {
+          const active = p.dataset.filterType === type;
+          p.classList.toggle('is-active', active);
+          p.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+
+        applyFilters();
+      });
+    });
+
+    // Favorites filter pill
+    const favPill = document.querySelector<HTMLButtonElement>('[data-filter-fav]');
+    if (favPill) {
+      favPill.addEventListener('click', () => {
+        favOnly = !favOnly;
+        favPill.classList.toggle('is-active', favOnly);
+        favPill.setAttribute('aria-pressed', favOnly ? 'true' : 'false');
+        applyFilters();
+      });
+    }
+
+    // Quick-view panel: open on card click (intercept before navigation)
+    if (panel && closeBtn) {
+      const cards = grid.querySelectorAll<HTMLAnchorElement>('.media-card');
+
+      cards.forEach((card) => {
+        card.addEventListener('click', (e) => {
+          // Only open panel if we have entry data; otherwise let link navigate normally
+          const slug = card.dataset.slug;
+          if (!slug) return;
+          const entry = entryMap.get(slug);
+          if (!entry) return;
+
+          e.preventDefault();
+
+          // Populate panel
+          const content = document.getElementById('quick-view-content');
+          if (content) {
+            content.innerHTML = `
+              <p class="qv-type">${entry.type}</p>
+              <h2 class="qv-title">${entry.title}</h2>
+              ${entry.excerpt ? `<p class="qv-excerpt">${entry.excerpt}</p>` : ''}
+              ${entry.tags.length ? `<div class="qv-tags">${entry.tags.map((t) => `<span class="qv-tag">${t}</span>`).join('')}</div>` : ''}
+              <a href="/media/${slug}" class="qv-link">View full entry →</a>
+            `;
+          }
+
+          panel.hidden = false;
+          layout?.classList.add('panel-open');
+        });
+      });
+
+      // Close button
+      closeBtn.addEventListener('click', () => {
+        panel.hidden = true;
+        layout?.classList.remove('panel-open');
+      });
+    }
+  }
+
+  document.addEventListener('astro:page-load', initMediaFilters);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMediaFilters);
+  } else {
+    initMediaFilters();
+  }
+</script>
+
+<style>
+  /* ── Quick-view panel inner content ────────────── */
+  .qv-type {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-muted);
+    margin: 0;
+  }
+  .qv-title {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.2;
+  }
+  .qv-excerpt {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .qv-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .qv-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    color: var(--color-muted);
+  }
+  .qv-link {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-gold);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    margin-top: var(--space-sm);
+  }
+  .qv-link:hover {
+    text-decoration: underline;
   }
 </style>
