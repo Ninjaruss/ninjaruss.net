@@ -57,7 +57,7 @@ const count = sortedMedia.length;
     <!-- ── Main layout: grid + optional panel ─────── -->
     <div class="media-layout" id="media-layout">
       <!-- Card grid -->
-      <div class="media-grid" id="media-grid" role="list">
+      <div class="media-grid" id="media-grid">
         {sortedMedia.map((entry, i) => (
           <a
             href={`/media/${entry.slug}`}
@@ -65,7 +65,6 @@ const count = sortedMedia.length;
             data-slug={entry.slug}
             data-type={entry.data.content_type}
             data-fav={entry.data.isFavorite ? 'true' : 'false'}
-            role="listitem"
             style={`--card-index: ${i}`}
           >
             <EmblemCard
@@ -212,7 +211,7 @@ const count = sortedMedia.length;
     cursor: pointer;
     /* Staggered entrance */
     animation: card-in 400ms var(--animation-easing, ease) both;
-    animation-delay: calc(var(--card-index, 0) * 50ms);
+    animation-delay: min(calc(var(--card-index, 0) * 50ms), 1500ms);
   }
   @keyframes card-in {
     from { opacity: 0; transform: translateY(12px); }
@@ -269,6 +268,11 @@ const count = sortedMedia.length;
     padding: 4px 8px;
     border-radius: 4px;
     line-height: 1;
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .quick-view-panel__close:hover {
     color: var(--color-text);
@@ -303,6 +307,36 @@ const count = sortedMedia.length;
 </style>
 
 <script>
+  function esc(s: unknown): string {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function updateFilterURL(type: string, favOnly: boolean) {
+    const p = new URLSearchParams(location.search);
+    if (type === 'all') p.delete('type'); else p.set('type', type);
+    if (!favOnly) p.delete('fav'); else p.set('fav', '1');
+    p.delete('open');
+    const qs = p.toString();
+    history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+  }
+
+  function updateOpenURL(slug: string) {
+    const p = new URLSearchParams(location.search);
+    p.set('open', slug);
+    history.replaceState(null, '', `?${p.toString()}`);
+  }
+
+  function clearOpenURL() {
+    const p = new URLSearchParams(location.search);
+    p.delete('open');
+    const qs = p.toString();
+    history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+  }
+
   function initMediaFilters() {
     const layout = document.getElementById('media-layout');
     const grid = document.getElementById('media-grid');
@@ -331,8 +365,14 @@ const count = sortedMedia.length;
     // Build lookup map
     const entryMap = new Map(entries.map((e) => [e.slug, e]));
 
-    let activeType = 'all';
-    let favOnly = false;
+    // Read initial state from URL
+    const params = new URLSearchParams(location.search);
+    const initialType = params.get('type') || 'all';
+    const initialFav = params.get('fav') === '1';
+    const initialOpen = params.get('open') || null;
+
+    let activeType = initialType;
+    let favOnly = initialFav;
 
     function applyFilters() {
       const cards = grid!.querySelectorAll<HTMLElement>('.media-card');
@@ -355,9 +395,13 @@ const count = sortedMedia.length;
       });
     }
 
-    // Type filter pills
+    // Type filter pills — apply initial state from URL
     const typePills = document.querySelectorAll<HTMLButtonElement>('[data-filter-type]');
     typePills.forEach((pill) => {
+      const isActive = pill.dataset.filterType === initialType;
+      pill.classList.toggle('is-active', isActive);
+      pill.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+
       pill.addEventListener('click', () => {
         const type = pill.dataset.filterType ?? 'all';
         activeType = type;
@@ -368,19 +412,54 @@ const count = sortedMedia.length;
           p.setAttribute('aria-pressed', active ? 'true' : 'false');
         });
 
+        updateFilterURL(activeType, favOnly);
         applyFilters();
       });
     });
 
-    // Favorites filter pill
+    // Favorites filter pill — apply initial state from URL
     const favPill = document.querySelector<HTMLButtonElement>('[data-filter-fav]');
     if (favPill) {
+      favPill.classList.toggle('is-active', initialFav);
+      favPill.setAttribute('aria-pressed', initialFav ? 'true' : 'false');
+
       favPill.addEventListener('click', () => {
         favOnly = !favOnly;
         favPill.classList.toggle('is-active', favOnly);
         favPill.setAttribute('aria-pressed', favOnly ? 'true' : 'false');
+        updateFilterURL(activeType, favOnly);
         applyFilters();
       });
+    }
+
+    // Apply initial filter state
+    applyFilters();
+
+    // Quick-view panel helpers
+    function openPanel(slug: string, entry: typeof entries[number]) {
+      const content = document.getElementById('quick-view-content');
+      if (content) {
+        content.innerHTML = `
+          <p class="qv-type">${esc(entry.type)}</p>
+          <h2 class="qv-title">${esc(entry.title)}</h2>
+          ${entry.excerpt ? `<p class="qv-excerpt">${esc(entry.excerpt)}</p>` : ''}
+          ${entry.tags.length ? `<div class="qv-tags">${entry.tags.map((t) => `<span class="qv-tag">${esc(t)}</span>`).join('')}</div>` : ''}
+          <a href="/media/${esc(slug)}" class="qv-link">View full entry →</a>
+        `;
+      }
+      if (panel) {
+        panel.hidden = false;
+        layout?.classList.add('panel-open');
+      }
+      updateOpenURL(slug);
+    }
+
+    function closePanel() {
+      if (panel) {
+        panel.hidden = true;
+        layout?.classList.remove('panel-open');
+      }
+      clearOpenURL();
     }
 
     // Quick-view panel: open on card click (intercept before navigation)
@@ -396,38 +475,24 @@ const count = sortedMedia.length;
           if (!entry) return;
 
           e.preventDefault();
-
-          // Populate panel
-          const content = document.getElementById('quick-view-content');
-          if (content) {
-            content.innerHTML = `
-              <p class="qv-type">${entry.type}</p>
-              <h2 class="qv-title">${entry.title}</h2>
-              ${entry.excerpt ? `<p class="qv-excerpt">${entry.excerpt}</p>` : ''}
-              ${entry.tags.length ? `<div class="qv-tags">${entry.tags.map((t) => `<span class="qv-tag">${t}</span>`).join('')}</div>` : ''}
-              <a href="/media/${slug}" class="qv-link">View full entry →</a>
-            `;
-          }
-
-          panel.hidden = false;
-          layout?.classList.add('panel-open');
+          openPanel(slug, entry);
         });
       });
 
       // Close button
-      closeBtn.addEventListener('click', () => {
-        panel.hidden = true;
-        layout?.classList.remove('panel-open');
-      });
+      closeBtn.addEventListener('click', closePanel);
+
+      // Pre-open panel if URL has ?open=
+      if (initialOpen) {
+        const entry = entryMap.get(initialOpen);
+        if (entry) {
+          openPanel(initialOpen, entry);
+        }
+      }
     }
   }
 
   document.addEventListener('astro:page-load', initMediaFilters);
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMediaFilters);
-  } else {
-    initMediaFilters();
-  }
 </script>
 
 <style>
