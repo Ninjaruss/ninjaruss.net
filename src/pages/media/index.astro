@@ -307,6 +307,8 @@ const count = sortedMedia.length;
 </style>
 
 <script>
+  import { parseFilterState, buildFilterURL } from '../../utils/mediaGrid/filterEngine';
+
   function esc(s: unknown): string {
     return String(s)
       .replace(/&/g, '&amp;')
@@ -316,25 +318,22 @@ const count = sortedMedia.length;
   }
 
   function updateFilterURL(type: string, favOnly: boolean) {
-    const p = new URLSearchParams(location.search);
-    if (type === 'all') p.delete('type'); else p.set('type', type);
-    if (!favOnly) p.delete('fav'); else p.set('fav', '1');
-    p.delete('open');
-    const qs = p.toString();
-    history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+    const base = buildFilterURL({ type, favOnly });
+    history.replaceState(null, '', base || location.pathname);
   }
 
   function updateOpenURL(slug: string) {
-    const p = new URLSearchParams(location.search);
+    const filterState = parseFilterState(location.search);
+    const base = buildFilterURL(filterState);
+    const p = new URLSearchParams(base.startsWith('?') ? base.slice(1) : base);
     p.set('open', slug);
     history.replaceState(null, '', `?${p.toString()}`);
   }
 
   function clearOpenURL() {
-    const p = new URLSearchParams(location.search);
-    p.delete('open');
-    const qs = p.toString();
-    history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+    const filterState = parseFilterState(location.search);
+    const base = buildFilterURL(filterState);
+    history.replaceState(null, '', base || location.pathname);
   }
 
   function initMediaFilters() {
@@ -366,9 +365,8 @@ const count = sortedMedia.length;
     const entryMap = new Map(entries.map((e) => [e.slug, e]));
 
     // Read initial state from URL
+    const { type: initialType, favOnly: initialFav } = parseFilterState(location.search);
     const params = new URLSearchParams(location.search);
-    const initialType = params.get('type') || 'all';
-    const initialFav = params.get('fav') === '1';
     const initialOpen = params.get('open') || null;
 
     let activeType = initialType;
