@@ -50,8 +50,6 @@ const recentNotes = notes
   .slice(0, 3)
   .map(e => ({ href: `/notes/${e.slug}`, title: e.data.title }));
 
-const favoritesCount = media.filter(e => e.data.isFavorite).length;
-
 // Find the most recently published/updated content
 const allContent = [...notes, ...media, ...showcase];
 const sorted = allContent.sort((a, b) => effectiveDate(b) - effectiveDate(a));
@@ -185,19 +183,32 @@ const latestEntries = sameDateEntries.map(entry => ({
         )}
       </BentoTile>
 
-      <BentoTile
-        href="/favorites"
-        variant="dark"
-        label="Favorites"
-        title="Inspirations"
-        description="My favorite characters, series, and soundtracks."
-        class="bento-tile--span-1x2"
+      <a
+        id="kaima-tile"
+        href="https://www.youtube.com/@kaima-mask"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--interactive bento-tile--span-1x2 kaima-tile"
       >
-        <div class="tile-favorites-count">
-          <span class="tile-favorites-count__num">{favoritesCount}</span>
-          <span class="tile-favorites-count__label">curated<br />entries</span>
+        <div class="kaima-tile__body">
+          <div class="kaima-tile__text">
+            <div class="kaima-tile__name">KAIMA 悔魔</div>
+            <div class="kaima-tile__desc">upcoming · session log</div>
+          </div>
+          <div
+            id="kaima-watch-btn"
+            class="kaima-watch-btn"
+            role="link"
+            tabindex="-1"
+            aria-label="Watch live stream"
+            data-href="https://www.youtube.com/@kaima-mask"
+            hidden
+          >
+            <span class="kaima-watch-btn__dot"></span>
+            Watch<br />Live
+          </div>
         </div>
-      </BentoTile>
+      </a>
 
       <!-- Rows 4-5: Media (2×2) + Latest (2×1) + Novel (1×2) + MAL/Spotify (stacked 1×1) -->
       <BentoTile
@@ -205,7 +216,7 @@ const latestEntries = sameDateEntries.map(entry => ({
         variant="dark"
         label="Media"
         title="Logbook"
-        description="My thoughts on anime, manga, movies, and more."
+        description="My thoughts on anime, manga, movies, and more — favorites included."
         class="bento-tile--core bento-tile--span-2x2 media-tile"
       >
         {recentMedia.length > 0 && (
@@ -289,24 +300,6 @@ const latestEntries = sameDateEntries.map(entry => ({
         />
         <span class="logo-tile__label">MyAnimeList</span>
         <p class="logo-tile__description">Anime I've watched and rated based on personal enjoyment.</p>
-      </a>
-
-      <!-- Row 5: Live stream tile (cols 3-4) -->
-      <a
-        id="live-tile"
-        href="https://www.youtube.com/@kaima-mask"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="bento-tile bento-tile--dark bento-tile--span-2x1 live-tile"
-      >
-        <div class="live-tile__header">
-          <span class="live-tile__badge" id="live-badge" aria-live="polite">Stream</span>
-          <span class="live-tile__platform">YouTube</span>
-        </div>
-        <div class="live-tile__channel">KAIMA 悔魔</div>
-        <div class="live-tile__handle">@kaima-mask</div>
-        <hr class="live-tile__divider" />
-        <div class="live-tile__cta" id="live-cta">not streaming right now</div>
       </a>
 
       <a
@@ -683,34 +676,6 @@ const latestEntries = sameDateEntries.map(entry => ({
     border-radius: 2px;
   }
 
-  /* Favorites tile count display */
-  .tile-favorites-count {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-  }
-
-  .tile-favorites-count__num {
-    font-family: var(--font-mono);
-    font-size: 2rem;
-    font-weight: 700;
-    color: rgba(255, 229, 44, 0.35);
-    line-height: 1;
-    transition: color var(--transition-fast);
-  }
-
-  .bento-tile:hover .tile-favorites-count__num {
-    color: rgba(255, 229, 44, 0.6);
-  }
-
-  .tile-favorites-count__label {
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
-    line-height: 1.4;
-  }
-
   /* ─── Media Tile ──────────────────────────────────────── */
   .media-tile {
     /* Horizontal CRT scan-line texture */
@@ -797,115 +762,120 @@ const latestEntries = sameDateEntries.map(entry => ({
     50% { opacity: 0.3; transform: scale(0.65); }
   }
 
-  /* ─── Live Stream Tile ───────────────────────────────── */
-  .live-tile {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+  /* ─── KAIMA Tile ─────────────────────────────────────── */
+  .kaima-tile {
     text-decoration: none;
-    cursor: pointer;
     transition:
       border-color var(--transition-fast),
       box-shadow var(--transition-fast),
       background var(--transition-base);
   }
 
-  .live-tile__header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  .kaima-tile:not(.is-live):hover {
+    border-color: var(--color-gold);
+    box-shadow: var(--shadow-hard);
   }
 
-  .live-tile__badge {
-    font-family: var(--font-display);
-    font-size: 0.45rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    padding: 2px 7px;
-    border-radius: var(--radius-xs);
-    background: var(--color-bg-surface);
-    color: var(--color-text-muted);
-    transition: background var(--transition-fast), color var(--transition-fast);
-  }
-
-  .live-tile__platform {
-    margin-left: auto;
-    font-family: var(--font-mono);
-    font-size: 0.5rem;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    transition: color var(--transition-fast);
-  }
-
-  .live-tile__channel {
-    font-family: var(--font-display);
-    font-size: 1rem;
-    color: var(--color-text-muted);
-    line-height: 1.2;
-    transition: color var(--transition-fast);
-  }
-
-  .live-tile__handle {
-    font-family: var(--font-mono);
-    font-size: 0.55rem;
-    color: var(--color-text-muted);
-    opacity: 0.7;
-    letter-spacing: 0.04em;
-    transition: color var(--transition-fast), opacity var(--transition-fast);
-  }
-
-  .live-tile__divider {
-    border: none;
-    border-top: 1px solid var(--color-border);
-    margin: 0.1rem 0;
-    transition: border-color var(--transition-fast);
-  }
-
-  .live-tile__cta {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    color: var(--color-text-muted);
-    text-transform: lowercase;
-    letter-spacing: 0.06em;
-    opacity: 0.65;
-    transition: color var(--transition-fast), opacity var(--transition-fast);
-  }
-
-  /* Live state — red glow */
-  .live-tile.is-live {
+  .kaima-tile.is-live {
     border-color: #ff4040;
     background: #181212;
     box-shadow: 4px 4px 0 rgba(255, 64, 64, 0.35), 0 0 28px rgba(255, 64, 64, 0.12);
-    animation: live-tile-pulse 2.5s ease-in-out infinite;
+    animation: kaima-tile-pulse 2.5s ease-in-out infinite;
   }
 
-  @keyframes live-tile-pulse {
+  @keyframes kaima-tile-pulse {
     0%, 100% { box-shadow: 4px 4px 0 rgba(255, 64, 64, 0.35), 0 0 24px rgba(255, 64, 64, 0.12); }
     50%       { box-shadow: 4px 4px 0 rgba(255, 64, 64, 0.5),  0 0 40px rgba(255, 64, 64, 0.22); }
   }
 
-  .live-tile.is-live .live-tile__badge {
+  .kaima-tile__body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    width: 100%;
+  }
+
+  .kaima-tile__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .kaima-tile__name {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    line-height: 1.1;
+    transition: color var(--transition-fast);
+  }
+
+  .kaima-tile.is-live .kaima-tile__name {
+    color: #c8c8c8;
+  }
+
+  .kaima-tile__desc {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+    opacity: 0.5;
+    transition: color var(--transition-fast);
+  }
+
+  .kaima-tile.is-live .kaima-tile__desc {
+    color: #4a3535;
+    opacity: 1;
+  }
+
+  /* Watch Live button — inside tile, right side */
+  .kaima-watch-btn {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 52px;
+    min-height: 52px;
+    padding: 10px 6px;
+    border-radius: 6px;
     background: #ff4040;
     color: #fff;
-    animation: live-badge-flash 2s ease-in-out infinite;
+    font-family: var(--font-mono);
+    font-size: 0.45rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 14px rgba(255, 64, 64, 0.5);
+    animation: kaima-btn-breathe 1.5s ease-in-out infinite;
   }
 
-  @keyframes live-badge-flash {
+  .kaima-watch-btn[hidden] {
+    display: none;
+  }
+
+  @keyframes kaima-btn-breathe {
+    0%, 100% { box-shadow: 0 0 10px rgba(255, 64, 64, 0.45); }
+    50%       { box-shadow: 0 0 22px rgba(255, 64, 64, 0.85); }
+  }
+
+  .kaima-watch-btn__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    animation: kaima-dot-flash 1s ease-in-out infinite;
+  }
+
+  @keyframes kaima-dot-flash {
     0%, 100% { opacity: 1; }
-    50%       { opacity: 0.75; }
-  }
-
-  .live-tile.is-live .live-tile__platform { color: #a0a0a0; }
-  .live-tile.is-live .live-tile__channel  { color: var(--color-text); }
-  .live-tile.is-live .live-tile__handle   { color: #707070; opacity: 1; }
-  .live-tile.is-live .live-tile__divider  { border-color: #2e1a1a; }
-  .live-tile.is-live .live-tile__cta      { color: #ff6060; opacity: 1; }
-
-  /* Hover state on offline tile */
-  .live-tile:not(.is-live):hover {
-    border-color: var(--color-gold);
-    box-shadow: var(--shadow-hard);
+    50%       { opacity: 0.4; }
   }
 
   /* Image Tile */
@@ -1144,8 +1114,9 @@ const latestEntries = sameDateEntries.map(entry => ({
       transition: none;
     }
 
-    .live-tile.is-live           { animation: none; }
-    .live-tile.is-live .live-tile__badge { animation: none; }
+    .kaima-tile.is-live          { animation: none; }
+    .kaima-watch-btn              { animation: none; }
+    .kaima-watch-btn__dot         { animation: none; }
     .container.is-live::before   { animation: none; background-position: 0% 0%; }
   }
 
@@ -1244,27 +1215,28 @@ const latestEntries = sameDateEntries.map(entry => ({
   }
 
   function applyLiveState(isLive: boolean, videoId: string | null): void {
-    const tile = document.getElementById('live-tile') as HTMLAnchorElement | null;
+    const tile = document.getElementById('kaima-tile') as HTMLAnchorElement | null;
     const container = document.querySelector<HTMLElement>('.container');
-    const badge = document.getElementById('live-badge');
-    const cta = document.getElementById('live-cta');
+    const watchBtn = document.getElementById('kaima-watch-btn') as HTMLElement | null;
 
     if (!tile || !container) return;
 
     if (isLive) {
-      tile.href = videoId
-        ? `https://www.youtube.com/watch?v=${videoId}`
-        : CHANNEL_URL;
       tile.classList.add('is-live');
       container.classList.add('is-live');
-      if (badge) badge.textContent = '● Live';
-      if (cta) cta.textContent = 'watch live now →';
+      if (watchBtn) {
+        watchBtn.hidden = false;
+        watchBtn.dataset.href = videoId
+          ? `https://www.youtube.com/watch?v=${videoId}`
+          : CHANNEL_URL;
+      }
     } else {
-      tile.href = CHANNEL_URL;
       tile.classList.remove('is-live');
       container.classList.remove('is-live');
-      if (badge) badge.textContent = 'Stream';
-      if (cta) cta.textContent = 'not streaming right now';
+      if (watchBtn) {
+        watchBtn.hidden = true;
+        watchBtn.dataset.href = CHANNEL_URL;
+      }
     }
   }
 
@@ -1352,6 +1324,17 @@ const latestEntries = sameDateEntries.map(entry => ({
     });
   }
 
+  function initializeKaimaWatchBtn(): void {
+    const btn = document.getElementById('kaima-watch-btn');
+    if (!btn) return;
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const href = btn.dataset.href;
+      if (href) window.open(href, '_blank', 'noopener,noreferrer');
+    });
+  }
+
   // Mouse-tracking 3D tilt for all tile types
   function initializeTilt() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -1386,6 +1369,7 @@ const latestEntries = sameDateEntries.map(entry => ({
   initializeLatestTile();
   initializeNovelTile();
   initializeEmblemLinks();
+  initializeKaimaWatchBtn();
   initializeTilt();
   startLivePolling();
 
@@ -1394,6 +1378,7 @@ const latestEntries = sameDateEntries.map(entry => ({
     initializeLatestTile();
     initializeNovelTile();
     initializeEmblemLinks();
+    initializeKaimaWatchBtn();
     initializeTilt();
     startLivePolling();
   });
