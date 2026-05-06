@@ -47,7 +47,7 @@ const axes = STAT_ORDER.map((_, i) => {
 });
 
 // Labels placed just outside the outer ring
-const LABEL_R = R + 18;
+const LABEL_R = R + 22;
 const statLabels = STAT_ORDER.map((stat, i) => {
   const angle = (-90 + i * 72) * (Math.PI / 180);
   return {
@@ -82,17 +82,20 @@ const allData    = JSON.stringify(allTallies);
 <BaseLayout title="Stream" description="Velvet Room session archive for the ninjaruss_ Twitch stream.">
   <div class="stream-page">
 
-    <!-- Chrome bar -->
-    <div class="s-chrome">
-      <span class="s-chrome-label"><strong>NINJARUSS_</strong> — Session Archive</span>
-      <div class="s-tabs" role="tablist">
+    <!-- Sidebar -->
+    <div class="s-sidebar">
+      <a href="/" class="s-logo">Ninjaruss</a>
+      <nav class="s-tabs" role="tablist">
         <button class="s-tab active" data-tab="status" role="tab" aria-selected="true">Status</button>
         <button class="s-tab" data-tab="quests" role="tab" aria-selected="false">Quests</button>
         <button class="s-tab" data-tab="log"    role="tab" aria-selected="false">Log</button>
         <button class="s-tab" data-tab="bonds"  role="tab" aria-selected="false">Bonds</button>
-        <button class="s-tab" data-tab="velvet" role="tab" aria-selected="false">Velvet</button>
-      </div>
+        <button class="s-tab" data-tab="velvet" role="tab" aria-selected="false">Mail</button>
+      </nav>
     </div>
+
+    <!-- Right content area -->
+    <div class="s-content">
 
     <!-- Header -->
     <div class="s-header">
@@ -116,7 +119,7 @@ const allData    = JSON.stringify(allTallies);
           <div class="s-status-inner">
 
             <div class="s-radar-wrap">
-              <svg class="s-radar" viewBox="0 0 300 300" aria-label="Stat radar chart" role="img">
+              <svg class="s-radar" viewBox="-12 -12 324 324" aria-label="Stat radar chart" role="img">
                 {guides.map(pts => (
                   <polygon class="s-radar-guide" points={pts} />
                 ))}
@@ -256,6 +259,7 @@ const allData    = JSON.stringify(allTallies);
 
       </div>
     </div>
+    </div>{/* s-content */}
   </div>
 </BaseLayout>
 

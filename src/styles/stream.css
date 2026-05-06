@@ -10,7 +10,7 @@
 
 .stream-page {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100vh;
   overflow: hidden;
   background: #0a0a0c;
@@ -18,36 +18,51 @@
   font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-/* ── Chrome bar ─────────────────────────────────────────── */
-.s-chrome {
+/* ── Sidebar ─────────────────────────────────────────────── */
+.s-sidebar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 20px;
-  background: #111;
-  border-bottom: 1px solid #1e1e1e;
+  flex-direction: column;
+  width: 148px;
   flex-shrink: 0;
+  background: #111;
+  border-right: 1px solid #1e1e1e;
+  padding: 20px 12px;
+  gap: 2px;
 }
 
-.s-chrome-label {
+.s-logo {
+  display: block;
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   font-family: 'JetBrains Mono', 'Courier New', monospace;
-  color: #999;
-}
-
-.s-chrome-label strong {
   color: #ffe52c;
+  text-decoration: none;
+  padding: 6px 8px;
+  margin-bottom: 16px;
+  transition: opacity 0.15s;
 }
 
+.s-logo:hover { opacity: 0.7; }
+
+/* ── Content area ────────────────────────────────────────── */
+.s-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ── Tabs (vertical in sidebar) ──────────────────────────── */
 .s-tabs {
   display: flex;
-  gap: 4px;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .s-tab {
-  padding: 5px 14px;
+  padding: 8px 10px;
   border-radius: 4px;
   font-size: 0.68rem;
   letter-spacing: 0.1em;
@@ -57,6 +72,8 @@
   color: #888;
   background: transparent;
   border: 1px solid transparent;
+  text-align: left;
+  width: 100%;
   transition: color 0.15s, background 0.15s, border-color 0.15s;
 }
 
@@ -76,6 +93,7 @@
   padding: 12px 28px;
   border-bottom: 1px solid #141416;
   flex-shrink: 0;
+  background: #0a0a0c;
 }
 
 .s-header-title {
@@ -100,6 +118,7 @@
   grid-template-columns: 220px 1fr;
   flex: 1;
   overflow: hidden;
+  min-height: 0;
 }
 
 /* ── VN Sprite column ───────────────────────────────────── */
@@ -144,10 +163,16 @@
 }
 
 /* ── Status panel ───────────────────────────────────────── */
+#panel-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .s-status-inner {
   display: flex;
   gap: 40px;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .s-radar-wrap {
@@ -529,11 +554,15 @@
 }
 
 .s-radar-label {
-  font-size: 9px;
+  font-size: 12px;
+  font-weight: 700;
   font-family: 'JetBrains Mono', 'Courier New', monospace;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  fill: #aaa;
+  fill: #e0e0e0;
+  stroke: #0a0a0c;
+  stroke-width: 5;
+  paint-order: stroke fill;
   text-anchor: middle;
   dominant-baseline: middle;
 }
@@ -543,9 +572,24 @@
   .s-panel { transition: none; }
 }
 
-/* ── Mobile: collapse sprite, stack layout ──────────────── */
+/* ── Mobile: collapse sidebar to top bar, stack layout ───── */
 @media (max-width: 768px) {
+  .stream-page { flex-direction: column; }
+  .s-sidebar {
+    flex-direction: row;
+    width: 100%;
+    padding: 8px 12px;
+    border-right: none;
+    border-bottom: 1px solid #1e1e1e;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .s-logo { margin-bottom: 0; margin-right: 8px; }
+  .s-tabs { flex-direction: row; gap: 4px; }
+  .s-tab { width: auto; padding: 5px 10px; text-align: center; }
   .s-shell { grid-template-columns: 1fr; }
   .s-sprite { display: none; }
   .s-status-inner { flex-direction: column; align-items: center; }
+  #panel-status { justify-content: flex-start; }
 }
