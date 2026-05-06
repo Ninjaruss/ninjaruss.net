@@ -184,27 +184,25 @@ const latestEntries = sameDateEntries.map(entry => ({
       </BentoTile>
 
       <a
-        id="kaima-tile"
-        href="https://www.youtube.com/@kaima-mask"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--interactive bento-tile--span-1x2 kaima-tile"
+        id="stream-tile"
+        href="/stream"
+        class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--interactive bento-tile--span-1x2 stream-tile"
       >
-        <div class="kaima-tile__body">
-          <div class="kaima-tile__text">
-            <div class="kaima-tile__name">KAIMA 悔魔</div>
-            <div class="kaima-tile__desc">upcoming · session log</div>
+        <div class="stream-tile__body">
+          <div class="stream-tile__text">
+            <div class="stream-tile__name">NINJARUSS_</div>
+            <div class="stream-tile__desc">twitch · session log</div>
           </div>
           <div
-            id="kaima-watch-btn"
-            class="kaima-watch-btn"
+            id="stream-watch-btn"
+            class="stream-watch-btn"
             role="link"
             tabindex="-1"
-            aria-label="Watch live stream"
-            data-href="https://www.youtube.com/@kaima-mask"
+            aria-label="Watch live on Twitch"
+            data-href="https://twitch.tv/ninjaruss_"
             hidden
           >
-            <span class="kaima-watch-btn__dot"></span>
+            <span class="stream-watch-btn__dot"></span>
             Watch<br />Live
           </div>
         </div>
@@ -762,8 +760,8 @@ const latestEntries = sameDateEntries.map(entry => ({
     50% { opacity: 0.3; transform: scale(0.65); }
   }
 
-  /* ─── KAIMA Tile ─────────────────────────────────────── */
-  .kaima-tile {
+  /* ─── Stream Tile ────────────────────────────────────── */
+  .stream-tile {
     text-decoration: none;
     transition:
       border-color var(--transition-fast),
@@ -771,24 +769,24 @@ const latestEntries = sameDateEntries.map(entry => ({
       background var(--transition-base);
   }
 
-  .kaima-tile:not(.is-live):hover {
+  .stream-tile:not(.is-live):hover {
     border-color: var(--color-gold);
     box-shadow: var(--shadow-hard);
   }
 
-  .kaima-tile.is-live {
+  .stream-tile.is-live {
     border-color: #ff4040;
     background: #181212;
     box-shadow: 4px 4px 0 rgba(255, 64, 64, 0.35), 0 0 28px rgba(255, 64, 64, 0.12);
-    animation: kaima-tile-pulse 2.5s ease-in-out infinite;
+    animation: stream-tile-pulse 2.5s ease-in-out infinite;
   }
 
-  @keyframes kaima-tile-pulse {
+  @keyframes stream-tile-pulse {
     0%, 100% { box-shadow: 4px 4px 0 rgba(255, 64, 64, 0.35), 0 0 24px rgba(255, 64, 64, 0.12); }
     50%       { box-shadow: 4px 4px 0 rgba(255, 64, 64, 0.5),  0 0 40px rgba(255, 64, 64, 0.22); }
   }
 
-  .kaima-tile__body {
+  .stream-tile__body {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -796,14 +794,14 @@ const latestEntries = sameDateEntries.map(entry => ({
     width: 100%;
   }
 
-  .kaima-tile__text {
+  .stream-tile__text {
     display: flex;
     flex-direction: column;
     gap: 4px;
     min-width: 0;
   }
 
-  .kaima-tile__name {
+  .stream-tile__name {
     font-family: var(--font-display);
     font-size: 1.1rem;
     font-weight: 700;
@@ -812,11 +810,11 @@ const latestEntries = sameDateEntries.map(entry => ({
     transition: color var(--transition-fast);
   }
 
-  .kaima-tile.is-live .kaima-tile__name {
+  .stream-tile.is-live .stream-tile__name {
     color: #c8c8c8;
   }
 
-  .kaima-tile__desc {
+  .stream-tile__desc {
     font-family: var(--font-mono);
     font-size: 0.6rem;
     color: var(--color-text-muted);
@@ -825,13 +823,13 @@ const latestEntries = sameDateEntries.map(entry => ({
     transition: color var(--transition-fast);
   }
 
-  .kaima-tile.is-live .kaima-tile__desc {
+  .stream-tile.is-live .stream-tile__desc {
     color: #4a3535;
     opacity: 1;
   }
 
   /* Watch Live button — inside tile, right side */
-  .kaima-watch-btn {
+  .stream-watch-btn {
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -853,27 +851,27 @@ const latestEntries = sameDateEntries.map(entry => ({
     cursor: pointer;
     border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 0 14px rgba(255, 64, 64, 0.5);
-    animation: kaima-btn-breathe 1.5s ease-in-out infinite;
+    animation: stream-btn-breathe 1.5s ease-in-out infinite;
   }
 
-  .kaima-watch-btn[hidden] {
+  .stream-watch-btn[hidden] {
     display: none;
   }
 
-  @keyframes kaima-btn-breathe {
+  @keyframes stream-btn-breathe {
     0%, 100% { box-shadow: 0 0 10px rgba(255, 64, 64, 0.45); }
     50%       { box-shadow: 0 0 22px rgba(255, 64, 64, 0.85); }
   }
 
-  .kaima-watch-btn__dot {
+  .stream-watch-btn__dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.9);
-    animation: kaima-dot-flash 1s ease-in-out infinite;
+    animation: stream-dot-flash 1s ease-in-out infinite;
   }
 
-  @keyframes kaima-dot-flash {
+  @keyframes stream-dot-flash {
     0%, 100% { opacity: 1; }
     50%       { opacity: 0.4; }
   }
@@ -1114,9 +1112,9 @@ const latestEntries = sameDateEntries.map(entry => ({
       transition: none;
     }
 
-    .kaima-tile.is-live          { animation: none; }
-    .kaima-watch-btn              { animation: none; }
-    .kaima-watch-btn__dot         { animation: none; }
+    .stream-tile.is-live         { animation: none; }
+    .stream-watch-btn             { animation: none; }
+    .stream-watch-btn__dot        { animation: none; }
     .container.is-live::before   { animation: none; background-position: 0% 0%; }
   }
 
@@ -1180,70 +1178,42 @@ const latestEntries = sameDateEntries.map(entry => ({
 </style>
 
 <script>
-  import { parseYouTubeLiveResponse } from '../utils/liveStatus';
+  import { parseTwitchLiveResponse } from '../utils/twitchStatus';
 
-  const YOUTUBE_API_KEY = import.meta.env.PUBLIC_YOUTUBE_API_KEY as string;
-  const CHANNEL_ID = 'UCjgsr8Oki5_CPwx53tdnwCg';
-  const CHANNEL_URL = 'https://www.youtube.com/@kaima-mask';
+  const TWITCH_CLIENT_ID    = import.meta.env.PUBLIC_TWITCH_CLIENT_ID    as string | undefined;
+  const TWITCH_ACCESS_TOKEN = import.meta.env.PUBLIC_TWITCH_ACCESS_TOKEN as string | undefined;
 
   let liveInterval: ReturnType<typeof setInterval> | undefined;
 
-  async function checkYouTubeLive(): Promise<void> {
-    if (!YOUTUBE_API_KEY) {
-      console.error('[live] PUBLIC_YOUTUBE_API_KEY is not set — live check skipped');
-      return;
-    }
+  async function checkTwitchLive(): Promise<void> {
+    if (!TWITCH_CLIENT_ID || !TWITCH_ACCESS_TOKEN) return;
     try {
-      const url =
-        `https://www.googleapis.com/youtube/v3/search` +
-        `?part=id&channelId=${CHANNEL_ID}&type=video&eventType=live&key=${YOUTUBE_API_KEY}`;
-      const res = await fetch(url);
-      if (!res.ok) {
-        const body = await res.text();
-        console.error(`[live] YouTube API error ${res.status}:`, body);
-        applyLiveState(false, null);
-        return;
-      }
+      const res = await fetch('https://api.twitch.tv/helix/streams?user_login=ninjaruss_', {
+        headers: {
+          'Client-ID': TWITCH_CLIENT_ID,
+          'Authorization': `Bearer ${TWITCH_ACCESS_TOKEN}`,
+        },
+      });
+      if (!res.ok) { applyLiveState(false); return; }
       const data: unknown = await res.json();
-      const { isLive, videoId } = parseYouTubeLiveResponse(data);
-      console.log('[live] check result:', { isLive, videoId });
-      applyLiveState(isLive, videoId);
-    } catch (err) {
-      console.error('[live] fetch failed:', err);
-      applyLiveState(false, null);
+      applyLiveState(parseTwitchLiveResponse(data));
+    } catch {
+      applyLiveState(false);
     }
   }
 
-  function applyLiveState(isLive: boolean, videoId: string | null): void {
-    const tile = document.getElementById('kaima-tile') as HTMLAnchorElement | null;
-    const container = document.querySelector<HTMLElement>('.container');
-    const watchBtn = document.getElementById('kaima-watch-btn') as HTMLElement | null;
-
-    if (!tile || !container) return;
-
-    if (isLive) {
-      tile.classList.add('is-live');
-      container.classList.add('is-live');
-      if (watchBtn) {
-        watchBtn.hidden = false;
-        watchBtn.dataset.href = videoId
-          ? `https://www.youtube.com/watch?v=${videoId}`
-          : CHANNEL_URL;
-      }
-    } else {
-      tile.classList.remove('is-live');
-      container.classList.remove('is-live');
-      if (watchBtn) {
-        watchBtn.hidden = true;
-        watchBtn.dataset.href = CHANNEL_URL;
-      }
-    }
+  function applyLiveState(isLive: boolean): void {
+    const tile     = document.getElementById('stream-tile') as HTMLAnchorElement | null;
+    const watchBtn = document.getElementById('stream-watch-btn') as HTMLElement | null;
+    if (!tile) return;
+    tile.classList.toggle('is-live', isLive);
+    if (watchBtn) watchBtn.hidden = !isLive;
   }
 
   function startLivePolling(): void {
     stopLivePolling();
-    checkYouTubeLive();
-    liveInterval = setInterval(checkYouTubeLive, 300_000);
+    checkTwitchLive();
+    liveInterval = setInterval(checkTwitchLive, 300_000);
   }
 
   function stopLivePolling(): void {
@@ -1326,21 +1296,21 @@ const latestEntries = sameDateEntries.map(entry => ({
     });
   }
 
-  let kaimaWatchBtnHandler: ((e: Event) => void) | null = null;
+  let streamWatchBtnHandler: ((e: Event) => void) | null = null;
 
-  function initializeKaimaWatchBtn(): void {
-    const btn = document.getElementById('kaima-watch-btn');
+  function initializeStreamWatchBtn(): void {
+    const btn = document.getElementById('stream-watch-btn');
     if (!btn) return;
-    if (kaimaWatchBtnHandler) {
-      btn.removeEventListener('click', kaimaWatchBtnHandler);
+    if (streamWatchBtnHandler) {
+      btn.removeEventListener('click', streamWatchBtnHandler);
     }
-    kaimaWatchBtnHandler = (e: Event) => {
+    streamWatchBtnHandler = (e: Event) => {
       e.preventDefault();
       e.stopPropagation();
-      const href = (btn as HTMLElement).dataset.href;
-      if (href) window.open(href, '_blank', 'noopener,noreferrer');
+      const href = (btn as HTMLElement).dataset.href ?? 'https://twitch.tv/ninjaruss_';
+      window.open(href, '_blank', 'noopener,noreferrer');
     };
-    btn.addEventListener('click', kaimaWatchBtnHandler);
+    btn.addEventListener('click', streamWatchBtnHandler);
   }
 
   // Mouse-tracking 3D tilt for all tile types
@@ -1377,7 +1347,7 @@ const latestEntries = sameDateEntries.map(entry => ({
   initializeLatestTile();
   initializeNovelTile();
   initializeEmblemLinks();
-  initializeKaimaWatchBtn();
+  initializeStreamWatchBtn();
   initializeTilt();
   startLivePolling();
 
@@ -1386,7 +1356,7 @@ const latestEntries = sameDateEntries.map(entry => ({
     initializeLatestTile();
     initializeNovelTile();
     initializeEmblemLinks();
-    initializeKaimaWatchBtn();
+    initializeStreamWatchBtn();
     initializeTilt();
     startLivePolling();
   });
