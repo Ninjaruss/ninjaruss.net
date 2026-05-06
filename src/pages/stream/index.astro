@@ -1,0 +1,367 @@
+---
+import { getCollection } from 'astro:content';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  tallyStats,
+  buildRadarPoints,
+  buildGuidePoints,
+  parseQuestMenu,
+  STAT_ORDER,
+} from '../../utils/stream';
+import '../../styles/stream.css';
+
+const STAT_META: Record<string, { color: string; tagline: string }> = {
+  Determination: { color: '#ff4040', tagline: 'The will to continue' },
+  Insight:       { color: '#4ab0ff', tagline: 'Seeing through the noise' },
+  Expression:    { color: '#a855f7', tagline: 'Making something from nothing' },
+  Sincerity:     { color: '#ffe52c', tagline: 'Meaning what you say' },
+  Chaos:         { color: '#2dd4bf', tagline: 'Embracing the unexpected' },
+};
+
+const streamEntries = await getCollection('stream', ({ data }) => !data.draft);
+const socialLinks   = await getCollection('social-links', ({ data }) => !data.draft);
+
+streamEntries.sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+socialLinks.sort((a, b) => b.data.rank - a.data.rank);
+
+const recentTallies = tallyStats(streamEntries, 'recent');
+const allTallies    = tallyStats(streamEntries, 'all');
+
+const recentMax = Math.max(1, ...Object.values(recentTallies).map(v => v ?? 0));
+const allMax    = Math.max(1, ...Object.values(allTallies).map(v => v ?? 0));
+
+const CX = 150, CY = 150, R = 108;
+
+const recentPoints = buildRadarPoints(recentTallies, recentMax, CX, CY, R);
+const allPoints    = buildRadarPoints(allTallies,    allMax,    CX, CY, R);
+const guides       = [0.25, 0.5, 0.75, 1].map(f => buildGuidePoints(f, CX, CY, R));
+
+const axes = STAT_ORDER.map((_, i) => {
+  const angle = (-90 + i * 72) * (Math.PI / 180);
+  return {
+    x2: (CX + R * Math.cos(angle)).toFixed(2),
+    y2: (CY + R * Math.sin(angle)).toFixed(2),
+  };
+});
+
+// Labels placed just outside the outer ring
+const LABEL_R = R + 18;
+const statLabels = STAT_ORDER.map((stat, i) => {
+  const angle = (-90 + i * 72) * (Math.PI / 180);
+  return {
+    stat,
+    x: (CX + LABEL_R * Math.cos(angle)).toFixed(2),
+    y: (CY + LABEL_R * Math.sin(angle)).toFixed(2),
+  };
+});
+
+const rankedStats = [...STAT_ORDER].sort(
+  (a, b) => (recentTallies[b] ?? 0) - (recentTallies[a] ?? 0)
+);
+
+const questRaw = readFileSync(join(process.cwd(), 'src/content/quest-menu.md'), 'utf-8');
+const questSections = parseQuestMenu(questRaw);
+
+const dates = streamEntries.map(e => e.data.publishedAt);
+const earliest = dates.length ? new Date(Math.min(...dates.map(d => d.getTime()))) : null;
+const latest   = dates.length ? new Date(Math.max(...dates.map(d => d.getTime()))) : null;
+const fmtDate  = (d: Date) =>
+  d.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+const dateRange = earliest && latest
+  ? earliest.getTime() === latest.getTime()
+    ? fmtDate(latest)
+    : `${fmtDate(earliest)} — ${fmtDate(latest)}`
+  : 'No sessions yet';
+
+const recentData = JSON.stringify(recentTallies);
+const allData    = JSON.stringify(allTallies);
+---
+
+<BaseLayout title="Stream" description="Velvet Room session archive for the ninjaruss_ Twitch stream.">
+  <div class="stream-page">
+
+    <!-- Chrome bar -->
+    <div class="s-chrome">
+      <span class="s-chrome-label"><strong>NINJARUSS_</strong> — Session Archive</span>
+      <div class="s-tabs" role="tablist">
+        <button class="s-tab active" data-tab="status" role="tab" aria-selected="true">Status</button>
+        <button class="s-tab" data-tab="quests" role="tab" aria-selected="false">Quests</button>
+        <button class="s-tab" data-tab="log"    role="tab" aria-selected="false">Log</button>
+        <button class="s-tab" data-tab="bonds"  role="tab" aria-selected="false">Bonds</button>
+        <button class="s-tab" data-tab="velvet" role="tab" aria-selected="false">Velvet</button>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="s-header">
+      <div class="s-header-title">Session Archive</div>
+      <div class="s-header-range">{dateRange}</div>
+    </div>
+
+    <!-- Shell -->
+    <div class="s-shell">
+
+      <!-- VN Sprite -->
+      <div class="s-sprite" aria-hidden="true">
+        <img src="/images/stream/portrait.png" alt="" />
+      </div>
+
+      <!-- Panel host -->
+      <div class="s-main">
+
+        <!-- ── STATUS ─────────────────────────────────────── -->
+        <div class="s-panel active" id="panel-status" role="tabpanel">
+          <div class="s-status-inner">
+
+            <div class="s-radar-wrap">
+              <svg class="s-radar" viewBox="0 0 300 300" aria-label="Stat radar chart" role="img">
+                {guides.map(pts => (
+                  <polygon class="s-radar-guide" points={pts} />
+                ))}
+                {axes.map(ax => (
+                  <line class="s-radar-axis" x1={CX} y1={CY} x2={ax.x2} y2={ax.y2} />
+                ))}
+                <polygon id="radar-all"    class="s-radar-poly-all"    points={allPoints} />
+                <polygon id="radar-recent" class="s-radar-poly-recent" points={recentPoints} />
+                {statLabels.map(({ stat, x, y }) => (
+                  <text class="s-radar-label" x={x} y={y}>{stat}</text>
+                ))}
+              </svg>
+            </div>
+
+            <div class="s-stat-block">
+              <div class="s-toggle">
+                <button class="s-toggle-btn active" data-mode="recent">Recent (10)</button>
+                <button class="s-toggle-btn"        data-mode="all">All Time</button>
+              </div>
+
+              <div id="stream-tally-data" data-recent={recentData} data-all={allData} hidden></div>
+
+              <div class="s-stat-list" id="stat-list">
+                {rankedStats.map((stat, idx) => {
+                  const meta  = STAT_META[stat];
+                  const count = recentTallies[stat] ?? 0;
+                  return (
+                    <div
+                      class="s-stat-item"
+                      data-stat={stat}
+                      tabindex="0"
+                      role="button"
+                      aria-label={`${stat} — go to log filtered by ${stat}`}
+                    >
+                      <span class="s-stat-num">{idx + 1}</span>
+                      <span class="s-stat-dot" style={`background: ${meta.color}`}></span>
+                      <div class="s-stat-info">
+                        <div class="s-stat-name" style={`color: ${meta.color}`}>{stat}</div>
+                        <div class="s-stat-key">{meta.tagline}</div>
+                      </div>
+                      <span class="s-stat-count" data-stat-count={stat} style={`color: ${meta.color}`}>
+                        {count}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── QUESTS ───────────────────────────────────── -->
+        <div class="s-panel" id="panel-quests" role="tabpanel">
+          {questSections.map(({ category, quests }) => (
+            <div class="s-quest-section">
+              <div class="s-quest-category">{category}</div>
+              <ul class="s-quest-list">
+                {quests.map(q => (
+                  <li class="s-quest-item">{q}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <!-- ── LOG ─────────────────────────────────────── -->
+        <div class="s-panel" id="panel-log" role="tabpanel">
+          <div class="s-log-filter" id="log-filter">
+            <button class="s-log-pill active" data-stat="all">All</button>
+            {STAT_ORDER.map(stat => {
+              const meta = STAT_META[stat];
+              return (
+                <button class="s-log-pill" data-stat={stat} style={`--pill-color: ${meta.color}`}>
+                  {stat}
+                </button>
+              );
+            })}
+          </div>
+
+          <div class="s-log-list" id="log-list">
+            {streamEntries.map(entry => {
+              const dateStr = entry.data.publishedAt.toLocaleDateString('en-US', {
+                month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+              });
+              return (
+                <div class="s-log-entry" data-stats={JSON.stringify(entry.data.stats)}>
+                  <div class="s-log-title">{entry.data.title}</div>
+                  <div class="s-log-date">{dateStr}</div>
+                  <div class="s-log-summary">{entry.data.summary}</div>
+                  <div class="s-log-chips">
+                    {entry.data.stats.map(stat => {
+                      const meta = STAT_META[stat];
+                      return (
+                        <span
+                          class="s-log-chip"
+                          style={`color: ${meta.color}; border-color: ${meta.color}40; background: ${meta.color}12`}
+                        >
+                          {stat}
+                        </span>
+                      );
+                    })}
+                  </div>
+                  <div class="s-log-memo">{entry.data.memorable}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <!-- ── BONDS ────────────────────────────────────── -->
+        <div class="s-panel" id="panel-bonds" role="tabpanel">
+          <div class="s-bonds-grid">
+            {socialLinks.map(link => (
+              <div class="s-bond-card">
+                <div class="s-bond-name">{link.data.name}</div>
+                <div class="s-bond-arcana">{link.data.arcana}</div>
+                <div class="s-bond-affinity">{link.data.affinity}</div>
+                <div class="s-bond-rank" aria-label={`Rank ${link.data.rank} of 5`}>
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <span class={`s-bond-pip${i < link.data.rank ? ' filled' : ''}`}></span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- ── VELVET ────────────────────────────────────── -->
+        <div class="s-panel" id="panel-velvet" role="tabpanel">
+          <div class="s-velvet">
+            <div class="s-velvet-title">Velvet Room</div>
+            <div class="s-velvet-subtitle">A place that exists between mind and matter</div>
+            <a href="mailto:russ081999@gmail.com" class="s-velvet-email">russ081999@gmail.com</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { parseTwitchLiveResponse } from '../../utils/twitchStatus';
+
+  /* ── Tab switching ────────────────────────────────────── */
+  const tabs   = document.querySelectorAll<HTMLButtonElement>('.s-tab');
+  const panels = document.querySelectorAll<HTMLElement>('.s-panel');
+
+  function activateTab(tabName: string): void {
+    tabs.forEach(t => {
+      const active = t.dataset.tab === tabName;
+      t.classList.toggle('active', active);
+      t.setAttribute('aria-selected', String(active));
+    });
+    panels.forEach(p => {
+      p.classList.toggle('active', p.id === `panel-${tabName}`);
+    });
+  }
+
+  tabs.forEach(btn => btn.addEventListener('click', () => activateTab(btn.dataset.tab!)));
+
+  /* ── Stat mode toggle ─────────────────────────────────── */
+  const dataEl      = document.getElementById('stream-tally-data')!;
+  const recentData  = JSON.parse(dataEl.dataset.recent ?? '{}') as Record<string, number>;
+  const allData     = JSON.parse(dataEl.dataset.all    ?? '{}') as Record<string, number>;
+  const radarRecent = document.getElementById('radar-recent')!;
+  const radarAll    = document.getElementById('radar-all')!;
+
+  document.querySelectorAll<HTMLButtonElement>('.s-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.s-toggle-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const mode = btn.dataset.mode as 'recent' | 'all';
+      const tally = mode === 'recent' ? recentData : allData;
+
+      document.querySelectorAll<HTMLElement>('[data-stat-count]').forEach(el => {
+        el.textContent = String(tally[el.dataset.statCount!] ?? 0);
+      });
+
+      if (mode === 'recent') {
+        radarRecent.classList.remove('is-secondary');
+        radarAll.classList.remove('is-primary');
+      } else {
+        radarRecent.classList.add('is-secondary');
+        radarAll.classList.add('is-primary');
+      }
+    });
+  });
+
+  /* ── Stat click → Log tab with pre-filter ─────────────── */
+  document.querySelectorAll<HTMLElement>('.s-stat-item').forEach(item => {
+    const activate = () => {
+      const stat = item.dataset.stat!;
+      activateTab('log');
+      const pill = document.querySelector<HTMLButtonElement>(`.s-log-pill[data-stat="${stat}"]`);
+      if (pill) filterLog(stat, pill);
+    };
+    item.addEventListener('click', activate);
+    item.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
+    });
+  });
+
+  /* ── Log stat filter ──────────────────────────────────── */
+  function filterLog(stat: string, activePill: HTMLElement): void {
+    document.querySelectorAll('.s-log-pill').forEach(p => p.classList.remove('active'));
+    activePill.classList.add('active');
+    document.querySelectorAll<HTMLElement>('.s-log-entry').forEach(entry => {
+      if (stat === 'all') {
+        entry.hidden = false;
+      } else {
+        const stats: string[] = JSON.parse(entry.dataset.stats ?? '[]');
+        entry.hidden = !stats.includes(stat);
+      }
+    });
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.s-log-pill').forEach(pill => {
+    pill.addEventListener('click', () => filterLog(pill.dataset.stat!, pill));
+  });
+
+  /* ── Twitch live detection ────────────────────────────── */
+  const CLIENT_ID    = import.meta.env.PUBLIC_TWITCH_CLIENT_ID   as string | undefined;
+  const ACCESS_TOKEN = import.meta.env.PUBLIC_TWITCH_ACCESS_TOKEN as string | undefined;
+
+  async function checkTwitchLive(): Promise<void> {
+    if (!CLIENT_ID || !ACCESS_TOKEN) return;
+    try {
+      const res = await fetch('https://api.twitch.tv/helix/streams?user_login=ninjaruss_', {
+        headers: {
+          'Client-ID': CLIENT_ID,
+          'Authorization': `Bearer ${ACCESS_TOKEN}`,
+        },
+      });
+      if (!res.ok) return;
+      const data: unknown = await res.json();
+      if (parseTwitchLiveResponse(data)) {
+        document.title = '🔴 LIVE — ninjaruss_';
+      }
+    } catch {
+      // non-critical
+    }
+  }
+
+  checkTwitchLive();
+  setInterval(checkTwitchLive, 300_000);
+</script>
