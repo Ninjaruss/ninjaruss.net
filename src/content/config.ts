@@ -45,9 +45,37 @@ const now = defineCollection({
   }),
 });
 
+// Stream collection — session logs for the ninjaruss_ Twitch stream
+const stream = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    publishedAt: z.coerce.date(),
+    stats: z.array(z.enum(['Determination', 'Insight', 'Expression', 'Sincerity', 'Chaos'])),
+    summary: z.string(),
+    memorable: z.string(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+// Social links — bonds / connections for the Bonds panel
+const socialLinks = defineCollection({
+  type: 'content',
+  schema: z.object({
+    name: z.string(),
+    arcana: z.string(),
+    affinity: z.string(),
+    rank: z.number().min(1).max(5),
+    lastInteraction: z.string(),
+    draft: z.boolean().default(false),
+  }),
+});
+
 export const collections = {
   media,
   notes,
   showcase,
   now,
+  stream,
+  'social-links': socialLinks,
 };
