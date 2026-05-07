@@ -95,7 +95,7 @@ const latestEntries = sameDateEntries.map(entry => ({
 ---
 
 <BaseLayout title="Home" description="Fragments, media, and showcase.">
-  <div class="container">
+  <div class="container" id="page-container">
     <BentoGrid>
       <!-- Row 1: Title (4×1) + YouTube (1×1) + Now (1×1) -->
       <div class="title-tile p3r-animate-left">
@@ -107,16 +107,17 @@ const latestEntries = sameDateEntries.map(entry => ({
         <p class="title-tile__description">Live without regret.</p>
       </div>
 
-      <div class="image-tile image-tile--youtube p3r-animate" style="--stagger-delay: 100ms;">
-        <a href="https://www.youtube.com/@Ninjaruss_" target="_blank" rel="noopener noreferrer">
+      <div class="image-tile image-tile--twitch p3r-animate" style="--stagger-delay: 100ms;">
+        <a href="https://www.twitch.tv/ninjaruss_" target="_blank" rel="noopener noreferrer" aria-label="Watch on Twitch">
           <img
-            src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FHCc3Ol7adcw%2Fmaxresdefault.jpg&f=1&nofb=1&ipt=3af1979f6b60ed9a8bb7f3ff02d25d81b2b98005b38c7a5b9f2bc4d6f8bb3aa9"
-            alt="Hero visual"
+            src="https://static-cdn.jtvnw.net/previews-ttv/live_user_ninjaruss_-440x248.jpg"
+            alt="Twitch stream preview"
             class="image-tile__img"
+            onerror="this.style.display='none'"
           />
-          <div class="image-tile__youtube-overlay">
-            <svg class="image-tile__youtube-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          <div class="image-tile__twitch-overlay">
+            <svg class="image-tile__twitch-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/>
             </svg>
           </div>
         </a>
@@ -924,14 +925,13 @@ const latestEntries = sameDateEntries.map(entry => ({
     filter: brightness(0.8);
   }
 
-  /* YouTube Overlay — cinematic gradient + centered icon */
-  .image-tile__youtube-overlay {
+  /* Twitch Overlay — cinematic gradient + centered icon */
+  .image-tile__twitch-overlay {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Vignette from edges, darker at bottom */
     background:
       radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.55) 100%),
       linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 50%);
@@ -939,21 +939,21 @@ const latestEntries = sameDateEntries.map(entry => ({
     transition: opacity var(--transition-base);
   }
 
-  .image-tile--youtube:hover .image-tile__youtube-overlay {
+  .image-tile--twitch:hover .image-tile__twitch-overlay {
     opacity: 1;
   }
 
-  .image-tile__youtube-icon {
-    width: 72px;
-    height: 72px;
+  .image-tile__twitch-icon {
+    width: 64px;
+    height: 64px;
     color: #ffffff;
     filter:
-      drop-shadow(0 0 12px rgba(255, 0, 0, 0.6))
+      drop-shadow(0 0 12px rgba(145, 71, 255, 0.7))
       drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
     transition: transform var(--transition-base);
   }
 
-  .image-tile--youtube:hover .image-tile__youtube-icon {
+  .image-tile--twitch:hover .image-tile__twitch-icon {
     transform: scale(1.15);
   }
 
@@ -1133,7 +1133,7 @@ const latestEntries = sameDateEntries.map(entry => ({
       min-height: 200px;
     }
 
-    .image-tile__youtube-icon {
+    .image-tile__twitch-icon {
       width: 48px;
       height: 48px;
     }
@@ -1161,7 +1161,7 @@ const latestEntries = sameDateEntries.map(entry => ({
       grid-column: span 1;
     }
 
-    .image-tile__youtube-icon {
+    .image-tile__twitch-icon {
       width: 40px;
       height: 40px;
     }
@@ -1178,42 +1178,34 @@ const latestEntries = sameDateEntries.map(entry => ({
 </style>
 
 <script>
-  import { parseTwitchLiveResponse } from '../utils/twitchStatus';
-
-  const TWITCH_CLIENT_ID    = import.meta.env.PUBLIC_TWITCH_CLIENT_ID    as string | undefined;
-  const TWITCH_ACCESS_TOKEN = import.meta.env.PUBLIC_TWITCH_ACCESS_TOKEN as string | undefined;
-
   let liveInterval: ReturnType<typeof setInterval> | undefined;
 
-  async function checkTwitchLive(): Promise<void> {
-    if (!TWITCH_CLIENT_ID || !TWITCH_ACCESS_TOKEN) return;
+  async function checkLiveStatus(): Promise<void> {
     try {
-      const res = await fetch('https://api.twitch.tv/helix/streams?user_login=ninjaruss_', {
-        headers: {
-          'Client-ID': TWITCH_CLIENT_ID,
-          'Authorization': `Bearer ${TWITCH_ACCESS_TOKEN}`,
-        },
-      });
-      if (!res.ok) { applyLiveState(false); return; }
-      const data: unknown = await res.json();
-      applyLiveState(parseTwitchLiveResponse(data));
+      const res = await fetch('/api/live-status');
+      if (!res.ok) { applyLiveState(false, false); return; }
+      const { live, twitch } = await res.json() as { live: boolean; twitch: boolean; youtube: boolean };
+      applyLiveState(live, twitch);
     } catch {
-      applyLiveState(false);
+      applyLiveState(false, false);
     }
   }
 
-  function applyLiveState(isLive: boolean): void {
-    const tile     = document.getElementById('stream-tile') as HTMLAnchorElement | null;
-    const watchBtn = document.getElementById('stream-watch-btn') as HTMLElement | null;
+  function applyLiveState(isLive: boolean, twitchLive: boolean): void {
+    const tile      = document.getElementById('stream-tile') as HTMLAnchorElement | null;
+    const watchBtn  = document.getElementById('stream-watch-btn') as HTMLElement | null;
+    const container = document.getElementById('page-container');
     if (!tile) return;
     tile.classList.toggle('is-live', isLive);
-    if (watchBtn) watchBtn.hidden = !isLive;
+    container?.classList.toggle('is-live', isLive);
+    // Watch Live button only appears when Twitch is live (primary stream platform)
+    if (watchBtn) watchBtn.hidden = !twitchLive;
   }
 
   function startLivePolling(): void {
     stopLivePolling();
-    checkTwitchLive();
-    liveInterval = setInterval(checkTwitchLive, 300_000);
+    checkLiveStatus();
+    liveInterval = setInterval(checkLiveStatus, 300_000);
   }
 
   function stopLivePolling(): void {

@@ -79,6 +79,31 @@ export function scaleAllTallies(
   return result;
 }
 
+export function parseStreamIdeas(markdown: string): Partial<Record<StatName, string[]>> {
+  const lines = markdown.split('\n');
+  const result: Partial<Record<StatName, string[]>> = {};
+  let current: StatName | null = null;
+
+  for (const line of lines) {
+    const heading = line.match(/^##\s+Ideas\s+—\s+(.+)/);
+    if (heading) {
+      const name = heading[1].trim() as StatName;
+      if ((STAT_ORDER as readonly string[]).includes(name)) {
+        current = name;
+        result[current] = [];
+      } else {
+        current = null;
+      }
+      continue;
+    }
+    const item = line.match(/^[-*]\s+(.+)/);
+    if (item && current) {
+      result[current]!.push(item[1].trim());
+    }
+  }
+  return result;
+}
+
 export function parseQuestMenu(markdown: string): { category: string; quests: string[] }[] {
   const lines = markdown.split('\n');
   const result: { category: string; quests: string[] }[] = [];

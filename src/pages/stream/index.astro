@@ -8,27 +8,39 @@ import {
   buildRadarPoints,
   buildGuidePoints,
   parseQuestMenu,
+  parseStreamIdeas,
   STAT_ORDER,
   scaleAllTallies,
   STAT_CEILING,
 } from '../../utils/stream';
 import '../../styles/stream.css';
 
-function hexToRgbNorm(hex: string): [number, number, number] {
-  if (hex.length !== 7 || hex[0] !== '#') throw new Error(`Invalid hex color: ${hex}`);
-  return [
-    parseInt(hex.slice(1, 3), 16) / 255,
-    parseInt(hex.slice(3, 5), 16) / 255,
-    parseInt(hex.slice(5, 7), 16) / 255,
-  ];
-}
-
-const STAT_META: Record<string, { color: string; tagline: string; emblem: string }> = {
-  Determination: { color: '#ff4040', tagline: 'The will to continue',          emblem: '/images/emblems/determination.png' },
-  Insight:       { color: '#4ab0ff', tagline: 'Seeing through the noise',      emblem: '/images/emblems/insight.png'       },
-  Chaos:         { color: '#2dd4bf', tagline: 'Embracing the unexpected',      emblem: '/images/emblems/chaos.png'         },
-  Sincerity:     { color: '#ffe52c', tagline: 'Meaning what you say',          emblem: '/images/emblems/sincerity.png'     },
-  Expression:    { color: '#a855f7', tagline: 'Making something from nothing', emblem: '/images/emblems/expression.png'    },
+const STAT_META: Record<string, { color: string; tagline: string; phrase: string; keywords: string; emblem: string; silFilter: string }> = {
+  Determination: {
+    color: '#ff4040', tagline: 'The will to continue',
+    phrase: 'Pierce the heavens.', keywords: 'Push. Guts. Resolve.',
+    emblem: '/images/emblems/determination.png', silFilter: 'sil-det',
+  },
+  Insight: {
+    color: '#4ab0ff', tagline: 'Seeing through the noise',
+    phrase: 'Clear Mind, Accel Synchro.', keywords: 'Perceive. Focus. Transcend.',
+    emblem: '/images/emblems/insight.png', silFilter: 'sil-ins',
+  },
+  Chaos: {
+    color: '#2dd4bf', tagline: 'Embracing the unexpected',
+    phrase: 'Into the dark without a torch.', keywords: 'Risk. Fall. Rise.',
+    emblem: '/images/emblems/chaos.png', silFilter: 'sil-cha',
+  },
+  Sincerity: {
+    color: '#ffe52c', tagline: 'Meaning what you say',
+    phrase: 'No mask.', keywords: 'Heart. Speak true. Trust.',
+    emblem: '/images/emblems/sincerity.png', silFilter: 'sil-sin',
+  },
+  Expression: {
+    color: '#a855f7', tagline: 'Making something from nothing',
+    phrase: 'So the world will not forget.', keywords: 'Craft. Create. Soul.',
+    emblem: '/images/emblems/expression.png', silFilter: 'sil-exp',
+  },
 };
 
 const streamEntries = await getCollection('stream', ({ data }) => !data.draft);
@@ -55,11 +67,12 @@ const bondsJson = JSON.stringify(
 
 const recentTallies = tallyStats(streamEntries, 'recent');
 const allTallies    = tallyStats(streamEntries, 'all');
+const recentMax     = Math.max(1, ...Object.values(recentTallies).map(v => v ?? 0));
+const allScaled     = scaleAllTallies(allTallies);
 
-const recentMax  = Math.max(1, ...Object.values(recentTallies).map(v => v ?? 0));
-const allScaled  = scaleAllTallies(allTallies);
-
-const CX = 150, CY = 150, R = 108;
+// Radar geometry — full 400px viewBox, center 200,200, radius 140
+const CX = 200, CY = 200, R = 140;
+const TEXT_R = R + 52;
 
 const recentPoints = buildRadarPoints(recentTallies, recentMax,    CX, CY, R);
 const allPoints    = buildRadarPoints(allScaled,     STAT_CEILING, CX, CY, R);
@@ -73,8 +86,6 @@ const axes = STAT_ORDER.map((_, i) => {
   };
 });
 
-const TEXT_R = R + 42; // label text distance from center
-
 const statVertices = STAT_ORDER.map((stat, i) => {
   const angle = (-90 + i * 72) * (Math.PI / 180);
   const vx = +(CX + R * Math.cos(angle)).toFixed(2);
@@ -82,391 +93,499 @@ const statVertices = STAT_ORDER.map((stat, i) => {
   const tx = +(CX + TEXT_R * Math.cos(angle)).toFixed(2);
   const ty = +(CY + TEXT_R * Math.sin(angle)).toFixed(2);
   const meta = STAT_META[stat];
-  const [nr, ng, nb] = hexToRgbNorm(meta.color);
   const anchor = vx < CX - 10 ? 'end' : vx > CX + 10 ? 'start' : 'middle';
-  const filterId = `sil-${stat.toLowerCase()}`;
-  const clipId   = `clip-${stat.toLowerCase()}`;
-  const filterMatrix = `0 0 0 0 ${nr.toFixed(3)}  0 0 0 0 ${ng.toFixed(3)}  0 0 0 0 ${nb.toFixed(3)}  -2 0 0 0 1.5`;
-  return { stat, vx, vy, tx, ty, meta, anchor, filterId, clipId, filterMatrix };
+  const clipId = `clip-${stat.toLowerCase().slice(0, 3)}`;
+  return { stat, vx, vy, tx, ty, meta, anchor, clipId };
 });
 
-const rankedStats = [...STAT_ORDER].sort(
-  (a, b) => (recentTallies[b] ?? 0) - (recentTallies[a] ?? 0)
-);
-
 const questRaw = readFileSync(join(process.cwd(), 'src/content/stream/_quests.md'), 'utf-8');
-const questSections = parseQuestMenu(questRaw);
-
+const questSections  = parseQuestMenu(questRaw);
+const streamIdeas    = parseStreamIdeas(questRaw);
 const currentObjective = questSections.find(s => s.category === 'Active Quests')?.quests[0] ?? null;
 
-const dates = streamEntries.map(e => e.data.publishedAt);
-const earliest = dates.length ? new Date(Math.min(...dates.map(d => d.getTime()))) : null;
-const latest   = dates.length ? new Date(Math.max(...dates.map(d => d.getTime()))) : null;
-const fmtDate  = (d: Date) =>
-  d.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
-const dateRange = earliest && latest
-  ? earliest.getTime() === latest.getTime()
-    ? fmtDate(latest)
-    : `${fmtDate(earliest)} — ${fmtDate(latest)}`
-  : 'No sessions yet';
+// Current date for the date strip
+const now = new Date();
+const dayNames  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const dateDow   = dayNames[now.getUTCDay()];
+const dateDay   = now.getUTCDate();
+const dateMonth = `${monthNames[now.getUTCMonth()]} ${now.getUTCFullYear()}`;
 
 const recentData = JSON.stringify(recentTallies);
 const allData    = JSON.stringify(allTallies);
+
+// Hex color to SVG feColorMatrix filter values
+function hexToSilMatrix(hex: string, r: number, g: number, b: number): string {
+  return `0 0 0 0 ${(r/255).toFixed(3)}  0 0 0 0 ${(g/255).toFixed(3)}  0 0 0 0 ${(b/255).toFixed(3)}  -2 0 0 0 1.5`;
+}
+
+const SIL_FILTERS: Record<string, { id: string; matrix: string }> = {
+  Determination: { id: 'sil-det', matrix: hexToSilMatrix('#ff4040', 255, 64,  64)  },
+  Insight:       { id: 'sil-ins', matrix: hexToSilMatrix('#4ab0ff',  74, 176, 255) },
+  Expression:    { id: 'sil-exp', matrix: hexToSilMatrix('#a855f7', 168, 85,  247) },
+  Sincerity:     { id: 'sil-sin', matrix: hexToSilMatrix('#ffe52c', 255, 229, 44)  },
+  Chaos:         { id: 'sil-cha', matrix: hexToSilMatrix('#2dd4bf',  45, 212, 191) },
+};
+
+function colorBg(hex: string, a: number): string {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
 ---
 
 <BaseLayout title="Stream" description="Velvet Room session archive for the ninjaruss_ Twitch stream.">
+  <div id="slash"><div class="slash-blade" id="blade"></div></div>
+
   <div class="stream-page">
 
     <!-- Sidebar -->
-    <div class="s-sidebar">
+    <div class="s-sidebar" id="sidebar">
       <a href="/" class="s-logo">Ninjaruss</a>
-      <nav class="s-tabs" role="tablist">
-        <button class="s-tab active" data-tab="status" role="tab" aria-selected="true">Status</button>
-        <button class="s-tab" data-tab="quests" role="tab" aria-selected="false">Quests</button>
-        <button class="s-tab" data-tab="log"    role="tab" aria-selected="false">Log</button>
-        <button class="s-tab" data-tab="bonds"  role="tab" aria-selected="false">Bonds</button>
-        <button class="s-tab" data-tab="velvet" role="tab" aria-selected="false">Mailbox</button>
-      </nav>
+      <div class="s-tabs" id="tab-list">
+        <div class="s-tab-indicator" id="tab-indicator"></div>
+        <button class="s-tab active" data-tab="status"  role="tab" aria-selected="true">Status</button>
+        <button class="s-tab"        data-tab="journal" role="tab" aria-selected="false">Journal</button>
+        <button class="s-tab"        data-tab="bonds"   role="tab" aria-selected="false">Bonds</button>
+        <button class="s-tab"        data-tab="mailbox" role="tab" aria-selected="false">Mailbox</button>
+      </div>
     </div>
 
     <!-- Right content area -->
-    <div class="s-content">
+    <div class="s-content" id="content-area">
 
-    <!-- Header -->
-    <div class="s-header">
-      <div class="s-header-title">Session Archive</div>
-      <div class="s-header-range">{dateRange}</div>
-    </div>
-
-    <!-- Shell -->
-    <div class="s-shell">
-
-      <!-- VN Sprite -->
-      <div class="s-sprite" aria-hidden="true">
-        <img src="/images/stream/portrait.png" alt="" />
+      <div class="s-header">
+        <div class="s-header-title">Stream Log</div>
+        <a class="s-live" href="https://www.twitch.tv/ninjaruss_" target="_blank" rel="noopener">
+          <div class="s-live-dot"></div>Live
+        </a>
       </div>
 
-      <!-- Panel host -->
-      <div class="s-main">
+      <div class="s-shell">
 
-        <!-- ── STATUS ─────────────────────────────────────── -->
-        <div class="s-panel active" id="panel-status" role="tabpanel">
-          <div class="s-status-inner">
+        <!-- VN Sprite -->
+        <div class="s-sprite" aria-hidden="true">
+          <img src="/images/stream/portrait.png" alt="" id="portrait" />
+        </div>
 
-            <div class="s-radar-col">
-              {currentObjective && (
-                <div class="s-objective-strip">
-                  <span class="s-obj-label">Objective</span>
-                  <span class="s-obj-text">{currentObjective}</span>
-                </div>
-              )}
+        <div class="s-main">
 
-              <div class="s-radar-wrap">
-                <svg class="s-radar" viewBox="-20 -20 340 340" aria-label="Stat radar chart" role="img">
-                  <defs>
-                    <filter id="vglow" x="-50%" y="-50%" width="200%" height="200%">
-                      <feGaussianBlur stdDeviation="3" result="blur"/>
-                      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                    </filter>
-                    {statVertices.map(({ filterId, filterMatrix }) => (
-                      <filter id={filterId} color-interpolation-filters="sRGB" x="-10%" y="-10%" width="120%" height="120%">
-                        <feColorMatrix type="saturate" values="0" result="g"/>
-                        <feColorMatrix in="g" type="matrix" values={filterMatrix}/>
-                      </filter>
-                    ))}
-                    {statVertices.map(({ clipId, vx, vy }) => (
-                      <clipPath id={clipId}>
-                        <circle cx={vx} cy={vy} r="18"/>
-                      </clipPath>
-                    ))}
-                  </defs>
+          <!-- ── STATUS ─────────────────────────────────────── -->
+          <div class="s-panel active" id="panel-status" role="tabpanel">
 
-                  {guides.map(pts => (
-                    <polygon class="s-radar-guide" points={pts} />
-                  ))}
-                  {axes.map(ax => (
-                    <line class="s-radar-axis" x1={CX} y1={CY} x2={ax.x2} y2={ax.y2} />
-                  ))}
-                  <polygon id="radar-all"    class="s-radar-poly-all"    points={allPoints} />
-                  <polygon id="radar-recent" class="s-radar-poly-recent" points={recentPoints} />
-
-                  {statVertices.map(({ stat, vx, vy, tx, ty, meta, anchor, filterId, clipId }) => {
-                    const count = recentTallies[stat as (typeof STAT_ORDER)[number]] ?? 0;
-                    return (
-                      <g class="radar-vertex">
-                        <circle class="rv-dot" cx={vx} cy={vy} r="7" fill={meta.color} filter="url(#vglow)"/>
-                        <g class="rv-emblem">
-                          <circle cx={vx} cy={vy} r="20" fill={`${meta.color}15`} stroke={meta.color} stroke-width="1.5" filter="url(#vglow)"/>
-                          <image href={meta.emblem} x={vx - 18} y={vy - 18} width="36" height="36"
-                                 clip-path={`url(#${clipId})`} filter={`url(#${filterId})`}
-                                 preserveAspectRatio="xMidYMid slice"/>
-                        </g>
-                        <text class="rv-count" x={tx} y={ty - 18} text-anchor={anchor} fill={meta.color} data-vertex-count={stat}>{count}</text>
-                        <text class="rv-name"  x={tx} y={ty}      text-anchor={anchor}>{stat}</text>
-                        <text class="rv-tag"   x={tx} y={ty + 14} text-anchor={anchor}>{meta.tagline}</text>
-                      </g>
-                    );
-                  })}
-                </svg>
+            <!-- Date + Objective strip -->
+            <div class="s-date-strip">
+              <div class="s-date-block">
+                <div class="s-date-day">{dateDow}</div>
+                <div class="s-date-num">{dateDay}</div>
+                <div class="s-date-month">{dateMonth}</div>
+              </div>
+              <div class="s-objective">
+                <div class="s-obj-label">Current Objective</div>
+                <div class="s-obj-text">{currentObjective ?? 'No active quest'}</div>
               </div>
             </div>
 
-            <div class="s-stat-block">
-              <div class="s-toggle">
+            <!-- Radar -->
+            <div class="s-radar-container">
+              <div class="s-mode-toggle">
                 <button class="s-toggle-btn active" data-mode="recent">Recent (10)</button>
                 <button class="s-toggle-btn"        data-mode="all">All Time</button>
               </div>
 
               <div id="stream-tally-data" data-recent={recentData} data-all={allData} hidden></div>
 
-              <div class="s-stat-list" id="stat-list">
-                {rankedStats.map((stat, idx) => {
-                  const meta  = STAT_META[stat];
-                  const count = recentTallies[stat] ?? 0;
+              <svg viewBox="-10 -10 420 420" overflow="visible" aria-label="Stat radar chart" id="radar-svg">
+                <defs>
+                  <filter id="vglow">
+                    <feGaussianBlur stdDeviation="4" result="b"/>
+                    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                  </filter>
+                  {Object.entries(SIL_FILTERS).map(([, f]) => (
+                    <filter id={f.id} color-interpolation-filters="sRGB" x="-10%" y="-10%" width="120%" height="120%">
+                      <feColorMatrix type="saturate" values="0" result="g"/>
+                      <feColorMatrix in="g" type="matrix" values={f.matrix}/>
+                    </filter>
+                  ))}
+                  {statVertices.map(({ clipId, vx, vy }) => (
+                    <clipPath id={clipId}>
+                      <circle cx={vx} cy={vy} r="18"/>
+                    </clipPath>
+                  ))}
+                </defs>
+
+                {guides.map(pts => <polygon class="s-radar-guide" points={pts}/>)}
+                {axes.map(ax => <line class="s-radar-axis" x1={CX} y1={CY} x2={ax.x2} y2={ax.y2}/>)}
+
+                <polygon id="radar-all"    class="s-radar-poly-all"    points={allPoints}/>
+                <polygon id="radar-recent" class="s-radar-poly-recent" points={recentPoints}/>
+
+                {statVertices.map(({ stat, vx, vy, tx, ty, meta, anchor, clipId }) => {
+                  const count = recentTallies[stat as (typeof STAT_ORDER)[number]] ?? 0;
+                  const sil = SIL_FILTERS[stat];
+                  const numAnchor = anchor;
+                  const numX = tx;
+                  const numY = ty - 20;
                   return (
-                    <div
-                      class="s-stat-item"
-                      data-stat={stat}
-                      tabindex="0"
-                      role="button"
-                      aria-label={`${stat} — go to log filtered by ${stat}`}
-                    >
-                      <span class="s-stat-num">{idx + 1}</span>
-                      <span class="s-stat-dot" style={`background: ${meta.color}`}></span>
-                      <div class="s-stat-info">
-                        <div class="s-stat-name" style={`color: ${meta.color}`}>{stat}</div>
-                        <div class="s-stat-key">{meta.tagline}</div>
+                    <g class="radar-vertex" data-stat={stat}>
+                      <rect
+                        x={anchor === 'end'   ? tx - 160 : anchor === 'start' ? tx : tx - 80}
+                        y={ty - 60} width="160" height="80"
+                        fill="transparent"
+                      />
+                      <circle class="v-dot-small" cx={vx} cy={vy} r="7" fill={meta.color} filter="url(#vglow)"/>
+                      <g class="v-emblem-large">
+                        <circle cx={vx} cy={vy} r="20" fill={colorBg(meta.color, 0.08)} stroke={meta.color} stroke-width="1.5" filter="url(#vglow)"/>
+                        <image href={meta.emblem} x={vx - 18} y={vy - 18} width="36" height="36"
+                               clip-path={`url(#${clipId})`} filter={`url(#${sil.id})`}
+                               preserveAspectRatio="xMidYMid slice"/>
+                      </g>
+                      <text x={numX} y={numY} text-anchor={numAnchor}
+                            font-family="system-ui,sans-serif" font-size="34" font-weight="900"
+                            fill={meta.color} stroke="#060608" stroke-width="6" paint-order="stroke fill"
+                            data-vertex-count={stat}>{count}</text>
+                      <text x={tx} y={ty} text-anchor={anchor}
+                            font-family="monospace" font-size="12" font-weight="700"
+                            fill={meta.color} stroke="#060608" stroke-width="4" paint-order="stroke fill"
+                            letter-spacing="1">{stat.toUpperCase()}</text>
+                      <text class="v-keywords" x={tx} y={ty + 16} text-anchor={anchor}
+                            font-family="monospace" font-size="10"
+                            fill={colorBg(meta.color, 0.5)} stroke="#060608" stroke-width="3" paint-order="stroke fill">
+                        {meta.keywords}
+                      </text>
+                      <text class="v-phrase" x={tx} y={ty + 16} text-anchor={anchor}
+                            font-family="monospace" font-size="10"
+                            fill={colorBg(meta.color, 0.9)} stroke="#060608" stroke-width="3" paint-order="stroke fill">
+                        {meta.phrase}
+                      </text>
+                    </g>
+                  );
+                })}
+              </svg>
+            </div>
+          </div>
+
+          <!-- ── JOURNAL ─────────────────────────────────────── -->
+          <div class="s-panel" id="panel-journal" role="tabpanel">
+
+            <div class="j-streams">
+              <div class="j-section-header">
+                <div class="j-section-label">Potential Streams</div>
+                <div class="j-section-rule"></div>
+                <div class="j-section-sub">click a stat to filter the log</div>
+              </div>
+
+              {STAT_ORDER.map(stat => {
+                const meta  = STAT_META[stat];
+                const ideas = streamIdeas[stat] ?? [];
+                const glow  = colorBg(meta.color, 0.4);
+                return (
+                  <div class="j-stream-strip" data-stat={stat} style={`--strip-color:${meta.color}`}>
+                    <div class="j-strip-label">
+                      <div class="j-stat-dot" style={`background:${meta.color};box-shadow:0 0 5px ${glow}`}></div>
+                      <div class="j-stat-name-sm" style={`color:${meta.color}`}>{stat}</div>
+                    </div>
+                    <div class="j-strip-ideas">
+                      {ideas.map(idea => (
+                        <span class="j-idea-pill" style={`color:${meta.color};border-color:${colorBg(meta.color, 0.25)}`}>
+                          {idea}
+                        </span>
+                      ))}
+                    </div>
+                    <span class="j-strip-clear">× clear</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div class="j-log">
+              <div class="j-log-top">
+                <div class="j-section-label" id="log-label">Session Log</div>
+              </div>
+              <div class="j-log-list" id="log-list">
+                {streamEntries.map(entry => {
+                  const d   = entry.data.publishedAt;
+                  const dow = dayNames[d.getUTCDay()];
+                  const day = d.getUTCDate();
+                  const mon = monthNames[d.getUTCMonth()];
+                  return (
+                    <div class="j-entry" data-stats={JSON.stringify(entry.data.stats)}>
+                      <div class="j-entry-date-block">
+                        <div class="j-entry-dow">{dow}</div>
+                        <div class="j-entry-day-num">{day}</div>
+                        <div class="j-entry-month">{mon}</div>
                       </div>
-                      <span class="s-stat-count" data-stat-count={stat} style={`color: ${meta.color}`}>
-                        {count}
-                      </span>
+                      <div class="j-entry-body">
+                        <div class="j-entry-title">{entry.data.title}</div>
+                        <div class="j-entry-summary">{entry.data.summary}</div>
+                        <div class="j-entry-chips">
+                          {entry.data.stats.map(stat => {
+                            const m = STAT_META[stat];
+                            return (
+                              <span class="j-chip" style={`color:${m?.color};border-color:${colorBg(m?.color ?? '#888', 0.3)};background:${colorBg(m?.color ?? '#888', 0.08)}`}>
+                                {stat}
+                              </span>
+                            );
+                          })}
+                        </div>
+                        {entry.data.memorable && (
+                          <div class="j-entry-memo">{entry.data.memorable}</div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          <!-- ── BONDS ────────────────────────────────────────── -->
+          <div class="s-panel" id="panel-bonds" role="tabpanel">
+
+            <div class="bonds-list-col">
+              <div class="bonds-header">
+                <span class="s-panel-label">Bonds · {socialLinks.length}</span>
+              </div>
+              <div class="bonds-list">
+                {socialLinks.map(link => {
+                  const statColor  = link.data.stat ? STAT_META[link.data.stat]?.color : null;
+                  const colorBorder = statColor ? colorBg(statColor, 0.3)  : '#2a2a2a';
+                  const colorBgVal  = statColor ? colorBg(statColor, 0.06) : 'rgba(255,255,255,0.04)';
+                  const colorGlow   = statColor ? colorBg(statColor, 0.1)  : 'transparent';
+                  const numerals    = ['I','II','III','IV','V'];
+                  const rankLabel   = link.data.rank > 0 ? `RANK ${numerals[link.data.rank - 1] ?? link.data.rank}` : 'RANK —';
+                  return (
+                    <div class="bond-row" data-bond={link.data.name}
+                         style={statColor ? `--bd-row-color:${statColor}` : ''}>
+                      <div class="bond-emblem-col">
+                        <div class="bond-emblem-wrap"
+                             style={`--bond-color-border:${colorBorder};--bond-color-bg:${colorBgVal};--bond-color-glow:${colorGlow}`}>
+                          {link.data.img
+                            ? <img class="bond-img" src={link.data.img} alt="" />
+                            : link.data.stat && STAT_META[link.data.stat]
+                              ? <img class="bond-img" src={STAT_META[link.data.stat].emblem} alt="" />
+                              : null
+                          }
+                        </div>
+                      </div>
+                      <div class="bond-info">
+                        <div class="bond-arcana-label">{link.data.arcana}</div>
+                        <div class="bond-name" style={statColor ? `color:${statColor}` : ''}>{link.data.name}</div>
+                        <div class="bond-affinity">{link.data.affinity}</div>
+                      </div>
+                      <div class="bond-rank-col">
+                        <div class="bond-rank-numeral" style={statColor ? `color:${statColor}` : ''}>{rankLabel}</div>
+                        <div class="bond-rank-pips">
+                          {Array.from({ length: 5 }, (_, i) => (
+                            <span class="bond-pip" style={i < link.data.rank && statColor
+                              ? `background:${statColor};border-color:${statColor};box-shadow:0 0 5px ${colorBg(statColor, 0.5)}`
+                              : ''}/>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
               </div>
             </div>
 
-          </div>
-        </div>
-
-        <!-- ── QUESTS ───────────────────────────────────── -->
-        <div class="s-panel" id="panel-quests" role="tabpanel">
-          {questSections.map(({ category, quests }) => (
-            <div class="s-quest-section">
-              <div class="s-quest-category">{category}</div>
-              <ul class="s-quest-list">
-                {quests.map(q => (
-                  <li class="s-quest-item">{q}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        <!-- ── LOG ─────────────────────────────────────── -->
-        <div class="s-panel" id="panel-log" role="tabpanel">
-          <div class="s-log-filter" id="log-filter">
-            <button class="s-log-pill active" data-stat="all">All</button>
-            {STAT_ORDER.map(stat => {
-              const meta = STAT_META[stat];
-              return (
-                <button class="s-log-pill" data-stat={stat} style={`--pill-color: ${meta.color}`}>
-                  {stat}
-                </button>
-              );
-            })}
-          </div>
-
-          <div class="s-log-list" id="log-list">
-            {streamEntries.map(entry => {
-              const dateStr = entry.data.publishedAt.toLocaleDateString('en-US', {
-                month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
-              });
-              return (
-                <div class="s-log-entry" data-stats={JSON.stringify(entry.data.stats)}>
-                  <div class="s-log-title">{entry.data.title}</div>
-                  <div class="s-log-date">{dateStr}</div>
-                  <div class="s-log-summary">{entry.data.summary}</div>
-                  <div class="s-log-chips">
-                    {entry.data.stats.map(stat => {
-                      const meta = STAT_META[stat];
-                      return (
-                        <span
-                          class="s-log-chip"
-                          style={`color: ${meta.color}; border-color: ${meta.color}40; background: ${meta.color}12`}
-                        >
-                          {stat}
-                        </span>
-                      );
-                    })}
+            <!-- Slide-in detail panel -->
+            <div class="bond-detail-panel">
+              <div class="bd-inner">
+                <div class="bd-header">
+                  <button class="bd-close" id="bond-detail-close" aria-label="Close">✕</button>
+                  <div class="bd-emblem" id="bd-emblem">
+                    <img id="bd-img" alt="" />
                   </div>
-                  <div class="s-log-memo">{entry.data.memorable}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <!-- ── BONDS ────────────────────────────────────── -->
-        <div class="s-panel" id="panel-bonds" role="tabpanel">
-
-          <div class="bonds-list-col">
-            <div class="bonds-header">
-              <span class="bonds-header-title">Bonds</span>
-              <span class="bonds-header-count">{socialLinks.length}</span>
-            </div>
-            <div class="bonds-list">
-              {socialLinks.map(link => {
-                const statColor = link.data.stat ? STAT_META[link.data.stat]?.color : null;
-                return (
-                  <div
-                    class="bond-row"
-                    data-bond={link.data.name}
-                    style={statColor ? `--bond-color: ${statColor}` : ''}
-                  >
-                    <div class="bond-row-left">
-                      <div class="bond-row-name">{link.data.name}</div>
-                      <div class="bond-row-arcana">{link.data.arcana}</div>
-                      <div class="bond-row-affinity">{link.data.affinity}</div>
-                    </div>
-                    <div class="bond-row-pips">
-                      {Array.from({ length: 5 }, (_, i) => (
-                        <span
-                          class={`bond-pip${i < link.data.rank ? ' filled' : ''}`}
-                          style={i < link.data.rank && statColor
-                            ? `background:${statColor};border-color:${statColor};box-shadow:0 0 4px ${statColor}66`
-                            : ''}
-                        />
-                      ))}
+                  <div class="bd-arcana"   id="bd-arcana"></div>
+                  <div class="bd-name"     id="bd-name"></div>
+                  <div class="bd-affinity" id="bd-affinity"></div>
+                  <div class="bd-stat-badge" id="bd-stat-badge">
+                    <div class="bd-stat-dot"  id="bd-stat-dot"></div>
+                    <span class="bd-stat-text" id="bd-stat-text"></span>
+                  </div>
+                  <div class="bd-rank-row">
+                    <div class="bd-rank-label" id="bd-rank-label"></div>
+                    <div class="bd-rank-pips" id="bd-rank-pips">
+                      {Array.from({ length: 5 }, () => <span class="bd-pip-d"></span>)}
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-
-          <div class="bond-detail" id="bond-detail">
-            <div class="bond-detail-inner">
-              <button class="bond-detail-close" id="bond-detail-close" aria-label="Close">✕</button>
-              <div class="bd-emblem" id="bd-emblem">
-                <img id="bd-img" alt="" />
-              </div>
-              <div class="bd-arcana"   id="bd-arcana"></div>
-              <div class="bd-name"     id="bd-name"></div>
-              <div class="bd-affinity" id="bd-affinity"></div>
-              <div class="bd-stat-badge" id="bd-stat-badge">
-                <span class="bd-stat-dot"  id="bd-stat-dot"></span>
-                <span class="bd-stat-text" id="bd-stat-text"></span>
-              </div>
-              <div class="bd-rank-row">
-                <span class="bd-rank-label" id="bd-rank-label"></span>
-                <div class="bd-pips" id="bd-pips">
-                  {Array.from({ length: 5 }, () => <span class="bd-pip"></span>)}
+                  <div class="bd-rank-date" id="bd-rank-date"></div>
+                </div>
+                <div class="bd-section">
+                  <div class="bd-section-label">About</div>
+                  <div class="bd-lore" id="bd-lore"></div>
+                </div>
+                <div class="bd-section">
+                  <div class="bd-section-label">Last Session</div>
+                  <div class="bd-memory"      id="bd-memory"></div>
+                  <div class="bd-memory-when" id="bd-memory-when"></div>
                 </div>
               </div>
-              <div class="bd-rank-date" id="bd-rank-date"></div>
-              <div class="bd-section">
-                <div class="bd-section-label">About</div>
-                <div class="bd-lore" id="bd-lore"></div>
-              </div>
-              <div class="bd-section">
-                <div class="bd-section-label">Last Session</div>
-                <div class="bd-memory" id="bd-memory"></div>
-                <div class="bd-when"   id="bd-when"></div>
-              </div>
+            </div>
+
+            <div id="bonds-data" data-bonds={bondsJson} hidden></div>
+          </div>
+
+          <!-- ── MAILBOX ────────────────────────────────────── -->
+          <div class="s-panel" id="panel-mailbox" role="tabpanel">
+            <div class="mail-inner">
+              <div class="mail-title">Mailbox</div>
+              <div class="mail-sub">Send mail to be read on stream</div>
+              <a href="mailto:mail@ninjaruss.net" class="mail-address">mail@ninjaruss.net</a>
             </div>
           </div>
 
-          <div id="bonds-data" data-bonds={bondsJson} hidden></div>
-        </div>
-
-        <!-- ── VELVET ────────────────────────────────────── -->
-        <div class="s-panel" id="panel-velvet" role="tabpanel">
-          <div class="s-velvet">
-            <div class="s-velvet-title">Mailbox</div>
-            <div class="s-velvet-subtitle">Send mail to be read on stream</div>
-            <a href="mailto:${'mailbox'}@${'ninjaruss.net'}" class="s-velvet-email">{'mailbox'}@{'ninjaruss.net'}</a>
-          </div>
-        </div>
-
-      </div>
-    </div>
+        </div>{/* s-main */}
+      </div>{/* s-shell */}
     </div>{/* s-content */}
-  </div>
+  </div>{/* stream-page */}
 </BaseLayout>
 
 <script>
-  import { parseTwitchLiveResponse } from '../../utils/twitchStatus';
-
-  /* ── Twitch live detection (runs once per module load) ── */
-  const CLIENT_ID    = import.meta.env.PUBLIC_TWITCH_CLIENT_ID   as string | undefined;
-  const ACCESS_TOKEN = import.meta.env.PUBLIC_TWITCH_ACCESS_TOKEN as string | undefined;
-
+  /* ── Twitch live detection ────────────────────────────── */
   async function checkTwitchLive(): Promise<void> {
-    if (!CLIENT_ID || !ACCESS_TOKEN) return;
     try {
-      const res = await fetch('https://api.twitch.tv/helix/streams?user_login=ninjaruss_', {
-        headers: {
-          'Client-ID': CLIENT_ID,
-          'Authorization': `Bearer ${ACCESS_TOKEN}`,
-        },
-      });
+      const res = await fetch('/api/twitch-live');
       if (!res.ok) return;
-      const data: unknown = await res.json();
-      if (parseTwitchLiveResponse(data)) {
-        document.title = '🔴 LIVE — ninjaruss_';
-      }
-    } catch {
-      // non-critical
-    }
+      const { live } = await res.json() as { live: boolean };
+      document.querySelector('.s-live')?.classList.toggle('is-live', live);
+      if (live) document.title = '🔴 LIVE — ninjaruss_';
+    } catch { /* non-critical */ }
   }
-
   checkTwitchLive();
   setInterval(checkTwitchLive, 300_000);
 
-  /* ── DOM init — re-runs after every view transition ────── */
+  /* ── DOM init ─────────────────────────────────────────── */
   document.addEventListener('astro:page-load', () => {
-    const tabs   = document.querySelectorAll<HTMLButtonElement>('.s-tab');
-    const panels = document.querySelectorAll<HTMLElement>('.s-panel');
+    const tabs      = document.querySelectorAll<HTMLButtonElement>('.s-tab');
+    const panels    = document.querySelectorAll<HTMLElement>('.s-panel');
+    const indicator = document.getElementById('tab-indicator');
+    const blade     = document.getElementById('blade');
+    const portrait  = document.getElementById('portrait');
 
-    // Not on the stream page (view transition to another route)
     if (!tabs.length) return;
 
-    function activateTab(tabName: string): void {
-      tabs.forEach(t => {
-        const active = t.dataset.tab === tabName;
-        t.classList.toggle('active', active);
-        t.setAttribute('aria-selected', String(active));
+    let current = 'status';
+    let busy    = false;
+    let activeStrip: HTMLElement | null = null;
+
+    function moveIndicator(tabEl: HTMLElement): void {
+      if (!indicator) return;
+      const listRect = document.getElementById('tab-list')!.getBoundingClientRect();
+      const tabRect  = tabEl.getBoundingClientRect();
+      indicator.style.top    = `${tabRect.top - listRect.top}px`;
+      indicator.style.height = `${tabRect.height}px`;
+    }
+
+    function getItems(panelEl: HTMLElement): HTMLElement[] {
+      return [...panelEl.querySelectorAll<HTMLElement>('.j-stream-strip, .j-entry, .bond-row')];
+    }
+
+    function exitItems(panelEl: HTMLElement, stagger = 28): number {
+      const items = getItems(panelEl);
+      items.forEach((item, i) => {
+        item.style.animation = 'none';
+        item.style.opacity   = '1';
+        void (item as HTMLElement & { offsetWidth: number }).offsetWidth;
+        item.style.animation = `itemExit 0.18s ease ${i * stagger}ms forwards`;
       });
-      panels.forEach(p => {
-        p.classList.toggle('active', p.id === `panel-${tabName}`);
+      return items.length * stagger + 180;
+    }
+
+    function enterItems(panelEl: HTMLElement, delay = 0, stagger = 50): void {
+      const items = getItems(panelEl);
+      items.forEach((item, i) => {
+        item.style.opacity   = '0';
+        item.style.animation = 'none';
+        void (item as HTMLElement & { offsetWidth: number }).offsetWidth;
+        item.style.animation = `itemEnter 0.32s cubic-bezier(0.16,1,0.3,1) ${delay + i * stagger}ms forwards`;
+        item.addEventListener('animationend', () => {
+          item.style.opacity   = '';
+          item.style.animation = '';
+        }, { once: true });
       });
     }
 
-    tabs.forEach(btn => btn.addEventListener('click', () => activateTab(btn.dataset.tab!)));
+    function fireSlash(): void {
+      if (!blade) return;
+      blade.classList.remove('slash-go');
+      void (blade as HTMLElement & { offsetWidth: number }).offsetWidth;
+      blade.classList.add('slash-go');
+      blade.addEventListener('animationend', () => blade.classList.remove('slash-go'), { once: true });
+    }
 
-    /* ── Stat mode toggle ───────────────────────────────── */
-    const dataEl      = document.getElementById('stream-tally-data')!;
-    const recentData  = JSON.parse(dataEl.dataset.recent ?? '{}') as Record<string, number>;
-    const allData     = JSON.parse(dataEl.dataset.all    ?? '{}') as Record<string, number>;
-    const radarRecent = document.getElementById('radar-recent')!;
-    const radarAll    = document.getElementById('radar-all')!;
+    function reactPortrait(): void {
+      if (!portrait) return;
+      portrait.style.animation = 'none';
+      void (portrait as HTMLElement & { offsetWidth: number }).offsetWidth;
+      portrait.style.animation = 'portraitReact 0.42s cubic-bezier(0.16,1,0.3,1) forwards';
+      portrait.addEventListener('animationend', () => { portrait.style.animation = ''; }, { once: true });
+    }
+
+    function switchTab(next: string, filterStat: string | null = null): void {
+      if (next === current || busy) return;
+      busy = true;
+
+      const outPanel = document.getElementById(`panel-${current}`)!;
+      const inPanel  = document.getElementById(`panel-${next}`)!;
+
+      const nextTab = document.querySelector<HTMLElement>(`.s-tab[data-tab="${next}"]`);
+      if (nextTab) moveIndicator(nextTab);
+
+      tabs.forEach(t => {
+        const active = t.dataset.tab === next;
+        t.classList.toggle('active', active);
+        t.setAttribute('aria-selected', String(active));
+      });
+
+      reactPortrait();
+      const exitDur = exitItems(outPanel);
+
+      setTimeout(fireSlash, exitDur * 0.45);
+
+      setTimeout(() => {
+        outPanel.classList.remove('active');
+        getItems(outPanel).forEach(el => { el.style.animation = ''; el.style.opacity = ''; });
+
+        inPanel.style.clipPath = 'polygon(0 100%,100% 100%,100% 100%,0 100%)';
+        inPanel.style.opacity  = '0.7';
+        inPanel.style.animation = 'none';
+        inPanel.classList.add('active');
+        void (inPanel as HTMLElement & { offsetWidth: number }).offsetWidth;
+        inPanel.style.animation = 'panelWipe 0.4s cubic-bezier(0.16,1,0.3,1) forwards';
+        inPanel.addEventListener('animationend', () => {
+          inPanel.style.animation = '';
+          inPanel.style.clipPath  = '';
+          inPanel.style.opacity   = '';
+          busy = false;
+        }, { once: true });
+
+        if (filterStat) setLogFilter(filterStat);
+        enterItems(inPanel, 60);
+        current = next;
+      }, exitDur);
+    }
+
+    /* ── Stat mode toggle ─────────────────────────────── */
+    const dataEl     = document.getElementById('stream-tally-data')!;
+    const recentData = JSON.parse(dataEl?.dataset.recent ?? '{}') as Record<string, number>;
+    const allData    = JSON.parse(dataEl?.dataset.all    ?? '{}') as Record<string, number>;
 
     document.querySelectorAll<HTMLButtonElement>('.s-toggle-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.s-toggle-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const mode = btn.dataset.mode as 'recent' | 'all';
+        const mode  = btn.dataset.mode as 'recent' | 'all';
         const tally = mode === 'recent' ? recentData : allData;
-
-        document.querySelectorAll<HTMLElement>('[data-stat-count]').forEach(el => {
-          el.textContent = String(tally[el.dataset.statCount!] ?? 0);
-        });
 
         document.querySelectorAll<SVGTextElement>('[data-vertex-count]').forEach(el => {
           el.textContent = String(tally[el.dataset.vertexCount!] ?? 0);
         });
 
+        const radarRecent = document.getElementById('radar-recent')!;
+        const radarAll    = document.getElementById('radar-all')!;
         if (mode === 'recent') {
           radarRecent.classList.remove('is-secondary');
           radarAll.classList.remove('is-primary');
@@ -477,39 +596,47 @@ const allData    = JSON.stringify(allTallies);
       });
     });
 
-    /* ── Log stat filter ────────────────────────────────── */
-    function filterLog(stat: string, activePill: HTMLElement): void {
-      document.querySelectorAll('.s-log-pill').forEach(p => p.classList.remove('active'));
-      activePill.classList.add('active');
-      document.querySelectorAll<HTMLElement>('.s-log-entry').forEach(entry => {
-        if (stat === 'all') {
-          entry.hidden = false;
-        } else {
-          const stats: string[] = JSON.parse(entry.dataset.stats ?? '[]');
-          entry.hidden = !stats.includes(stat);
-        }
+    /* ── Journal log filter ───────────────────────────── */
+    function setLogFilter(stat: string): void {
+      document.querySelectorAll<HTMLElement>('.j-stream-strip').forEach(s => {
+        const isMatch = stat !== 'all' && s.dataset.stat === stat;
+        s.classList.toggle('active', isMatch);
+        if (isMatch) activeStrip = s;
+      });
+      if (stat === 'all') activeStrip = null;
+
+      const label = document.getElementById('log-label');
+      if (label) label.textContent = stat === 'all' ? 'Session Log' : `Session Log · ${stat}`;
+
+      document.querySelectorAll<HTMLElement>('.j-entry').forEach(entry => {
+        if (stat === 'all') { entry.hidden = false; return; }
+        const stats: string[] = JSON.parse(entry.dataset.stats ?? '[]');
+        entry.hidden = !stats.includes(stat);
       });
     }
 
-    document.querySelectorAll<HTMLButtonElement>('.s-log-pill').forEach(pill => {
-      pill.addEventListener('click', () => filterLog(pill.dataset.stat!, pill));
-    });
-
-    /* ── Stat click → Log tab with pre-filter ───────────── */
-    document.querySelectorAll<HTMLElement>('.s-stat-item').forEach(item => {
-      const activate = () => {
-        const stat = item.dataset.stat!;
-        activateTab('log');
-        const pill = document.querySelector<HTMLButtonElement>(`.s-log-pill[data-stat="${stat}"]`);
-        if (pill) filterLog(stat, pill);
-      };
-      item.addEventListener('click', activate);
-      item.addEventListener('keydown', (e: KeyboardEvent) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
+    document.querySelectorAll<HTMLElement>('.j-stream-strip').forEach(strip => {
+      strip.addEventListener('click', () => {
+        setLogFilter(activeStrip === strip ? 'all' : strip.dataset.stat!);
       });
     });
 
-    /* ── Bond detail panel ──────────────────────────────────── */
+    /* ── Radar vertex click → journal + filter ────────── */
+    document.querySelectorAll<SVGGElement>('.radar-vertex').forEach(g => {
+      g.addEventListener('click', () => {
+        const stat = g.dataset.stat!;
+        if (current === 'journal') {
+          setLogFilter(activeStrip?.dataset.stat === stat ? 'all' : stat);
+        } else {
+          switchTab('journal', stat);
+        }
+      });
+    });
+
+    /* ── Tab clicks ───────────────────────────────────── */
+    tabs.forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab!)));
+
+    /* ── Bond detail ──────────────────────────────────── */
     interface BondData {
       name: string; arcana: string; affinity: string; rank: number;
       stat: string | null; statColor: string | null;
@@ -522,19 +649,16 @@ const allData    = JSON.stringify(allTallies);
     if (bondsDataEl) {
       const allBonds: BondData[] = JSON.parse(bondsDataEl.dataset.bonds ?? '[]');
       const bondMap = Object.fromEntries(allBonds.map(b => [b.name, b]));
-      const detailEl = document.getElementById('bond-detail')!;
+      const detailPanel = document.getElementById('panel-bonds')!;
       let activeBondRow: HTMLElement | null = null;
 
       function openBondDetail(row: HTMLElement): void {
         const d = bondMap[row.dataset.bond!];
         if (!d) return;
-
         const color = d.statColor ?? '#888';
 
         const emblemEl = document.getElementById('bd-emblem')!;
-        emblemEl.style.cssText = d.statColor
-          ? `border-color:${d.statColor}4d;background:${d.statColor}10`
-          : 'border-color:#333;background:transparent';
+        emblemEl.style.cssText = `border:1.5px solid ${color}4d;background:${color}10;box-shadow:0 0 28px ${color}1a`;
         const imgEl = document.getElementById('bd-img') as HTMLImageElement;
         if (d.img) { imgEl.src = d.img; imgEl.style.display = ''; }
         else { imgEl.style.display = 'none'; }
@@ -548,38 +672,48 @@ const allData    = JSON.stringify(allTallies);
         const badge = document.getElementById('bd-stat-badge')!;
         if (d.stat) {
           badge.style.display = 'inline-flex';
+          badge.style.borderColor = `${color}4d`;
           document.getElementById('bd-stat-dot')!.style.background = color;
           document.getElementById('bd-stat-text')!.textContent = d.stat;
         } else {
           badge.style.display = 'none';
         }
 
-        const numerals = ['I', 'II', 'III', 'IV', 'V'];
+        const numerals   = ['I','II','III','IV','V'];
         const rankLabelEl = document.getElementById('bd-rank-label')!;
-        rankLabelEl.textContent = d.rank === 0 ? 'RANK —' : 'RANK ' + (numerals[d.rank - 1] ?? d.rank);
+        rankLabelEl.textContent = d.rank === 0 ? 'RANK —' : `RANK ${numerals[d.rank - 1] ?? d.rank}`;
         rankLabelEl.style.color = color;
-        document.querySelectorAll('#bd-pips .bd-pip').forEach((pip, i) => {
+
+        const pipsEl = document.getElementById('bd-rank-pips');
+        pipsEl?.querySelectorAll<HTMLElement>('.bd-pip-d').forEach((pip, i) => {
           const filled = i < d.rank;
-          (pip as HTMLElement).style.background   = filled ? color : '';
-          (pip as HTMLElement).style.borderColor  = filled ? color : '';
-          (pip as HTMLElement).style.boxShadow    = filled ? `0 0 4px ${color}66` : '';
+          pip.style.cssText = filled
+            ? `--bd-color:${color};--bd-glow:${color}66;background:${color};border-color:${color};box-shadow:0 0 6px ${color}66`
+            : '';
+          pip.classList.toggle('filled', filled);
         });
-        document.getElementById('bd-rank-date')!.textContent =
-          d.reachedDate ? 'Reached · ' + d.reachedDate : '';
 
-        document.getElementById('bd-lore')!.textContent   = d.lore ?? '';
-        document.getElementById('bd-memory')!.textContent = d.lastSession ?? '';
-        document.getElementById('bd-when')!.textContent   = d.lastInteraction ?? '';
+        document.getElementById('bd-rank-date')!.textContent   = d.reachedDate ? `Reached · ${d.reachedDate}` : '';
+        document.getElementById('bd-lore')!.textContent        = d.lore ?? '';
+        document.getElementById('bd-memory')!.textContent      = d.lastSession ?? '';
+        document.getElementById('bd-memory-when')!.textContent = d.lastInteraction ?? '';
 
-        document.querySelectorAll('.bond-row').forEach(r => r.classList.remove('bd-active'));
+        document.querySelectorAll('.bond-row').forEach(r => {
+          r.classList.remove('bd-active');
+          (r as HTMLElement).style.removeProperty('--bd-row-color');
+        });
         row.classList.add('bd-active');
+        row.style.setProperty('--bd-row-color', color);
         activeBondRow = row;
-        detailEl.classList.add('open');
+        detailPanel.classList.add('detail-open');
       }
 
       function closeBondDetail(): void {
-        detailEl.classList.remove('open');
-        document.querySelectorAll('.bond-row').forEach(r => r.classList.remove('bd-active'));
+        detailPanel.classList.remove('detail-open');
+        document.querySelectorAll('.bond-row').forEach(r => {
+          r.classList.remove('bd-active');
+          (r as HTMLElement).style.removeProperty('--bd-row-color');
+        });
         activeBondRow = null;
       }
 
@@ -590,10 +724,19 @@ const allData    = JSON.stringify(allTallies);
         });
       });
 
-      document.getElementById('bond-detail-close')!.addEventListener('click', closeBondDetail);
+      document.getElementById('bond-detail-close')?.addEventListener('click', closeBondDetail);
       document.addEventListener('keydown', (e: KeyboardEvent) => {
         if (e.key === 'Escape' && activeBondRow) closeBondDetail();
       });
     }
+
+    /* ── Page load animations ─────────────────────────── */
+    const sidebar     = document.getElementById('sidebar');
+    const contentArea = document.getElementById('content-area');
+    if (sidebar)     sidebar.style.animation     = 'sidebarIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards';
+    if (contentArea) contentArea.style.animation = 'contentIn 0.45s cubic-bezier(0.16,1,0.3,1) 0.12s both';
+
+    const activeTab = document.querySelector<HTMLElement>('.s-tab.active');
+    if (activeTab) moveIndicator(activeTab);
   });
 </script>
