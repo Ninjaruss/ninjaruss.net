@@ -179,7 +179,7 @@
 
 .s-status-inner {
   display: flex;
-  gap: 40px;
+  gap: 64px;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -192,14 +192,16 @@
 }
 
 .s-radar {
-  width: 260px;
-  height: 260px;
+  width: 300px;
+  height: 300px;
+  overflow: visible;
 }
 
 /* ── Stat list ──────────────────────────────────────────── */
 .s-stat-block {
-  width: 280px;
-  flex-shrink: 0;
+  flex: 1;
+  min-width: 260px;
+  max-width: 360px;
 }
 
 .s-toggle {
@@ -565,19 +567,93 @@
   stroke-dasharray: 4 3;
 }
 
-.s-radar-label {
-  font-size: 12px;
+/* ── Radar column wrapper ───────────────────────────────── */
+.s-radar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ── Objective strip ────────────────────────────────────── */
+.s-objective-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-left: 2px solid #ffe52c;
+  background: rgba(255, 229, 44, 0.04);
+  margin-bottom: 12px;
+  width: 100%;
+  max-width: 300px;
+  overflow: hidden;
+}
+
+.s-obj-label {
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  color: #ffe52c;
+  flex-shrink: 0;
+}
+
+.s-obj-text {
+  font-size: 0.7rem;
+  color: #ccc;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Radar vertex hover ─────────────────────────────────── */
+.radar-vertex { cursor: default; }
+
+.rv-dot {
+  transition: opacity 0.18s 0.05s;
+}
+.radar-vertex:hover .rv-dot { opacity: 0; }
+
+.rv-emblem {
+  opacity: 0;
+  transition: opacity 0.28s;
+  pointer-events: none;
+}
+.radar-vertex:hover .rv-emblem { opacity: 1; }
+
+.rv-count {
+  font-size: 18px;
+  font-weight: 900;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  paint-order: stroke fill;
+  stroke: #0a0a0c;
+  stroke-width: 5px;
+}
+
+.rv-name {
+  font-size: 10px;
   font-weight: 700;
   font-family: 'JetBrains Mono', 'Courier New', monospace;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   fill: #e0e0e0;
-  stroke: #0a0a0c;
-  stroke-width: 5;
   paint-order: stroke fill;
-  text-anchor: middle;
-  dominant-baseline: middle;
+  stroke: #0a0a0c;
+  stroke-width: 4px;
 }
+
+.rv-tag {
+  font-size: 8.5px;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  letter-spacing: 0.06em;
+  fill: #777;
+  paint-order: stroke fill;
+  stroke: #0a0a0c;
+  stroke-width: 4px;
+  transition: opacity 0.18s;
+}
+.radar-vertex:hover .rv-tag { opacity: 0; }
 
 /* ── Reduced motion ─────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
