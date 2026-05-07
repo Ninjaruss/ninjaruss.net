@@ -22,7 +22,7 @@
 .s-sidebar {
   display: flex;
   flex-direction: column;
-  width: 148px;
+  width: 164px;
   flex-shrink: 0;
   background: #111;
   border-right: 1px solid #1e1e1e;
@@ -38,12 +38,20 @@
   font-family: 'JetBrains Mono', 'Courier New', monospace;
   color: #ffe52c;
   text-decoration: none;
-  padding: 6px 8px;
+  padding: 8px 12px;
   margin-bottom: 16px;
-  transition: opacity 0.15s;
+  border: 1px solid rgba(255, 229, 44, 0.35);
+  border-radius: 4px;
+  background: rgba(255, 229, 44, 0.07);
+  box-shadow: 0 0 10px rgba(255, 229, 44, 0.08);
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 
-.s-logo:hover { opacity: 0.7; }
+.s-logo:hover {
+  background: rgba(255, 229, 44, 0.14);
+  border-color: rgba(255, 229, 44, 0.55);
+  box-shadow: 0 0 14px rgba(255, 229, 44, 0.16);
+}
 
 /* ── Content area ────────────────────────────────────────── */
 .s-content {
@@ -62,9 +70,9 @@
 }
 
 .s-tab {
-  padding: 8px 10px;
+  padding: 10px 14px;
   border-radius: 4px;
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   font-family: 'JetBrains Mono', 'Courier New', monospace;
@@ -173,10 +181,14 @@
   display: flex;
   gap: 40px;
   align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .s-radar-wrap {
   flex-shrink: 0;
+  display: flex;
+  justify-content: center;
 }
 
 .s-radar {
@@ -186,8 +198,8 @@
 
 /* ── Stat list ──────────────────────────────────────────── */
 .s-stat-block {
-  flex: 1;
-  min-width: 0;
+  width: 280px;
+  flex-shrink: 0;
 }
 
 .s-toggle {

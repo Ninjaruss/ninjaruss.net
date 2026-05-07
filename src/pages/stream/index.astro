@@ -47,7 +47,7 @@ const axes = STAT_ORDER.map((_, i) => {
 });
 
 // Labels placed just outside the outer ring
-const LABEL_R = R + 22;
+const LABEL_R = R + 36;
 const statLabels = STAT_ORDER.map((stat, i) => {
   const angle = (-90 + i * 72) * (Math.PI / 180);
   return {
@@ -61,7 +61,7 @@ const rankedStats = [...STAT_ORDER].sort(
   (a, b) => (recentTallies[b] ?? 0) - (recentTallies[a] ?? 0)
 );
 
-const questRaw = readFileSync(join(process.cwd(), 'src/content/quest-menu.md'), 'utf-8');
+const questRaw = readFileSync(join(process.cwd(), 'src/content/stream/_quests.md'), 'utf-8');
 const questSections = parseQuestMenu(questRaw);
 
 const dates = streamEntries.map(e => e.data.publishedAt);
@@ -90,7 +90,7 @@ const allData    = JSON.stringify(allTallies);
         <button class="s-tab" data-tab="quests" role="tab" aria-selected="false">Quests</button>
         <button class="s-tab" data-tab="log"    role="tab" aria-selected="false">Log</button>
         <button class="s-tab" data-tab="bonds"  role="tab" aria-selected="false">Bonds</button>
-        <button class="s-tab" data-tab="velvet" role="tab" aria-selected="false">Mail</button>
+        <button class="s-tab" data-tab="velvet" role="tab" aria-selected="false">Mailbox</button>
       </nav>
     </div>
 
@@ -119,7 +119,7 @@ const allData    = JSON.stringify(allTallies);
           <div class="s-status-inner">
 
             <div class="s-radar-wrap">
-              <svg class="s-radar" viewBox="-12 -12 324 324" aria-label="Stat radar chart" role="img">
+              <svg class="s-radar" viewBox="-20 -20 340 340" aria-label="Stat radar chart" role="img">
                 {guides.map(pts => (
                   <polygon class="s-radar-guide" points={pts} />
                 ))}
@@ -251,9 +251,9 @@ const allData    = JSON.stringify(allTallies);
         <!-- ── VELVET ────────────────────────────────────── -->
         <div class="s-panel" id="panel-velvet" role="tabpanel">
           <div class="s-velvet">
-            <div class="s-velvet-title">Velvet Room</div>
-            <div class="s-velvet-subtitle">A place that exists between mind and matter</div>
-            <a href="mailto:russ081999@gmail.com" class="s-velvet-email">russ081999@gmail.com</a>
+            <div class="s-velvet-title">Mailbox</div>
+            <div class="s-velvet-subtitle">Send mail to be read on stream</div>
+            <a href="mailto:mail@ninjaruss.net" class="s-velvet-email">mail@ninjaruss.net</a>
           </div>
         </div>
 
@@ -266,84 +266,7 @@ const allData    = JSON.stringify(allTallies);
 <script>
   import { parseTwitchLiveResponse } from '../../utils/twitchStatus';
 
-  /* ── Tab switching ────────────────────────────────────── */
-  const tabs   = document.querySelectorAll<HTMLButtonElement>('.s-tab');
-  const panels = document.querySelectorAll<HTMLElement>('.s-panel');
-
-  function activateTab(tabName: string): void {
-    tabs.forEach(t => {
-      const active = t.dataset.tab === tabName;
-      t.classList.toggle('active', active);
-      t.setAttribute('aria-selected', String(active));
-    });
-    panels.forEach(p => {
-      p.classList.toggle('active', p.id === `panel-${tabName}`);
-    });
-  }
-
-  tabs.forEach(btn => btn.addEventListener('click', () => activateTab(btn.dataset.tab!)));
-
-  /* ── Stat mode toggle ─────────────────────────────────── */
-  const dataEl      = document.getElementById('stream-tally-data')!;
-  const recentData  = JSON.parse(dataEl.dataset.recent ?? '{}') as Record<string, number>;
-  const allData     = JSON.parse(dataEl.dataset.all    ?? '{}') as Record<string, number>;
-  const radarRecent = document.getElementById('radar-recent')!;
-  const radarAll    = document.getElementById('radar-all')!;
-
-  document.querySelectorAll<HTMLButtonElement>('.s-toggle-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.s-toggle-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const mode = btn.dataset.mode as 'recent' | 'all';
-      const tally = mode === 'recent' ? recentData : allData;
-
-      document.querySelectorAll<HTMLElement>('[data-stat-count]').forEach(el => {
-        el.textContent = String(tally[el.dataset.statCount!] ?? 0);
-      });
-
-      if (mode === 'recent') {
-        radarRecent.classList.remove('is-secondary');
-        radarAll.classList.remove('is-primary');
-      } else {
-        radarRecent.classList.add('is-secondary');
-        radarAll.classList.add('is-primary');
-      }
-    });
-  });
-
-  /* ── Stat click → Log tab with pre-filter ─────────────── */
-  document.querySelectorAll<HTMLElement>('.s-stat-item').forEach(item => {
-    const activate = () => {
-      const stat = item.dataset.stat!;
-      activateTab('log');
-      const pill = document.querySelector<HTMLButtonElement>(`.s-log-pill[data-stat="${stat}"]`);
-      if (pill) filterLog(stat, pill);
-    };
-    item.addEventListener('click', activate);
-    item.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
-    });
-  });
-
-  /* ── Log stat filter ──────────────────────────────────── */
-  function filterLog(stat: string, activePill: HTMLElement): void {
-    document.querySelectorAll('.s-log-pill').forEach(p => p.classList.remove('active'));
-    activePill.classList.add('active');
-    document.querySelectorAll<HTMLElement>('.s-log-entry').forEach(entry => {
-      if (stat === 'all') {
-        entry.hidden = false;
-      } else {
-        const stats: string[] = JSON.parse(entry.dataset.stats ?? '[]');
-        entry.hidden = !stats.includes(stat);
-      }
-    });
-  }
-
-  document.querySelectorAll<HTMLButtonElement>('.s-log-pill').forEach(pill => {
-    pill.addEventListener('click', () => filterLog(pill.dataset.stat!, pill));
-  });
-
-  /* ── Twitch live detection ────────────────────────────── */
+  /* ── Twitch live detection (runs once per module load) ── */
   const CLIENT_ID    = import.meta.env.PUBLIC_TWITCH_CLIENT_ID   as string | undefined;
   const ACCESS_TOKEN = import.meta.env.PUBLIC_TWITCH_ACCESS_TOKEN as string | undefined;
 
@@ -368,4 +291,86 @@ const allData    = JSON.stringify(allTallies);
 
   checkTwitchLive();
   setInterval(checkTwitchLive, 300_000);
+
+  /* ── DOM init — re-runs after every view transition ────── */
+  document.addEventListener('astro:page-load', () => {
+    const tabs   = document.querySelectorAll<HTMLButtonElement>('.s-tab');
+    const panels = document.querySelectorAll<HTMLElement>('.s-panel');
+
+    // Not on the stream page (view transition to another route)
+    if (!tabs.length) return;
+
+    function activateTab(tabName: string): void {
+      tabs.forEach(t => {
+        const active = t.dataset.tab === tabName;
+        t.classList.toggle('active', active);
+        t.setAttribute('aria-selected', String(active));
+      });
+      panels.forEach(p => {
+        p.classList.toggle('active', p.id === `panel-${tabName}`);
+      });
+    }
+
+    tabs.forEach(btn => btn.addEventListener('click', () => activateTab(btn.dataset.tab!)));
+
+    /* ── Stat mode toggle ───────────────────────────────── */
+    const dataEl      = document.getElementById('stream-tally-data')!;
+    const recentData  = JSON.parse(dataEl.dataset.recent ?? '{}') as Record<string, number>;
+    const allData     = JSON.parse(dataEl.dataset.all    ?? '{}') as Record<string, number>;
+    const radarRecent = document.getElementById('radar-recent')!;
+    const radarAll    = document.getElementById('radar-all')!;
+
+    document.querySelectorAll<HTMLButtonElement>('.s-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.s-toggle-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const mode = btn.dataset.mode as 'recent' | 'all';
+        const tally = mode === 'recent' ? recentData : allData;
+
+        document.querySelectorAll<HTMLElement>('[data-stat-count]').forEach(el => {
+          el.textContent = String(tally[el.dataset.statCount!] ?? 0);
+        });
+
+        if (mode === 'recent') {
+          radarRecent.classList.remove('is-secondary');
+          radarAll.classList.remove('is-primary');
+        } else {
+          radarRecent.classList.add('is-secondary');
+          radarAll.classList.add('is-primary');
+        }
+      });
+    });
+
+    /* ── Log stat filter ────────────────────────────────── */
+    function filterLog(stat: string, activePill: HTMLElement): void {
+      document.querySelectorAll('.s-log-pill').forEach(p => p.classList.remove('active'));
+      activePill.classList.add('active');
+      document.querySelectorAll<HTMLElement>('.s-log-entry').forEach(entry => {
+        if (stat === 'all') {
+          entry.hidden = false;
+        } else {
+          const stats: string[] = JSON.parse(entry.dataset.stats ?? '[]');
+          entry.hidden = !stats.includes(stat);
+        }
+      });
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('.s-log-pill').forEach(pill => {
+      pill.addEventListener('click', () => filterLog(pill.dataset.stat!, pill));
+    });
+
+    /* ── Stat click → Log tab with pre-filter ───────────── */
+    document.querySelectorAll<HTMLElement>('.s-stat-item').forEach(item => {
+      const activate = () => {
+        const stat = item.dataset.stat!;
+        activateTab('log');
+        const pill = document.querySelector<HTMLButtonElement>(`.s-log-pill[data-stat="${stat}"]`);
+        if (pill) filterLog(stat, pill);
+      };
+      item.addEventListener('click', activate);
+      item.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
+      });
+    });
+  });
 </script>
