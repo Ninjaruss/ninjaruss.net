@@ -9,6 +9,8 @@ import {
   buildGuidePoints,
   parseQuestMenu,
   STAT_ORDER,
+  scaleAllTallies,
+  STAT_CEILING,
 } from '../../utils/stream';
 import '../../styles/stream.css';
 
@@ -29,13 +31,13 @@ socialLinks.sort((a, b) => b.data.rank - a.data.rank);
 const recentTallies = tallyStats(streamEntries, 'recent');
 const allTallies    = tallyStats(streamEntries, 'all');
 
-const recentMax = Math.max(1, ...Object.values(recentTallies).map(v => v ?? 0));
-const allMax    = Math.max(1, ...Object.values(allTallies).map(v => v ?? 0));
+const recentMax  = Math.max(1, ...Object.values(recentTallies).map(v => v ?? 0));
+const allScaled  = scaleAllTallies(allTallies);
 
 const CX = 150, CY = 150, R = 108;
 
-const recentPoints = buildRadarPoints(recentTallies, recentMax, CX, CY, R);
-const allPoints    = buildRadarPoints(allTallies,    allMax,    CX, CY, R);
+const recentPoints = buildRadarPoints(recentTallies, recentMax,    CX, CY, R);
+const allPoints    = buildRadarPoints(allScaled,     STAT_CEILING, CX, CY, R);
 const guides       = [0.25, 0.5, 0.75, 1].map(f => buildGuidePoints(f, CX, CY, R));
 
 const axes = STAT_ORDER.map((_, i) => {
@@ -253,7 +255,7 @@ const allData    = JSON.stringify(allTallies);
           <div class="s-velvet">
             <div class="s-velvet-title">Mailbox</div>
             <div class="s-velvet-subtitle">Send mail to be read on stream</div>
-            <a href="mailto:mail@ninjaruss.net" class="s-velvet-email">mail@ninjaruss.net</a>
+            <a href="mailto:${'mailbox'}@${'ninjaruss.net'}" class="s-velvet-email">{'mailbox'}@{'ninjaruss.net'}</a>
           </div>
         </div>
 
