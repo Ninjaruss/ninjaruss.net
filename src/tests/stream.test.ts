@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { tallyStats, buildRadarPoints, buildGuidePoints, parseQuestMenu, STAT_ORDER } from '../utils/stream';
+import {
+  tallyStats, buildRadarPoints, buildGuidePoints, parseQuestMenu, STAT_ORDER,
+  applyLogScale, scaleAllTallies, STAT_CEILING,
+  type StatName,
+} from '../utils/stream';
 import { parseTwitchLiveResponse } from '../utils/twitchStatus';
 
 const makeEntry = (publishedAt: string, stats: string[]) => ({
@@ -92,6 +96,38 @@ describe('parseQuestMenu', () => {
     const md = `## Active\nsome prose line\n- Valid quest`;
     const result = parseQuestMenu(md);
     expect(result[0].quests).toEqual(['Valid quest']);
+  });
+});
+
+describe('applyLogScale', () => {
+  it('returns 0 for 0 raw sessions', () => {
+    expect(applyLogScale(0)).toBe(0);
+  });
+  it('returns below ceiling for 49 raw sessions', () => {
+    expect(applyLogScale(49)).toBeLessThan(STAT_CEILING);
+  });
+  it('caps at STAT_CEILING for 1000 raw sessions', () => {
+    expect(applyLogScale(1000)).toBe(STAT_CEILING);
+  });
+  it('early gains are larger than late gains', () => {
+    const earlyGain = applyLogScale(5) - applyLogScale(0);
+    const lateGain  = applyLogScale(30) - applyLogScale(25);
+    expect(earlyGain).toBeGreaterThan(lateGain);
+  });
+});
+
+describe('scaleAllTallies', () => {
+  it('applies log scale to each stat', () => {
+    const tallies: Partial<Record<StatName, number>> = { Determination: 1, Insight: 5 };
+    const scaled = scaleAllTallies(tallies);
+    expect(scaled.Determination).toBeCloseTo(applyLogScale(1), 5);
+    expect(scaled.Insight).toBeCloseTo(applyLogScale(5), 5);
+  });
+  it('treats missing stats as 0', () => {
+    const scaled = scaleAllTallies({});
+    for (const stat of STAT_ORDER) {
+      expect(scaled[stat]).toBe(0);
+    }
   });
 });
 

@@ -60,6 +60,25 @@ export function buildGuidePoints(
   }).join(' ');
 }
 
+export const STAT_CEILING = 100;
+
+// Scale factor tuned so 50 raw sessions → display value ≈ 100
+const LOG_SCALE_FACTOR = STAT_CEILING / Math.log(1 + 50);
+
+export function applyLogScale(raw: number): number {
+  return Math.min(STAT_CEILING, Math.log(1 + raw) * LOG_SCALE_FACTOR);
+}
+
+export function scaleAllTallies(
+  tallies: Partial<Record<StatName, number>>
+): Partial<Record<StatName, number>> {
+  const result: Partial<Record<StatName, number>> = {};
+  for (const stat of STAT_ORDER) {
+    result[stat] = applyLogScale(tallies[stat] ?? 0);
+  }
+  return result;
+}
+
 export function parseQuestMenu(markdown: string): { category: string; quests: string[] }[] {
   const lines = markdown.split('\n');
   const result: { category: string; quests: string[] }[] = [];
