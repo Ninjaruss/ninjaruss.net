@@ -658,6 +658,7 @@
 /* ── Reduced motion ─────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .s-panel { transition: none; }
+  .rv-dot, .rv-emblem, .rv-tag { transition: none; }
 }
 
 /* ── Mobile: collapse sidebar to top bar, stack layout ───── */
