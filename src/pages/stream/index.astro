@@ -37,6 +37,22 @@ const socialLinks   = await getCollection('social-links', ({ data }) => !data.dr
 streamEntries.sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 socialLinks.sort((a, b) => b.data.rank - a.data.rank);
 
+const bondsJson = JSON.stringify(
+  socialLinks.map(link => ({
+    name:            link.data.name,
+    arcana:          link.data.arcana,
+    affinity:        link.data.affinity,
+    rank:            link.data.rank,
+    stat:            link.data.stat ?? null,
+    statColor:       link.data.stat ? (STAT_META[link.data.stat]?.color ?? null) : null,
+    reachedDate:     link.data.reachedDate ?? null,
+    lore:            link.data.lore ?? null,
+    lastSession:     link.data.lastSession ?? null,
+    lastInteraction: link.data.lastInteraction ?? null,
+    img:             link.data.img ?? null,
+  }))
+);
+
 const recentTallies = tallyStats(streamEntries, 'recent');
 const allTallies    = tallyStats(streamEntries, 'all');
 
@@ -293,20 +309,75 @@ const allData    = JSON.stringify(allTallies);
 
         <!-- ── BONDS ────────────────────────────────────── -->
         <div class="s-panel" id="panel-bonds" role="tabpanel">
-          <div class="s-bonds-grid">
-            {socialLinks.map(link => (
-              <div class="s-bond-card">
-                <div class="s-bond-name">{link.data.name}</div>
-                <div class="s-bond-arcana">{link.data.arcana}</div>
-                <div class="s-bond-affinity">{link.data.affinity}</div>
-                <div class="s-bond-rank" aria-label={`Rank ${link.data.rank} of 5`}>
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <span class={`s-bond-pip${i < link.data.rank ? ' filled' : ''}`}></span>
-                  ))}
+
+          <div class="bonds-list-col">
+            <div class="bonds-header">
+              <span class="bonds-header-title">Bonds</span>
+              <span class="bonds-header-count">{socialLinks.length}</span>
+            </div>
+            <div class="bonds-list">
+              {socialLinks.map(link => {
+                const statColor = link.data.stat ? STAT_META[link.data.stat]?.color : null;
+                return (
+                  <div
+                    class="bond-row"
+                    data-bond={link.data.name}
+                    style={statColor ? `--bond-color: ${statColor}` : ''}
+                  >
+                    <div class="bond-row-left">
+                      <div class="bond-row-name">{link.data.name}</div>
+                      <div class="bond-row-arcana">{link.data.arcana}</div>
+                      <div class="bond-row-affinity">{link.data.affinity}</div>
+                    </div>
+                    <div class="bond-row-pips">
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <span
+                          class={`bond-pip${i < link.data.rank ? ' filled' : ''}`}
+                          style={i < link.data.rank && statColor
+                            ? `background:${statColor};border-color:${statColor};box-shadow:0 0 4px ${statColor}66`
+                            : ''}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div class="bond-detail" id="bond-detail">
+            <div class="bond-detail-inner">
+              <button class="bond-detail-close" id="bond-detail-close" aria-label="Close">✕</button>
+              <div class="bd-emblem" id="bd-emblem">
+                <img id="bd-img" src="" alt="" />
+              </div>
+              <div class="bd-arcana"   id="bd-arcana"></div>
+              <div class="bd-name"     id="bd-name"></div>
+              <div class="bd-affinity" id="bd-affinity"></div>
+              <div class="bd-stat-badge" id="bd-stat-badge">
+                <span class="bd-stat-dot"  id="bd-stat-dot"></span>
+                <span class="bd-stat-text" id="bd-stat-text"></span>
+              </div>
+              <div class="bd-rank-row">
+                <span class="bd-rank-label" id="bd-rank-label"></span>
+                <div class="bd-pips" id="bd-pips">
+                  {Array.from({ length: 5 }, () => <span class="bd-pip"></span>)}
                 </div>
               </div>
-            ))}
+              <div class="bd-rank-date" id="bd-rank-date"></div>
+              <div class="bd-section">
+                <div class="bd-section-label">About</div>
+                <div class="bd-lore" id="bd-lore"></div>
+              </div>
+              <div class="bd-section">
+                <div class="bd-section-label">Last Session</div>
+                <div class="bd-memory" id="bd-memory"></div>
+                <div class="bd-when"   id="bd-when"></div>
+              </div>
+            </div>
           </div>
+
+          <div id="bonds-data" data-bonds={bondsJson} hidden></div>
         </div>
 
         <!-- ── VELVET ────────────────────────────────────── -->
@@ -437,5 +508,89 @@ const allData    = JSON.stringify(allTallies);
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
       });
     });
+
+    /* ── Bond detail panel ──────────────────────────────────── */
+    interface BondData {
+      name: string; arcana: string; affinity: string; rank: number;
+      stat: string | null; statColor: string | null;
+      reachedDate: string | null; lore: string | null;
+      lastSession: string | null; lastInteraction: string | null;
+      img: string | null;
+    }
+
+    const bondsDataEl = document.getElementById('bonds-data');
+    if (bondsDataEl) {
+      const allBonds: BondData[] = JSON.parse(bondsDataEl.dataset.bonds ?? '[]');
+      const bondMap = Object.fromEntries(allBonds.map(b => [b.name, b]));
+      const detailEl = document.getElementById('bond-detail')!;
+      let activeBondRow: HTMLElement | null = null;
+
+      function openBondDetail(row: HTMLElement): void {
+        const d = bondMap[row.dataset.bond!];
+        if (!d) return;
+
+        const color = d.statColor ?? '#888';
+
+        const emblemEl = document.getElementById('bd-emblem')!;
+        emblemEl.style.cssText = d.statColor
+          ? `border-color:${d.statColor}4d;background:${d.statColor}10`
+          : 'border-color:#333;background:transparent';
+        const imgEl = document.getElementById('bd-img') as HTMLImageElement;
+        if (d.img) { imgEl.src = d.img; imgEl.style.display = ''; }
+        else { imgEl.style.display = 'none'; }
+
+        document.getElementById('bd-arcana')!.textContent   = d.arcana;
+        const nameEl = document.getElementById('bd-name')!;
+        nameEl.textContent = d.name;
+        nameEl.style.color = color;
+        document.getElementById('bd-affinity')!.textContent = d.affinity;
+
+        const badge = document.getElementById('bd-stat-badge')!;
+        if (d.stat) {
+          badge.style.display = 'inline-flex';
+          document.getElementById('bd-stat-dot')!.style.background = color;
+          document.getElementById('bd-stat-text')!.textContent = d.stat;
+        } else {
+          badge.style.display = 'none';
+        }
+
+        const numerals = ['I', 'II', 'III', 'IV', 'V'];
+        const rankLabelEl = document.getElementById('bd-rank-label')!;
+        rankLabelEl.textContent = 'RANK ' + (numerals[d.rank - 1] ?? d.rank);
+        rankLabelEl.style.color = color;
+        document.querySelectorAll('#bd-pips .bd-pip').forEach((pip, i) => {
+          const filled = i < d.rank;
+          (pip as HTMLElement).style.background   = filled ? color : '';
+          (pip as HTMLElement).style.borderColor  = filled ? color : '';
+          (pip as HTMLElement).style.boxShadow    = filled ? `0 0 4px ${color}66` : '';
+        });
+        document.getElementById('bd-rank-date')!.textContent =
+          d.reachedDate ? 'Reached · ' + d.reachedDate : '';
+
+        document.getElementById('bd-lore')!.textContent   = d.lore ?? '';
+        document.getElementById('bd-memory')!.textContent = d.lastSession ?? '';
+        document.getElementById('bd-when')!.textContent   = d.lastInteraction ?? '';
+
+        document.querySelectorAll('.bond-row').forEach(r => r.classList.remove('bd-active'));
+        row.classList.add('bd-active');
+        activeBondRow = row;
+        detailEl.classList.add('open');
+      }
+
+      function closeBondDetail(): void {
+        detailEl.classList.remove('open');
+        document.querySelectorAll('.bond-row').forEach(r => r.classList.remove('bd-active'));
+        activeBondRow = null;
+      }
+
+      document.querySelectorAll<HTMLElement>('.bond-row').forEach(row => {
+        row.addEventListener('click', () => {
+          if (row === activeBondRow) closeBondDetail();
+          else openBondDetail(row);
+        });
+      });
+
+      document.getElementById('bond-detail-close')!.addEventListener('click', closeBondDetail);
+    }
   });
 </script>
