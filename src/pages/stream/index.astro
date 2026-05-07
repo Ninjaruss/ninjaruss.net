@@ -349,7 +349,7 @@ const allData    = JSON.stringify(allTallies);
             <div class="bond-detail-inner">
               <button class="bond-detail-close" id="bond-detail-close" aria-label="Close">✕</button>
               <div class="bd-emblem" id="bd-emblem">
-                <img id="bd-img" src="" alt="" />
+                <img id="bd-img" alt="" />
               </div>
               <div class="bd-arcana"   id="bd-arcana"></div>
               <div class="bd-name"     id="bd-name"></div>
@@ -556,7 +556,7 @@ const allData    = JSON.stringify(allTallies);
 
         const numerals = ['I', 'II', 'III', 'IV', 'V'];
         const rankLabelEl = document.getElementById('bd-rank-label')!;
-        rankLabelEl.textContent = 'RANK ' + (numerals[d.rank - 1] ?? d.rank);
+        rankLabelEl.textContent = d.rank === 0 ? 'RANK —' : 'RANK ' + (numerals[d.rank - 1] ?? d.rank);
         rankLabelEl.style.color = color;
         document.querySelectorAll('#bd-pips .bd-pip').forEach((pip, i) => {
           const filled = i < d.rank;
@@ -591,6 +591,9 @@ const allData    = JSON.stringify(allTallies);
       });
 
       document.getElementById('bond-detail-close')!.addEventListener('click', closeBondDetail);
+      document.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Escape' && activeBondRow) closeBondDetail();
+      });
     }
   });
 </script>
