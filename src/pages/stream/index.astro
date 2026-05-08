@@ -235,12 +235,6 @@ function colorBg(hex: string, a: number): string {
                         fill="transparent"
                       />
                       <circle class="v-dot-small" cx={vx} cy={vy} r="7" fill={meta.color} filter="url(#vglow)"/>
-                      <g class="v-emblem-large">
-                        <circle cx={vx} cy={vy} r="20" fill={colorBg(meta.color, 0.08)} stroke={meta.color} stroke-width="1.5" filter="url(#vglow)"/>
-                        <image href={meta.emblem} x={vx - 18} y={vy - 18} width="36" height="36"
-                               clip-path={`url(#${clipId})`} filter={`url(#${sil.id})`}
-                               preserveAspectRatio="xMidYMid slice"/>
-                      </g>
                       <text x={numX} y={numY} text-anchor={numAnchor}
                             font-family="system-ui,sans-serif" font-size="34" font-weight="900"
                             fill={meta.color} stroke="#060608" stroke-width="6" paint-order="stroke fill"
@@ -259,6 +253,12 @@ function colorBg(hex: string, a: number): string {
                             fill={colorBg(meta.color, 0.9)} stroke="#060608" stroke-width="3" paint-order="stroke fill">
                         {meta.phrase}
                       </text>
+                      <g class="v-emblem-large">
+                        <circle cx={vx} cy={vy} r="20" fill={colorBg(meta.color, 0.08)} stroke={meta.color} stroke-width="1.5" filter="url(#vglow)"/>
+                        <image href={meta.emblem} x={vx - 18} y={vy - 18} width="36" height="36"
+                               clip-path={`url(#${clipId})`} filter={`url(#${sil.id})`}
+                               preserveAspectRatio="xMidYMid slice"/>
+                      </g>
                     </g>
                   );
                 })}
@@ -444,18 +444,18 @@ function colorBg(hex: string, a: number): string {
 </BaseLayout>
 
 <script>
-  /* ── Twitch live detection ────────────────────────────── */
-  async function checkTwitchLive(): Promise<void> {
+  /* ── Live detection (Twitch + YouTube) ───────────────── */
+  async function checkLiveStatus(): Promise<void> {
     try {
-      const res = await fetch('/api/twitch-live');
+      const res = await fetch('/api/live-status');
       if (!res.ok) return;
       const { live } = await res.json() as { live: boolean };
       document.querySelector('.s-live')?.classList.toggle('is-live', live);
       if (live) document.title = '🔴 LIVE — ninjaruss_';
     } catch { /* non-critical */ }
   }
-  checkTwitchLive();
-  setInterval(checkTwitchLive, 300_000);
+  checkLiveStatus();
+  setInterval(checkLiveStatus, 300_000);
 
   /* ── DOM init ─────────────────────────────────────────── */
   document.addEventListener('astro:page-load', () => {

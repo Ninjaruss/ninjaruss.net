@@ -1,16 +1,12 @@
 ## Japanese
-- [x] Learn 5 Kanji vocab
-- [ ] Stream: Hand writing in Hiragana practice
-- [x] 1 Hour Daily Immersion through comprehensible JP YouTube
+- [ ] Rewatch Bocchi the Rock! in JP (3 episodes, dictionary lookup)
+- [ ] Handwriting stream for Hirigana
+
 
 ## Novel
-- [x] Lies, motivation, character chain for Rain
-- [ ] Refined description of Vesper's memory shard ability
-- [ ] Gather setting locations and potential names
+- [ ] Try unfiltered writing more to get ideas and story elements in written form
+- [ ] Figure out potential story dichotomy between the 4 core characters
+- [ ] Vibe/mood description of each of the 4 core characters
 
 ## Other
-- [x] Reduce gaming and coping time to occasional on weekends
-- [x] Read a chapter of "We Need Your Art"
-- [x] Integrate novel content into site
-- [ ] Write 1 Favorites note
-- [ ] Stream: L-file Research - Usogui Abandoned Building Arc
+- [ ] Establish better habits by cutting off unnecessary stuff

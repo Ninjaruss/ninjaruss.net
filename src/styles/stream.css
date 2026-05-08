@@ -8,6 +8,11 @@
   --stat-chaos:         #2dd4bf;
 }
 
+/* Remove BaseLayout .page padding so the stream page fills the viewport exactly */
+.page:has(.stream-page) {
+  padding: 0;
+}
+
 .stream-page {
   display: flex;
   flex-direction: row;
@@ -133,13 +138,7 @@
 /* LIVE pill — hidden until JS confirms stream is live */
 .s-live {
   display: none;
-}
-.s-live.is-live {
-  display: flex;
-}
-.s-live {
   position: relative;
-  display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 20px;
@@ -155,6 +154,9 @@
   font-family: inherit;
   box-shadow: 0 0 14px rgba(255, 40, 40, 0.2), inset 0 0 8px rgba(255, 40, 40, 0.06);
   flex-shrink: 0;
+}
+.s-live.is-live {
+  display: flex;
 }
 .s-live::before {
   content: '';
