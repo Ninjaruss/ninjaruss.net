@@ -1,38 +1,24 @@
 ## Active Quests
 
-- Ship the stream page redesign
-- Write three stream log entries
-- Add a bond entry for every real connection
-
-## Horizon
-
-- Write more notes
-- Finish a showcase entry
-
-## Completed
-
-- Set up the site
+- Complete the design for the Ninjaruss IRL streams
 
 ## Ideas — Determination
 
-- Continue P3R New Game+
-- Debug novel reader hydration live
+- Go outside for a walk livestream
 
 ## Ideas — Insight
 
-- Design system deep-dive
-- Annotate a philosophy text live
+- Play Persona 4 Golden and learn more vocab
 
 ## Ideas — Expression
 
-- Write Remember Rain Ch. 4 live
-- Build media emblem gallery
+- Write Remember Rain outline live
+- Draw/design a new profile asset
 
 ## Ideas — Sincerity
 
-- Q&A / just chatting stream
+- Not Fanime convention hangout
 
 ## Ideas — Chaos
 
-- Mystery game blindrun
-- Unplanned creative session
+- Omoggle diffing

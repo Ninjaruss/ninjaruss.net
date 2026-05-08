@@ -1,5 +1,5 @@
 ---
-title: "Building the Stream Page"
+title: "Establish a base line for life."
 publishedAt: 2026-05-06
 stats: ["Determination", "Expression"]
 summary: "Built the /stream Velvet Room page live from scratch, broke it three times."
