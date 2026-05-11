@@ -124,3 +124,22 @@ export function parseQuestMenu(markdown: string): { category: string; quests: st
   if (current) result.push(current);
   return result;
 }
+
+export function buildDonutArcs(
+  tallies: Partial<Record<StatName, number>>,
+  r: number,
+  gapPx = 3
+): { stat: StatName; dasharray: string; dashoffset: number }[] {
+  const total = STAT_ORDER.reduce((s, k) => s + (tallies[k] ?? 0), 0);
+  const circ = 2 * Math.PI * r;
+  const available = total > 0 ? circ - gapPx * STAT_ORDER.length : 0;
+  let offset = 0;
+  return STAT_ORDER.map(stat => {
+    const count = tallies[stat] ?? 0;
+    const len = total > 0 ? (count / total) * available : 0;
+    const dasharray = `${len.toFixed(2)} ${(circ - len).toFixed(2)}`;
+    const dashoffset = offset === 0 ? 0 : -offset;
+    offset += len > 0 ? len + gapPx : 0;
+    return { stat, dasharray, dashoffset };
+  });
+}
