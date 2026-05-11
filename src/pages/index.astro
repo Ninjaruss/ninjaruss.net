@@ -913,23 +913,6 @@ const latestEntries = sameDateEntries.map(entry => ({
       animation: radar-ping 2.4s ease-out 1.2s infinite;
     }
 
-    .st-data-poly {
-      animation: st-data-breathe 3s ease-in-out infinite;
-    }
-
-    .st-active-dot {
-      animation: st-dot-pulse 3s ease-in-out infinite;
-    }
-
-    @keyframes st-data-breathe {
-      0%, 100% { opacity: 1;   filter: drop-shadow(0 0 4px rgba(255,229,44,.4)); }
-      50%       { opacity: .78; filter: drop-shadow(0 0 11px rgba(255,229,44,.7)); }
-    }
-
-    @keyframes st-dot-pulse {
-      0%, 100% { r: 3.5px; }
-      50%       { r: 5px; }
-    }
   }
 
   @keyframes dot-breathe {
@@ -954,12 +937,14 @@ const latestEntries = sameDateEntries.map(entry => ({
     text-decoration: none;
     transition:
       border-color var(--transition-fast),
-      box-shadow var(--transition-fast);
+      box-shadow var(--transition-fast),
+      transform var(--transition-fast);
   }
 
-  .stream-tile:not(.is-live):hover {
+  .stream-tile:hover {
     border-color: var(--color-gold);
     box-shadow: var(--shadow-hard);
+    transform: translate(-4px, -4px);
   }
 
   .stream-tile.is-live {
@@ -974,116 +959,112 @@ const latestEntries = sameDateEntries.map(entry => ({
     50%       { box-shadow: 4px 4px 0 rgba(255,64,64,.5),  0 0 40px rgba(255,64,64,.22); }
   }
 
-  /* Header */
   .st-header {
-    padding: 14px 14px 12px 12px;
-    border-bottom: 1px solid #1a1a1e;
-    border-left: 2px solid var(--st-accent, #777);
-    background: linear-gradient(135deg, rgba(var(--st-accent-rgb, 119,119,119), .06) 0%, transparent 55%);
+    padding: 8px 11px 7px;
+    background: #0d0d1a;
+    border-bottom: 1px solid #181826;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
     flex-shrink: 0;
   }
 
   .st-label {
-    font-size: .58rem;
-    letter-spacing: .22em;
+    font-size: .52rem;
+    letter-spacing: .2em;
     text-transform: uppercase;
-    color: rgba(255,229,44,.45);
-    margin-bottom: 4px;
+    color: rgba(255,229,44,.4);
+    font-family: var(--font-mono);
   }
 
-  .st-title {
-    font-size: 1rem;
+  .st-name {
+    font-size: .92rem;
     font-weight: 800;
-    font-family: system-ui, sans-serif;
     color: #f0f0f0;
+    letter-spacing: .02em;
     line-height: 1.1;
   }
 
-  .st-sub {
-    font-size: .58rem;
-    color: #777;
-    letter-spacing: .1em;
-    margin-top: 3px;
-  }
-
-  .st-top-stat {
+  .st-body {
+    flex: 1;
     display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-top: 6px;
-  }
-
-  .st-top-stat-tri {
-    width: 0;
-    height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-bottom: 6px solid var(--st-accent, #777);
-    opacity: .7;
-    flex-shrink: 0;
-    margin-bottom: 1px;
-  }
-
-  .st-top-stat-name {
-    font-size: .56rem;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: var(--st-accent, #777);
-    opacity: .65;
-  }
-
-  /* Radar */
-  .st-radar-wrap {
-    flex: none;
-    position: relative;
-    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2px;
+    padding: 12px 10px 8px;
+    gap: 7px;
   }
 
-  .st-radar-wrap::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      to bottom,
-      transparent 0px, transparent 3px,
-      rgba(0,0,0,.15) 3px, rgba(0,0,0,.15) 4px
-    );
-    pointer-events: none;
+  .st-donut { display: block; }
+
+  .stream-tile:hover .st-lead-arc {
+    filter: drop-shadow(0 0 6px var(--st-lead));
   }
 
-  .st-radar-wrap svg {
-    width: 100%;
-    height: auto;
-    display: block;
+  .st-stat-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    min-height: 32px;
   }
 
-  /* Footer */
+  .st-adjective {
+    font-size: .64rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+  }
+
+  .st-phrase {
+    font-size: .56rem;
+    letter-spacing: .06em;
+    font-style: italic;
+    font-family: var(--font-mono);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity .3s .05s, transform .3s .05s;
+    white-space: nowrap;
+  }
+
+  .stream-tile:hover .st-phrase {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   .st-footer {
-    padding: 10px 16px;
-    border-top: 1px solid #1a1a1e;
-    flex-shrink: 0;
+    padding: 7px 11px;
+    border-top: 1px solid #181826;
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-shrink: 0;
+    background: #09090f;
   }
 
-  .st-footer-icon {
-    font-size: .6rem;
-    color: rgba(255,229,44,.25);
+  .st-sessions {
+    font-size: .58rem;
+    letter-spacing: .1em;
+    color: #555;
+    font-family: var(--font-mono);
   }
 
-  .st-footer-label {
-    font-size: .55rem;
+  .st-cta {
+    margin-left: auto;
+    font-size: .58rem;
     letter-spacing: .16em;
     text-transform: uppercase;
-    color: #777;
+    color: rgba(255,229,44,.4);
+    font-family: var(--font-mono);
+    transition: color var(--transition-fast);
+  }
+
+  .stream-tile:hover .st-cta {
+    color: rgba(255,229,44,.75);
   }
 
   .st-live-badge {
-    margin-left: auto;
     font-size: .5rem;
     letter-spacing: .18em;
     text-transform: uppercase;
@@ -1099,6 +1080,27 @@ const latestEntries = sameDateEntries.map(entry => ({
   @keyframes st-badge-breathe {
     0%, 100% { opacity: 1; }
     50%       { opacity: .45; }
+  }
+
+  /* Tied stat cycling: primary and secondary icons crossfade on a 6s loop */
+  .st-icon-primary {
+    animation: st-cycle-primary 6s ease-in-out infinite;
+  }
+
+  .st-icon-secondary {
+    animation: st-cycle-secondary 6s ease-in-out infinite;
+  }
+
+  @keyframes st-cycle-primary {
+    0%, 42%  { opacity: 1; }
+    50%, 92% { opacity: 0; }
+    100%     { opacity: 1; }
+  }
+
+  @keyframes st-cycle-secondary {
+    0%, 42%  { opacity: 0; }
+    50%, 92% { opacity: 1; }
+    100%     { opacity: 0; }
   }
 
   /* ─── YouTube / Live Tile ────────────────────────────── */
@@ -1415,9 +1417,12 @@ const latestEntries = sameDateEntries.map(entry => ({
       transition: none;
     }
 
-    .stream-tile.is-live  { animation: none; }
-    .st-live-badge        { animation: none; }
-    .container.is-live::before   { animation: none; background-position: 0% 0%; }
+    .stream-tile.is-live    { animation: none; }
+    .st-live-badge          { animation: none; }
+    .st-phrase              { transition: none; }
+    .st-icon-primary        { animation: none; opacity: 1; }
+    .st-icon-secondary      { animation: none; opacity: 0; }
+    .container.is-live::before  { animation: none; background-position: 0% 0%; }
     .yt-tile__live-badge { animation: none; }
     .image-tile--youtube { transition: none; }
     .yt-tile__strip { transition: none; }
