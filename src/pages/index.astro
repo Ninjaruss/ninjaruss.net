@@ -5,6 +5,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 import BentoTile from '../components/BentoTile.astro';
 import { buildNovelTree } from '../utils/novel';
+import { tallyStats, buildRadarPoints, STAT_ORDER } from '../utils/stream';
 
 // Query all content collections for items with publishedAt dates
 const notes = await getCollection('notes', ({ data }) => !data.draft && data.publishedAt);
@@ -83,6 +84,36 @@ for (const folder of Object.values(novelTree)) {
   }
 }
 const novelLastModifiedISO = novelLastModified?.toISOString() ?? null;
+
+// Stream tile data
+const streamSessions = await getCollection('stream', ({ data }) => !data.draft);
+const streamTallies = tallyStats(streamSessions, 'all');
+const streamMaxVal = Math.max(1, ...Object.values(streamTallies).map(v => v ?? 0));
+const streamDataPoints = buildRadarPoints(streamTallies, streamMaxVal, 50, 50, 42);
+const streamSessionCount = streamSessions.length;
+
+const leadingStat = STAT_ORDER.reduce((best, s) =>
+  (streamTallies[s] ?? 0) > (streamTallies[best] ?? 0) ? s : best,
+  STAT_ORDER[0]
+);
+
+const STAT_COLORS = {
+  Determination: { hex: '#ff4040', rgb: '255,64,64'   },
+  Insight:       { hex: '#4ab0ff', rgb: '74,176,255'  },
+  Chaos:         { hex: '#2dd4bf', rgb: '45,212,191'  },
+  Sincerity:     { hex: '#ffe52c', rgb: '255,229,44'  },
+  Expression:    { hex: '#a855f7', rgb: '168,85,247'  },
+} as const;
+const leadingColor = STAT_COLORS[leadingStat];
+
+// Vertex data: geometry + per-stat count, used in SVG template
+const STAT_VERTICES = [
+  { stat: 'Determination', abbrev: 'DET', cx: 50,    cy: 8,    lx: 50,  ly: -4,  countY: 4,   anchor: 'middle', color: '#ff4040' },
+  { stat: 'Insight',       abbrev: 'INS', cx: 89.95, cy: 37.0, lx: 107, ly: 34,  countY: 41,  anchor: 'start',  color: '#4ab0ff' },
+  { stat: 'Chaos',         abbrev: 'CHA', cx: 74.69, cy: 84.0, lx: 85,  ly: 97,  countY: 104, anchor: 'middle', color: '#2dd4bf' },
+  { stat: 'Sincerity',     abbrev: 'SIN', cx: 25.31, cy: 84.0, lx: 15,  ly: 97,  countY: 104, anchor: 'middle', color: '#ffe52c' },
+  { stat: 'Expression',    abbrev: 'EXP', cx: 10.05, cy: 37.0, lx: -7,  ly: 34,  countY: 41,  anchor: 'end',    color: '#a855f7' },
+] as const;
 
 // Prepare data for client-side randomization
 const latestEntries = sameDateEntries.map(entry => ({
