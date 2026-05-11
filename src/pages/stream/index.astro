@@ -215,12 +215,15 @@ function colorBg(hex: string, a: number): string {
                   ))}
                 </defs>
 
-                {guides.map(pts => <polygon class="s-radar-guide" points={pts}/>)}
-                {axes.map(ax => <line class="s-radar-axis" x1={CX} y1={CY} x2={ax.x2} y2={ax.y2}/>)}
+                <g id="radar-layer-bg">
+                  {guides.map(pts => <polygon class="s-radar-guide" points={pts}/>)}
+                  {axes.map(ax => <line class="s-radar-axis" x1={CX} y1={CY} x2={ax.x2} y2={ax.y2}/>)}
 
-                <polygon id="radar-all"    class="s-radar-poly-all"    points={allPoints}/>
-                <polygon id="radar-recent" class="s-radar-poly-recent" points={recentPoints}/>
+                  <polygon id="radar-all"    class="s-radar-poly-all"    points={allPoints}/>
+                  <polygon id="radar-recent" class="s-radar-poly-recent" points={recentPoints}/>
+                </g>
 
+                <g id="radar-layer-vertices">
                 {statVertices.map(({ stat, vx, vy, tx, ty, meta, anchor, clipId }) => {
                   const count = recentTallies[stat as (typeof STAT_ORDER)[number]] ?? 0;
                   const sil = SIL_FILTERS[stat];
@@ -262,6 +265,7 @@ function colorBg(hex: string, a: number): string {
                     </g>
                   );
                 })}
+                </g>
               </svg>
             </div>
           </div>
@@ -433,7 +437,7 @@ function colorBg(hex: string, a: number): string {
             <div class="mail-inner">
               <div class="mail-title">Mailbox</div>
               <div class="mail-sub">Send mail to be read on stream</div>
-              <a href="mailto:mail@ninjaruss.net" class="mail-address">mail@ninjaruss.net</a>
+              <a href=`mailto:${'mailbox'}@${'ninjaruss.net'}` class="mail-address">{'mailbox'}@{'ninjaruss.net'}</a>
             </div>
           </div>
 

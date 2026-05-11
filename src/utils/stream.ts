@@ -1,9 +1,9 @@
 export const STAT_ORDER = [
   'Determination',
   'Insight',
-  'Chaos',
-  'Sincerity',
   'Expression',
+  'Sincerity',
+  'Chaos',
 ] as const;
 
 export type StatName = (typeof STAT_ORDER)[number];
