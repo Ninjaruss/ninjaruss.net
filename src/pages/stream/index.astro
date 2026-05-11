@@ -231,13 +231,13 @@ function colorBg(hex: string, a: number): string {
                   const numX = tx;
                   const numY = ty - 20;
                   return (
-                    <g class="radar-vertex" data-stat={stat} style={`--stat-color: ${meta.color}`}>
+                    <g class="radar-vertex" data-stat={stat}>
                       <rect
                         x={anchor === 'end'   ? tx - 160 : anchor === 'start' ? tx : tx - 80}
                         y={ty - 60} width="160" height="80"
                         fill="transparent"
                       />
-                      <circle class="v-dot-small" cx={vx} cy={vy} r="7" fill={meta.color}/>
+                      <circle class="v-dot-small" cx={vx} cy={vy} r="7" fill={meta.color} filter="url(#vglow)"/>
                       <text x={numX} y={numY} text-anchor={numAnchor}
                             font-family="system-ui,sans-serif" font-size="34" font-weight="900"
                             fill={meta.color} stroke="#060608" stroke-width="6" paint-order="stroke fill"
@@ -257,8 +257,7 @@ function colorBg(hex: string, a: number): string {
                         {meta.phrase}
                       </text>
                       <g class="v-emblem-large">
-                        <circle class="v-emblem-backdrop" cx={vx} cy={vy} r="19" fill="#111111"/>
-                        <circle class="v-emblem-ring" cx={vx} cy={vy} r="20" fill={colorBg(meta.color, 0.08)} stroke={meta.color} stroke-width="1.5"/>
+                        <circle cx={vx} cy={vy} r="20" fill={colorBg(meta.color, 0.08)} stroke={meta.color} stroke-width="1.5" filter="url(#vglow)"/>
                         <image href={meta.emblem} x={vx - 18} y={vy - 18} width="36" height="36"
                                clip-path={`url(#${clipId})`} filter={`url(#${sil.id})`}
                                preserveAspectRatio="xMidYMid slice"/>
