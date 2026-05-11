@@ -1139,6 +1139,10 @@ const latestEntries = sameDateEntries.map(entry => ({
   .image-tile--youtube:hover .yt-tile__strip {
     transform: translateY(0);
   }
+  .image-tile--youtube.is-twitch-live .yt-tile__strip:not(.yt-tile__strip--live) {
+    transform: translateY(100%);
+    pointer-events: none;
+  }
 
   .yt-tile__strip-icon {
     width: 16px;
@@ -1182,6 +1186,7 @@ const latestEntries = sameDateEntries.map(entry => ({
     position: absolute;
     inset: 0;
     z-index: 3;
+    overflow: hidden;
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--transition-base);
