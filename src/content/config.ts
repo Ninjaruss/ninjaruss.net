@@ -53,7 +53,7 @@ const stream = defineCollection({
     publishedAt: z.coerce.date(),
     stats: z.array(z.enum(['Determination', 'Insight', 'Expression', 'Sincerity', 'Chaos'])),
     summary: z.string(),
-    memorable: z.string(),
+    memorable: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });
