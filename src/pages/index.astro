@@ -42,7 +42,7 @@ const recentShowcase = showcase
 const recentMedia = media
   .filter(e => e.data.publishedAt)
   .sort((a, b) => effectiveDate(b) - effectiveDate(a))
-  .slice(0, 2)
+  .slice(0, 4)
   .map(e => ({ href: `/media/${e.slug}`, emblem: e.data.emblem ?? DEFAULT_EMBLEM, title: e.data.title }));
 
 const recentNotes = notes
@@ -348,18 +348,18 @@ const latestEntries = sameDateEntries.map(entry => ({
         variant="dark"
         label="Media"
         title="Logbook"
-        description="My thoughts on anime, manga, movies, and more — favorites included."
         class="bento-tile--core bento-tile--span-2x2 media-tile"
       >
         {recentMedia.length > 0 && (
-          <div class="tile-emblems">
+          <div class="tile-poster-strip">
             {recentMedia.map(entry => (
-              <div class="tile-emblem" title={entry.title} data-href={entry.href} role="link" tabindex="0">
-                <img src={entry.emblem} alt="" class="tile-emblem__img" loading="lazy" aria-hidden="true" />
+              <div class="tile-poster" aria-hidden="true">
+                <img src={entry.emblem} alt="" class="tile-poster__img" loading="lazy" />
               </div>
             ))}
           </div>
         )}
+        <span class="tile-count">{media.length} entries</span>
       </BentoTile>
 
       {latestEntries.length > 0 && (
@@ -810,7 +810,6 @@ const latestEntries = sameDateEntries.map(entry => ({
 
   /* ─── Media Tile ──────────────────────────────────────── */
   .media-tile {
-    /* Horizontal CRT scan-line texture */
     background-image: repeating-linear-gradient(
       0deg,
       transparent,
@@ -820,11 +819,48 @@ const latestEntries = sameDateEntries.map(entry => ({
     );
   }
 
-  /* Larger emblems centered in filled footer area */
-  .media-tile .tile-emblem {
-    width: 96px;
-    height: 96px;
-    border: 2px solid var(--color-gold-dim);
+  .media-tile .bento-tile__footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  .tile-poster-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    flex: 1;
+    align-items: end;
+  }
+
+  .tile-poster {
+    aspect-ratio: 2/3;
+    overflow: hidden;
+    border-radius: 3px;
+    background: #1a1a1a;
+  }
+
+  .tile-poster__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0.75;
+    transition: opacity 200ms;
+  }
+
+  .media-tile:hover .tile-poster__img {
+    opacity: 0.9;
+  }
+
+  .tile-count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 
   .showcase-tile .tile-emblem {
