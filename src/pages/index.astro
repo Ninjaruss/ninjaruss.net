@@ -845,6 +845,24 @@ const latestEntries = sameDateEntries.map(entry => ({
     .now-dot::after {
       animation: radar-ping 2.4s ease-out 1.2s infinite;
     }
+
+    .st-data-poly {
+      animation: st-data-breathe 3s ease-in-out infinite;
+    }
+
+    .st-active-dot {
+      animation: st-dot-pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes st-data-breathe {
+      0%, 100% { opacity: 1;   filter: drop-shadow(0 0 4px rgba(255,229,44,.4)); }
+      50%       { opacity: .78; filter: drop-shadow(0 0 11px rgba(255,229,44,.7)); }
+    }
+
+    @keyframes st-dot-pulse {
+      0%, 100% { r: 3.5px; }
+      50%       { r: 5px; }
+    }
   }
 
   @keyframes dot-breathe {
@@ -864,11 +882,12 @@ const latestEntries = sameDateEntries.map(entry => ({
 
   /* ─── Stream Tile ────────────────────────────────────── */
   .stream-tile {
+    display: flex;
+    flex-direction: column;
     text-decoration: none;
     transition:
       border-color var(--transition-fast),
-      box-shadow var(--transition-fast),
-      background var(--transition-base);
+      box-shadow var(--transition-fast);
   }
 
   .stream-tile:not(.is-live):hover {
@@ -879,103 +898,140 @@ const latestEntries = sameDateEntries.map(entry => ({
   .stream-tile.is-live {
     border-color: #ff4040;
     background: #181212;
-    box-shadow: 4px 4px 0 rgba(255, 64, 64, 0.35), 0 0 28px rgba(255, 64, 64, 0.12);
+    box-shadow: 4px 4px 0 rgba(255,64,64,.35), 0 0 28px rgba(255,64,64,.12);
     animation: stream-tile-pulse 2.5s ease-in-out infinite;
   }
 
   @keyframes stream-tile-pulse {
-    0%, 100% { box-shadow: 4px 4px 0 rgba(255, 64, 64, 0.35), 0 0 24px rgba(255, 64, 64, 0.12); }
-    50%       { box-shadow: 4px 4px 0 rgba(255, 64, 64, 0.5),  0 0 40px rgba(255, 64, 64, 0.22); }
+    0%, 100% { box-shadow: 4px 4px 0 rgba(255,64,64,.35), 0 0 24px rgba(255,64,64,.12); }
+    50%       { box-shadow: 4px 4px 0 rgba(255,64,64,.5),  0 0 40px rgba(255,64,64,.22); }
   }
 
-  .stream-tile__body {
+  /* Header */
+  .st-header {
+    padding: 14px 14px 12px 12px;
+    border-bottom: 1px solid #1a1a1e;
+    border-left: 2px solid var(--st-accent, #777);
+    background: linear-gradient(135deg, rgba(var(--st-accent-rgb, 119,119,119), .06) 0%, transparent 55%);
+    flex-shrink: 0;
+  }
+
+  .st-label {
+    font-size: .58rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: rgba(255,229,44,.45);
+    margin-bottom: 4px;
+  }
+
+  .st-title {
+    font-size: 1rem;
+    font-weight: 800;
+    font-family: system-ui, sans-serif;
+    color: #f0f0f0;
+    line-height: 1.1;
+  }
+
+  .st-sub {
+    font-size: .58rem;
+    color: #777;
+    letter-spacing: .1em;
+    margin-top: 3px;
+  }
+
+  .st-top-stat {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--space-md);
-    width: 100%;
-  }
-
-  .stream-tile__text {
-    display: flex;
-    flex-direction: column;
     gap: 4px;
-    min-width: 0;
+    margin-top: 6px;
   }
 
-  .stream-tile__name {
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--color-text-muted);
-    line-height: 1.1;
-    transition: color var(--transition-fast);
-  }
-
-  .stream-tile.is-live .stream-tile__name {
-    color: #c8c8c8;
-  }
-
-  .stream-tile__desc {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    color: var(--color-text-muted);
-    letter-spacing: 0.04em;
-    opacity: 0.5;
-    transition: color var(--transition-fast);
-  }
-
-  .stream-tile.is-live .stream-tile__desc {
-    color: #4a3535;
-    opacity: 1;
-  }
-
-  /* Watch Live button — inside tile, right side */
-  .stream-watch-btn {
+  .st-top-stat-tri {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 6px solid var(--st-accent, #777);
+    opacity: .7;
     flex-shrink: 0;
+    margin-bottom: 1px;
+  }
+
+  .st-top-stat-name {
+    font-size: .56rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--st-accent, #777);
+    opacity: .65;
+  }
+
+  /* Radar */
+  .st-radar-wrap {
+    flex: none;
+    position: relative;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    width: 52px;
-    min-height: 52px;
-    padding: 10px 6px;
-    border-radius: 6px;
-    background: #ff4040;
-    color: #fff;
-    font-family: var(--font-mono);
-    font-size: 0.45rem;
-    font-weight: 700;
+    padding: 2px;
+  }
+
+  .st-radar-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 3px,
+      rgba(0,0,0,.15) 3px, rgba(0,0,0,.15) 4px
+    );
+    pointer-events: none;
+  }
+
+  .st-radar-wrap svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Footer */
+  .st-footer {
+    padding: 10px 16px;
+    border-top: 1px solid #1a1a1e;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .st-footer-icon {
+    font-size: .6rem;
+    color: rgba(255,229,44,.25);
+  }
+
+  .st-footer-label {
+    font-size: .55rem;
+    letter-spacing: .16em;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    text-align: center;
-    cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 14px rgba(255, 64, 64, 0.5);
-    animation: stream-btn-breathe 1.5s ease-in-out infinite;
+    color: #777;
   }
 
-  .stream-watch-btn[hidden] {
-    display: none;
+  .st-live-badge {
+    margin-left: auto;
+    font-size: .5rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: #ff4040;
+    border: 1px solid rgba(255,64,64,.4);
+    border-radius: 3px;
+    padding: 2px 5px;
+    animation: st-badge-breathe 1.5s ease-in-out infinite;
   }
 
-  @keyframes stream-btn-breathe {
-    0%, 100% { box-shadow: 0 0 10px rgba(255, 64, 64, 0.45); }
-    50%       { box-shadow: 0 0 22px rgba(255, 64, 64, 0.85); }
-  }
+  .st-live-badge[hidden] { display: none; }
 
-  .stream-watch-btn__dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9);
-    animation: stream-dot-flash 1s ease-in-out infinite;
-  }
-
-  @keyframes stream-dot-flash {
+  @keyframes st-badge-breathe {
     0%, 100% { opacity: 1; }
-    50%       { opacity: 0.4; }
+    50%       { opacity: .45; }
   }
 
   /* Image Tile */
@@ -1213,9 +1269,8 @@ const latestEntries = sameDateEntries.map(entry => ({
       transition: none;
     }
 
-    .stream-tile.is-live         { animation: none; }
-    .stream-watch-btn             { animation: none; }
-    .stream-watch-btn__dot        { animation: none; }
+    .stream-tile.is-live  { animation: none; }
+    .st-live-badge        { animation: none; }
     .container.is-live::before   { animation: none; background-position: 0% 0%; }
   }
 
