@@ -303,7 +303,7 @@ const count = sortedMedia.length;
   .media-overlay {
     position: fixed;
     inset: 0;
-    z-index: 200;
+    z-index: 90;
     background: rgba(8, 8, 8, 0.96);
     animation: overlay-in 350ms var(--animation-easing, ease) both;
     outline: none;
@@ -311,7 +311,7 @@ const count = sortedMedia.length;
   .media-overlay[hidden] { display: none; }
 
   @keyframes overlay-in {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
