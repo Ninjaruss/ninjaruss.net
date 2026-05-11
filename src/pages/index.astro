@@ -839,7 +839,7 @@ const latestEntries = sameDateEntries.map(entry => ({
     aspect-ratio: 2/3;
     overflow: hidden;
     border-radius: 3px;
-    background: #1a1a1a;
+    background: var(--color-bg-elevated);
   }
 
   .tile-poster__img {
@@ -1411,6 +1411,7 @@ const latestEntries = sameDateEntries.map(entry => ({
 
     .tile-emblem,
     .tile-emblem__img,
+    .tile-poster__img,
     .latest-tile__emblem {
       transition: none;
     }
