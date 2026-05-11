@@ -468,6 +468,7 @@ const count = sortedMedia.length;
   }
 
   function initMediaPage() {
+    document.body.style.overflow = ''; // reset in case page navigated while overlay was open
     const grid = document.getElementById('media-grid');
     const overlay = document.getElementById('media-overlay') as HTMLElement | null;
     const overlayImg = document.getElementById('media-overlay-img') as HTMLImageElement | null;
@@ -490,6 +491,7 @@ const count = sortedMedia.length;
     let favOnly = initialFav;
     let isFirstFilter = true;
     let previouslyFocused: HTMLElement | null = null;
+    let activeFetch: AbortController | null = null;
 
     function applyFilters() {
       const cards = grid!.querySelectorAll<HTMLElement>('.media-card');
@@ -552,6 +554,9 @@ const count = sortedMedia.length;
     function openOverlay(slug: string, entry: EntryData) {
       if (!overlay || !overlayImg || !overlayContent) return;
 
+      activeFetch?.abort();
+      activeFetch = new AbortController();
+
       overlayImg.src = entry.emblem;
       overlayImg.alt = entry.title;
 
@@ -564,28 +569,32 @@ const count = sortedMedia.length;
         <div class="ov-loading" id="ov-prose">Loading…</div>
       `;
 
+      const loadingEl = overlayContent.querySelector<HTMLElement>('#ov-prose');
+
       overlay.hidden = false;
       document.body.style.overflow = 'hidden';
       overlay.focus();
       updateOpenURL(slug);
 
-      fetch(`/media/${slug}`)
-        .then((r) => r.text())
+      fetch(`/media/${encodeURIComponent(slug)}`, { signal: activeFetch.signal })
+        .then((r) => {
+          if (!r.ok) throw new Error(`${r.status}`);
+          return r.text();
+        })
         .then((html) => {
           const doc = new DOMParser().parseFromString(html, 'text/html');
           const prose = doc.querySelector('.entry__content');
-          const loading = document.getElementById('ov-prose');
-          if (loading) {
+          if (loadingEl) {
             if (prose) {
-              loading.replaceWith(prose);
+              loadingEl.replaceWith(prose);
             } else {
-              loading.remove();
+              loadingEl.remove();
             }
           }
         })
-        .catch(() => {
-          const loading = document.getElementById('ov-prose');
-          if (loading) loading.remove();
+        .catch((err) => {
+          if (err.name === 'AbortError') return;
+          if (loadingEl) loadingEl.remove();
         });
     }
 
@@ -613,6 +622,30 @@ const count = sortedMedia.length;
       });
 
       closeBtn?.addEventListener('click', closeOverlay);
+
+      // Focus trap
+      overlay.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key !== 'Tab') return;
+        const focusable = Array.from(
+          overlay.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          )
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      });
 
       document.addEventListener('keydown', (e: KeyboardEvent) => {
         if (e.key === 'Escape' && !overlay.hidden) closeOverlay();
