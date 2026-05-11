@@ -218,25 +218,95 @@ const latestEntries = sameDateEntries.map(entry => ({
       <a
         id="stream-tile"
         href="/stream"
-        class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--interactive bento-tile--span-1x2 stream-tile"
+        class="bento-tile bento-tile--dark bento-tile--interactive bento-tile--span-1x2 stream-tile"
+        style={`--st-accent: ${leadingColor.hex}; --st-accent-rgb: ${leadingColor.rgb};`}
       >
-        <div class="stream-tile__body">
-          <div class="stream-tile__text">
-            <div class="stream-tile__name">NINJARUSS_</div>
-            <div class="stream-tile__desc">twitch · session log</div>
-          </div>
-          <div
-            id="stream-watch-btn"
-            class="stream-watch-btn"
-            role="link"
-            tabindex="-1"
-            aria-label="Watch live on Twitch"
-            data-href="https://twitch.tv/ninjaruss_"
-            hidden
-          >
-            <span class="stream-watch-btn__dot"></span>
-            Watch<br />Live
-          </div>
+        <div class="st-header">
+          <div class="st-label">Stream Log</div>
+          <div class="st-title">Ninjaruss</div>
+          <div class="st-sub">{streamSessionCount} session{streamSessionCount !== 1 ? 's' : ''} logged</div>
+          {streamSessionCount > 0 && (
+            <div class="st-top-stat">
+              <div class="st-top-stat-tri"></div>
+              <div class="st-top-stat-name">{leadingStat}</div>
+            </div>
+          )}
+        </div>
+
+        <div class="st-radar-wrap">
+          <svg viewBox="-30 -16 160 128" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <!-- ghost R=50 -->
+            <polygon fill="none" stroke="rgba(255,229,44,0.07)" stroke-width="1"
+              points="50,0 97.56,34.6 79.39,90.5 20.61,90.5 2.44,34.6"/>
+            <!-- guide rings 25/50/75% of R=42 -->
+            <polygon fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.8"
+              points="50,39.5 59.99,46.8 56.17,58.5 43.83,58.5 40.01,46.8"/>
+            <polygon fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"
+              points="50,29 69.97,43.5 62.34,67.0 37.66,67.0 30.03,43.5"/>
+            <polygon fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"
+              points="50,18.5 79.96,40.3 68.52,75.5 31.48,75.5 20.04,40.3"/>
+            <!-- outer pentagon R=42 -->
+            <polygon fill="none" stroke="rgba(255,255,255,0.09)" stroke-width="0.8"
+              points="50,8 89.95,37.0 74.69,84.0 25.31,84.0 10.05,37.0"/>
+            <!-- axes -->
+            {STAT_VERTICES.map(v => (
+              <line x1="50" y1="50" x2={v.cx} y2={v.cy}
+                stroke="rgba(255,255,255,0.07)" stroke-width="0.8"/>
+            ))}
+            <!-- pentagram star diagonals V0→V2→V4→V1→V3 -->
+            <polygon fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"
+              stroke-dasharray="3 3"
+              points="50,8 74.69,84.0 10.05,37.0 89.95,37.0 25.31,84.0"/>
+            <!-- data polygon -->
+            <polygon class="st-data-poly" fill="rgba(255,229,44,0.12)"
+              stroke="#ffe52c" stroke-width="2" points={streamDataPoints}/>
+            <!-- vertex dots -->
+            {STAT_VERTICES.map(v => {
+              const count = streamTallies[v.stat as keyof typeof streamTallies] ?? 0;
+              const active = count > 0;
+              return (
+                <circle
+                  cx={v.cx} cy={v.cy}
+                  r={active ? 3.5 : 2.5}
+                  fill={v.color}
+                  opacity={active ? 1 : 0.22}
+                  class={active ? 'st-active-dot' : undefined}
+                />
+              );
+            })}
+            <!-- stat labels + counts -->
+            {STAT_VERTICES.map(v => {
+              const count = streamTallies[v.stat as keyof typeof streamTallies] ?? 0;
+              const active = count > 0;
+              return (
+                <>
+                  <text
+                    x={v.lx} y={v.ly}
+                    text-anchor={v.anchor}
+                    fill={v.color}
+                    font-size="7.5"
+                    font-family="monospace"
+                    font-weight={active ? '700' : '400'}
+                    opacity={active ? 0.9 : 0.55}
+                  >{v.abbrev}</text>
+                  <text
+                    x={v.lx} y={v.countY}
+                    text-anchor={v.anchor}
+                    fill={v.color}
+                    font-size="6"
+                    font-family="monospace"
+                    opacity={active ? 0.7 : 0.45}
+                  >×{count}</text>
+                </>
+              );
+            })}
+          </svg>
+        </div>
+
+        <div class="st-footer">
+          <div class="st-footer-icon" aria-hidden="true">→</div>
+          <div class="st-footer-label">View Log</div>
+          <span id="st-live-badge" class="st-live-badge" hidden>LIVE</span>
         </div>
       </a>
 
