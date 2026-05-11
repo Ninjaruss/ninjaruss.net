@@ -5,7 +5,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 import BentoTile from '../components/BentoTile.astro';
 import { buildNovelTree } from '../utils/novel';
-import { tallyStats, buildRadarPoints, STAT_ORDER } from '../utils/stream';
+import { tallyStats, buildDonutArcs, STAT_ORDER } from '../utils/stream';
 
 // Query all content collections for items with publishedAt dates
 const notes = await getCollection('notes', ({ data }) => !data.draft && data.publishedAt);
@@ -88,25 +88,58 @@ const novelLastModifiedISO = novelLastModified?.toISOString() ?? null;
 // Stream tile data
 const streamSessions = await getCollection('stream', ({ data }) => !data.draft);
 const streamTallies = tallyStats(streamSessions, 'all');
-const streamMaxVal = Math.max(1, ...Object.values(streamTallies).map(v => v ?? 0));
-const streamDataPoints = buildRadarPoints(streamTallies, streamMaxVal, 50, 50, 42);
 const streamSessionCount = streamSessions.length;
-
-const leadingStat = STAT_ORDER.reduce((best, s) =>
-  (streamTallies[s] ?? 0) > (streamTallies[best] ?? 0) ? s : best,
-  STAT_ORDER[0]
-);
 
 const STAT_COLORS = {
   Determination: { hex: '#ff4040', rgb: '255,64,64'   },
   Insight:       { hex: '#4ab0ff', rgb: '74,176,255'  },
-  Chaos:         { hex: '#2dd4bf', rgb: '45,212,191'  },
-  Sincerity:     { hex: '#ffe52c', rgb: '255,229,44'  },
   Expression:    { hex: '#a855f7', rgb: '168,85,247'  },
+  Sincerity:     { hex: '#ffe52c', rgb: '255,229,44'  },
+  Chaos:         { hex: '#2dd4bf', rgb: '45,212,191'  },
 } as const;
-const leadingColor = STAT_COLORS[leadingStat];
 
-// Vertex data: geometry + per-stat count, used in SVG template
+const STAT_ADJECTIVES: Record<string, string> = {
+  Determination: 'Determined',
+  Insight:       'Insightful',
+  Expression:    'Expressive',
+  Sincerity:     'Sincere',
+  Chaos:         'Chaotic',
+};
+
+const STAT_PHRASES: Record<string, string> = {
+  Determination: 'Pierce the heavens.',
+  Insight:       'Clear Mind, Accel Synchro.',
+  Expression:    'So the world will not forget.',
+  Sincerity:     'No mask.',
+  Chaos:         'Into the dark without a torch.',
+};
+
+const maxTally = Math.max(0, ...STAT_ORDER.map(s => streamTallies[s] ?? 0));
+const leadingStats = maxTally > 0
+  ? [...STAT_ORDER.filter(s => (streamTallies[s] ?? 0) === maxTally)]
+  : [];
+const primaryLeadingStat = leadingStats[0] ?? 'Determination';
+const leadingColor = STAT_COLORS[primaryLeadingStat as keyof typeof STAT_COLORS];
+
+// tiedPair: exactly 2 tied leaders → cycling icons; otherwise use singleIcon
+const tiedPair = leadingStats.length === 2 ? leadingStats : null;
+const singleIcon = leadingStats.length !== 2 && leadingStats.length > 0
+  ? leadingStats[0]
+  : null;
+
+const donutArcs = buildDonutArcs(streamTallies, 32);
+
+// TODO(Task3): remove these shims once stream tile HTML is replaced
+const leadingStat = primaryLeadingStat;
+const streamMaxVal = Math.max(1, ...Object.values(streamTallies).map(v => v ?? 0));
+const streamDataPoints = STAT_ORDER.map((stat, i) => {
+  const angle = (-90 + i * 72) * (Math.PI / 180);
+  const val = streamTallies[stat] ?? 0;
+  const ratio = streamMaxVal > 0 ? val / streamMaxVal : 0;
+  const x = 50 + 42 * ratio * Math.cos(angle);
+  const y = 50 + 42 * ratio * Math.sin(angle);
+  return `${x.toFixed(2)},${y.toFixed(2)}`;
+}).join(' ');
 const STAT_VERTICES = [
   { stat: 'Determination', abbrev: 'DET', cx: 50,    cy: 8,    lx: 50,  ly: -4,  countY: 4,   anchor: 'middle', color: '#ff4040' },
   { stat: 'Insight',       abbrev: 'INS', cx: 89.95, cy: 37.0, lx: 107, ly: 34,  countY: 41,  anchor: 'start',  color: '#4ab0ff' },
