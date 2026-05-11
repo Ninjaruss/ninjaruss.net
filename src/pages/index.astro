@@ -1391,14 +1391,25 @@ const latestEntries = sameDateEntries.map(entry => ({
   }
 
   function applyLiveState(isLive: boolean, twitchLive: boolean): void {
-    const tile      = document.getElementById('stream-tile') as HTMLAnchorElement | null;
-    const watchBtn  = document.getElementById('stream-watch-btn') as HTMLElement | null;
-    const container = document.getElementById('page-container');
-    if (!tile) return;
-    tile.classList.toggle('is-live', isLive);
+    const streamTile = document.getElementById('stream-tile') as HTMLAnchorElement | null;
+    const container  = document.getElementById('page-container');
+    const liveBadge  = document.getElementById('st-live-badge') as HTMLElement | null;
+    const ytTile     = document.getElementById('yt-tile') as HTMLAnchorElement | null;
+
+    streamTile?.classList.toggle('is-live', isLive);
     container?.classList.toggle('is-live', isLive);
-    // Watch Live button only appears when Twitch is live (primary stream platform)
-    if (watchBtn) watchBtn.hidden = !twitchLive;
+
+    if (liveBadge) liveBadge.hidden = !isLive;
+
+    if (ytTile) {
+      ytTile.classList.toggle('is-twitch-live', twitchLive);
+      ytTile.href = twitchLive
+        ? 'https://twitch.tv/ninjaruss_'
+        : 'https://www.youtube.com/@Ninjaruss';
+      ytTile.setAttribute('aria-label', twitchLive
+        ? 'Watch Ninjaruss live on Twitch'
+        : 'Ninjaruss on YouTube');
+    }
   }
 
   function startLivePolling(): void {
@@ -1487,22 +1498,6 @@ const latestEntries = sameDateEntries.map(entry => ({
     });
   }
 
-  let streamWatchBtnHandler: ((e: Event) => void) | null = null;
-
-  function initializeStreamWatchBtn(): void {
-    const btn = document.getElementById('stream-watch-btn');
-    if (!btn) return;
-    if (streamWatchBtnHandler) {
-      btn.removeEventListener('click', streamWatchBtnHandler);
-    }
-    streamWatchBtnHandler = (e: Event) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const href = (btn as HTMLElement).dataset.href ?? 'https://twitch.tv/ninjaruss_';
-      window.open(href, '_blank', 'noopener,noreferrer');
-    };
-    btn.addEventListener('click', streamWatchBtnHandler);
-  }
 
   // Mouse-tracking 3D tilt for all tile types
   function initializeTilt() {
@@ -1538,7 +1533,6 @@ const latestEntries = sameDateEntries.map(entry => ({
   initializeLatestTile();
   initializeNovelTile();
   initializeEmblemLinks();
-  initializeStreamWatchBtn();
   initializeTilt();
   startLivePolling();
 
@@ -1547,7 +1541,6 @@ const latestEntries = sameDateEntries.map(entry => ({
     initializeLatestTile();
     initializeNovelTile();
     initializeEmblemLinks();
-    initializeStreamWatchBtn();
     initializeTilt();
     startLivePolling();
   });
