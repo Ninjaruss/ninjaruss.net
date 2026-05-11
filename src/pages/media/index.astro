@@ -305,6 +305,12 @@ const count = sortedMedia.length;
     }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .media-card {
+      animation: none;
+    }
+  }
+
   /* ── Quick-view panel inner content ────────────── */
   .qv-type {
     font-family: var(--font-mono);
@@ -433,9 +439,13 @@ const count = sortedMedia.length;
     let activeType = initialType;
     let favOnly = initialFav;
 
+    let isFirstFilter = true;
+
     function applyFilters() {
       const cards = grid!.querySelectorAll<HTMLElement>('.media-card');
       let visibleIndex = 0;
+      const shouldAnimate = !isFirstFilter;
+      isFirstFilter = false;
 
       cards.forEach((card) => {
         const type = card.dataset.type ?? '';
@@ -450,6 +460,11 @@ const count = sortedMedia.length;
         if (visible) {
           card.style.setProperty('--card-index', String(visibleIndex));
           visibleIndex++;
+          if (shouldAnimate) {
+            card.style.animation = 'none';
+            void card.offsetWidth; // force reflow to restart animation
+            card.style.animation = '';
+          }
         }
       });
     }
@@ -543,6 +558,11 @@ const count = sortedMedia.length;
 
       // Close button
       closeBtn.addEventListener('click', closePanel);
+
+      // Close panel on Escape
+      document.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Escape' && panel && !panel.hidden) closePanel();
+      });
 
       // Pre-open panel if URL has ?open=
       if (initialOpen) {
