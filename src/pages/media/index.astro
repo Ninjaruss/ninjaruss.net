@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import EmblemCard from '../../components/EmblemCard.astro';
+import NavPill from '../../components/NavPill.astro';
 import { stripMarkdown } from '../../utils/content';
 
 const allMedia = await getCollection('media', ({ data }) => !data.draft);
@@ -24,27 +24,25 @@ const count = sortedMedia.length;
 ---
 
 <BaseLayout title="Media" description="My thoughts on anime, manga, movies, and more — favorites included." ogImage="/social-default.svg">
-  <!-- Hidden JSON data for JS to consume -->
+  <!-- Entry data for overlay JS -->
   <div id="entry-data" data-entries={JSON.stringify(entryData)} hidden></div>
 
   <div class="media-page">
-    <!-- ── Editorial header ────────────────────────── -->
+    <!-- Header -->
     <header class="media-header">
       <span class="media-header__label">Media</span>
       <h1 class="media-header__title">Logbook</h1>
       <span class="media-header__count">{count} entries</span>
     </header>
 
-    <!-- ── Filter bar ──────────────────────────────── -->
+    <!-- Underline tab filter bar -->
     <div class="filter-bar" role="toolbar" aria-label="Filter media entries">
-      <button class="filter-pill filter-pill--fav" data-filter-fav aria-pressed="false">
-        ★ favorites
-      </button>
+      <button class="filter-tab filter-tab--fav" data-filter-fav aria-pressed="false">★</button>
       <div class="filter-bar__divider" aria-hidden="true"></div>
-      <div class="filter-bar__types" role="group" aria-label="Filter by type">
+      <div class="filter-bar__tabs" role="group" aria-label="Filter by type">
         {(['all', 'anime', 'manga', 'film', 'series', 'music', 'book', 'game', 'character', 'other']).map((type) => (
           <button
-            class:list={['filter-pill', { 'is-active': type === 'all' }]}
+            class:list={['filter-tab', { 'is-active': type === 'all' }]}
             data-filter-type={type}
             aria-pressed={type === 'all' ? 'true' : 'false'}
           >
@@ -54,42 +52,39 @@ const count = sortedMedia.length;
       </div>
     </div>
 
-    <!-- ── Main layout: grid + optional panel ─────── -->
-    <div class="media-layout" id="media-layout">
-      <!-- Card grid -->
-      <div class="media-grid" id="media-grid">
-        {sortedMedia.map((entry, i) => (
-          <a
-            href={`/media/${entry.slug}`}
-            class:list={['media-card', { 'media-card--fav': entry.data.isFavorite }]}
-            data-slug={entry.slug}
-            data-type={entry.data.content_type}
-            data-fav={entry.data.isFavorite ? 'true' : 'false'}
-            style={`--card-index: ${i}`}
-          >
-            <EmblemCard
-              emblemSrc={entry.data.emblem}
-              isInitiallyFlipped={true}
-              disableLightbox={true}
-              size="sm"
+    <!-- Poster card grid -->
+    <div class="media-grid" id="media-grid">
+      {sortedMedia.map((entry, i) => (
+        <a
+          href={`/media/${entry.slug}`}
+          class:list={['media-card', { 'media-card--fav': entry.data.isFavorite }]}
+          data-slug={entry.slug}
+          data-type={entry.data.content_type}
+          data-fav={entry.data.isFavorite ? 'true' : 'false'}
+          style={`--card-index: ${i}`}
+          aria-label={entry.data.title}
+        >
+          <div class="media-card__poster">
+            <img
+              src={entry.data.emblem ?? '/images/emblems/default.svg'}
+              alt=""
+              class="media-card__img"
+              loading="lazy"
             />
-            <span class="media-card__title">{entry.data.title}</span>
-            {entry.data.isFavorite && (
-              <span class="media-card__star" aria-label="Favorite">★</span>
-            )}
-          </a>
-        ))}
-      </div>
-
-      <!-- Quick-view panel (hidden until JS opens it) -->
-      <aside class="quick-view-panel" id="quick-view-panel" hidden aria-label="Quick view">
-        <button class="quick-view-panel__close" id="quick-view-close" aria-label="Close panel">✕</button>
-        <div class="quick-view-panel__content" id="quick-view-content">
-          <!-- Populated by JS -->
-        </div>
-      </aside>
+            <div class="media-card__overlay">
+              <span class="media-card__type">{entry.data.content_type}</span>
+              <span class="media-card__title">{entry.data.title}</span>
+            </div>
+          </div>
+          {entry.data.isFavorite && (
+            <span class="media-card__star" aria-label="Favorite">★</span>
+          )}
+        </a>
+      ))}
     </div>
   </div>
+
+  <NavPill />
 </BaseLayout>
 
 <style>
@@ -97,10 +92,10 @@ const count = sortedMedia.length;
   .media-page {
     max-width: 1400px;
     margin: 0 auto;
-    padding: var(--space-xl) var(--space-lg);
+    padding: var(--space-xl) var(--space-lg) calc(var(--space-xl) * 3);
   }
 
-  /* ── Editorial header ──────────────────────────── */
+  /* ── Header ────────────────────────────────────── */
   .media-header {
     display: flex;
     align-items: baseline;
@@ -131,85 +126,74 @@ const count = sortedMedia.length;
   /* ── Filter bar ────────────────────────────────── */
   .filter-bar {
     display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    flex-wrap: wrap;
+    align-items: stretch;
+    border-bottom: 1px solid var(--color-border, #2a2a2a);
     margin-bottom: var(--space-xl);
+    overflow-x: auto;
+    scrollbar-width: none;
   }
+  .filter-bar::-webkit-scrollbar { display: none; }
+
   .filter-bar__divider {
     width: 1px;
-    height: 20px;
     background: var(--color-border, #2a2a2a);
+    margin: 6px 4px;
+    flex-shrink: 0;
   }
-  .filter-bar__types {
+
+  .filter-bar__tabs {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-sm);
   }
-  .filter-pill {
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1px solid var(--color-border, #2a2a2a);
-    background: transparent;
+
+  .filter-tab {
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
     color: var(--color-muted);
     font-family: var(--font-mono);
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     cursor: pointer;
-    transition: border-color 200ms, color 200ms, background 200ms;
+    white-space: nowrap;
+    transition: color 150ms, border-color 150ms;
+    margin-bottom: -1px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
   }
-  .filter-pill:hover {
-    border-color: var(--color-gold);
+  .filter-tab:hover { color: var(--color-text); }
+  .filter-tab.is-active,
+  .filter-tab[aria-pressed="true"] {
     color: var(--color-gold);
+    border-bottom-color: var(--color-gold);
   }
-  .filter-pill.is-active,
-  .filter-pill[aria-pressed="true"] {
-    border-color: var(--color-gold);
+  .filter-tab--fav {
+    color: rgba(255, 229, 44, 0.4);
+    padding: 10px 14px;
+  }
+  .filter-tab--fav.is-active,
+  .filter-tab--fav[aria-pressed="true"] {
     color: var(--color-gold);
-    background: rgba(255, 229, 44, 0.08);
-  }
-  .filter-pill--fav {
-    border-color: rgba(255, 229, 44, 0.4);
-    color: rgba(255, 229, 44, 0.6);
-  }
-  .filter-pill--fav.is-active,
-  .filter-pill--fav[aria-pressed="true"] {
-    border-color: var(--color-gold);
-    color: var(--color-gold);
-    background: rgba(255, 229, 44, 0.12);
+    border-bottom-color: var(--color-gold);
   }
 
-  /* ── Media layout (grid + panel side-by-side) ─── */
-  .media-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-xl);
-    transition: grid-template-columns 350ms var(--animation-easing, ease);
-  }
-  .media-layout.panel-open {
-    grid-template-columns: 1fr 340px;
-  }
-
-  /* ── Card grid ─────────────────────────────────── */
+  /* ── Poster card grid ──────────────────────────── */
   .media-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: var(--space-lg);
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--space-md);
     align-content: start;
   }
 
-  /* ── Individual card ───────────────────────────── */
+  /* ── Individual poster card ────────────────────── */
   .media-card {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-sm);
+    display: block;
     text-decoration: none;
     color: var(--color-text);
     cursor: pointer;
-    /* Staggered entrance */
     animation: card-in 400ms var(--animation-easing, ease) both;
     animation-delay: min(calc(var(--card-index, 0) * 50ms), 1500ms);
   }
@@ -217,228 +201,99 @@ const count = sortedMedia.length;
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  .media-card:hover {
-    color: var(--color-gold);
+  .media-card[data-hidden="true"] { display: none; }
+
+  .media-card__poster {
+    position: relative;
+    aspect-ratio: 2/3;
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--color-bg-elevated, #1a1a1a);
+    border: 1px solid transparent;
+    transition: border-color 200ms, box-shadow 200ms;
+  }
+  .media-card:hover .media-card__poster {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 14px rgba(255, 229, 44, 0.15);
+  }
+
+  .media-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: filter 200ms;
+  }
+  .media-card:hover .media-card__img { filter: brightness(1.08); }
+
+  .media-card__overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 28px 8px 8px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.88));
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .media-card__type {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.45);
   }
   .media-card__title {
-    font-size: 12px;
     font-family: var(--font-mono);
-    text-align: center;
-    line-height: 1.4;
-    max-width: 100%;
-    overflow: hidden;
+    font-size: 10px;
+    color: #f5f5f5;
+    line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    overflow: hidden;
   }
+
   .media-card__star {
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: 6px;
+    right: 6px;
     font-size: 11px;
     color: var(--color-gold);
     line-height: 1;
-  }
-
-  /* ── Quick-view panel ──────────────────────────── */
-  .quick-view-panel {
-    position: sticky;
-    top: var(--space-xl);
-    height: fit-content;
-    max-height: calc(100vh - 80px);
-    overflow-y: auto;
-    background: var(--color-bg-elevated, #1a1a1a);
-    border: 1px solid var(--color-border, #2a2a2a);
-    border-radius: 10px;
-    padding: var(--space-lg);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-  }
-  .quick-view-panel[hidden] {
-    display: none;
-  }
-  .quick-view-panel__close {
-    align-self: flex-end;
-    background: none;
-    border: none;
-    color: var(--color-muted);
-    font-size: 16px;
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 4px;
-    line-height: 1;
-    min-height: 44px;
-    min-width: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .quick-view-panel__close:hover {
-    color: var(--color-text);
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  /* ── Hidden entries for no-JS ──────────────────── */
-  .media-card[data-hidden="true"] {
-    display: none;
+    text-shadow: 0 0 6px rgba(0,0,0,0.9);
   }
 
   /* ── Responsive ────────────────────────────────── */
-  @media (max-width: 768px) {
-    .media-layout.panel-open {
-      grid-template-columns: 1fr;
+  @media (max-width: 480px) {
+    .media-grid {
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: var(--space-sm);
     }
-    .quick-view-panel {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      top: auto;
-      border-radius: 10px 10px 0 0;
-      max-height: 60vh;
-      z-index: 100;
-    }
-    .media-header__count {
-      margin-left: 0;
-      width: 100%;
-    }
+    .media-header__count { margin-left: 0; width: 100%; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .media-card {
-      animation: none;
-    }
-  }
-
-  /* ── Quick-view panel inner content ────────────── */
-  .qv-type {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-muted);
-    margin: 0;
-  }
-  .qv-title {
-    font-size: 1.2rem;
-    font-weight: 900;
-    color: var(--color-text);
-    margin: 0;
-    line-height: 1.2;
-  }
-  .qv-excerpt {
-    font-size: 13px;
-    color: var(--color-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
-  .qv-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .qv-tag {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    padding: 3px 8px;
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
-    color: var(--color-muted);
-  }
-  .qv-link {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--color-gold);
-    text-decoration: none;
-    letter-spacing: 0.06em;
-    margin-top: var(--space-sm);
-  }
-  .qv-link:hover {
-    text-decoration: underline;
-  }
-  .qv-emblem {
-    display: flex;
-    justify-content: center;
-    margin-bottom: var(--space-sm);
-  }
-  .qv-emblem img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid var(--color-border, #2a2a2a);
-    background: var(--color-bg-elevated, #1a1a1a);
+    .media-card { animation: none; }
+    .media-card__img { transition: none; }
+    .media-card__poster { transition: none; }
   }
 </style>
 
 <script>
   import { parseFilterState, buildFilterURL } from '../../utils/mediaGrid/filterEngine';
 
-  function esc(s: unknown): string {
-    return String(s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
   function updateFilterURL(type: string, favOnly: boolean) {
     const base = buildFilterURL({ type, favOnly });
     history.replaceState(null, '', base || location.pathname);
   }
 
-  function updateOpenURL(slug: string) {
-    const filterState = parseFilterState(location.search);
-    const base = buildFilterURL(filterState);
-    const p = new URLSearchParams(base.startsWith('?') ? base.slice(1) : base);
-    p.set('open', slug);
-    history.replaceState(null, '', `?${p.toString()}`);
-  }
-
-  function clearOpenURL() {
-    const filterState = parseFilterState(location.search);
-    const base = buildFilterURL(filterState);
-    history.replaceState(null, '', base || location.pathname);
-  }
-
-  function initMediaFilters() {
-    const layout = document.getElementById('media-layout');
+  function initMediaPage() {
     const grid = document.getElementById('media-grid');
-    const panel = document.getElementById('quick-view-panel') as HTMLElement | null;
-    const closeBtn = document.getElementById('quick-view-close');
-    const entryDataEl = document.getElementById('entry-data');
-
     if (!grid) return;
 
-    // Parse entry data
-    let entries: Array<{
-      slug: string;
-      title: string;
-      type: string;
-      isFavorite: boolean;
-      emblem: string;
-      tags: string[];
-      excerpt: string;
-    }> = [];
-    if (entryDataEl) {
-      try {
-        entries = JSON.parse(entryDataEl.dataset.entries || '[]');
-      } catch {}
-    }
-
-    // Build lookup map
-    const entryMap = new Map(entries.map((e) => [e.slug, e]));
-
-    // Read initial state from URL
     const { type: initialType, favOnly: initialFav } = parseFilterState(location.search);
-    const params = new URLSearchParams(location.search);
-    const initialOpen = params.get('open') || null;
-
     let activeType = initialType;
     let favOnly = initialFav;
-
     let isFirstFilter = true;
 
     function applyFilters() {
@@ -450,129 +305,59 @@ const count = sortedMedia.length;
       cards.forEach((card) => {
         const type = card.dataset.type ?? '';
         const isFav = card.dataset.fav === 'true';
-
         const typeMatch = activeType === 'all' || type === activeType;
         const favMatch = !favOnly || isFav;
         const visible = typeMatch && favMatch;
 
         card.dataset.hidden = visible ? 'false' : 'true';
-
         if (visible) {
           card.style.setProperty('--card-index', String(visibleIndex));
           visibleIndex++;
           if (shouldAnimate) {
             card.style.animation = 'none';
-            void card.offsetWidth; // force reflow to restart animation
+            void card.offsetWidth;
             card.style.animation = '';
           }
         }
       });
     }
 
-    // Type filter pills — apply initial state from URL
-    const typePills = document.querySelectorAll<HTMLButtonElement>('[data-filter-type]');
-    typePills.forEach((pill) => {
-      const isActive = pill.dataset.filterType === initialType;
-      pill.classList.toggle('is-active', isActive);
-      pill.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    // Type tabs
+    const typeTabs = document.querySelectorAll<HTMLButtonElement>('[data-filter-type]');
+    typeTabs.forEach((tab) => {
+      const isActive = tab.dataset.filterType === initialType;
+      tab.classList.toggle('is-active', isActive);
+      tab.setAttribute('aria-pressed', isActive ? 'true' : 'false');
 
-      pill.addEventListener('click', () => {
-        const type = pill.dataset.filterType ?? 'all';
+      tab.addEventListener('click', () => {
+        const type = tab.dataset.filterType ?? 'all';
         activeType = type;
-
-        typePills.forEach((p) => {
-          const active = p.dataset.filterType === type;
-          p.classList.toggle('is-active', active);
-          p.setAttribute('aria-pressed', active ? 'true' : 'false');
+        typeTabs.forEach((t) => {
+          const active = t.dataset.filterType === type;
+          t.classList.toggle('is-active', active);
+          t.setAttribute('aria-pressed', active ? 'true' : 'false');
         });
-
         updateFilterURL(activeType, favOnly);
         applyFilters();
       });
     });
 
-    // Favorites filter pill — apply initial state from URL
-    const favPill = document.querySelector<HTMLButtonElement>('[data-filter-fav]');
-    if (favPill) {
-      favPill.classList.toggle('is-active', initialFav);
-      favPill.setAttribute('aria-pressed', initialFav ? 'true' : 'false');
-
-      favPill.addEventListener('click', () => {
+    // Favorites tab
+    const favTab = document.querySelector<HTMLButtonElement>('[data-filter-fav]');
+    if (favTab) {
+      favTab.classList.toggle('is-active', initialFav);
+      favTab.setAttribute('aria-pressed', initialFav ? 'true' : 'false');
+      favTab.addEventListener('click', () => {
         favOnly = !favOnly;
-        favPill.classList.toggle('is-active', favOnly);
-        favPill.setAttribute('aria-pressed', favOnly ? 'true' : 'false');
+        favTab.classList.toggle('is-active', favOnly);
+        favTab.setAttribute('aria-pressed', favOnly ? 'true' : 'false');
         updateFilterURL(activeType, favOnly);
         applyFilters();
       });
     }
 
-    // Apply initial filter state
     applyFilters();
-
-    // Quick-view panel helpers
-    function openPanel(slug: string, entry: typeof entries[number]) {
-      const content = document.getElementById('quick-view-content');
-      if (content) {
-        content.innerHTML = `
-          <div class="qv-emblem">
-            <img src="${esc(entry.emblem)}" alt="" />
-          </div>
-          <p class="qv-type">${esc(entry.type)}</p>
-          <h2 class="qv-title">${esc(entry.title)}</h2>
-          ${entry.excerpt ? `<p class="qv-excerpt">${esc(entry.excerpt)}</p>` : ''}
-          ${entry.tags.length ? `<div class="qv-tags">${entry.tags.map((t) => `<span class="qv-tag">${esc(t)}</span>`).join('')}</div>` : ''}
-          <a href="/media/${esc(slug)}" class="qv-link">View full entry →</a>
-        `;
-      }
-      if (panel) {
-        panel.hidden = false;
-        layout?.classList.add('panel-open');
-      }
-      updateOpenURL(slug);
-    }
-
-    function closePanel() {
-      if (panel) {
-        panel.hidden = true;
-        layout?.classList.remove('panel-open');
-      }
-      clearOpenURL();
-    }
-
-    // Quick-view panel: open on card click (intercept before navigation)
-    if (panel && closeBtn) {
-      const cards = grid.querySelectorAll<HTMLAnchorElement>('.media-card');
-
-      cards.forEach((card) => {
-        card.addEventListener('click', (e) => {
-          // Only open panel if we have entry data; otherwise let link navigate normally
-          const slug = card.dataset.slug;
-          if (!slug) return;
-          const entry = entryMap.get(slug);
-          if (!entry) return;
-
-          e.preventDefault();
-          openPanel(slug, entry);
-        });
-      });
-
-      // Close button
-      closeBtn.addEventListener('click', closePanel);
-
-      // Close panel on Escape
-      document.addEventListener('keydown', (e: KeyboardEvent) => {
-        if (e.key === 'Escape' && panel && !panel.hidden) closePanel();
-      });
-
-      // Pre-open panel if URL has ?open=
-      if (initialOpen) {
-        const entry = entryMap.get(initialOpen);
-        if (entry) {
-          openPanel(initialOpen, entry);
-        }
-      }
-    }
   }
 
-  document.addEventListener('astro:page-load', initMediaFilters);
+  document.addEventListener('astro:page-load', initMediaPage);
 </script>
