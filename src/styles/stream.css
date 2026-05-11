@@ -1,13 +1,5 @@
 /* ── Stream Page ─────────────────────────────────────────── */
 
-:root {
-  --stat-determination: #ff4040;
-  --stat-insight:       #4ab0ff;
-  --stat-expression:    #a855f7;
-  --stat-sincerity:     #ffe52c;
-  --stat-chaos:         #2dd4bf;
-}
-
 /* Remove BaseLayout .page padding so the stream page fills the viewport exactly */
 .page:has(.stream-page) {
   padding: 0;
@@ -328,29 +320,6 @@
   line-height: 1.2;
   letter-spacing: 0.01em;
 }
-.s-obj-due {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.s-obj-due-date {
-  font-size: 0.82rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255, 72, 72, 0.9);
-  font-weight: 700;
-}
-.s-obj-due-days {
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255, 72, 72, 0.75);
-  padding: 3px 12px;
-  border-radius: 100px;
-  border: 1px solid rgba(255, 72, 72, 0.3);
-  background: rgba(255, 72, 72, 0.1);
-  font-weight: 600;
-}
 
 /* Radar container */
 .s-radar-container {
@@ -443,10 +412,14 @@
 .radar-vertex:hover .v-phrase { opacity: 1; }
 .radar-vertex .v-keywords { transition: opacity 0.2s; }
 .radar-vertex:hover .v-keywords { opacity: 0; }
-.v-dot-small { transition: opacity 0.18s 0.05s; }
+.v-dot-small {
+  filter: drop-shadow(0 0 6px var(--stat-color));
+  transition: opacity 0.18s 0.05s;
+}
 .radar-vertex:hover .v-dot-small { opacity: 0; }
 .v-emblem-large { opacity: 0; transition: opacity 0.28s; pointer-events: none; }
 .radar-vertex:hover .v-emblem-large { opacity: 1; }
+.v-emblem-ring { filter: drop-shadow(0 0 8px var(--stat-color)); }
 
 /* ── JOURNAL panel ──────────────────────────────────────── */
 #panel-journal {
@@ -755,13 +728,6 @@
   border-radius: 50%;
   position: absolute;
   inset: 0;
-}
-.bond-stat-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
 }
 
 .bond-info {
