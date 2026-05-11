@@ -27,7 +27,7 @@ const count = sortedMedia.length;
   <!-- Hidden JSON data for JS to consume -->
   <div id="entry-data" data-entries={JSON.stringify(entryData)} hidden></div>
 
-  <main class="media-page" data-animate>
+  <div class="media-page">
     <!-- ── Editorial header ────────────────────────── -->
     <header class="media-header">
       <span class="media-header__label">Media</span>
@@ -89,7 +89,7 @@ const count = sortedMedia.length;
         </div>
       </aside>
     </div>
-  </main>
+  </div>
 </BaseLayout>
 
 <style>
@@ -304,6 +304,54 @@ const count = sortedMedia.length;
       width: 100%;
     }
   }
+
+  /* ── Quick-view panel inner content ────────────── */
+  .qv-type {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-muted);
+    margin: 0;
+  }
+  .qv-title {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.2;
+  }
+  .qv-excerpt {
+    font-size: 13px;
+    color: var(--color-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .qv-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .qv-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    color: var(--color-muted);
+  }
+  .qv-link {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-gold);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    margin-top: var(--space-sm);
+  }
+  .qv-link:hover {
+    text-decoration: underline;
+  }
 </style>
 
 <script>
@@ -492,53 +540,3 @@ const count = sortedMedia.length;
 
   document.addEventListener('astro:page-load', initMediaFilters);
 </script>
-
-<style>
-  /* ── Quick-view panel inner content ────────────── */
-  .qv-type {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-muted);
-    margin: 0;
-  }
-  .qv-title {
-    font-size: 1.2rem;
-    font-weight: 900;
-    color: var(--color-text);
-    margin: 0;
-    line-height: 1.2;
-  }
-  .qv-excerpt {
-    font-size: 13px;
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
-  .qv-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .qv-tag {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    padding: 3px 8px;
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
-    color: var(--color-muted);
-  }
-  .qv-link {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--color-gold);
-    text-decoration: none;
-    letter-spacing: 0.06em;
-    margin-top: var(--space-sm);
-  }
-  .qv-link:hover {
-    text-decoration: underline;
-  }
-</style>
