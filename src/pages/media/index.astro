@@ -84,6 +84,27 @@ const count = sortedMedia.length;
     </div>
   </div>
 
+  <!-- Fullscreen overlay -->
+  <div
+    class="media-overlay"
+    id="media-overlay"
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-label="Entry detail"
+    tabindex="-1"
+  >
+    <button class="media-overlay__close" id="media-overlay-close" aria-label="Close">✕</button>
+    <div class="media-overlay__inner" id="media-overlay-inner">
+      <div class="media-overlay__poster">
+        <img src="" alt="" class="media-overlay__poster-img" id="media-overlay-img" />
+      </div>
+      <div class="media-overlay__content" id="media-overlay-content">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
   <NavPill />
 </BaseLayout>
 
@@ -277,24 +298,198 @@ const count = sortedMedia.length;
     .media-card__img { transition: none; }
     .media-card__poster { transition: none; }
   }
+
+  /* ── Fullscreen overlay ────────────────────────── */
+  .media-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(8, 8, 8, 0.96);
+    animation: overlay-in 350ms var(--animation-easing, ease) both;
+    outline: none;
+  }
+  .media-overlay[hidden] { display: none; }
+
+  @keyframes overlay-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .media-overlay__close {
+    position: absolute;
+    top: var(--space-md, 16px);
+    right: var(--space-lg, 24px);
+    z-index: 10;
+    background: none;
+    border: none;
+    color: var(--color-muted);
+    font-size: 18px;
+    cursor: pointer;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: color 150ms, background 150ms;
+  }
+  .media-overlay__close:hover {
+    color: var(--color-text);
+    background: rgba(255,255,255,0.06);
+  }
+
+  .media-overlay__inner {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .media-overlay__poster {
+    overflow: hidden;
+    background: #0a0a0a;
+  }
+  .media-overlay__poster-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .media-overlay__content {
+    overflow-y: auto;
+    padding: var(--space-xl, 40px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md, 16px);
+    padding-right: calc(var(--space-xl, 40px) + 44px);
+  }
+
+  .ov-type {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-muted);
+    margin: 0;
+  }
+  .ov-title {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 900;
+    color: var(--color-gold);
+    line-height: 1.1;
+    margin: 0;
+  }
+  .ov-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+  }
+  .ov-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border: 1px solid var(--color-border, #2a2a2a);
+    border-radius: 12px;
+    color: var(--color-muted);
+  }
+  .ov-loading {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-muted);
+    padding: var(--space-lg, 24px) 0;
+  }
+
+  @media (max-width: 768px) {
+    .media-overlay__inner {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      overflow-y: auto;
+      height: 100%;
+    }
+    .media-overlay__poster {
+      aspect-ratio: 16/9;
+      height: auto;
+    }
+    .media-overlay__poster-img {
+      object-position: top;
+    }
+    .media-overlay__content {
+      padding: var(--space-lg, 24px);
+      padding-right: var(--space-lg, 24px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .media-overlay { animation: none; }
+    .media-overlay__close { transition: none; }
+  }
 </style>
 
 <script>
   import { parseFilterState, buildFilterURL } from '../../utils/mediaGrid/filterEngine';
+
+  type EntryData = {
+    slug: string;
+    title: string;
+    type: string;
+    isFavorite: boolean;
+    emblem: string;
+    tags: string[];
+    excerpt: string;
+  };
+
+  function esc(s: unknown): string {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
 
   function updateFilterURL(type: string, favOnly: boolean) {
     const base = buildFilterURL({ type, favOnly });
     history.replaceState(null, '', base || location.pathname);
   }
 
+  function updateOpenURL(slug: string) {
+    const filterState = parseFilterState(location.search);
+    const base = buildFilterURL(filterState);
+    const p = new URLSearchParams(base.startsWith('?') ? base.slice(1) : base);
+    p.set('open', slug);
+    history.replaceState(null, '', `?${p.toString()}`);
+  }
+
+  function clearOpenURL() {
+    const filterState = parseFilterState(location.search);
+    const base = buildFilterURL(filterState);
+    history.replaceState(null, '', base || location.pathname);
+  }
+
   function initMediaPage() {
     const grid = document.getElementById('media-grid');
+    const overlay = document.getElementById('media-overlay') as HTMLElement | null;
+    const overlayImg = document.getElementById('media-overlay-img') as HTMLImageElement | null;
+    const overlayContent = document.getElementById('media-overlay-content') as HTMLElement | null;
+    const closeBtn = document.getElementById('media-overlay-close');
+    const entryDataEl = document.getElementById('entry-data');
+
     if (!grid) return;
 
+    let entries: EntryData[] = [];
+    if (entryDataEl) {
+      try { entries = JSON.parse(entryDataEl.dataset.entries || '[]'); } catch {}
+    }
+    const entryMap = new Map(entries.map((e) => [e.slug, e]));
+
     const { type: initialType, favOnly: initialFav } = parseFilterState(location.search);
+    const params = new URLSearchParams(location.search);
+    const initialOpen = params.get('open') || null;
     let activeType = initialType;
     let favOnly = initialFav;
     let isFirstFilter = true;
+    let previouslyFocused: HTMLElement | null = null;
 
     function applyFilters() {
       const cards = grid!.querySelectorAll<HTMLElement>('.media-card');
@@ -308,7 +503,6 @@ const count = sortedMedia.length;
         const typeMatch = activeType === 'all' || type === activeType;
         const favMatch = !favOnly || isFav;
         const visible = typeMatch && favMatch;
-
         card.dataset.hidden = visible ? 'false' : 'true';
         if (visible) {
           card.style.setProperty('--card-index', String(visibleIndex));
@@ -322,13 +516,11 @@ const count = sortedMedia.length;
       });
     }
 
-    // Type tabs
     const typeTabs = document.querySelectorAll<HTMLButtonElement>('[data-filter-type]');
     typeTabs.forEach((tab) => {
       const isActive = tab.dataset.filterType === initialType;
       tab.classList.toggle('is-active', isActive);
       tab.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-
       tab.addEventListener('click', () => {
         const type = tab.dataset.filterType ?? 'all';
         activeType = type;
@@ -342,7 +534,6 @@ const count = sortedMedia.length;
       });
     });
 
-    // Favorites tab
     const favTab = document.querySelector<HTMLButtonElement>('[data-filter-fav]');
     if (favTab) {
       favTab.classList.toggle('is-active', initialFav);
@@ -357,6 +548,86 @@ const count = sortedMedia.length;
     }
 
     applyFilters();
+
+    function openOverlay(slug: string, entry: EntryData) {
+      if (!overlay || !overlayImg || !overlayContent) return;
+
+      overlayImg.src = entry.emblem;
+      overlayImg.alt = entry.title;
+
+      overlayContent.innerHTML = `
+        <p class="ov-type">${esc(entry.type)}</p>
+        <h2 class="ov-title">${esc(entry.title)}</h2>
+        ${entry.tags.length
+          ? `<div class="ov-tags">${entry.tags.map((t) => `<span class="ov-tag">${esc(t)}</span>`).join('')}</div>`
+          : ''}
+        <div class="ov-loading" id="ov-prose">Loading…</div>
+      `;
+
+      overlay.hidden = false;
+      document.body.style.overflow = 'hidden';
+      overlay.focus();
+      updateOpenURL(slug);
+
+      fetch(`/media/${slug}`)
+        .then((r) => r.text())
+        .then((html) => {
+          const doc = new DOMParser().parseFromString(html, 'text/html');
+          const prose = doc.querySelector('.entry__content');
+          const loading = document.getElementById('ov-prose');
+          if (loading) {
+            if (prose) {
+              loading.replaceWith(prose);
+            } else {
+              loading.remove();
+            }
+          }
+        })
+        .catch(() => {
+          const loading = document.getElementById('ov-prose');
+          if (loading) loading.remove();
+        });
+    }
+
+    function closeOverlay() {
+      if (!overlay) return;
+      overlay.hidden = true;
+      document.body.style.overflow = '';
+      clearOpenURL();
+      previouslyFocused?.focus();
+      previouslyFocused = null;
+    }
+
+    if (overlay) {
+      const cards = grid.querySelectorAll<HTMLAnchorElement>('.media-card');
+      cards.forEach((card) => {
+        card.addEventListener('click', (e) => {
+          const slug = card.dataset.slug;
+          if (!slug) return;
+          const entry = entryMap.get(slug);
+          if (!entry) return;
+          e.preventDefault();
+          previouslyFocused = card;
+          openOverlay(slug, entry);
+        });
+      });
+
+      closeBtn?.addEventListener('click', closeOverlay);
+
+      document.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Escape' && !overlay.hidden) closeOverlay();
+      });
+
+      overlay.addEventListener('click', (e) => {
+        const inner = document.getElementById('media-overlay-inner');
+        if (inner && !inner.contains(e.target as Node)) closeOverlay();
+      });
+
+      if (initialOpen) {
+        const entry = entryMap.get(initialOpen);
+        if (entry) openOverlay(initialOpen, entry);
+      }
+    }
   }
 
   document.addEventListener('astro:page-load', initMediaPage);
