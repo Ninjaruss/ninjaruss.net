@@ -434,6 +434,9 @@
   stroke-dasharray: 5 4;
 }
 
+/* Vertex layer — always above fill polygons */
+#radar-layer-vertices { isolation: isolate; }
+
 /* Vertex hover */
 .radar-vertex { cursor: pointer; }
 .radar-vertex .v-phrase { opacity: 0; transition: opacity 0.2s; }
