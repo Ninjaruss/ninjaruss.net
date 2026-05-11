@@ -21,7 +21,3 @@ To me, a real fan is one that enjoys a given media and simply attempts to share 
 You don't need to prove to others you're a real weeb. However, you can only be a real weeb if your sense of being oozes with the energy of the stuff you like. You don't need to be performative or keep a collection of stuff to show you enjoy anime, but rather by transforming that enjoyment into something that’s yours, and engaging with others through it.
 
 I found that cosplaying is a physical manifestation of this phenomenon. While I admit I don't know the intricacies that go into forming a proper cosplay, I can appreciate the sheer time and effort it takes to pull off an amazing one. The overly mechanical or complexly built ones easily showcase the craft, but the ones where they act as if they are that character or an extension of them is truly satisfying. However, both are attempts to share their love for that specific character or at the very least the anime it's from. 
-
-To do:
-- Organize the stat pentagram to be starting from top clockwise: Determination, Insight, Expression, Sincerity, Chaos
-- Clean up log book page
