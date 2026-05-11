@@ -132,7 +132,8 @@ export function buildDonutArcs(
 ): { stat: StatName; dasharray: string; dashoffset: number }[] {
   const total = STAT_ORDER.reduce((s, k) => s + (tallies[k] ?? 0), 0);
   const circ = 2 * Math.PI * r;
-  const available = total > 0 ? circ - gapPx * STAT_ORDER.length : 0;
+  const nNonZero = STAT_ORDER.filter(k => (tallies[k] ?? 0) > 0).length;
+  const available = total > 0 ? circ - gapPx * nNonZero : 0;
   let offset = 0;
   return STAT_ORDER.map(stat => {
     const count = tallies[stat] ?? 0;

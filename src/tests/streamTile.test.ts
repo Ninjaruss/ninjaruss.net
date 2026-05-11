@@ -38,4 +38,12 @@ describe('buildDonutArcs', () => {
     expect(arcs[2].dashoffset).toBe(arcs[3].dashoffset);
     expect(arcs[3].dashoffset).toBe(arcs[4].dashoffset);
   });
+
+  it('arcs fill the full circumference when gaps are accounted for', () => {
+    const r = 40;
+    const arcs = buildDonutArcs({ Determination: 1, Insight: 1 }, r, 3);
+    const circ = 2 * Math.PI * r;
+    const totalLen = arcs.reduce((s, a) => s + parseFloat(a.dasharray.split(' ')[0]), 0);
+    expect(totalLen + 2 * 3).toBeCloseTo(circ, 1);
+  });
 });
