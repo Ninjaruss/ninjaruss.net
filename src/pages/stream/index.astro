@@ -90,7 +90,7 @@ const statVertices = STAT_ORDER.map((stat, i) => {
   const angle = (-90 + i * 72) * (Math.PI / 180);
   const vx = +(CX + R * Math.cos(angle)).toFixed(2);
   const vy = +(CY + R * Math.sin(angle)).toFixed(2);
-  const textR = stat === 'Determination' ? R + 40 : TEXT_R;
+  const textR = stat === 'Determination' ? R + 60 : TEXT_R;
   const tx = +(CX + textR * Math.cos(angle)).toFixed(2);
   const ty = +(CY + textR * Math.sin(angle)).toFixed(2);
   const meta = STAT_META[stat];
@@ -230,9 +230,8 @@ function colorBg(hex: string, a: number): string {
                   const sil = SIL_FILTERS[stat];
                   const numAnchor = anchor;
                   const numX = tx;
-                  const isTop = anchor === 'middle';
-                  const numY = isTop ? ty - 28 : ty - 30;
-                  const phraseY = isTop ? numY - 40 : ty + 20;
+                  const numY = ty - 30;
+                  const phraseY = ty + 20;
                   return (
                     <g class="radar-vertex" data-stat={stat} style={`--stat-color: ${meta.color}`}>
                       <rect
