@@ -154,7 +154,7 @@ const latestEntries = sameDateEntries.map(entry => ({
 
       <a
         id="yt-tile"
-        href="https://www.youtube.com/@Ninjaruss"
+        href="https://www.youtube.com/@Ninjaruss_"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Ninjaruss on YouTube"
@@ -932,6 +932,7 @@ const latestEntries = sameDateEntries.map(entry => ({
 
   /* ─── Stream Tile ────────────────────────────────────── */
   .stream-tile {
+    grid-row: span 2;
     display: flex;
     flex-direction: column;
     text-decoration: none;
@@ -1507,7 +1508,7 @@ const latestEntries = sameDateEntries.map(entry => ({
       ytTile.classList.toggle('is-twitch-live', twitchLive);
       ytTile.href = twitchLive
         ? 'https://twitch.tv/ninjaruss_'
-        : 'https://www.youtube.com/@Ninjaruss';
+        : 'https://www.youtube.com/@Ninjaruss_';
       ytTile.setAttribute('aria-label', twitchLive
         ? 'Watch Ninjaruss live on Twitch'
         : 'Ninjaruss on YouTube');
