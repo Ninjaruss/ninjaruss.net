@@ -11,7 +11,7 @@
 @media (min-width: 1025px) {
   .bento-grid {
     height: 100%;
-    grid-auto-rows: minmax(100px, 1fr);
+    grid-auto-rows: minmax(160px, 1fr);
   }
 }
 
