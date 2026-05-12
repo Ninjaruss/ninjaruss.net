@@ -459,13 +459,6 @@ const latestEntries = sameDateEntries.map(entry => ({
     position: relative;
   }
 
-  @media (min-width: 1025px) {
-    .container {
-      /* 2×space-lg = .page top+bottom padding; space-sm + space-md = container top+bottom padding */
-      height: calc(100dvh - 2 * var(--space-lg) - var(--space-sm) - var(--space-md));
-    }
-  }
-
   .container::before {
     content: '';
     position: absolute;
@@ -750,20 +743,6 @@ const latestEntries = sameDateEntries.map(entry => ({
     );
   }
 
-  /* Footer stretches to fill remaining tile height; emblems fill the footer */
-  .showcase-tile .bento-tile__footer {
-    flex: 1;
-    align-items: stretch;
-    justify-content: flex-start;
-  }
-
-  .showcase-tile .tile-emblems {
-    align-self: stretch;
-    align-items: stretch;
-    flex: 1;
-    height: 100%;
-    gap: var(--space-sm);
-  }
 
   /* ─── Notes Tile ──────────────────────────────────────── */
   .notes-tile {
@@ -782,6 +761,8 @@ const latestEntries = sameDateEntries.map(entry => ({
 
   .notes-tile .bento-tile__footer {
     flex: 1;
+    margin-top: 0;
+    padding-top: var(--space-xs);
     align-items: stretch;
   }
 
@@ -895,12 +876,6 @@ const latestEntries = sameDateEntries.map(entry => ({
     letter-spacing: 0.08em;
   }
 
-  .showcase-tile .tile-emblem {
-    flex: 1;
-    width: auto;
-    height: auto;
-    min-width: 0;
-  }
 
   /* ─── Now Tile ────────────────────────────────────────── */
   .now-date {

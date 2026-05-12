@@ -3,16 +3,9 @@
 .bento-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-auto-rows: minmax(160px, auto);
+  grid-auto-rows: minmax(100px, auto);
   gap: var(--space-sm);
   width: 100%;
-}
-
-@media (min-width: 1025px) {
-  .bento-grid {
-    height: 100%;
-    grid-auto-rows: minmax(160px, 1fr);
-  }
 }
 
 /* Neighbor Dimming Effect — Dim non-hovered tiles when any tile is hovered */
