@@ -440,6 +440,9 @@ const count = sortedMedia.length;
     excerpt: string;
   };
 
+  let activeFetch: AbortController | null = null;
+  let pageCleanup: AbortController | null = null;
+
   function esc(s: unknown): string {
     return String(s)
       .replace(/&/g, '&amp;')
@@ -468,6 +471,8 @@ const count = sortedMedia.length;
   }
 
   function initMediaPage() {
+    pageCleanup?.abort();
+    pageCleanup = new AbortController();
     document.body.style.overflow = ''; // reset in case page navigated while overlay was open
     const grid = document.getElementById('media-grid');
     const overlay = document.getElementById('media-overlay') as HTMLElement | null;
@@ -491,7 +496,6 @@ const count = sortedMedia.length;
     let favOnly = initialFav;
     let isFirstFilter = true;
     let previouslyFocused: HTMLElement | null = null;
-    let activeFetch: AbortController | null = null;
 
     function applyFilters() {
       const cards = grid!.querySelectorAll<HTMLElement>('.media-card');
@@ -594,7 +598,10 @@ const count = sortedMedia.length;
         })
         .catch((err) => {
           if (err.name === 'AbortError') return;
-          if (loadingEl) loadingEl.remove();
+          if (loadingEl) {
+            loadingEl.textContent = 'Could not load entry.';
+            loadingEl.removeAttribute('id');
+          }
         });
     }
 
@@ -632,6 +639,7 @@ const count = sortedMedia.length;
           )
         );
         if (focusable.length === 0) return;
+        if (focusable.length === 1) { e.preventDefault(); return; }
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
         if (e.shiftKey) {
@@ -649,7 +657,7 @@ const count = sortedMedia.length;
 
       document.addEventListener('keydown', (e: KeyboardEvent) => {
         if (e.key === 'Escape' && !overlay.hidden) closeOverlay();
-      });
+      }, { signal: pageCleanup!.signal });
 
       overlay.addEventListener('click', (e) => {
         const inner = document.getElementById('media-overlay-inner');
@@ -658,7 +666,10 @@ const count = sortedMedia.length;
 
       if (initialOpen) {
         const entry = entryMap.get(initialOpen);
-        if (entry) openOverlay(initialOpen, entry);
+        if (entry) {
+          previouslyFocused = grid.querySelector<HTMLElement>(`[data-slug="${initialOpen}"]`) ?? document.body as HTMLElement;
+          openOverlay(initialOpen, entry);
+        }
       }
     }
   }
