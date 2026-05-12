@@ -90,7 +90,7 @@ const statVertices = STAT_ORDER.map((stat, i) => {
   const angle = (-90 + i * 72) * (Math.PI / 180);
   const vx = +(CX + R * Math.cos(angle)).toFixed(2);
   const vy = +(CY + R * Math.sin(angle)).toFixed(2);
-  const textR = stat === 'Determination' ? R + 50 : TEXT_R;
+  const textR = stat === 'Determination' ? R + 40 : TEXT_R;
   const tx = +(CX + textR * Math.cos(angle)).toFixed(2);
   const ty = +(CY + textR * Math.sin(angle)).toFixed(2);
   const meta = STAT_META[stat];
@@ -197,7 +197,7 @@ function colorBg(hex: string, a: number): string {
 
               <div id="stream-tally-data" data-recent={recentData} data-all={allData} hidden></div>
 
-              <svg viewBox="-108 -100 608 580" aria-label="Stat radar chart" id="radar-svg">
+              <svg viewBox="-200 -110 800 590" aria-label="Stat radar chart" id="radar-svg">
                 <defs>
                   <filter id="vglow">
                     <feGaussianBlur stdDeviation="4" result="b"/>
@@ -230,7 +230,9 @@ function colorBg(hex: string, a: number): string {
                   const sil = SIL_FILTERS[stat];
                   const numAnchor = anchor;
                   const numX = tx;
-                  const numY = ty - 30;
+                  const isTop = anchor === 'middle';
+                  const numY = isTop ? ty - 22 : ty - 30;
+                  const phraseY = isTop ? numY - 43 : ty + 16;
                   return (
                     <g class="radar-vertex" data-stat={stat} style={`--stat-color: ${meta.color}`}>
                       <rect
@@ -252,7 +254,7 @@ function colorBg(hex: string, a: number): string {
                             fill={colorBg(meta.color, 0.5)} stroke="#060608" stroke-width="3" paint-order="stroke fill">
                         {meta.keywords}
                       </text>
-                      <text class="v-phrase" x={tx} y={ty + 16} text-anchor={anchor}
+                      <text class="v-phrase" x={tx} y={phraseY} text-anchor={anchor}
                             font-family="monospace" font-size="10"
                             fill={colorBg(meta.color, 0.9)} stroke="#060608" stroke-width="3" paint-order="stroke fill">
                         {meta.phrase.map((line, i) => (
