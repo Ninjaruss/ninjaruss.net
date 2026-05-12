@@ -196,7 +196,7 @@ function colorBg(hex: string, a: number): string {
 
               <div id="stream-tally-data" data-recent={recentData} data-all={allData} hidden></div>
 
-              <svg viewBox="-108 -70 608 490" aria-label="Stat radar chart" id="radar-svg">
+              <svg viewBox="-108 -95 608 540" aria-label="Stat radar chart" id="radar-svg">
                 <defs>
                   <filter id="vglow">
                     <feGaussianBlur stdDeviation="4" result="b"/>
@@ -229,7 +229,7 @@ function colorBg(hex: string, a: number): string {
                   const sil = SIL_FILTERS[stat];
                   const numAnchor = anchor;
                   const numX = tx;
-                  const numY = ty - 20;
+                  const numY = ty - 30;
                   return (
                     <g class="radar-vertex" data-stat={stat} style={`--stat-color: ${meta.color}`}>
                       <rect
