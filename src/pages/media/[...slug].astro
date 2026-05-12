@@ -32,7 +32,6 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
 >
   <div class="media-detail">
     <div class="media-detail__inner">
-      <!-- Poster panel (sticky on desktop) -->
       <div class="media-detail__poster-panel">
         <img
           src={entry.data.emblem ?? '/images/emblems/default.svg'}
@@ -41,17 +40,16 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
         />
       </div>
 
-      <!-- Content panel -->
       <div class="media-detail__content">
         <p class="media-detail__type">{entry.data.content_type}</p>
         <h1 class="media-detail__title">{entry.data.title}</h1>
         {(entry.data.tags ?? []).length > 0 && (
           <div class="media-detail__tags">
-            <TagList tags={entry.data.tags} />
+            <TagList tags={entry.data.tags ?? []} />
           </div>
         )}
         <DateDisplay
-          publishedAt={entry.data.publishedAt}
+          date={entry.data.publishedAt}
           updatedAt={entry.data.updatedAt}
         />
         {hasContent && (
@@ -62,7 +60,7 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
         {(entry.data.collections ?? []).length > 0 && (
           <RelatedContent
             currentSlug={entry.slug}
-            currentCollections={entry.data.collections}
+            currentCollections={entry.data.collections ?? []}
             section="media"
             allMedia={allMedia}
             allNotes={allNotes}
@@ -101,7 +99,7 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
     object-fit: cover;
     border-radius: 6px;
     display: block;
-    border: 1px solid var(--color-border, #2a2a2a);
+    border: 1px solid var(--color-border);
   }
 
   .media-detail__content {
