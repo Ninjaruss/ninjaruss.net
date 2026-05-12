@@ -303,7 +303,7 @@ const count = sortedMedia.length;
   .media-overlay {
     position: fixed;
     inset: 0;
-    z-index: 90;
+    z-index: 110;
     background: rgba(8, 8, 8, 0.96);
     animation: overlay-in 350ms var(--animation-easing, ease) both;
     outline: none;
@@ -394,6 +394,27 @@ const count = sortedMedia.length;
     border-radius: 12px;
     color: var(--color-muted);
   }
+  .ov-full-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-display);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-gold);
+    border: 1px solid var(--color-gold-dim, rgba(255,229,44,0.3));
+    border-radius: 4px;
+    padding: 6px 12px;
+    transition: background 150ms, border-color 150ms;
+    text-decoration: none;
+    align-self: flex-start;
+  }
+  .ov-full-link:hover {
+    background: rgba(255, 229, 44, 0.08);
+    border-color: var(--color-gold);
+  }
+
   .ov-loading {
     font-family: var(--font-mono);
     font-size: 12px;
@@ -520,6 +541,9 @@ const count = sortedMedia.length;
           }
         }
       });
+
+      const countEl = document.querySelector<HTMLElement>('.media-header__count');
+      if (countEl) countEl.textContent = `${visibleIndex} entries`;
     }
 
     const typeTabs = document.querySelectorAll<HTMLButtonElement>('[data-filter-type]');
@@ -570,6 +594,7 @@ const count = sortedMedia.length;
         ${entry.tags.length
           ? `<div class="ov-tags">${entry.tags.map((t) => `<span class="ov-tag">${esc(t)}</span>`).join('')}</div>`
           : ''}
+        <a href="/media/${esc(slug)}" class="ov-full-link">View full entry →</a>
         <div class="ov-loading" id="ov-prose">Loading…</div>
       `;
 

@@ -16,6 +16,7 @@ const { Content } = await entry.render();
 
 const formatDate = (date: Date) => {
   return date.toLocaleDateString('en-US', {
+    timeZone: 'UTC',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -86,7 +87,6 @@ const formatDate = (date: Date) => {
 
   .now__updated {
     font-size: var(--text-sm);
-    color: var(--color-text-muted);
     font-family: var(--font-mono);
     background: var(--color-black);
     color: var(--color-gold);
@@ -117,6 +117,12 @@ const formatDate = (date: Date) => {
     color: var(--color-gold-orange);
   }
 
+  .now__nav-link:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
   .now__nav-arrow {
     transition: transform var(--transition-fast);
   }
@@ -132,6 +138,8 @@ const formatDate = (date: Date) => {
   .now__content {
     font-size: var(--text-lg);
     line-height: var(--leading-relaxed);
+    padding-left: var(--space-lg);
+    border-left: var(--border-thick) solid var(--color-gold-dim);
   }
 
   .now__content p {

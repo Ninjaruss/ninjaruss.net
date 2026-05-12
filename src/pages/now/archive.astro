@@ -10,10 +10,13 @@ const sortedPosts = allNowPosts.sort((a, b) =>
 
 const formatDate = (date: Date) => {
   return date.toLocaleDateString('en-US', {
+    timeZone: 'UTC',
     year: 'numeric',
     month: 'long',
   });
 };
+
+const latestSlug = sortedPosts[0]?.slug;
 ---
 
 <BaseLayout title="Now Archive" description="Past snapshots of what I was focused on.">
@@ -32,8 +35,14 @@ const formatDate = (date: Date) => {
       <div class="now-archive__list">
         {sortedPosts.length > 0 ? (
           sortedPosts.map((post) => (
-            <a href={`/now/${post.slug}`} class="now-archive__item">
-              <span class="now-archive__item-title">{post.data.title}</span>
+            <a
+              href={post.slug === latestSlug ? '/now' : `/now/${post.slug}`}
+              class:list={['now-archive__item', { 'now-archive__item--current': post.slug === latestSlug }]}
+            >
+              <span class="now-archive__item-title">
+                {post.data.title}
+                {post.slug === latestSlug && <span class="now-archive__item-badge">Current</span>}
+              </span>
               <span class="now-archive__item-date">{formatDate(post.data.publishedAt)}</span>
             </a>
           ))
@@ -124,10 +133,30 @@ const formatDate = (date: Date) => {
     transform: translateX(4px);
   }
 
+  .now-archive__item--current {
+    border-color: var(--color-gold-dim);
+  }
+
   .now-archive__item-title {
     font-family: var(--font-display);
     font-size: var(--text-lg);
     color: var(--color-text);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .now-archive__item-badge {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-gold);
+    background: rgba(255, 229, 44, 0.1);
+    border: 1px solid rgba(255, 229, 44, 0.3);
+    border-radius: var(--radius-xs);
+    padding: 2px 6px;
+    line-height: 1.4;
   }
 
   .now-archive__item-date {

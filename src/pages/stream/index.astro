@@ -94,8 +94,10 @@ const statVertices = STAT_ORDER.map((stat, i) => {
   const ty = +(CY + TEXT_R * Math.sin(angle)).toFixed(2);
   const meta = STAT_META[stat];
   const anchor = vx < CX - 10 ? 'end' : vx > CX + 10 ? 'start' : 'middle';
+  // Phrases read inward so long strings don't escape the viewBox on either side
+  const phraseAnchor = anchor === 'end' ? 'start' : anchor === 'start' ? 'end' : 'middle';
   const clipId = `clip-${stat.toLowerCase().slice(0, 3)}`;
-  return { stat, vx, vy, tx, ty, meta, anchor, clipId };
+  return { stat, vx, vy, tx, ty, meta, anchor, phraseAnchor, clipId };
 });
 
 const questRaw = readFileSync(join(process.cwd(), 'src/content/stream/_quests.md'), 'utf-8');
@@ -224,7 +226,7 @@ function colorBg(hex: string, a: number): string {
                 </g>
 
                 <g id="radar-layer-vertices">
-                {statVertices.map(({ stat, vx, vy, tx, ty, meta, anchor, clipId }) => {
+                {statVertices.map(({ stat, vx, vy, tx, ty, meta, anchor, phraseAnchor, clipId }) => {
                   const count = recentTallies[stat as (typeof STAT_ORDER)[number]] ?? 0;
                   const sil = SIL_FILTERS[stat];
                   const numAnchor = anchor;
@@ -251,7 +253,7 @@ function colorBg(hex: string, a: number): string {
                             fill={colorBg(meta.color, 0.5)} stroke="#060608" stroke-width="3" paint-order="stroke fill">
                         {meta.keywords}
                       </text>
-                      <text class="v-phrase" x={tx} y={ty + 16} text-anchor={anchor}
+                      <text class="v-phrase" x={tx} y={ty + 16} text-anchor={phraseAnchor}
                             font-family="monospace" font-size="10"
                             fill={colorBg(meta.color, 0.9)} stroke="#060608" stroke-width="3" paint-order="stroke fill">
                         {meta.phrase}
