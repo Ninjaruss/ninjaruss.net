@@ -90,8 +90,9 @@ const statVertices = STAT_ORDER.map((stat, i) => {
   const angle = (-90 + i * 72) * (Math.PI / 180);
   const vx = +(CX + R * Math.cos(angle)).toFixed(2);
   const vy = +(CY + R * Math.sin(angle)).toFixed(2);
-  const tx = +(CX + TEXT_R * Math.cos(angle)).toFixed(2);
-  const ty = +(CY + TEXT_R * Math.sin(angle)).toFixed(2);
+  const textR = stat === 'Determination' ? R + 50 : TEXT_R;
+  const tx = +(CX + textR * Math.cos(angle)).toFixed(2);
+  const ty = +(CY + textR * Math.sin(angle)).toFixed(2);
   const meta = STAT_META[stat];
   const anchor = vx < CX - 10 ? 'end' : vx > CX + 10 ? 'start' : 'middle';
   const clipId = `clip-${stat.toLowerCase().slice(0, 3)}`;
@@ -196,7 +197,7 @@ function colorBg(hex: string, a: number): string {
 
               <div id="stream-tally-data" data-recent={recentData} data-all={allData} hidden></div>
 
-              <svg viewBox="-108 -95 608 540" aria-label="Stat radar chart" id="radar-svg">
+              <svg viewBox="-108 -100 608 580" aria-label="Stat radar chart" id="radar-svg">
                 <defs>
                   <filter id="vglow">
                     <feGaussianBlur stdDeviation="4" result="b"/>
