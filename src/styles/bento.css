@@ -8,6 +8,13 @@
   width: 100%;
 }
 
+@media (min-width: 1025px) {
+  .bento-grid {
+    height: 100%;
+    grid-auto-rows: minmax(100px, 1fr);
+  }
+}
+
 /* Neighbor Dimming Effect — Dim non-hovered tiles when any tile is hovered */
 .bento-grid:has(.bento-tile:hover) .bento-tile:not(:hover),
 .bento-grid:has(.logo-tile:hover) .bento-tile:not(:hover),

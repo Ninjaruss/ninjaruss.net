@@ -459,6 +459,13 @@ const latestEntries = sameDateEntries.map(entry => ({
     position: relative;
   }
 
+  @media (min-width: 1025px) {
+    .container {
+      /* 2×space-lg = .page top+bottom padding; space-sm + space-md = container top+bottom padding */
+      height: calc(100dvh - 2 * var(--space-lg) - var(--space-sm) - var(--space-md));
+    }
+  }
+
   .container::before {
     content: '';
     position: absolute;
