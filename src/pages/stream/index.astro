@@ -70,7 +70,7 @@ const allTallies    = tallyStats(streamEntries, 'all');
 const recentMax     = Math.max(1, ...Object.values(recentTallies).map(v => v ?? 0));
 const allScaled     = scaleAllTallies(allTallies);
 
-// Radar geometry — center 200,200, radius 140; viewBox is landscape (-175,-65 → 545,385) to contain all phrase text
+// Radar geometry — center 200,200, radius 140; viewBox tight around labels/counts (-40,-65 → 460,395)
 const CX = 200, CY = 200, R = 140;
 const TEXT_R = R + 52;
 
@@ -196,7 +196,7 @@ function colorBg(hex: string, a: number): string {
 
               <div id="stream-tally-data" data-recent={recentData} data-all={allData} hidden></div>
 
-              <svg viewBox="-175 -65 720 450" aria-label="Stat radar chart" id="radar-svg">
+              <svg viewBox="-40 -65 500 460" aria-label="Stat radar chart" id="radar-svg">
                 <defs>
                   <filter id="vglow">
                     <feGaussianBlur stdDeviation="4" result="b"/>
