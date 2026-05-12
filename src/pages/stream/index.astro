@@ -15,30 +15,30 @@ import {
 } from '../../utils/stream';
 import '../../styles/stream.css';
 
-const STAT_META: Record<string, { color: string; tagline: string; phrase: string; keywords: string; emblem: string; silFilter: string }> = {
+const STAT_META: Record<string, { color: string; tagline: string; phrase: string[]; keywords: string; emblem: string; silFilter: string }> = {
   Determination: {
     color: '#ff4040', tagline: 'The will to continue',
-    phrase: 'Pierce the heavens.', keywords: 'Push. Guts. Resolve.',
+    phrase: ['Pierce the heavens.'], keywords: 'Push. Guts. Resolve.',
     emblem: '/images/emblems/determination.png', silFilter: 'sil-det',
   },
   Insight: {
     color: '#4ab0ff', tagline: 'Seeing through the noise',
-    phrase: 'Clear Mind, Accel Synchro.', keywords: 'Perceive. Focus. Transcend.',
+    phrase: ['Clear Mind,', 'Accel Synchro.'], keywords: 'Perceive. Focus. Transcend.',
     emblem: '/images/emblems/insight.png', silFilter: 'sil-ins',
   },
   Chaos: {
     color: '#2dd4bf', tagline: 'Embracing the unexpected',
-    phrase: 'Into the dark without a torch.', keywords: 'Risk. Fall. Rise.',
+    phrase: ['Into the dark', 'without a torch.'], keywords: 'Risk. Fall. Rise.',
     emblem: '/images/emblems/chaos.png', silFilter: 'sil-cha',
   },
   Sincerity: {
     color: '#ffe52c', tagline: 'Meaning what you say',
-    phrase: 'No mask.', keywords: 'Heart. Speak true. Trust.',
+    phrase: ['No mask.'], keywords: 'Heart. Speak true. Trust.',
     emblem: '/images/emblems/sincerity.png', silFilter: 'sil-sin',
   },
   Expression: {
     color: '#a855f7', tagline: 'Making something from nothing',
-    phrase: 'So the world will not forget.', keywords: 'Craft. Create. Soul.',
+    phrase: ['So the world', 'will not forget.'], keywords: 'Craft. Create. Soul.',
     emblem: '/images/emblems/expression.png', silFilter: 'sil-exp',
   },
 };
@@ -70,9 +70,9 @@ const allTallies    = tallyStats(streamEntries, 'all');
 const recentMax     = Math.max(1, ...Object.values(recentTallies).map(v => v ?? 0));
 const allScaled     = scaleAllTallies(allTallies);
 
-// Radar geometry — center 200,200, radius 140; viewBox tight around labels/counts (-40,-65 → 460,395)
-const CX = 200, CY = 200, R = 140;
-const TEXT_R = R + 52;
+// Radar geometry — center 200,200; R=185 fills ~58% of the viewBox width; TEXT_R=220 leaves room for 2-line phrases
+const CX = 200, CY = 200, R = 185;
+const TEXT_R = R + 35;
 
 const recentPoints = buildRadarPoints(recentTallies, recentMax,    CX, CY, R);
 const allPoints    = buildRadarPoints(allScaled,     STAT_CEILING, CX, CY, R);
@@ -196,7 +196,7 @@ function colorBg(hex: string, a: number): string {
 
               <div id="stream-tally-data" data-recent={recentData} data-all={allData} hidden></div>
 
-              <svg viewBox="-40 -65 500 460" aria-label="Stat radar chart" id="radar-svg">
+              <svg viewBox="-108 -70 608 490" aria-label="Stat radar chart" id="radar-svg">
                 <defs>
                   <filter id="vglow">
                     <feGaussianBlur stdDeviation="4" result="b"/>
@@ -254,7 +254,9 @@ function colorBg(hex: string, a: number): string {
                       <text class="v-phrase" x={tx} y={ty + 16} text-anchor={anchor}
                             font-family="monospace" font-size="10"
                             fill={colorBg(meta.color, 0.9)} stroke="#060608" stroke-width="3" paint-order="stroke fill">
-                        {meta.phrase}
+                        {meta.phrase.map((line, i) => (
+                          <tspan x={tx} dy={i === 0 ? '0' : '14'}>{line}</tspan>
+                        ))}
                       </text>
                       <g class="v-emblem-large">
                         <circle class="v-emblem-backdrop" cx={vx} cy={vy} r="19" fill="#111111"/>
