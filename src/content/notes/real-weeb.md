@@ -6,7 +6,7 @@ publishedAt: 2026-05-11
 ---
 
 ## Where are the real weebs? 
-This seems like a dumb question, but it is one I find myself asking to find the core root of a true anime fan. If it wasn't apparent from thttps://www.ninjaruss.net/showcasehe recent trend of calling people LARPers if they are pretending to like weeb stuff, there seems to be a growing rise of discerning the fake clout chasing normies from the true authentic people. 
+This seems like a dumb question, but it is one I find myself asking to find the core root of a true anime fan. If it wasn't apparent from the recent trend of calling people LARPers if they are pretending to like weeb stuff, there seems to be a growing rise of discerning the fake clout chasing normies from the true authentic people. 
 
 I'd say this really calls into question on the type of people you surround yourself with. While it's neat that someone has interacted with a piece of media that you like, the need for connection is never really fulfilled when it seems they simply consumed the media without any further afterthought. For example, taking my friends to watch the Chainsaw Man Reze Arc movie revealed to me that there are different levels to the perspectives I can get on the film. One was ecstatic and simply having a grand time just seeing all the spectacle on the screen while the other found it difficult to get invested in the film simply cause the in world "logic" didn't make sense. Mind you, this was coming from someone who has never watched or read Chainsaw Man at all, so it was somewhat understandable to be confused.
 

@@ -222,13 +222,13 @@ const latestEntries = sameDateEntries.map(entry => ({
         accent
         label="Showcase"
         title="What I'm Building"
-        description="Stuff I've created and that I am currently working on."
+        description="Stuff I've created and am currently working on."
         class="bento-tile--core bento-tile--span-3x2 showcase-tile"
       >
         {recentShowcase.length > 0 && (
           <div class="tile-emblems tile-emblems--highlight">
             {recentShowcase.map(entry => (
-              <div class="tile-emblem" title={entry.title} data-href={entry.href} role="link" tabindex="0">
+              <div class="tile-emblem" title={entry.title} data-href={entry.href} role="button" tabindex="0">
                 <img src={entry.emblem} alt="" class="tile-emblem__img" loading="lazy" aria-hidden="true" />
               </div>
             ))}
@@ -250,7 +250,7 @@ const latestEntries = sameDateEntries.map(entry => ({
               <div
                 class="tile-note-link"
                 data-href={entry.href}
-                role="link"
+                role="button"
                 tabindex="0"
                 title={entry.title}
               >
@@ -267,9 +267,9 @@ const latestEntries = sameDateEntries.map(entry => ({
         class="bento-tile bento-tile--dark bento-tile--interactive stream-tile"
         style={`--st-lead: ${leadingColor.hex};`}
       >
-        <div class="st-header">
-          <span class="st-label">Stream Log</span>
-          <span class="st-name">Ninjaruss</span>
+        <div class="bento-tile__header">
+          <span class="bento-tile__label">Stream</span>
+          <h3 class="bento-tile__title">Stream Log</h3>
         </div>
 
         <div class="st-body">
@@ -292,7 +292,7 @@ const latestEntries = sameDateEntries.map(entry => ({
               ))}
             </g>
             <!-- center: tinted circle behind emblem -->
-            <circle cx="40" cy="40" r="14"
+            <circle cx="40" cy="40" r="18"
               fill={`rgba(${leadingColor.rgb},.09)`}
               stroke={`rgba(${leadingColor.rgb},.2)`}
               stroke-width="1"
@@ -301,7 +301,7 @@ const latestEntries = sameDateEntries.map(entry => ({
             {singleIcon && (
               <image
                 href={`/images/emblems/${singleIcon.toLowerCase()}.png`}
-                x="27" y="27" width="26" height="26"
+                x="23" y="23" width="34" height="34"
                 preserveAspectRatio="xMidYMid meet"
               />
             )}
@@ -310,7 +310,7 @@ const latestEntries = sameDateEntries.map(entry => ({
               <image
                 class="st-icon-primary"
                 href={`/images/emblems/${tiedPair[0].toLowerCase()}.png`}
-                x="27" y="27" width="26" height="26"
+                x="23" y="23" width="34" height="34"
                 preserveAspectRatio="xMidYMid meet"
               />
             )}
@@ -318,7 +318,7 @@ const latestEntries = sameDateEntries.map(entry => ({
               <image
                 class="st-icon-secondary"
                 href={`/images/emblems/${tiedPair[1].toLowerCase()}.png`}
-                x="27" y="27" width="26" height="26"
+                x="23" y="23" width="34" height="34"
                 preserveAspectRatio="xMidYMid meet"
               />
             )}
@@ -328,7 +328,7 @@ const latestEntries = sameDateEntries.map(entry => ({
             <span class="st-adjective" style={`color: ${leadingColor.hex}`}>
               {streamSessionCount > 0 ? STAT_ADJECTIVES[primaryLeadingStat] : 'Unwritten'}
             </span>
-            <span class="st-phrase" style={`color: rgba(${leadingColor.rgb},.4)`}>
+            <span class="st-phrase" style={`color: rgba(${leadingColor.rgb},.75)`}>
               {streamSessionCount > 0 ? STAT_PHRASES[primaryLeadingStat] : 'The story begins.'}
             </span>
           </div>
@@ -970,32 +970,6 @@ const latestEntries = sameDateEntries.map(entry => ({
     50%       { box-shadow: 4px 4px 0 rgba(255,64,64,.5),  0 0 40px rgba(255,64,64,.22); }
   }
 
-  .st-header {
-    padding: 8px 11px 7px;
-    background: #0d0d1a;
-    border-bottom: 1px solid #181826;
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    flex-shrink: 0;
-  }
-
-  .st-label {
-    font-size: .52rem;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    color: rgba(255,229,44,.4);
-    font-family: var(--font-mono);
-  }
-
-  .st-name {
-    font-size: .92rem;
-    font-weight: 800;
-    color: #f0f0f0;
-    letter-spacing: .02em;
-    line-height: 1.1;
-  }
-
   .st-body {
     flex: 1;
     display: flex;
@@ -1008,8 +982,8 @@ const latestEntries = sameDateEntries.map(entry => ({
 
   .st-donut { display: block; }
 
-  .stream-tile:hover .st-lead-arc {
-    filter: drop-shadow(0 0 6px var(--st-lead));
+  .stream-tile:hover .st-donut image {
+    filter: drop-shadow(0 0 8px var(--st-lead));
   }
 
   .st-stat-label {
@@ -1033,15 +1007,16 @@ const latestEntries = sameDateEntries.map(entry => ({
     letter-spacing: .06em;
     font-style: italic;
     font-family: var(--font-mono);
-    opacity: 0;
-    transform: translateY(4px);
-    transition: opacity .3s .05s, transform .3s .05s;
+    opacity: 0.65;
+    transform: translateY(0);
+    transition: opacity .3s .05s;
     white-space: nowrap;
   }
 
   .stream-tile:hover .st-phrase {
     opacity: 1;
-    transform: translateY(0);
+    text-shadow: 0 0 14px var(--st-lead), 0 0 28px rgba(255,255,255,.08);
+    letter-spacing: .1em;
   }
 
   .st-footer {
@@ -1430,7 +1405,6 @@ const latestEntries = sameDateEntries.map(entry => ({
 
     .stream-tile.is-live    { animation: none; }
     .st-live-badge          { animation: none; }
-    .st-phrase              { transition: none; }
     .st-icon-primary        { animation: none; opacity: 1; }
     .st-icon-secondary      { animation: none; opacity: 0; }
     .container.is-live::before  { animation: none; background-position: 0% 0%; }

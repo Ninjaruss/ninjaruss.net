@@ -2,11 +2,11 @@
 import { getCollection } from 'astro:content';
 import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
-import { hasMinimalContent } from '../../utils/content';
+import { stripMarkdown, hasMinimalContent } from '../../utils/content';
 
 const allExperiments = await getCollection('showcase', ({ data }) => !data.draft);
 const sortedExperiments = allExperiments.sort((a, b) =>
-  new Date(b.data.publishedAt || 0).getTime() - new Date(a.data.publishedAt || 0).getTime()
+  new Date(b.data.updatedAt || b.data.publishedAt || 0).getTime() - new Date(a.data.updatedAt || a.data.publishedAt || 0).getTime()
 );
 ---
 
@@ -24,6 +24,7 @@ const sortedExperiments = allExperiments.sort((a, b) =>
         slug={entry.slug}
         title={entry.data.title}
         tags={entry.data.tags}
+        searchableContent={stripMarkdown(entry.body).slice(0, 500)}
         hasMinimalContent={hasMinimalContent(entry.body)}
       />
     ))

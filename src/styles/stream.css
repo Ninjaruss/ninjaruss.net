@@ -3,6 +3,7 @@
 /* Remove BaseLayout .page padding so the stream page fills the viewport exactly */
 .page:has(.stream-page) {
   padding: 0;
+  overflow: hidden;
 }
 
 .stream-page {
@@ -335,8 +336,8 @@
 .s-radar-container svg {
   width: 100%;
   height: 100%;
-  max-width: 500px;
-  max-height: 500px;
+  max-width: 640px;
+  max-height: 640px;
 }
 
 /* Floating mode toggle */
@@ -410,8 +411,8 @@
 .radar-vertex { cursor: pointer; }
 .radar-vertex .v-phrase { opacity: 0; transition: opacity 0.2s; }
 .radar-vertex:hover .v-phrase { opacity: 1; }
-.radar-vertex .v-keywords { transition: opacity 0.2s; }
-.radar-vertex:hover .v-keywords { opacity: 0; }
+/* Keywords extend past the SVG viewport — hide in favour of the hover phrase */
+.v-keywords { display: none; }
 .v-dot-small {
   filter: drop-shadow(0 0 6px var(--stat-color));
   transition: opacity 0.18s 0.05s;
@@ -1087,4 +1088,13 @@
   .bd-inner { width: 100%; }
   .j-stream-strip { flex-wrap: wrap; }
   .j-strip-label { min-width: 100px; }
+  .j-stream-strip::before { left: -16px; }
+
+  /* Journal: let the whole panel scroll so the log is never clipped */
+  #panel-journal { overflow-y: auto; }
+  .j-log { flex: none; overflow: visible; }
+  .j-log-list { overflow-y: visible; max-height: none; padding-bottom: 40px; }
+  .j-streams { padding-left: 16px; padding-right: 16px; }
+  .j-log-top { padding-left: 16px; padding-right: 16px; }
+  .j-log-list { padding-left: 16px; padding-right: 16px; }
 }
