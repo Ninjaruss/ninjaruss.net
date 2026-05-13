@@ -480,20 +480,6 @@ const count = sortedMedia.length;
     history.replaceState(null, '', base || location.pathname);
   }
 
-  function updateOpenURL(slug: string) {
-    const filterState = parseFilterState(location.search);
-    const base = buildFilterURL(filterState);
-    const p = new URLSearchParams(base.startsWith('?') ? base.slice(1) : base);
-    p.set('open', slug);
-    history.replaceState(null, '', `?${p.toString()}`);
-  }
-
-  function clearOpenURL() {
-    const filterState = parseFilterState(location.search);
-    const base = buildFilterURL(filterState);
-    history.replaceState(null, '', base || location.pathname);
-  }
-
   function initMediaPage() {
     pageCleanup?.abort();
     pageCleanup = new AbortController();
@@ -520,6 +506,7 @@ const count = sortedMedia.length;
     let favOnly = initialFav;
     let isFirstFilter = true;
     let previouslyFocused: HTMLElement | null = null;
+    let overlayPushedHistory = false;
 
     function applyFilters() {
       const cards = grid!.querySelectorAll<HTMLElement>('.media-card');
@@ -608,7 +595,6 @@ const count = sortedMedia.length;
       overlay.hidden = false;
       document.body.style.overflow = 'hidden';
       overlay.focus();
-      updateOpenURL(slug);
 
       fetch(`/media/${encodeURIComponent(slug)}`, { signal: activeFetch.signal })
         .then((r) => {
@@ -635,11 +621,22 @@ const count = sortedMedia.length;
         });
     }
 
-    function closeOverlay() {
+    function closeOverlay(fromPop = false) {
       if (!overlay) return;
       overlay.hidden = true;
       document.body.style.overflow = '';
-      clearOpenURL();
+      activeFetch?.abort();
+
+      if (!fromPop) {
+        if (overlayPushedHistory) {
+          history.back();
+        } else {
+          const filterURL = buildFilterURL({ type: activeType, favOnly });
+          history.replaceState(null, '', '/media' + filterURL);
+        }
+      }
+      overlayPushedHistory = false;
+
       previouslyFocused?.focus();
       previouslyFocused = null;
     }
@@ -654,6 +651,8 @@ const count = sortedMedia.length;
           if (!entry) return;
           e.preventDefault();
           previouslyFocused = card;
+          history.pushState(null, '', `/media/${slug}`);
+          overlayPushedHistory = true;
           openOverlay(slug, entry);
         });
       });
@@ -689,6 +688,10 @@ const count = sortedMedia.length;
         if (e.key === 'Escape' && !overlay.hidden) closeOverlay();
       }, { signal: pageCleanup!.signal });
 
+      window.addEventListener('popstate', () => {
+        if (!overlay.hidden) closeOverlay(true);
+      }, { signal: pageCleanup!.signal });
+
       overlay.addEventListener('click', (e) => {
         const inner = document.getElementById('media-overlay-inner');
         if (inner && !inner.contains(e.target as Node)) closeOverlay();
@@ -697,6 +700,8 @@ const count = sortedMedia.length;
       if (initialOpen) {
         const entry = entryMap.get(initialOpen);
         if (entry) {
+          history.replaceState(null, '', `/media/${initialOpen}`);
+          overlayPushedHistory = false;
           previouslyFocused = grid.querySelector<HTMLElement>(`[data-slug="${initialOpen}"]`) ?? document.body as HTMLElement;
           openOverlay(initialOpen, entry);
         }
