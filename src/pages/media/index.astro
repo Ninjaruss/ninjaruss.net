@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NavPill from '../../components/NavPill.astro';
-import { stripMarkdown } from '../../utils/content';
 
 const allMedia = await getCollection('media', ({ data }) => !data.draft);
 const sortedMedia = allMedia.sort((a, b) =>
@@ -17,7 +16,8 @@ const entryData = sortedMedia.map((entry) => ({
   isFavorite: entry.data.isFavorite ?? false,
   emblem: entry.data.emblem ?? '/images/emblems/default.svg',
   tags: entry.data.tags ?? [],
-  excerpt: stripMarkdown(entry.body ?? '').slice(0, 150),
+  publishedAt: entry.data.publishedAt?.toISOString() ?? null,
+  updatedAt: entry.data.updatedAt?.toISOString() ?? null,
 }));
 
 const count = sortedMedia.length;
@@ -458,7 +458,8 @@ const count = sortedMedia.length;
     isFavorite: boolean;
     emblem: string;
     tags: string[];
-    excerpt: string;
+    publishedAt: string | null;
+    updatedAt: string | null;
   };
 
   let activeFetch: AbortController | null = null;
