@@ -682,7 +682,7 @@ const count = sortedMedia.length;
             first.focus();
           }
         }
-      });
+      }, { signal: pageCleanup!.signal });
 
       document.addEventListener('keydown', (e: KeyboardEvent) => {
         if (e.key === 'Escape' && !overlay.hidden) closeOverlay();
@@ -695,7 +695,7 @@ const count = sortedMedia.length;
       overlay.addEventListener('click', (e) => {
         const inner = document.getElementById('media-overlay-inner');
         if (inner && !inner.contains(e.target as Node)) closeOverlay();
-      });
+      }, { signal: pageCleanup!.signal });
 
       if (initialOpen) {
         const entry = entryMap.get(initialOpen);
