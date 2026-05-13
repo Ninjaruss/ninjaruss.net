@@ -448,6 +448,10 @@ const latestEntries = sameDateEntries.map(entry => ({
         <span class="logo-tile__label">Spotify</span>
         <p class="logo-tile__description">The bangers I listen to every day.</p>
       </a>
+
+      <!-- Row 5 fillers — fill cols 4 and 6 left empty by Latest (2×1) and MAL (1×1) -->
+      <div class="bento-tile bento-tile--static filler-tile" aria-hidden="true"></div>
+      <div class="bento-tile bento-tile--static filler-tile" aria-hidden="true"></div>
     </BentoGrid>
   </div>
 </BaseLayout>
@@ -508,13 +512,6 @@ const latestEntries = sameDateEntries.map(entry => ({
   #novel-tile:hover .days-ago {
     color: var(--color-gold);
     border-color: var(--color-gold);
-  }
-
-  /* Optionally, make the local date more subtle */
-  .now-date span.local {
-    color: rgba(0, 0, 0, 0.5);
-    font-size: 0.8em;
-    margin-left: 0.25em;
   }
 
   /* Logo Tiles (MyAnimeList, Spotify) */
@@ -1378,6 +1375,14 @@ const latestEntries = sameDateEntries.map(entry => ({
   #latest-tile:hover .latest-tile__emblem {
     opacity: 1;
     border-color: var(--color-gold);
+  }
+
+  /* Row 5 filler tiles — invisible grid spacers */
+  .filler-tile {
+    pointer-events: none;
+    user-select: none;
+    min-height: 0;
+    opacity: 0.15;
   }
 
   /* Reduced Motion Support */

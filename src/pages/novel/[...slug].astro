@@ -79,6 +79,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
           return f.files.length + Object.values(f.subfolders).reduce((n, s) => n + countFiles(s), 0);
         }
         const count = countFiles(folder);
+        if (count === 0) return null;
         return (
           <button
             class="filter-tab"
@@ -87,7 +88,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
             aria-pressed="false"
           >
             {folder.title}
-            {count > 0 && <span class="tab-count">{count}</span>}
+            <span class="tab-count">{count}</span>
           </button>
         );
       })}
@@ -470,8 +471,9 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     }
   }
 
-  // Stored so closeReading can contract back to the shard's origin position
+  // Stored so closeReading can contract back to the shard's origin position and restore focus
   let _openRect: { top: number; right: number; bottom: number; left: number } | null = null;
+  let _openShard: HTMLElement | null = null;
 
   function openShard(
     folderKey: string,
@@ -519,7 +521,8 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     const right  = window.innerWidth  - rect.right;
     const bottom = window.innerHeight - rect.bottom;
     const left   = rect.left;
-    _openRect    = { top, right, bottom, left };
+    _openRect  = { top, right, bottom, left };
+    _openShard = shardEl;
 
     // Set initial clip-path to shard rect, hide reading content
     shardDiv.style.opacity    = '0';
@@ -538,6 +541,8 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
         setTimeout(() => {
           shardDiv.style.transition = 'opacity 150ms ease';
           shardDiv.style.opacity    = '1';
+          // Move focus into overlay after it's visible
+          document.getElementById('reading-back')?.focus();
         }, 260);
       });
     });
@@ -571,11 +576,17 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
           shardDiv.style.opacity    = '';
           shardDiv.style.transition = '';
           _openRect = null;
+          const returnTarget = _openShard;
+          _openShard = null;
+          returnTarget?.focus();
         }, 260);
       } else {
         overlay.classList.remove('is-open');
         shardDiv.style.opacity    = '';
         shardDiv.style.transition = '';
+        const returnTarget = _openShard;
+        _openShard = null;
+        returnTarget?.focus();
       }
 
       if (pushState && currentFolderSlug) {
@@ -753,8 +764,17 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
 
     window.addEventListener('popstate', handlePopstate);
 
+    // Escape closes the reading overlay
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key !== 'Escape') return;
+      const overlay = document.getElementById('reading-overlay')!;
+      if (overlay.classList.contains('is-open')) closeReading();
+    }
+    document.addEventListener('keydown', handleEscape);
+
     document.addEventListener('astro:before-swap', () => {
       window.removeEventListener('popstate', handlePopstate);
+      document.removeEventListener('keydown', handleEscape);
     }, { once: true });
 
     // ── Initial state from server-rendered URL props ─────────────────
@@ -762,12 +782,13 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     const initFolder  = page.dataset.initialFolder  || null;
     const initSubPath = page.dataset.initialSubpath || null;
 
-    // Default to first non-empty folder if no folder in URL
-    const firstFolder = initFolder
-      ?? Object.values(tree).find((f) =>
-          f.files.length > 0 || Object.keys(f.subfolders).length > 0
-        )?.slug
-      ?? null;
+    // Default to first non-empty folder; also skip initFolder if it has no content
+    function folderHasContent(f: NovelFolder): boolean {
+      return f.files.length > 0 || Object.keys(f.subfolders).length > 0;
+    }
+    const firstFolder = (initFolder && tree[initFolder] && folderHasContent(tree[initFolder]))
+      ? initFolder
+      : Object.values(tree).find(folderHasContent)?.slug ?? null;
 
     if (firstFolder) {
       history.replaceState(

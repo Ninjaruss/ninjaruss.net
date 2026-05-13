@@ -81,9 +81,9 @@ Collection-specific extensions:
 The homepage uses a visual hierarchy pattern:
 - **Core tiles** (`.bento-tile--core`): Main entry points (Showcase, Notes, Media) with elevated gold glow and larger typography
 - **Signal tiles**: Current activity indicators (Now, Latest) - smaller, secondary visual weight
-- **KAIMA tile**: Dark 1×2 tile linking to the KAIMA YouTube channel; shows a "Watch Live" button when streaming is detected
+- **Stream tile**: Dark 1×2 tile linking to `/stream`; shows live stat donut chart with leading stat emblem and session count. Pulsing red border when live.
 - **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) with 48x48px logos and hover effects
-- **YouTube tiles**: Video embeds with custom aspect ratios
+- **YouTube tile**: Full-bleed channel avatar; switches to Twitch live preview when streaming
 
 Tile variants: `interactive` (default), `highlight` (gold bg), `dark`, `static`
 Sizes: `dominant` (2x2), `medium-wide` (2x1), `medium-tall` (1x2), `small` (1x1)
@@ -91,8 +91,8 @@ Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--sp
 
 **Current Homepage Grid Pattern:**
 - Row 1: Title (4×1) + YouTube (1×1) + Now (1×1)
-- Rows 2-3: Showcase (3×2, core) + Notes (2×2, core) + KAIMA (1×2)
-- Rows 4-5: Media (2×2, core) + Latest (2×1, row 4) + Novel (1×2) + MAL (1×1, row 4) + 2× decorative (1×1, row 5) + Spotify (1×1, row 5)
+- Rows 2-3: Showcase (3×2, core) + Notes (2×2, core) + Stream (1×2)
+- Rows 4-5: Media (2×2, core) + Latest (2×1, row 4) + Novel (1×2) + MAL (1×1, row 4) + Spotify (1×1, row 5) + 2× filler static tiles (1×1, row 5)
 
 Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title-tile { grid-column: span 4 }`), not a span class.
 
