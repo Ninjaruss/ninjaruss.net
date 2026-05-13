@@ -463,9 +463,9 @@ const count = sortedMedia.length;
   function formatEntryDate(publishedAt: string | null, updatedAt: string | null): string {
     if (!publishedAt) return '';
     const opts: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' };
-    const pubStr = new Date(publishedAt).toLocaleDateString('en-US', opts);
+    const pub = new Date(publishedAt);
+    const pubStr = pub.toLocaleDateString('en-US', opts);
     if (updatedAt) {
-      const pub = new Date(publishedAt);
       const upd = new Date(updatedAt);
       if (upd > pub) {
         const updStr = upd.toLocaleDateString('en-US', opts);
