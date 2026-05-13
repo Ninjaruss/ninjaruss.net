@@ -30,6 +30,10 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
   ogImage={pageOgImage}
   ogType="article"
 >
+  <script define:vars={{ entrySlug: entry.slug }}>
+    window.location.replace('/media?open=' + encodeURIComponent(entrySlug));
+  </script>
+
   <div class="media-detail">
     <div class="media-detail__inner">
       <div class="media-detail__poster-panel">
