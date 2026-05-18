@@ -651,13 +651,13 @@ const count = sortedMedia.length;
           if (!entry) return;
           e.preventDefault();
           previouslyFocused = card;
-          history.pushState(null, '', `/media/${slug}`);
+          history.pushState(null, '', `/media/${encodeURIComponent(slug)}`);
           overlayPushedHistory = true;
           openOverlay(slug, entry);
         });
       });
 
-      closeBtn?.addEventListener('click', closeOverlay);
+      closeBtn?.addEventListener('click', () => closeOverlay());
 
       // Focus trap
       overlay.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -700,7 +700,7 @@ const count = sortedMedia.length;
       if (initialOpen) {
         const entry = entryMap.get(initialOpen);
         if (entry) {
-          history.replaceState(null, '', `/media/${initialOpen}`);
+          history.replaceState(null, '', `/media/${encodeURIComponent(initialOpen)}`);
           overlayPushedHistory = false;
           previouslyFocused = grid.querySelector<HTMLElement>(`[data-slug="${initialOpen}"]`) ?? document.body as HTMLElement;
           openOverlay(initialOpen, entry);
