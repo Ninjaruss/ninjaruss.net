@@ -1,10 +1,10 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 
-export type SectionName = 'media' | 'notes' | 'showcase';
+export type SectionName = 'shelf' | 'notes' | 'showcase';
 
 export interface AllCollections {
-  allMedia: CollectionEntry<'media'>[];
+  allShelf: CollectionEntry<'shelf'>[];
   allNotes: CollectionEntry<'notes'>[];
   allShowcase: CollectionEntry<'showcase'>[];
 }
@@ -14,13 +14,13 @@ export interface AllCollections {
  * Used for RelatedContent component
  */
 export async function getAllCollections(): Promise<AllCollections> {
-  const [allMedia, allNotes, allShowcase] = await Promise.all([
-    getCollection('media', ({ data }) => !data.draft),
+  const [allShelf, allNotes, allShowcase] = await Promise.all([
+    getCollection('shelf', ({ data }) => !data.draft),
     getCollection('notes', ({ data }) => !data.draft),
     getCollection('showcase', ({ data }) => !data.draft),
   ]);
 
-  return { allMedia, allNotes, allShowcase };
+  return { allShelf, allNotes, allShowcase };
 }
 
 /**
