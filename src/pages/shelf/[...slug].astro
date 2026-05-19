@@ -9,7 +9,7 @@ import { stripMarkdown, hasMinimalContent } from '../../utils/content';
 import { getAllCollections } from '../../utils/collections';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('media');
+  const entries = await getCollection('shelf');
   return entries.map((entry) => ({
     params: { slug: entry.slug },
     props: { entry },
@@ -18,7 +18,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
-const { allMedia, allNotes, allShowcase } = await getAllCollections();
+const { allShelf, allNotes, allShowcase } = await getAllCollections();
 const hasContent = !hasMinimalContent(entry.body);
 const pageDescription = entry.data.description ?? stripMarkdown(entry.body || '').slice(0, 160);
 const pageOgImage = entry.data.image ?? '/social-default.svg';
@@ -31,7 +31,7 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
   ogType="article"
 >
   <script define:vars={{ entrySlug: entry.slug }}>
-    window.location.replace('/media?open=' + encodeURIComponent(entrySlug));
+    window.location.replace('/shelf?open=' + encodeURIComponent(entrySlug));
   </script>
 
   <div class="media-detail">
@@ -65,8 +65,8 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
           <RelatedContent
             currentSlug={entry.slug}
             currentCollections={entry.data.collections ?? []}
-            section="media"
-            allMedia={allMedia}
+            section="shelf"
+            allShelf={allShelf}
             allNotes={allNotes}
             allShowcase={allShowcase}
           />
@@ -75,7 +75,7 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
     </div>
   </div>
 
-  <NavPill backLink="/media" backLabel="Media" />
+  <NavPill backLink="/shelf" backLabel="Shelf" />
 </BaseLayout>
 
 <style>
