@@ -20,7 +20,7 @@ const { entry } = Astro.props;
 const { Content } = await entry.render();
 
 const sortedNotes = await getSortedEntries('notes');
-const { allMedia, allNotes, allShowcase } = await getAllCollections();
+const { allShelf, allNotes, allShowcase } = await getAllCollections();
 const hasContent = !hasMinimalContent(entry.body);
 
 const pageDescription = entry.data.description ?? stripMarkdown(entry.body).slice(0, 160);
@@ -68,7 +68,7 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
             currentSlug={entry.slug}
             currentCollections={entry.data.collections}
             section="notes"
-            allMedia={allMedia}
+            allShelf={allShelf}
             allNotes={allNotes}
             allShowcase={allShowcase}
           />
