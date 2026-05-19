@@ -38,7 +38,7 @@ const count = sortedShelf.length;
     </header>
 
     <!-- Underline tab filter bar -->
-    <div class="filter-bar" role="toolbar" aria-label="Filter media entries">
+    <div class="filter-bar" role="toolbar" aria-label="Filter shelf entries">
       <button class="filter-tab filter-tab--fav" data-filter-fav aria-pressed="false" aria-label="Favorites">★</button>
       <div class="filter-bar__divider" aria-hidden="true"></div>
       <div class="filter-bar__tabs" role="group" aria-label="Filter by type">
@@ -226,12 +226,12 @@ const count = sortedShelf.length;
   }
   .media-card[data-hidden="true"] { display: none; }
 
-  .media-card--has-note {
+  .media-card--has-note .media-card__poster {
     border-color: rgba(255, 229, 44, 0.5);
     box-shadow: 0 0 12px rgba(255, 229, 44, 0.15), inset 0 0 0 1px rgba(255, 229, 44, 0.1);
   }
   .media-card:not(.media-card--has-note) {
-    opacity: 0.55;
+    filter: opacity(0.55);
   }
 
   .media-card__poster {
