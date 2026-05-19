@@ -4,17 +4,17 @@ import type { CollectionEntry } from 'astro:content';
 interface Props {
   currentSlug: string;
   currentCollections: string[];
-  section: 'media' | 'notes' | 'showcase';
-  allMedia: CollectionEntry<'media'>[];
+  section: 'shelf' | 'notes' | 'showcase';
+  allShelf: CollectionEntry<'shelf'>[];
   allNotes: CollectionEntry<'notes'>[];
   allShowcase: CollectionEntry<'showcase'>[];
 }
 
-const { currentSlug, currentCollections, section, allMedia, allNotes, allShowcase } = Astro.props;
+const { currentSlug, currentCollections, section, allShelf, allNotes, allShowcase } = Astro.props;
 
 // Combine all entries from all collections
 const allEntries = [
-  ...allMedia.map(entry => ({ ...entry, type: 'media' as const })),
+  ...allShelf.map(entry => ({ ...entry, type: 'shelf' as const })),
   ...allNotes.map(entry => ({ ...entry, type: 'notes' as const })),
   ...allShowcase.map(entry => ({ ...entry, type: 'showcase' as const }))
 ];
@@ -46,15 +46,15 @@ const relatedEntries = allEntries
 
 // Helper to get section display name
 const getSectionLabel = (entry: typeof relatedEntries[0]) => {
-  // For media entries, show specific content type
-  if (entry.type === 'media' && 'content_type' in entry.data) {
+  // For shelf entries, show specific content type
+  if (entry.type === 'shelf' && 'content_type' in entry.data) {
     const type = entry.data.content_type;
     return type.charAt(0).toUpperCase() + type.slice(1);
   }
 
   // For other sections, show generic labels
   const labels = {
-    media: 'Media',
+    shelf: 'Shelf',
     notes: 'Note',
     showcase: 'Project'
   };
