@@ -9,7 +9,7 @@ import { tallyStats, buildDonutArcs, STAT_ORDER } from '../utils/stream';
 
 // Query all content collections for items with publishedAt dates
 const notes = await getCollection('notes', ({ data }) => !data.draft && data.publishedAt);
-const media = await getCollection('media', ({ data }) => !data.draft && data.publishedAt);
+const media = await getCollection('shelf', ({ data }) => !data.draft && data.publishedAt);
 const showcase = await getCollection('showcase', ({ data }) => !data.draft && data.publishedAt);
 
 // Query now collection for latest entry
@@ -43,7 +43,7 @@ const recentMedia = media
   .filter(e => e.data.publishedAt)
   .sort((a, b) => effectiveDate(b) - effectiveDate(a))
   .slice(0, 4)
-  .map(e => ({ href: `/media/${e.slug}`, emblem: e.data.emblem ?? DEFAULT_EMBLEM, title: e.data.title }));
+  .map(e => ({ href: `/shelf/${e.slug}`, emblem: e.data.emblem ?? DEFAULT_EMBLEM, title: e.data.title }));
 
 const recentNotes = notes
   .filter(e => e.data.publishedAt)
@@ -343,10 +343,10 @@ const latestEntries = sameDateEntries.map(entry => ({
 
       <!-- Rows 4-5: Media (2×2) + Latest (2×1) + Novel (1×2) + MAL/Spotify (stacked 1×1) -->
       <BentoTile
-        href="/media"
+        href="/shelf"
         variant="dark"
-        label="Media"
-        title="Logbook"
+        label="Shelf"
+        title="Shelf"
         class="bento-tile--core bento-tile--span-2x2 media-tile"
       >
         {recentMedia.length > 0 && (
