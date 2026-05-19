@@ -28,4 +28,6 @@ Collision - Rain refuses Vesper’s offer of memory extraction – not out of fe
 
 I am considering if he should be closer to Roxana’s age (late 20s) or significantly younger (around 18). I’m thinking he’ll be 18 to symbolize a more sped up maturity that can be twisted when no support is available or anything inspirational was held within his mind. I feel that I myself have a sort of continuous feeling that I want to be hopeful and have a need to become fully actualized. What if I didn’t have this or possibly felt the weight of this a little too much?
 
+I am thinking Vesper will be a twist antagonist for the story and the big reveal will be that he has the ability to extract people’s memories (but not his own). To add to the potential foreshadowing, I want Vesper to forget recent events/things after each time he extracts a person’s memories. 
+
  

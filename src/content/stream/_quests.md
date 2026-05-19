@@ -8,11 +8,12 @@
 
 ## Ideas — Insight
 
-- Play Persona 4 Golden and learn more vocab
+- Play Persona 4 Golden / Trails in the Sky the 1st / Wagotabi to learn more vocab
+- Watch a children's show in Japanese (Doraemon?)
 
 ## Ideas — Expression
 
-- Write Remember Rain outline live
+- Sing COLORS by FLOW karaoke (with proper singing voice)
 - Draw/design a new profile asset
 
 ## Ideas — Sincerity
