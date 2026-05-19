@@ -25,7 +25,7 @@ src/
 ├── components/       # Reusable Astro components
 ├── content/          # Content collections (Markdown/MDX)
 │   ├── config.ts     # Zod schema definitions
-│   ├── media/        # Anime, manga, films, series, characters, music, etc.
+│   ├── shelf/        # Anime, manga, films, series, characters, music, etc.
 │   ├── notes/        # Philosophical fragments
 │   ├── novel/        # "Remember Rain" novel (Scrivener export — Characters, Locations, Lore, Scenes, Themes)
 │   ├── now/          # "Now" page snapshots (current focus)
@@ -58,7 +58,7 @@ All collections share a base schema (defined in `sharedSchema`):
 - `image` (optional string, path to social share image)
 
 Collection-specific extensions:
-- **media**: adds `content_type: 'anime' | 'manga' | 'film' | 'series' | 'music' | 'book' | 'game' | 'character' | 'other'` and `isFavorite: boolean` (defaults to false)
+- **shelf**: adds `content_type: 'anime' | 'manga' | 'film' | 'series' | 'music' | 'book' | 'game' | 'character' | 'other'` and `isFavorite: boolean` (defaults to false)
 - **notes**: uses sharedSchema without extensions
 - **showcase**: uses sharedSchema without extensions
 - **now**: simplified schema with `title` (defaults to 'Now'), `publishedAt` (required), `updatedAt`, `draft`
@@ -79,7 +79,7 @@ Collection-specific extensions:
 
 ### Bento Tile Hierarchy
 The homepage uses a visual hierarchy pattern:
-- **Core tiles** (`.bento-tile--core`): Main entry points (Showcase, Notes, Media) with elevated gold glow and larger typography
+- **Core tiles** (`.bento-tile--core`): Main entry points (Showcase, Notes, Shelf) with elevated gold glow and larger typography
 - **Signal tiles**: Current activity indicators (Now, Latest) - smaller, secondary visual weight
 - **Stream tile**: Dark 1×2 tile linking to `/stream`; shows live stat donut chart with leading stat emblem and session count. Pulsing red border when live.
 - **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) with 48x48px logos and hover effects
@@ -92,7 +92,7 @@ Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--sp
 **Current Homepage Grid Pattern:**
 - Row 1: Title (4×1) + YouTube (1×1) + Now (1×1)
 - Rows 2-3: Showcase (3×2, core) + Notes (2×2, core) + Stream (1×2)
-- Rows 4-5: Media (2×2, core) + Latest (2×1, row 4) + Novel (1×2) + MAL (1×1, row 4) + Spotify (1×1, row 5) + 2× filler static tiles (1×1, row 5)
+- Rows 4-5: Shelf (2×2, core) + Latest (2×1, row 4) + Novel (1×2) + MAL (1×1, row 4) + Spotify (1×1, row 5) + 2× filler static tiles (1×1, row 5)
 
 Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title-tile { grid-column: span 4 }`), not a span class.
 
@@ -152,16 +152,18 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 ## Pages & Routes
 
 ### Content Collection Pages
-- `/media` — Full-width emblem card grid with filter bar (★ favorites pill + type pills) and inline quick-view panel. URL state: `?type=anime&fav=1&open=slug`. Progressive enhancement: cards link to `/media/[slug]` without JS.
-- `/media/[slug]` — Individual media detail pages
+- `/shelf` — Full-width emblem card grid with filter bar (★ favorites pill + type pills) and inline quick-view panel. URL state: `?type=anime&fav=1&open=slug`. Progressive enhancement: cards link to `/shelf/[slug]` without JS.
+- `/shelf/[slug]` — Individual shelf detail pages
 - `/notes` — SplitViewLayout with philosophical fragments
 - `/notes/[slug]` — Individual note detail pages
 - `/showcase` — SplitViewLayout with project inquiries
 - `/showcase/[slug]` — Individual project detail pages
 
 ### Legacy Routes (301 Redirects)
-- `/favorites` → redirects to `/media?fav=1`
-- `/favorites/[slug]` → redirects to `/media/[slug]`
+- `/favorites` → redirects to `/shelf?fav=1`
+- `/favorites/[slug]` → redirects to `/shelf/[slug]`
+- `/media` → redirects to `/shelf` (via `astro.config.mjs` redirects)
+- `/media/[...slug]` → redirects to `/shelf/[...slug]`
 
 ### Novel Pages
 - `/novel` — "Remember Rain" novel index (two-panel frosted glass navigator)
@@ -172,13 +174,14 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 - `/now` — Latest "Now" entry (current focus)
 - `/now/archive` — Historical "Now" entries list
 
-### Media Page Features (`/media`)
+### Shelf Page Features (`/shelf`)
 - Full-width emblem card grid: `repeat(auto-fill, minmax(160px, 1fr))`
 - **Filter bar**: `★ favorites` pill (filters `isFavorite: true`) + type pills (all, anime, manga, film, series, music, book, game, character, other). Filters stack. State persisted in URL: `?type=anime&fav=1`.
 - **Quick-view panel**: clicking a card slides in a panel from the right (`grid-template-columns: 1fr 340px`). Panel shows emblem, type, title, tags, excerpt, and link to full entry. URL updates to `?open=[slug]`. ESC/✕ closes.
-- Cards are `<a>` tags linking to `/media/[slug]` (works without JS). JS intercepts click to open quick-view instead.
+- Cards are `<a>` tags linking to `/shelf/[slug]` (works without JS). JS intercepts click to open quick-view instead.
 - Entry data pre-rendered as JSON in `data-entries` attribute — no client fetch needed.
 - Filter/open state read from URL on page load (bookmarkable, shareable).
+- **Content indicator**: cards with a written body get `.media-card--has-note` (gold border glow on `.media-card__poster`); empty cards dim via `filter: opacity(0.55)` on `.media-card`.
 - `src/utils/mediaGrid/filterEngine.ts` — shared pure functions: `filterEntries`, `parseFilterState`, `buildFilterURL`. Imported by both the page script and tests.
 
 ## Novel System ("Remember Rain")
@@ -197,7 +200,7 @@ The `/novel` route serves a standalone in-progress novel with its own UI, separa
 | File | Exports | Purpose |
 |------|---------|---------|
 | `src/utils/content.ts` | `stripMarkdown()`, `hasMinimalContent()` | Strip markdown for client-side search; detect empty entries |
-| `src/utils/collections.ts` | `getAllCollections()`, `getSortedEntries<T>()` | Fetch all non-draft entries; sort by effective date |
+| `src/utils/collections.ts` | `getAllCollections()` → `{ allShelf, allNotes, allShowcase }`; `getSortedEntries<T>()` | Fetch all non-draft entries; `SectionName = 'shelf' \| 'notes' \| 'showcase'` |
 | `src/utils/dates.ts` | `formatDate()`, `shouldShowUpdatedDate()` | Date formatting and update-date display logic |
 | `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()` | Scrivener-backed novel content loader |
 | `src/utils/splitView/` | (10 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
@@ -224,7 +227,7 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 
 6. **Latest Tile**: Homepage shows most recent content across all collections with "X days ago" indicator
 
-7. **Media Page Grid**: `/media` is a full emblem card grid (not SplitViewLayout). `isFavorite: true` entries are surfaced via the `★ favorites` filter pill. Quick-view panel opens on card click without navigating away. Filter and open state live in URL params. See `src/utils/mediaGrid/filterEngine.ts` for the shared filter utility.
+7. **Shelf Page Grid**: `/shelf` is a full emblem card grid (not SplitViewLayout). `isFavorite: true` entries are surfaced via the `★ favorites` filter pill. Quick-view panel opens on card click without navigating away. Filter and open state live in URL params. See `src/utils/mediaGrid/filterEngine.ts` for the shared filter utility. Cards with a written body show `.media-card--has-note`; empty cards dim with `filter: opacity(0.55)` (not `opacity` — see Code Style Notes).
 
 8. **Related Content System**: Uses `collections` field in frontmatter for cross-referencing. Calculates relevance scores based on matching collections, displays up to 6 related entries in card grid at bottom of detail pages. Shows emblem thumbnail, section badge, and title.
 
@@ -252,18 +255,18 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 
 ## Adding New Content
 
-1. Create `.md` file in appropriate `src/content/` subdirectory (media, notes, showcase, now)
+1. Create `.md` file in appropriate `src/content/` subdirectory (shelf, notes, showcase, now)
 2. Include required frontmatter matching collection schema
 3. Add `emblem: '/images/emblems/your-emblem.svg'` for custom emblem (optional)
 4. Use `collections: ['tag1', 'tag2']` field to cross-reference related content (enables RelatedContent component)
 5. Set `draft: true` while working, remove for publishing
-6. For media entries: Set `isFavorite: true` to surface the entry via the `★ favorites` filter on `/media` (optional, defaults to false)
+6. For shelf entries: Set `isFavorite: true` to surface the entry via the `★ favorites` filter on `/shelf` (optional, defaults to false)
 7. Run `npm run build` to validate schema
 
 ### Content Type Guidelines
-- **Media**: All reviews, consumption logs, and inspirational content (anime, manga, film, series, music, book, game, character, other)
-  - Set `isFavorite: false` (or omit) for reviews/notes that appear only in /media
-  - Set `isFavorite: true` for curated highlights; surfaced via the `★ favorites` filter on `/media`
+- **Shelf**: All reviews, consumption logs, and inspirational content (anime, manga, film, series, music, book, game, character, other)
+  - Set `isFavorite: false` (or omit) for reviews/notes that appear only in /shelf
+  - Set `isFavorite: true` for curated highlights; surfaced via the `★ favorites` filter on `/shelf`
 - **Notes**: Philosophical fragments and thoughts
 - **Showcase**: Project inquiries and experiments
 - **Now**: Current focus snapshots (time-based)
@@ -281,3 +284,5 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 - Respect `prefers-reduced-motion` in all animations
 - Use `requestAnimationFrame` for smooth JavaScript-driven animations
 - Client-side filtering should reset stagger animations on filter change
+- `.media-card` has `animation: card-in ... fill-mode: both`; use `filter: opacity(N)` not `opacity: N` to dim cards — plain `opacity` is overridden by the animation after it completes
+- `border-color` on `.media-card` is dead CSS — the actual card border lives on `.media-card__poster`; target that child for border effects
