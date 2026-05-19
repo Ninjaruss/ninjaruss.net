@@ -2,12 +2,12 @@
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('media', ({ data }) => !data.draft && data.isFavorite);
+  const entries = await getCollection('shelf', ({ data }) => !data.draft && data.isFavorite);
   return entries.map((entry) => ({
     params: { slug: entry.slug },
   }));
 }
 
 const { slug } = Astro.params;
-return Astro.redirect(`/media/${slug}`, 301);
+return Astro.redirect(`/shelf/${slug}`, 301);
 ---
