@@ -1,15 +1,16 @@
 ---
 import { getCollection } from 'astro:content';
+import { hasMinimalContent } from '../../utils/content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NavPill from '../../components/NavPill.astro';
 
-const allMedia = await getCollection('media', ({ data }) => !data.draft);
-const sortedMedia = allMedia.sort((a, b) =>
+const allShelf = await getCollection('shelf', ({ data }) => !data.draft);
+const sortedShelf = allShelf.sort((a, b) =>
   new Date(b.data.updatedAt || b.data.publishedAt || 0).getTime() -
   new Date(a.data.updatedAt || a.data.publishedAt || 0).getTime()
 );
 
-const entryData = sortedMedia.map((entry) => ({
+const entryData = sortedShelf.map((entry) => ({
   slug: entry.slug,
   title: entry.data.title,
   type: entry.data.content_type,
@@ -18,20 +19,21 @@ const entryData = sortedMedia.map((entry) => ({
   tags: entry.data.tags ?? [],
   publishedAt: entry.data.publishedAt?.toISOString() ?? null,
   updatedAt: entry.data.updatedAt?.toISOString() ?? null,
+  hasContent: !hasMinimalContent(entry.body),
 }));
 
-const count = sortedMedia.length;
+const count = sortedShelf.length;
 ---
 
-<BaseLayout title="Media" description="My thoughts on anime, manga, movies, and more — favorites included." ogImage="/social-default.svg">
+<BaseLayout title="Shelf" description="My thoughts on anime, manga, movies, and more — favorites included." ogImage="/social-default.svg">
   <!-- Entry data for overlay JS -->
   <div id="entry-data" data-entries={JSON.stringify(entryData)} hidden></div>
 
   <div class="media-page">
     <!-- Header -->
     <header class="media-header">
-      <span class="media-header__label">Media</span>
-      <h1 class="media-header__title">Logbook</h1>
+      <span class="media-header__label">Shelf</span>
+      <h1 class="media-header__title">Shelf</h1>
       <span class="media-header__count">{count} entries</span>
     </header>
 
@@ -54,10 +56,10 @@ const count = sortedMedia.length;
 
     <!-- Poster card grid -->
     <div class="media-grid" id="media-grid">
-      {sortedMedia.map((entry, i) => (
+      {sortedShelf.map((entry, i) => (
         <a
-          href={`/media/${entry.slug}`}
-          class="media-card"
+          href={`/shelf/${entry.slug}`}
+          class:list={['media-card', { 'media-card--has-note': !hasMinimalContent(entry.body) }]}
           data-slug={entry.slug}
           data-type={entry.data.content_type}
           data-fav={entry.data.isFavorite ? 'true' : 'false'}
@@ -223,6 +225,14 @@ const count = sortedMedia.length;
     to   { opacity: 1; transform: translateY(0); }
   }
   .media-card[data-hidden="true"] { display: none; }
+
+  .media-card--has-note {
+    border-color: rgba(255, 229, 44, 0.5);
+    box-shadow: 0 0 12px rgba(255, 229, 44, 0.15), inset 0 0 0 1px rgba(255, 229, 44, 0.1);
+  }
+  .media-card:not(.media-card--has-note) {
+    opacity: 0.55;
+  }
 
   .media-card__poster {
     position: relative;
@@ -596,7 +606,7 @@ const count = sortedMedia.length;
       document.body.style.overflow = 'hidden';
       overlay.focus();
 
-      fetch(`/media/${encodeURIComponent(slug)}`, { signal: activeFetch.signal })
+      fetch(`/shelf/${encodeURIComponent(slug)}`, { signal: activeFetch.signal })
         .then((r) => {
           if (!r.ok) throw new Error(`${r.status}`);
           return r.text();
@@ -632,7 +642,7 @@ const count = sortedMedia.length;
           history.back();
         } else {
           const filterURL = buildFilterURL({ type: activeType, favOnly });
-          history.replaceState(null, '', '/media' + filterURL);
+          history.replaceState(null, '', '/shelf' + filterURL);
         }
       }
       overlayPushedHistory = false;
@@ -651,7 +661,7 @@ const count = sortedMedia.length;
           if (!entry) return;
           e.preventDefault();
           previouslyFocused = card;
-          history.pushState(null, '', `/media/${encodeURIComponent(slug)}`);
+          history.pushState(null, '', `/shelf/${encodeURIComponent(slug)}`);
           overlayPushedHistory = true;
           openOverlay(slug, entry);
         });
@@ -700,7 +710,7 @@ const count = sortedMedia.length;
       if (initialOpen) {
         const entry = entryMap.get(initialOpen);
         if (entry) {
-          history.replaceState(null, '', `/media/${encodeURIComponent(initialOpen)}`);
+          history.replaceState(null, '', `/shelf/${encodeURIComponent(initialOpen)}`);
           overlayPushedHistory = false;
           previouslyFocused = grid.querySelector<HTMLElement>(`[data-slug="${initialOpen}"]`) ?? document.body as HTMLElement;
           openOverlay(initialOpen, entry);
