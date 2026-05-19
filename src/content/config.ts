@@ -13,8 +13,8 @@ const sharedSchema = z.object({
   image: z.string().optional(), // Path to social share image
 });
 
-// Media collection — anime, manga, films, series, music, books, games, characters, and other inspirations
-const media = defineCollection({
+// Shelf collection — anime, manga, films, series, music, books, games, characters, and other inspirations
+const shelf = defineCollection({
   type: 'content',
   schema: sharedSchema.extend({
     content_type: z.enum(['anime', 'manga', 'film', 'series', 'music', 'book', 'game', 'character', 'other']),
@@ -77,7 +77,7 @@ const socialLinks = defineCollection({
 });
 
 export const collections = {
-  media,
+  shelf,
   notes,
   showcase,
   now,
