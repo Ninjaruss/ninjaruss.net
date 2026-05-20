@@ -445,6 +445,38 @@
 .reading-body ul, .reading-body ol { padding-left: 1.5em; margin-bottom: 1.25em; }
 .reading-body li { margin-bottom: 0.4em; }
 .reading-body img { max-width: 100%; display: block; margin: 1.5em 0; }
+.reading-body table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5em;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+.reading-body th,
+.reading-body td {
+  padding: 8px 14px;
+  border: 1px solid rgba(var(--overlay-accent-rgb, 80,120,200), 0.18);
+  text-align: left;
+  vertical-align: top;
+}
+.reading-body th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(var(--overlay-accent-rgb, 200,220,255), 0.75);
+  background: rgba(var(--overlay-accent-rgb, 80,120,200), 0.07);
+  white-space: nowrap;
+}
+.reading-body td {
+  color: rgba(200,215,235,0.8);
+}
+.reading-body tbody tr:nth-child(even) td {
+  background: rgba(255,255,255,0.025);
+}
 
 /* Image column — only shown when images are extracted from body */
 .reading-images {

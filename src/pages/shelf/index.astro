@@ -32,7 +32,7 @@ const count = sortedShelf.length;
   <div class="media-page">
     <!-- Header -->
     <header class="media-header">
-      <span class="media-header__label">Shelf</span>
+      <span class="media-header__label">catalog</span>
       <h1 class="media-header__title">Shelf</h1>
       <span class="media-header__count">{count} entries</span>
     </header>
@@ -399,10 +399,13 @@ const count = sortedShelf.length;
   .ov-tag {
     font-family: var(--font-mono);
     font-size: 10px;
-    padding: 3px 8px;
-    border: 1px solid var(--color-border, #2a2a2a);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border: 1px solid rgba(255, 229, 44, 0.25);
     border-radius: 12px;
-    color: var(--color-muted);
+    color: rgba(255, 229, 44, 0.65);
+    background: rgba(255, 229, 44, 0.05);
   }
 
   .ov-date {
@@ -667,7 +670,7 @@ const count = sortedShelf.length;
         });
       });
 
-      closeBtn?.addEventListener('click', () => closeOverlay());
+      closeBtn?.addEventListener('click', (e) => { e.stopPropagation(); closeOverlay(); });
 
       // Focus trap
       overlay.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -703,8 +706,8 @@ const count = sortedShelf.length;
       }, { signal: pageCleanup!.signal });
 
       overlay.addEventListener('click', (e) => {
-        const inner = document.getElementById('media-overlay-inner');
-        if (inner && !inner.contains(e.target as Node)) closeOverlay();
+        const content = document.getElementById('media-overlay-content');
+        if (content && !content.contains(e.target as Node)) closeOverlay();
       }, { signal: pageCleanup!.signal });
 
       if (initialOpen) {
