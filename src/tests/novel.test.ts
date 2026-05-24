@@ -61,9 +61,9 @@ describe('buildNovelTree', () => {
     const vesperFolder = tree.characters.subfolders['vesper'];
     expect(vesperFolder).toBeDefined();
 
-    const vesper = vesperFolder.files.find((f) => f.slug === 'vesper-overview');
+    const vesper = vesperFolder.files.find((f) => f.slug === 'vesper-characterization');
     expect(vesper).toBeDefined();
-    expect(vesper!.title).toBe('Vesper Overview');
+    expect(vesper!.title).toBe('Vesper Characterization');
     expect(vesper!.body).toBeTruthy(); // HTML rendered
     expect(typeof vesper!.body).toBe('string');
 
@@ -78,6 +78,6 @@ describe('buildNovelTree', () => {
     expect(vesper!.created).not.toBeNull();
 
     // Path field drives URL construction
-    expect(vesper!.path).toEqual(['characters', 'vesper', 'vesper-overview']);
+    expect(vesper!.path).toEqual(['characters', 'vesper', 'vesper-characterization']);
   });
 });
