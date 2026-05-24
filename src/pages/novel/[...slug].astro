@@ -230,6 +230,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     btn.dataset.folderKey  = folderKey;
     btn.dataset.breadcrumb = breadcrumb;
     btn.dataset.fileEncoded = encodeURIComponent(JSON.stringify(file));
+    btn.setAttribute('aria-pressed', 'false');
     return btn;
   }
 
@@ -267,7 +268,9 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     sidebar: HTMLElement, content: HTMLElement, pushState = true
   ): void {
     sidebar.querySelectorAll<HTMLElement>('.sidebar-file').forEach((btn) => {
-      btn.classList.toggle('is-active', btn.dataset.subPath === subPath);
+      const isActive = btn.dataset.subPath === subPath;
+      btn.classList.toggle('is-active', isActive);
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
     });
     renderContent(folderKey, file, breadcrumb, content);
     if (pushState && currentFolderSlug) {
@@ -390,19 +393,23 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     const content = document.getElementById('novel-content')!;
 
     // ── Tab click ────────────────────────────────────────────────────
-    document.getElementById('filter-tabs')!.addEventListener('click', (e) => {
+    const tabsAc = new AbortController();
+    const tabsEl = document.getElementById('filter-tabs');
+    tabsEl?.addEventListener('click', (e) => {
       const tab = (e.target as Element).closest<HTMLElement>('.filter-tab');
       if (!tab?.dataset.folder) return;
       switchFolder(tab.dataset.folder, tree, sidebar, content);
-    });
+    }, { signal: tabsAc.signal });
 
-    document.getElementById('filter-tabs')!.addEventListener('keydown', (e) => {
+    tabsEl?.addEventListener('keydown', (e) => {
       if (e.key !== 'Enter' && e.key !== ' ') return;
       const tab = (e.target as Element).closest<HTMLElement>('.filter-tab');
       if (!tab?.dataset.folder) return;
       e.preventDefault();
       switchFolder(tab.dataset.folder, tree, sidebar, content);
-    });
+    }, { signal: tabsAc.signal });
+
+    document.addEventListener('astro:before-swap', () => tabsAc.abort(), { once: true });
 
     // ── Sidebar delegated click ──────────────────────────────────────
     sidebar.addEventListener('click', (e) => {

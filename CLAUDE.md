@@ -117,7 +117,7 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 - `typography.css` — Fonts (Archivo Black, Inter, JetBrains Mono), type scale
 - `bento.css` — Grid system and tile variants
 - `transitions.css` — P4G-style animations and view transitions
-- `novel.css` — Novel reader UI (frosted glass two-panel navigator + reading overlay, canvas background)
+- `novel.css` — Novel reader UI (frosted glass two-panel navigator, canvas background)
 
 ### Key CSS Variables
 ```css
