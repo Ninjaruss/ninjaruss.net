@@ -94,34 +94,12 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       })}
     </div>
 
-    <!-- Scatter canvas: populated entirely by JS -->
-    <div class="scatter-canvas" id="scatter-canvas"></div>
-  </main>
-
-  <!-- Full-screen reading overlay -->
-  <div class="reading-overlay" id="reading-overlay">
-    <div class="reading-shard" id="reading-shard">
-      <div class="reading-content" id="reading-content" onclick="window.__novelCloseReading && window.__novelCloseReading()">
-        <button
-          class="reading-back"
-          type="button"
-          id="reading-back"
-          onclick="event.stopPropagation(); window.__novelCloseReading && window.__novelCloseReading()"
-        >
-          ← return shard
-        </button>
-        <div class="reading-inner" onclick="event.stopPropagation()">
-          <div style="flex:1;min-width:0;">
-            <div class="reading-breadcrumb" id="reading-breadcrumb"></div>
-            <h1 class="reading-title" id="reading-title"></h1>
-            <div class="reading-date" id="reading-date"></div>
-            <div class="reading-body" id="reading-body"></div>
-          </div>
-          <div class="reading-images" id="reading-images" style="display:none;"></div>
-        </div>
-      </div>
+    <!-- Two-panel navigator: populated by JS -->
+    <div class="novel-panels">
+      <div class="novel-sidebar" id="novel-sidebar"></div>
+      <div class="novel-content" id="novel-content"></div>
     </div>
-  </div>
+  </main>
 
   {/* Inline data — no client fetches */}
   <script type="application/json" id="novel-tree" set:html={
