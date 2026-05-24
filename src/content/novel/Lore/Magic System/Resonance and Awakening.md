@@ -1,0 +1,1 @@
+The Flare's energy carries an attribute of resonance. It clings to those actively trying to change. People who are stagnant, who accept their stasis, never awaken. Awakening is not a reward—it's a reflection of an already-active internal struggle. The passive ability is the first sign: a raw, unfocused expression of the core wound. Only the user can perceive it.

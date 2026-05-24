@@ -324,13 +324,37 @@ const latestEntries = sameDateEntries.map(entry => ({
             )}
           </svg>
 
-          <div class="st-stat-label">
-            <span class="st-adjective" style={`color: ${leadingColor.hex}`}>
-              {streamSessionCount > 0 ? STAT_ADJECTIVES[primaryLeadingStat] : 'Unwritten'}
-            </span>
-            <span class="st-phrase" style={`color: rgba(${leadingColor.rgb},.75)`}>
-              {streamSessionCount > 0 ? STAT_PHRASES[primaryLeadingStat] : 'The story begins.'}
-            </span>
+          <div class={tiedPair ? 'st-stat-label st-stat-label--cycling' : 'st-stat-label'}>
+            {tiedPair && (
+              <div class="st-label-pair st-icon-primary">
+                <span class="st-adjective" style={`color: ${STAT_COLORS[tiedPair[0] as keyof typeof STAT_COLORS]?.hex}`}>
+                  {STAT_ADJECTIVES[tiedPair[0]]}
+                </span>
+                <span class="st-phrase" style={`color: ${STAT_COLORS[tiedPair[0] as keyof typeof STAT_COLORS]?.hex}`}>
+                  {STAT_PHRASES[tiedPair[0]]}
+                </span>
+              </div>
+            )}
+            {tiedPair && (
+              <div class="st-label-pair st-icon-secondary">
+                <span class="st-adjective" style={`color: ${STAT_COLORS[tiedPair[1] as keyof typeof STAT_COLORS]?.hex}`}>
+                  {STAT_ADJECTIVES[tiedPair[1]]}
+                </span>
+                <span class="st-phrase" style={`color: ${STAT_COLORS[tiedPair[1] as keyof typeof STAT_COLORS]?.hex}`}>
+                  {STAT_PHRASES[tiedPair[1]]}
+                </span>
+              </div>
+            )}
+            {!tiedPair && (
+              <span class="st-adjective" style={`color: ${leadingColor.hex}`}>
+                {streamSessionCount > 0 ? STAT_ADJECTIVES[primaryLeadingStat] : 'Unwritten'}
+              </span>
+            )}
+            {!tiedPair && (
+              <span class="st-phrase" style={`color: ${leadingColor.hex}`}>
+                {streamSessionCount > 0 ? STAT_PHRASES[primaryLeadingStat] : 'The story begins.'}
+              </span>
+            )}
           </div>
         </div>
 
@@ -997,23 +1021,36 @@ const latestEntries = sameDateEntries.map(entry => ({
     letter-spacing: .16em;
     text-transform: uppercase;
     font-family: var(--font-mono);
+    text-shadow: 0 0 10px currentColor;
   }
 
   .st-phrase {
-    font-size: .56rem;
-    letter-spacing: .06em;
+    font-size: .60rem;
+    letter-spacing: .07em;
     font-style: italic;
     font-family: var(--font-mono);
-    opacity: 0.65;
-    transform: translateY(0);
-    transition: opacity .3s .05s;
     white-space: nowrap;
   }
 
   .stream-tile:hover .st-phrase {
-    opacity: 1;
-    text-shadow: 0 0 14px var(--st-lead), 0 0 28px rgba(255,255,255,.08);
-    letter-spacing: .1em;
+    text-shadow: 0 0 14px currentColor, 0 0 28px rgba(255,255,255,.08);
+    letter-spacing: .11em;
+  }
+
+  /* Cycling label layout */
+  .st-stat-label--cycling {
+    position: relative;
+    min-height: 40px;
+  }
+
+  .st-label-pair {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    inset: 0;
+    justify-content: center;
   }
 
   .st-footer {
