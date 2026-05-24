@@ -69,7 +69,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
         <span class="waterline" aria-hidden="true"></span>
         <span class="title-reflection" aria-hidden="true">Remember Rain</span>
       </div>
-      <span class="title-eyebrow">a novel in progress · memory shards</span>
+      <span class="title-eyebrow">a novel in progress · remember rain</span>
     </div>
 
     <!-- Category filter tabs -->
@@ -177,6 +177,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       const groupBtn = document.createElement('button');
       groupBtn.className = 'sidebar-group-btn is-open';
       groupBtn.type = 'button';
+      groupBtn.setAttribute('aria-expanded', 'true');
       groupBtn.innerHTML = `<span class="sidebar-arrow">&#9658;</span>${esc(sub.title)}`;
 
       const fileList = document.createElement('div');
@@ -185,6 +186,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       groupBtn.addEventListener('click', () => {
         groupBtn.classList.toggle('is-open');
         fileList.classList.toggle('is-open');
+        groupBtn.setAttribute('aria-expanded', groupBtn.classList.contains('is-open') ? 'true' : 'false');
       });
 
       for (const { file, breadcrumb, subPath } of entries) {
@@ -248,6 +250,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
   ): void {
     const rgb = ACCENT_MAP[folderKey] || '80,120,200';
     content.style.setProperty('--panel-accent-rgb', rgb);
+    content.scrollTop = 0;
     const dateStr = formatDate(file.created, file.modified);
     // file.body is build-time-rendered Markdown from the repository — not runtime user input
     content.innerHTML = `
@@ -306,6 +309,8 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
 
   // ── Main init ────────────────────────────────────────────────────────
   function init() {
+    currentFolderSlug = null;
+    isSwitching = false;
     const treeEl = document.getElementById('novel-tree');
     if (!treeEl) return;
     const tree: NovelTree = JSON.parse(treeEl.textContent!);
