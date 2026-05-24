@@ -15,8 +15,7 @@
     "@astrojs/sitemap": "^3.7.0",
     "@astrojs/vercel": "^8.2.11",
     "astro": "^5.16.6",
-    "marked": "^17.0.6",
-    "vanilla-tilt": "^1.8.1"
+    "marked": "^17.0.6"
   },
   "devDependencies": {
     "vitest": "^4.1.2"
