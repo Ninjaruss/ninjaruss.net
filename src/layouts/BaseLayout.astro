@@ -57,6 +57,10 @@ const ogImageUrl = new URL(resolvedOgImage, Astro.site || 'https://ninjaruss.net
     <main id="main-content" class="page">
       <slot />
     </main>
+
+    <script>
+      import '../scripts/cursor';
+    </script>
   </body>
 </html>
 
