@@ -160,3 +160,120 @@ function drawWipe(leadX: number, color: string): void {
 
   ctx.restore();
 }
+
+// ── Animation constants ───────────────────────────────────────────────────────
+
+const T_IN         = 520;              // ms — card entry + rotation settle
+const T_HOLD       = 340;              // ms — card bob/sway at rest
+const T_WIPE       = 620;              // ms — wipe sweeps, card exits
+const ENTRY_ANGLE  = -18 * Math.PI / 180;  // card entry path angle
+const REST_ROT     = -0.14;           // -8° — card resting rotation
+
+// ── Phase: card entry + hold ──────────────────────────────────────────────────
+
+/**
+ * Animates card entering from top-left and holding at rest.
+ * Resolves after T_IN + T_HOLD ms.
+ */
+function cardPhase(color: string): Promise<void> {
+  return new Promise((resolve) => {
+    if (!ctx) { resolve(); return; }
+
+    const cw = Math.min(136, W * 0.145);
+    const ch = cw * 1.4;
+    const restX = W * 0.5;
+    const restY = H * 0.455;
+
+    // Entry start: off-screen top-left, positioned along the -18° diagonal
+    const startX = -cw * 1.5;
+    const startY = restY - (restX - startX) * Math.tan(Math.abs(ENTRY_ANGLE));
+
+    let startTs: number | null = null;
+
+    function tick(ts: number): void {
+      if (!ctx) { resolve(); return; }
+      if (startTs === null) startTs = ts;
+      const elapsed = ts - startTs;
+
+      ctx.clearRect(0, 0, W, H);
+
+      if (elapsed < T_IN) {
+        const p   = elapsed / T_IN;
+        const ep  = easeDecel(p);        // position: fast lunge then slow settle
+        const rp  = easeRotSettle(p);    // rotation: slower, settle is visible
+        const cx  = startX + (restX - startX) * ep;
+        const cy  = startY + (restY - startY) * ep;
+        const rot = ENTRY_ANGLE + (REST_ROT - ENTRY_ANGLE) * rp;
+        drawCard(cx, cy, cw, ch, rot, color, Math.min(1, p * 8));
+        requestAnimationFrame(tick);
+      } else if (elapsed < T_IN + T_HOLD) {
+        const p    = (elapsed - T_IN) / T_HOLD;
+        const bob  = Math.sin(p * Math.PI) * 2.2;
+        const sway = Math.sin(p * Math.PI * 0.65) * 0.006;
+        drawCard(restX, restY + bob, cw, ch, REST_ROT + sway, color, 1);
+        requestAnimationFrame(tick);
+      } else {
+        ctx.clearRect(0, 0, W, H);
+        resolve();
+      }
+    }
+
+    requestAnimationFrame(tick);
+  });
+}
+
+// ── Phase: wipe sweep + card exit ────────────────────────────────────────────
+
+/**
+ * Sweeps the diagonal wipe across the screen while the card exits right.
+ * Calls `onMidpoint` once when the wipe lead edge passes W*0.48 — this is
+ * the signal for Astro to proceed with the DOM swap.
+ * Resolves when the wipe is fully off-screen and canvas is cleared.
+ */
+function startWipe(color: string, onMidpoint: () => void): Promise<void> {
+  return new Promise((resolve) => {
+    if (!ctx) { resolve(); return; }
+
+    const cw = Math.min(136, W * 0.145);
+    const ch = cw * 1.4;
+    const restX = W * 0.5;
+    const restY = H * 0.455;
+    const { slant, travel } = computeWipeGeometry(W, H);
+
+    let startTs: number | null = null;
+    let midpointFired = false;
+
+    function tick(ts: number): void {
+      if (!ctx) { resolve(); return; }
+      if (startTs === null) startTs = ts;
+      const elapsed = Math.min(ts - startTs, T_WIPE);
+      const p      = elapsed / T_WIPE;
+      const ep     = easeIO(p);
+      const leadX  = ep * travel - slant;
+
+      ctx.clearRect(0, 0, W, H);
+      drawWipe(leadX, color);
+
+      // Card drifts right, tilts back past entry angle as wipe sweeps it away
+      const exitX  = restX + ep * W * 0.6;
+      const exitY  = restY - ep * H * 0.06;
+      const rot    = REST_ROT + ep * (ENTRY_ANGLE * 1.8 - REST_ROT);
+      const alpha  = 1 - easeInQ(Math.max(0, (p - 0.32) / 0.68));
+      drawCard(exitX, exitY, cw, ch, rot, color, alpha);
+
+      if (!midpointFired && leadX > W * 0.48) {
+        midpointFired = true;
+        onMidpoint();
+      }
+
+      if (elapsed < T_WIPE) {
+        requestAnimationFrame(tick);
+      } else {
+        ctx.clearRect(0, 0, W, H);
+        resolve();
+      }
+    }
+
+    requestAnimationFrame(tick);
+  });
+}
