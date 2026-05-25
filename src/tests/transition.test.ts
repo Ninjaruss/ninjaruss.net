@@ -34,7 +34,7 @@ describe('easeIO', () => {
 describe('easeInQ', () => {
   it('returns 0 at t=0', () => expect(easeInQ(0)).toBe(0));
   it('returns 1 at t=1', () => expect(easeInQ(1)).toBe(1));
-  it('is back-loaded: 0.5 input < 0.1 output', () => {
+  it('is back-loaded: output at t=0.5 is below 0.1', () => {
     expect(easeInQ(0.5)).toBeLessThan(0.1);
   });
 });
