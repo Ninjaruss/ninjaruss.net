@@ -276,3 +276,47 @@ function startWipe(color: string, onMidpoint: () => void): Promise<void> {
     requestAnimationFrame(tick);
   });
 }
+
+// ── Astro lifecycle ───────────────────────────────────────────────────────────
+
+function prefersReducedMotion(): boolean {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function init(): void {
+  // Guard: browsers deduplicate module scripts by URL, but be explicit
+  if ((window as any).__transitionInit) return;
+  (window as any).__transitionInit = true;
+
+  initCanvas();
+
+  document.addEventListener('astro:before-preparation', (event: Event) => {
+    const e = event as any;
+    const fromPath: string = e.from?.pathname ?? window.location.pathname;
+    const toPath: string   = e.to?.pathname   ?? '';
+
+    if (isSamePage(fromPath, toPath)) return;
+    if (prefersReducedMotion()) return;
+    if (!canvas || !ctx) return;
+
+    const color = accentColor(toPath);
+
+    e.intercept(async () => {
+      // Phase 1: card entry + hold (T_IN + T_HOLD ms)
+      await cardPhase(color);
+
+      // Phase 2: wipe start + page load in parallel.
+      // The wipe resolves onMidpoint (a promise gate) when leadX passes W*0.48.
+      // The intercept resolves once BOTH the gate AND the loader complete —
+      // at that point Astro swaps the DOM while the wipe is still running.
+      let resolveSwap!: () => void;
+      const swapGate = new Promise<void>((r) => { resolveSwap = r; });
+
+      startWipe(color, resolveSwap);          // runs in background via rAF
+      await Promise.all([swapGate, e.loader()]); // wait for midpoint + fetch
+      // → intercept returns; Astro swaps DOM under the wipe cover
+    });
+  });
+}
+
+if (typeof window !== 'undefined') init();
