@@ -139,6 +139,11 @@ function drawCard(
   ctx.restore();
 }
 
+function cardGeometry(): { cw: number; ch: number; restX: number; restY: number } {
+  const cw = Math.min(136, W * 0.145);
+  return { cw, ch: cw * 1.4, restX: W * 0.5, restY: H * 0.455 };
+}
+
 function drawWipe(leadX: number, color: string): void {
   if (!ctx) return;
   const WIPE_ANGLE = -8 * Math.PI / 180;
@@ -166,7 +171,7 @@ function drawWipe(leadX: number, color: string): void {
 const T_IN         = 520;              // ms — card entry + rotation settle
 const T_HOLD       = 340;              // ms — card bob/sway at rest
 const T_WIPE       = 620;              // ms — wipe sweeps, card exits
-const ENTRY_ANGLE  = -18 * Math.PI / 180;  // card entry path angle
+const ENTRY_ANGLE  = -18 * Math.PI / 180;  // -18° — card entry path angle
 const REST_ROT     = -0.14;           // -8° — card resting rotation
 
 // ── Phase: card entry + hold ──────────────────────────────────────────────────
@@ -179,10 +184,7 @@ function cardPhase(color: string): Promise<void> {
   return new Promise((resolve) => {
     if (!ctx) { resolve(); return; }
 
-    const cw = Math.min(136, W * 0.145);
-    const ch = cw * 1.4;
-    const restX = W * 0.5;
-    const restY = H * 0.455;
+    const { cw, ch, restX, restY } = cardGeometry();
 
     // Entry start: off-screen top-left, positioned along the -18° diagonal
     const startX = -cw * 1.5;
@@ -191,7 +193,7 @@ function cardPhase(color: string): Promise<void> {
     let startTs: number | null = null;
 
     function tick(ts: number): void {
-      if (!ctx) { resolve(); return; }
+      if (!ctx) { canvas?.getContext('2d')?.clearRect(0, 0, W, H); resolve(); return; }
       if (startTs === null) startTs = ts;
       const elapsed = ts - startTs;
 
@@ -234,17 +236,14 @@ function startWipe(color: string, onMidpoint: () => void): Promise<void> {
   return new Promise((resolve) => {
     if (!ctx) { resolve(); return; }
 
-    const cw = Math.min(136, W * 0.145);
-    const ch = cw * 1.4;
-    const restX = W * 0.5;
-    const restY = H * 0.455;
+    const { cw, ch, restX, restY } = cardGeometry();
     const { slant, travel } = computeWipeGeometry(W, H);
 
     let startTs: number | null = null;
     let midpointFired = false;
 
     function tick(ts: number): void {
-      if (!ctx) { resolve(); return; }
+      if (!ctx) { canvas?.getContext('2d')?.clearRect(0, 0, W, H); resolve(); return; }
       if (startTs === null) startTs = ts;
       const elapsed = Math.min(ts - startTs, T_WIPE);
       const p      = elapsed / T_WIPE;
