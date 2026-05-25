@@ -53,6 +53,7 @@ const ogImageUrl = new URL(resolvedOgImage, Astro.site || 'https://ninjaruss.net
   </head>
   <body>
     <div id="cursor" aria-hidden="true" transition:persist></div>
+    <canvas id="transition-canvas" aria-hidden="true" transition:persist></canvas>
     <a href="#main-content" class="skip-link">Skip to content</a>
     <main id="main-content" class="page">
       <slot />

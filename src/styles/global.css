@@ -229,3 +229,11 @@ ul, ol {
   letter-spacing: var(--tracking-label);
   border-radius: var(--radius-sm);
 }
+
+/* ── Transition canvas ──────────────────────────── */
+#transition-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1000;
+}
