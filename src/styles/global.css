@@ -139,6 +139,12 @@ body::before {
   z-index: -1;
 }
 
+/* Propagate cursor: none to all elements so component-scoped cursor: pointer
+   declarations don't expose the native cursor alongside the gold dot. */
+* {
+  cursor: none !important;
+}
+
 /* ── Custom cursor ──────────────────────────────── */
 #cursor {
   position: fixed;
