@@ -229,13 +229,13 @@ const REST_ROT     = -0.14;           // -8° — card resting rotation
  * Animates card entering from top-left and holding at rest.
  * Resolves after T_IN + T_HOLD ms.
  */
-function cardPhase(color: string): Promise<void> {
+function cardPhase(stat: StatCard & { img: HTMLImageElement | null }): Promise<void> {
   return new Promise((resolve) => {
     if (!ctx) { resolve(); return; }
+    const { color, name, img } = stat;
 
     const { cw, ch, restX, restY } = cardGeometry();
 
-    // Entry start: off-screen top-left, positioned along the -18° diagonal
     const startX = -cw * 1.5;
     const startY = restY - (restX - startX) * Math.tan(Math.abs(ENTRY_ANGLE));
 
@@ -250,18 +250,18 @@ function cardPhase(color: string): Promise<void> {
 
       if (elapsed < T_IN) {
         const p   = elapsed / T_IN;
-        const ep  = easeDecel(p);        // position: fast lunge then slow settle
-        const rp  = easeRotSettle(p);    // rotation: slower, settle is visible
+        const ep  = easeDecel(p);
+        const rp  = easeRotSettle(p);
         const cx  = startX + (restX - startX) * ep;
         const cy  = startY + (restY - startY) * ep;
         const rot = ENTRY_ANGLE + (REST_ROT - ENTRY_ANGLE) * rp;
-        drawCard(cx, cy, cw, ch, rot, color, Math.min(1, p * 8));
+        drawCard(cx, cy, cw, ch, rot, color, Math.min(1, p * 8), name, img);
         requestAnimationFrame(tick);
       } else if (elapsed < T_IN + T_HOLD) {
         const p    = (elapsed - T_IN) / T_HOLD;
         const bob  = Math.sin(p * Math.PI) * 2.2;
         const sway = Math.sin(p * Math.PI * 0.65) * 0.006;
-        drawCard(restX, restY + bob, cw, ch, REST_ROT + sway, color, 1);
+        drawCard(restX, restY + bob, cw, ch, REST_ROT + sway, color, 1, name, img);
         requestAnimationFrame(tick);
       } else {
         ctx.clearRect(0, 0, W, H);
@@ -281,9 +281,13 @@ function cardPhase(color: string): Promise<void> {
  * the signal for Astro to proceed with the DOM swap.
  * Resolves when the wipe is fully off-screen and canvas is cleared.
  */
-function startWipe(color: string, onMidpoint: () => void): Promise<void> {
+function startWipe(
+  stat: StatCard & { img: HTMLImageElement | null },
+  onMidpoint: () => void
+): Promise<void> {
   return new Promise((resolve) => {
     if (!ctx) { resolve(); return; }
+    const { color, name, img } = stat;
 
     const { cw, ch, restX, restY } = cardGeometry();
     const { slant, travel } = computeWipeGeometry(W, H);
@@ -302,12 +306,11 @@ function startWipe(color: string, onMidpoint: () => void): Promise<void> {
       ctx.clearRect(0, 0, W, H);
       drawWipe(leadX, color);
 
-      // Card drifts right, tilts back past entry angle as wipe sweeps it away
       const exitX  = restX + ep * W * 0.6;
       const exitY  = restY - ep * H * 0.06;
       const rot    = REST_ROT + ep * (ENTRY_ANGLE * 1.8 - REST_ROT);
       const alpha  = 1 - easeInQ(Math.max(0, (p - 0.32) / 0.68));
-      drawCard(exitX, exitY, cw, ch, rot, color, alpha);
+      drawCard(exitX, exitY, cw, ch, rot, color, alpha, name, img);
 
       if (!midpointFired && leadX > W * 0.48) {
         midpointFired = true;
@@ -332,12 +335,20 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+function preloadImages(): void {
+  for (const [stat, meta] of Object.entries(STAT_CARDS) as [StatName, StatCard][]) {
+    const img = new Image();
+    img.src = meta.emblemPath;
+    img.onload = () => { loadedImages[stat as StatName] = img; };
+  }
+}
+
 function init(): void {
-  // Guard: browsers deduplicate module scripts by URL, but be explicit
   if ((window as any).__transitionInit) return;
   (window as any).__transitionInit = true;
 
   initCanvas();
+  preloadImages();
 
   document.addEventListener('astro:before-preparation', (event: Event) => {
     const e = event as any;
@@ -348,21 +359,16 @@ function init(): void {
     if (prefersReducedMotion()) return;
     if (!canvas || !ctx) return;
 
-    const color = statForPath(toPath).color;
+    const stat = statForPath(toPath);
 
     const original = e.loader;
     e.loader = async () => {
-      // Phase 1: card entry + hold (T_IN + T_HOLD ms)
-      await cardPhase(color);
+      await cardPhase(stat);
 
-      // Phase 2: wipe covers screen while new page loads in parallel.
-      // onMidpoint fires when the lead edge passes W*0.48 — providing visual
-      // cover for the DOM swap. We wait for both: midpoint reached AND page
-      // fetched. .catch ensures a GPU/canvas error can't hang navigation.
       let resolveSwap!: () => void;
       const swapGate = new Promise<void>((r) => { resolveSwap = r; });
 
-      startWipe(color, resolveSwap).catch(() => resolveSwap());
+      startWipe(stat, resolveSwap).catch(() => resolveSwap());
       await Promise.all([swapGate, original()]);
     };
   });

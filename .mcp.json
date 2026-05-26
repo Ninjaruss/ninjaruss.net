@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "matryoshka": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "--package",
+        "matryoshka-rlm",
+        "rlm-mcp"
+      ],
+      "env": {}
+    }
+  }
+}
