@@ -134,7 +134,8 @@ function roundRect(
 
 function drawCard(
   cx: number, cy: number, cw: number, ch: number,
-  rot: number, color: string, alpha: number
+  rot: number, color: string, alpha: number,
+  name: string, img: HTMLImageElement | null
 ): void {
   if (!ctx || alpha <= 0) return;
   const r = parseInt(color.slice(1, 3), 16);
@@ -160,30 +161,29 @@ function drawCard(
   ctx.shadowBlur = 0;
   ctx.shadowOffsetY = 0;
 
-  const sheen = ctx.createLinearGradient(-cw / 2, -ch / 2, cw * 0.1, ch * 0.15);
-  sheen.addColorStop(0, 'rgba(255,255,255,0.4)');
-  sheen.addColorStop(1, 'rgba(255,255,255,0)');
-  ctx.fillStyle = sheen;
-  roundRect(ctx, -cw / 2, -ch / 2, cw, ch, 7);
-  ctx.fill();
-
   ctx.strokeStyle = 'rgba(255,255,255,0.22)';
   ctx.lineWidth = 1.5;
   roundRect(ctx, -cw / 2 + 5, -ch / 2 + 5, cw - 10, ch - 10, 4);
   ctx.stroke();
 
-  ctx.shadowColor = 'rgba(0,0,0,0.4)';
-  ctx.shadowBlur = 6;
-  ctx.fillStyle = 'rgba(0,0,0,0.28)';
-  ctx.font = `${cw * 0.36}px serif`;
+  if (img) {
+    const ew = cw * 0.38;
+    ctx.shadowBlur = 0;
+    ctx.drawImage(img, -ew / 2, -ch * 0.06 - ew / 2, ew, ew);
+  }
+
+  const maxTextWidth = cw - 2 * (5 + 8);
+  const fontSize = computeTextFit(ctx, name, maxTextWidth, 7);
+  ctx.shadowColor = 'rgba(0,0,0,0.7)';
+  ctx.shadowBlur = 8;
+  ctx.fillStyle = '#fff';
+  ctx.font = `bold ${fontSize}px monospace`;
+  (ctx as any).letterSpacing = '1.5px';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('☆', 0, -ch * 0.06);
-
+  ctx.fillText(name, 0, ch * 0.34);
   ctx.shadowBlur = 0;
-  ctx.font = `${cw * 0.095}px monospace`;
-  ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  ctx.fillText('THE FOOL', 0, ch * 0.34);
+  (ctx as any).letterSpacing = '0px';
 
   ctx.restore();
 }
