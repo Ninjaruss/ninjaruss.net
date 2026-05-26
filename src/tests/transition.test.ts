@@ -5,7 +5,8 @@ import {
   easeInQ,
   easeRotSettle,
   easeDecel,
-  accentColor,
+  statForPath,
+  computeTextFit,
   isSamePage,
   computeWipeGeometry,
 } from '../scripts/transition';
@@ -59,24 +60,76 @@ describe('easeDecel', () => {
   });
 });
 
-describe('accentColor', () => {
-  it('returns blue for /novel', () => {
-    expect(accentColor('/novel')).toBe('#7a8fff');
+describe('statForPath', () => {
+  it('returns Insight for /notes', () => {
+    expect(statForPath('/notes').color).toBe('#4ab0ff');
+    expect(statForPath('/notes').name).toBe('INSIGHT');
   });
-  it('returns blue for /novel/characters/rain', () => {
-    expect(accentColor('/novel/characters/rain')).toBe('#7a8fff');
+  it('returns Insight for /notes/slug', () => {
+    expect(statForPath('/notes/live-without-regret').color).toBe('#4ab0ff');
   });
-  it('returns gold for /', () => {
-    expect(accentColor('/')).toBe('#ffe52c');
+  it('returns Expression for /novel', () => {
+    expect(statForPath('/novel').color).toBe('#a855f7');
+    expect(statForPath('/novel').name).toBe('EXPRESSION');
   });
-  it('returns gold for /shelf', () => {
-    expect(accentColor('/shelf')).toBe('#ffe52c');
+  it('returns Expression for /novel/characters/rain', () => {
+    expect(statForPath('/novel/characters/rain').color).toBe('#a855f7');
   });
-  it('returns gold for /notes/live-without-regret', () => {
-    expect(accentColor('/notes/live-without-regret')).toBe('#ffe52c');
+  it('returns Sincerity for /shelf', () => {
+    expect(statForPath('/shelf').color).toBe('#ffe52c');
+    expect(statForPath('/shelf').name).toBe('SINCERITY');
   });
-  it('returns gold for /showcase', () => {
-    expect(accentColor('/showcase')).toBe('#ffe52c');
+  it('returns Sincerity for /shelf/slug', () => {
+    expect(statForPath('/shelf/some-anime').color).toBe('#ffe52c');
+  });
+  it('returns Chaos for /stream', () => {
+    expect(statForPath('/stream').color).toBe('#2dd4bf');
+    expect(statForPath('/stream').name).toBe('CHAOS');
+  });
+  it('returns Determination for /showcase', () => {
+    expect(statForPath('/showcase').color).toBe('#ff4040');
+    expect(statForPath('/showcase').name).toBe('DETERMINATION');
+  });
+  it('returns Sincerity for /now', () => {
+    expect(statForPath('/now').color).toBe('#ffe52c');
+    expect(statForPath('/now').name).toBe('SINCERITY');
+  });
+  it('returns Sincerity for /', () => {
+    expect(statForPath('/').color).toBe('#ffe52c');
+  });
+  it('does not match /nowhere as /now', () => {
+    expect(statForPath('/nowhere').color).toBe('#ff4040'); // fallback: Determination
+  });
+  it('returns Determination fallback for unknown route', () => {
+    expect(statForPath('/unknown/deep/path').color).toBe('#ff4040');
+    expect(statForPath('/unknown/deep/path').name).toBe('DETERMINATION');
+  });
+  it('img is null in test environment (images never preloaded)', () => {
+    expect(statForPath('/shelf').img).toBeNull();
+  });
+});
+
+describe('computeTextFit', () => {
+  // Mock ctx: measureText returns text.length * 8 per char (predictable math)
+  const mockCtx = {
+    font: '',
+    measureText: (text: string) => ({ width: text.length * 8 }),
+  } as unknown as CanvasRenderingContext2D;
+
+  it('returns basePx when text fits within maxWidth', () => {
+    // 'CHAOS' = 5 chars * 8 = 40px, maxWidth 100 → fits at basePx 7
+    expect(computeTextFit(mockCtx, 'CHAOS', 100, 7)).toBe(7);
+  });
+  it('returns reduced size when text exceeds maxWidth', () => {
+    // 'DETERMINATION' = 13 chars * 8 = 104px, maxWidth 76 → must shrink
+    const size = computeTextFit(mockCtx, 'DETERMINATION', 76, 7);
+    expect(size).toBeLessThan(7);
+    expect(size).toBeGreaterThanOrEqual(5);
+  });
+  it('never returns below 5', () => {
+    // tiny maxWidth forces it to floor
+    const size = computeTextFit(mockCtx, 'DETERMINATION', 1, 7);
+    expect(size).toBe(5);
   });
 });
 

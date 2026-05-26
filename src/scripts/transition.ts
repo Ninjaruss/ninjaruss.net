@@ -14,12 +14,58 @@ export const easeDecel = (t: number): number => {
   return 0.88 + easeIO((t - 0.55) / 0.45) * 0.12;
 };
 
-// ── Utilities ─────────────────────────────────────────────────────────────────
+// ── Stat card data ────────────────────────────────────────────────────────────
 
-/** Card + wipe accent color keyed to destination pathname. */
-export function accentColor(pathname: string): string {
-  return pathname.startsWith('/novel') ? '#7a8fff' : '#ffe52c';
+type StatName = 'Determination' | 'Insight' | 'Expression' | 'Sincerity' | 'Chaos';
+
+interface StatCard {
+  color: string;
+  name: string;
+  emblemPath: string;
 }
+
+const STAT_CARDS: Record<StatName, StatCard> = {
+  Determination: { color: '#ff4040', name: 'DETERMINATION', emblemPath: '/images/emblems/determination.png' },
+  Insight:       { color: '#4ab0ff', name: 'INSIGHT',       emblemPath: '/images/emblems/insight.png'       },
+  Expression:    { color: '#a855f7', name: 'EXPRESSION',    emblemPath: '/images/emblems/expression.png'    },
+  Sincerity:     { color: '#ffe52c', name: 'SINCERITY',     emblemPath: '/images/emblems/sincerity.png'     },
+  Chaos:         { color: '#2dd4bf', name: 'CHAOS',         emblemPath: '/images/emblems/chaos.png'         },
+};
+
+const ROUTE_STATS: [string, StatName][] = [
+  ['/notes',    'Insight'],
+  ['/novel',    'Expression'],
+  ['/shelf',    'Sincerity'],
+  ['/stream',   'Chaos'],
+  ['/showcase', 'Determination'],
+  ['/now',      'Sincerity'],
+  ['/',         'Sincerity'],
+];
+
+const loadedImages: Partial<Record<StatName, HTMLImageElement>> = {};
+
+export function statForPath(pathname: string): StatCard & { img: HTMLImageElement | null } {
+  const key = ROUTE_STATS.find(([prefix]) =>
+    prefix === '/'
+      ? pathname === '/'
+      : pathname === prefix || pathname.startsWith(prefix + '/')
+  )?.[1] ?? 'Determination';
+  return { ...STAT_CARDS[key], img: loadedImages[key] ?? null };
+}
+
+export function computeTextFit(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+  basePx: number
+): number {
+  let size = basePx;
+  ctx.font = `bold ${size}px monospace`;
+  while (ctx.measureText(text).width > maxWidth && size > 5) size -= 0.5;
+  return size;
+}
+
+// ── Utilities ─────────────────────────────────────────────────────────────────
 
 /** Guard: skip transition when navigating to the current page. */
 export function isSamePage(from: string, to: string): boolean {
@@ -299,7 +345,7 @@ function init(): void {
     if (prefersReducedMotion()) return;
     if (!canvas || !ctx) return;
 
-    const color = accentColor(toPath);
+    const color = statForPath(toPath).color;
 
     const original = e.loader;
     e.loader = async () => {
