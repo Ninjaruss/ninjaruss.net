@@ -301,21 +301,21 @@ function init(): void {
 
     const color = accentColor(toPath);
 
-    e.intercept(async () => {
+    const original = e.loader;
+    e.loader = async () => {
       // Phase 1: card entry + hold (T_IN + T_HOLD ms)
       await cardPhase(color);
 
-      // Phase 2: wipe start + page load in parallel.
-      // The wipe resolves onMidpoint (a promise gate) when leadX passes W*0.48.
-      // The intercept resolves once BOTH the gate AND the loader complete —
-      // at that point Astro swaps the DOM while the wipe is still running.
+      // Phase 2: wipe covers screen while new page loads in parallel.
+      // onMidpoint fires when the lead edge passes W*0.48 — providing visual
+      // cover for the DOM swap. We wait for both: midpoint reached AND page
+      // fetched. .catch ensures a GPU/canvas error can't hang navigation.
       let resolveSwap!: () => void;
       const swapGate = new Promise<void>((r) => { resolveSwap = r; });
 
-      startWipe(color, resolveSwap);          // runs in background via rAF
-      await Promise.all([swapGate, e.loader()]); // wait for midpoint + fetch
-      // → intercept returns; Astro swaps DOM under the wipe cover
-    });
+      startWipe(color, resolveSwap).catch(() => resolveSwap());
+      await Promise.all([swapGate, original()]);
+    };
   });
 }
 
