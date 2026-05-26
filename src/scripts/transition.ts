@@ -16,9 +16,9 @@ export const easeDecel = (t: number): number => {
 
 // ── Stat card data ────────────────────────────────────────────────────────────
 
-type StatName = 'Determination' | 'Insight' | 'Expression' | 'Sincerity' | 'Chaos';
+export type StatName = 'Determination' | 'Insight' | 'Expression' | 'Sincerity' | 'Chaos';
 
-interface StatCard {
+export interface StatCard {
   color: string;
   name: string;
   emblemPath: string;
@@ -60,8 +60,11 @@ export function computeTextFit(
   basePx: number
 ): number {
   let size = basePx;
-  ctx.font = `bold ${size}px monospace`;
-  while (ctx.measureText(text).width > maxWidth && size > 5) size -= 0.5;
+  while (size > 5) {
+    ctx.font = `bold ${size}px monospace`;
+    if (ctx.measureText(text).width <= maxWidth) break;
+    size -= 0.5;
+  }
   return size;
 }
 

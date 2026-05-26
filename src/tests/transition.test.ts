@@ -110,24 +110,30 @@ describe('statForPath', () => {
 });
 
 describe('computeTextFit', () => {
-  // Mock ctx: measureText returns text.length * 8 per char (predictable math)
+  // Mock ctx: width proportional to font size parsed from ctx.font
   const mockCtx = {
     font: '',
-    measureText: (text: string) => ({ width: text.length * 8 }),
+    measureText(text: string) {
+      const match = this.font.match(/(\d+(?:\.\d+)?)px/);
+      const px = match ? parseFloat(match[1]) : 12;
+      return { width: text.length * px };
+    },
   } as unknown as CanvasRenderingContext2D;
 
   it('returns basePx when text fits within maxWidth', () => {
-    // 'CHAOS' = 5 chars * 8 = 40px, maxWidth 100 → fits at basePx 7
+    // 'CHAOS' = 5 chars, at size 7: 5 * 7 = 35px ≤ 100 → fits at basePx 7
     expect(computeTextFit(mockCtx, 'CHAOS', 100, 7)).toBe(7);
   });
   it('returns reduced size when text exceeds maxWidth', () => {
-    // 'DETERMINATION' = 13 chars * 8 = 104px, maxWidth 76 → must shrink
+    // 'DETERMINATION' = 13 chars, maxWidth 76, basePx 7
+    // At size 7: 13 * 7 = 91 > 76 → shrink
+    // At size 5.5: 13 * 5.5 = 71.5 ≤ 76 → stop at 5.5
     const size = computeTextFit(mockCtx, 'DETERMINATION', 76, 7);
-    expect(size).toBeLessThan(7);
-    expect(size).toBeGreaterThanOrEqual(5);
+    expect(size).toBeCloseTo(5.5, 1);
   });
   it('never returns below 5', () => {
     // tiny maxWidth forces it to floor
+    // At size 5: 13 * 5 = 65 > 1 → still doesn't fit, but hits floor at 5
     const size = computeTextFit(mockCtx, 'DETERMINATION', 1, 7);
     expect(size).toBe(5);
   });
