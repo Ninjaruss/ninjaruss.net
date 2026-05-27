@@ -167,13 +167,13 @@ function drawCard(
   ctx.stroke();
 
   if (img) {
-    const ew = cw * 0.38;
+    const ew = cw * 0.56;
     ctx.shadowBlur = 0;
-    ctx.drawImage(img, -ew / 2, -ch * 0.06 - ew / 2, ew, ew);
+    ctx.drawImage(img, -ew / 2, -ch * 0.1 - ew / 2, ew, ew);
   }
 
   const maxTextWidth = cw - 2 * (5 + 8);
-  const fontSize = computeTextFit(ctx, name, maxTextWidth, 7);
+  const fontSize = computeTextFit(ctx, name, maxTextWidth, 18);
   ctx.shadowColor = 'rgba(0,0,0,0.7)';
   ctx.shadowBlur = 8;
   ctx.fillStyle = '#fff';
@@ -189,7 +189,7 @@ function drawCard(
 }
 
 function cardGeometry(): { cw: number; ch: number; restX: number; restY: number } {
-  const cw = Math.min(136, W * 0.145);
+  const cw = Math.min(200, W * 0.24);
   return { cw, ch: cw * 1.4, restX: W * 0.5, restY: H * 0.455 };
 }
 
