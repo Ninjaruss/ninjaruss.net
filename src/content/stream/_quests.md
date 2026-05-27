@@ -1,10 +1,10 @@
 ## Active Quests
 
-- Complete the design for the Ninjaruss IRL streams
+- Truly identify the overarching singular goal for my life.
 
 ## Ideas — Determination
 
-- Go outside for a walk livestream
+- Posting live shut up and yaps
 
 ## Ideas — Insight
 
@@ -18,8 +18,8 @@
 
 ## Ideas — Sincerity
 
-- Not Fanime convention hangout
+- Search for simple ways to interact with Japanese people
 
 ## Ideas — Chaos
 
-- Omoggle diffing
+- Motorcycle scuffed stream
