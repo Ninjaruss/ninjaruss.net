@@ -13,3 +13,5 @@ Behavioral Pattern	 - When faced with suffering → immediately offers extractio
 Boundary - “I will not erase my own memory of what my mother did. That memory is my wound, but it’s also the only proof that I’m not her. Without it, I wouldn’t know why I started – and I’d become just as hollow as the people I ‘help.’”
 
 Collision - Rain refuses Vesper’s offer of memory extraction – not out of fear, but out of a genuine belief that struggle is valuable. Vesper cannot comprehend this because his entire worldview is built on the assumption that pain must be erased. This forces Vesper to confront the possibility that his mother’s tragedy could have been avoided not by erasing memories, but by doing the drab work of being present.
+
+True evil: useless people, aka people who see problems but do nothing about them

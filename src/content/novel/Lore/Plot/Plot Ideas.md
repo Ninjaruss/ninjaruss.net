@@ -11,3 +11,5 @@ A scene that shows Rain on top of a mountain of bodies, bodies of himself, with 
 Vesper is practically unbeatable by Rain not only due to having so much accumulated memories inside him, but the fact that Roxana’s core memory was extracted, which allows Vesper to fully predict Rain’s combat maneuvers as he was primarily trained by Roxana. 
 
 Rain screws up and gives Vesper an opportunity to extract a memory of his. This causes an internal trial to occur where Rain faces his past. He is at a decision point of whether to accept the 
+
+Upon finding your true self, you are truly living in the present. The climax has Rain's true self giving the final hint without words. He becomes quiet and listens to his soul.

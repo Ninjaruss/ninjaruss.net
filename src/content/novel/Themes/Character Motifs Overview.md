@@ -4,6 +4,8 @@ Rain / Water - Commitment as something you let fall on you rather than to avoid.
 
 Falling - An irreversible act that can happen unexpectedly or through acceptance. Sometimes, you need to let yourself fall and take a risk.
 
+Hands - How each character’s gesturing of their hands show their willingness to reach towards others. Rain has his hand open for yearning, but is later reframed to be open to accepting others and giving his support. Vesper has his hand reached towards as if he wants to adjust something, almost a little controlling. 
+
 Character Specific Motifs
 
 Rain

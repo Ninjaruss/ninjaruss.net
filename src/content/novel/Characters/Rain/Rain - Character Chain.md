@@ -14,4 +14,6 @@ Behavioral Pattern	Analysis, waiting, using clones as proxy, retreating into com
 
 Boundary	“I will not let anyone else define my story or erase my memories.”
 
+My dad makes his own assumptions and doesn't actually listen. My mom is protective, worried about security.
+
 Collision	Follows the ghost without permission, becomes a fugitive from him taking action, forced to act without certainty.

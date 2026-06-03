@@ -10,4 +10,9 @@ I am considering if he should be closer to Roxana’s age (late 20s) or signific
 
 I am thinking Vesper will be a twist antagonist for the story and the big reveal will be that he has the ability to extract people’s memories (but not his own). To add to the potential foreshadowing, I want Vesper to forget recent events/things after each time he extracts a person’s memories. 
 
- 
+Rain’s parents are of the same level as most people, only focused on safety/survival without any concern for what that truly sacrifices. 
+
+For Rain: “They want me to be secure at the 'societal' level of secure. Good job, no poor decisions, just get over whatever I feel.”
+
+This is the key to what makes most of Vesper’s offer work. Most of society is not focused on the inner self that’s trying to develop, but the assurance that they can live another day, \*in comfort\*.
+

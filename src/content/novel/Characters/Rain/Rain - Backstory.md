@@ -1,0 +1,3 @@
+Rain has a dream but has lost hope and is merely drifting. Self doubt and fear of failure result in laziness. He sets his goal too high — needs small steps toward big goal.
+
+Rain's parents are not villains. They are hardworking, fearful people who equate security with love. His father makes assumptions and doesn't listen. His mother worries constantly and offers support that feels generic—"you can do it" without understanding what "it" is. They want him to be safe. He wants to be seen. These are not the same thing. Their voices echo in his Authenticity Threshold: the part of him that needs external permission before acting. He learned to deflect because deflecting was safer than explaining himself to people who couldn't hear him.
