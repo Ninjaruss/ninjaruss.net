@@ -121,11 +121,9 @@ const leadingStats = maxTally > 0
 const primaryLeadingStat = leadingStats[0] ?? 'Determination';
 const leadingColor = STAT_COLORS[primaryLeadingStat as keyof typeof STAT_COLORS];
 
-// tiedPair: exactly 2 tied leaders → cycling icons; otherwise use singleIcon
-const tiedPair = leadingStats.length === 2 ? leadingStats : null;
-const singleIcon = leadingStats.length !== 2 && leadingStats.length > 0
-  ? leadingStats[0]
-  : null;
+// tiedPair: 2+ tied leaders → cycle the first two; singleIcon for uncontested leader
+const tiedPair = leadingStats.length >= 2 ? (leadingStats.slice(0, 2) as [string, string]) : null;
+const singleIcon = leadingStats.length === 1 ? leadingStats[0] : null;
 
 const donutArcs = buildDonutArcs(streamTallies, 32);
 
