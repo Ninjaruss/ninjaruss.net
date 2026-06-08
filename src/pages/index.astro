@@ -87,7 +87,7 @@ const novelLastModifiedISO = novelLastModified?.toISOString() ?? null;
 
 // Stream tile data
 const streamSessions = await getCollection('stream', ({ data }) => !data.draft);
-const streamTallies = tallyStats(streamSessions, 'all');
+const streamTallies = tallyStats(streamSessions, 'recent');
 const streamSessionCount = streamSessions.length;
 
 const STAT_COLORS = {
@@ -212,6 +212,9 @@ const latestEntries = sameDateEntries.map(entry => ({
           {nowMonthYearLocal !== nowMonthYearUTC ? ` — ${nowMonthYearLocal} locally` : ''}
         </span>
       </BentoTile>
+
+      <!-- Diagonal divider — row 1 → rows 2-3 -->
+      <div class="shelf-divider" style="grid-column: 1 / -1;" aria-hidden="true"></div>
 
       <!-- Rows 2-3: Showcase (3×2) + Notes (2×2) + Favorites (1×2) -->
       <BentoTile
@@ -362,6 +365,9 @@ const latestEntries = sameDateEntries.map(entry => ({
           <span id="st-live-badge" class="st-live-badge" hidden>LIVE</span>
         </div>
       </a>
+
+      <!-- Diagonal divider — rows 2-3 → rows 4-5 -->
+      <div class="shelf-divider shelf-divider--flip" style="grid-column: 1 / -1;" aria-hidden="true"></div>
 
       <!-- Rows 4-5: Media (2×2) + Latest (2×1) + Novel (1×2) + MAL/Spotify (stacked 1×1) -->
       <BentoTile
@@ -989,6 +995,26 @@ const latestEntries = sameDateEntries.map(entry => ({
     50%       { box-shadow: 4px 4px 0 rgba(255,64,64,.5),  0 0 40px rgba(255,64,64,.22); }
   }
 
+  /* CRT inset glow — always present, warms to red when live */
+  .stream-tile::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 22px rgba(255, 229, 44, 0.04);
+    pointer-events: none;
+    z-index: 2;
+    border-radius: inherit;
+    transition: box-shadow 300ms;
+  }
+
+  .stream-tile:hover::after {
+    box-shadow: inset 0 0 28px rgba(255, 229, 44, 0.08);
+  }
+
+  .stream-tile.is-live::after {
+    box-shadow: inset 0 0 22px rgba(255, 64, 64, 0.1);
+  }
+
   .st-body {
     flex: 1;
     display: flex;
@@ -1444,6 +1470,7 @@ const latestEntries = sameDateEntries.map(entry => ({
     }
 
     .stream-tile.is-live    { animation: none; }
+    .stream-tile::after     { transition: none; }
     .st-live-badge          { animation: none; }
     .st-icon-primary        { animation: none; opacity: 1; }
     .st-icon-secondary      { animation: none; opacity: 0; }
