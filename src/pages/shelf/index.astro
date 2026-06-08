@@ -1,174 +1,259 @@
 ---
-import { getCollection } from 'astro:content';
-import { hasMinimalContent } from '../../utils/content';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { hasMinimalContent, stripMarkdown } from '../../utils/content';
+import { sortShelfSection, type SortableEntry } from '../../utils/shelf';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NavPill from '../../components/NavPill.astro';
 
-const allShelf = await getCollection('shelf', ({ data }) => !data.draft);
-const sortedShelf = allShelf.sort((a, b) =>
-  new Date(b.data.updatedAt || b.data.publishedAt || 0).getTime() -
-  new Date(a.data.updatedAt || a.data.publishedAt || 0).getTime()
-);
+const TYPE_ORDER = ['anime', 'manga', 'film', 'series', 'music', 'book', 'game', 'character', 'other'] as const;
+type ContentType = typeof TYPE_ORDER[number];
 
-const entryData = sortedShelf.map((entry) => ({
-  slug: entry.slug,
-  title: entry.data.title,
-  type: entry.data.content_type,
-  isFavorite: entry.data.isFavorite ?? false,
-  emblem: entry.data.emblem ?? '/images/emblems/default.svg',
-  tags: entry.data.tags ?? [],
-  publishedAt: entry.data.publishedAt?.toISOString() ?? null,
-  updatedAt: entry.data.updatedAt?.toISOString() ?? null,
-  hasContent: !hasMinimalContent(entry.body),
+const TYPE_LABELS: Record<ContentType, string> = {
+  anime: 'Anime',
+  manga: 'Manga',
+  film: 'Films',
+  series: 'Series',
+  music: 'Music',
+  book: 'Books',
+  game: 'Games',
+  character: 'Characters',
+  other: 'Other',
+};
+
+type ShelfEntry = CollectionEntry<'shelf'> & SortableEntry;
+
+const allShelf = await getCollection('shelf', ({ data }) => !data.draft);
+
+// Group by content_type in TYPE_ORDER, sort each group three-tier
+const grouped: Array<{ type: ContentType; entries: ShelfEntry[] }> = [];
+
+for (const type of TYPE_ORDER) {
+  const typeEntries = allShelf.filter(e => e.data.content_type === type);
+  if (typeEntries.length === 0) continue;
+
+  const annotated: ShelfEntry[] = typeEntries.map(e => ({
+    ...e,
+    isFavorite: e.data.isFavorite ?? false,
+    hasContent: !hasMinimalContent(e.body ?? ''),
+    date: e.data.updatedAt ?? e.data.publishedAt ?? null,
+  }));
+
+  grouped.push({ type, entries: sortShelfSection(annotated) });
+}
+
+const totalCount = allShelf.length;
+
+// Serialize all entries for panel JS
+const entryData = allShelf.map(e => ({
+  slug: e.slug,
+  title: e.data.title,
+  type: e.data.content_type,
+  isFavorite: e.data.isFavorite ?? false,
+  emblem: e.data.emblem ?? '/images/emblems/default.svg',
+  tags: e.data.tags ?? [],
+  publishedAt: e.data.publishedAt?.toISOString() ?? null,
+  updatedAt: e.data.updatedAt?.toISOString() ?? null,
 }));
 
-const count = sortedShelf.length;
+// Serialize character entries for hero carousel
+const characterGroup = grouped.find(g => g.type === 'character');
+const characterData = (characterGroup?.entries ?? []).map(e => ({
+  slug: e.slug,
+  title: e.data.title,
+  emblem: e.data.emblem ?? '/images/emblems/default.svg',
+  tags: e.data.tags ?? [],
+  excerpt: stripMarkdown(e.body ?? '').slice(0, 120),
+  publishedAt: e.data.publishedAt?.toISOString() ?? null,
+}));
 ---
 
 <BaseLayout title="Shelf" description="My thoughts on anime, manga, movies, and more — favorites included." ogImage="/social-default.svg">
-  <!-- Entry data for overlay JS -->
   <div id="entry-data" data-entries={JSON.stringify(entryData)} hidden></div>
 
-  <div class="media-page">
-    <!-- Header -->
-    <header class="media-header">
-      <span class="media-header__label">catalog</span>
-      <h1 class="media-header__title">Shelf</h1>
-      <span class="media-header__count">{count} entries</span>
+  <div class="shelf-page">
+    <header class="shelf-header">
+      <span class="shelf-header__eyebrow">catalog</span>
+      <h1 class="shelf-header__title">Shelf</h1>
+      <p class="shelf-header__count">{totalCount} entries</p>
     </header>
 
-    <!-- Underline tab filter bar -->
-    <div class="filter-bar" role="toolbar" aria-label="Filter shelf entries">
-      <button class="filter-tab filter-tab--fav" data-filter-fav aria-pressed="false" aria-label="Favorites">★</button>
-      <div class="filter-bar__divider" aria-hidden="true"></div>
-      <div class="filter-bar__tabs" role="group" aria-label="Filter by type">
-        {(['all', 'anime', 'manga', 'film', 'series', 'music', 'book', 'game', 'character', 'other']).map((type) => (
-          <button
-            class:list={['filter-tab', { 'is-active': type === 'all' }]}
-            data-filter-type={type}
-            aria-pressed={type === 'all' ? 'true' : 'false'}
-          >
-            {type}
-          </button>
-        ))}
-      </div>
-    </div>
-
-    <!-- Poster card grid -->
-    <div class="media-grid" id="media-grid">
-      {sortedShelf.map((entry, i) => (
+    <nav class="shelf-jumpbar" aria-label="Jump to section">
+      {grouped.map(({ type }) => (
         <a
-          href={`/shelf/${entry.slug}`}
-          class:list={['media-card', { 'media-card--has-note': !hasMinimalContent(entry.body) }]}
-          data-slug={entry.slug}
-          data-type={entry.data.content_type}
-          data-fav={entry.data.isFavorite ? 'true' : 'false'}
-          style={`--card-index: ${i}`}
-          aria-label={entry.data.title}
+          href={`#section-${type}`}
+          class="shelf-jumpbar__link"
+          data-type={type}
+          aria-current="false"
         >
-          <div class="media-card__poster">
-            <img
-              src={entry.data.emblem ?? '/images/emblems/default.svg'}
-              alt=""
-              class="media-card__img"
-              loading="lazy"
-            />
-            <div class="media-card__overlay">
-              <span class="media-card__type">{entry.data.content_type}</span>
-              <span class="media-card__title">{entry.data.title}</span>
-            </div>
-          </div>
-          {entry.data.isFavorite && (
-            <span class="media-card__star" aria-label="Favorite">★</span>
-          )}
+          {TYPE_LABELS[type]}
         </a>
       ))}
-    </div>
+    </nav>
+
+    {grouped.map(({ type, entries }, groupIndex) => (
+      <>
+        {groupIndex > 0 && (
+          <div
+            class:list={['shelf-divider', { 'shelf-divider--flip': groupIndex % 2 === 1 }]}
+            aria-hidden="true"
+          />
+        )}
+
+        <section id={`section-${type}`} class="shelf-section">
+          <header class="shelf-section__header">
+            <h2>{TYPE_LABELS[type]}</h2>
+            <div class="shelf-section__line" aria-hidden="true"></div>
+            <span class="shelf-section__count">{entries.length}</span>
+          </header>
+
+          {type === 'character' && characterData.length > 0 && (
+            <div class="shelf-hero" data-characters={JSON.stringify(characterData)}>
+              <button class="shelf-hero__prev" aria-label="Previous character" type="button">‹</button>
+              <a
+                class="shelf-hero__portrait-link"
+                href={`/shelf/${characterData[0]?.slug}`}
+                tabindex="-1"
+                aria-hidden="true"
+              >
+                <div class="shelf-hero__portrait">
+                  <img
+                    class="shelf-hero__portrait-img"
+                    src={characterData[0]?.emblem ?? '/images/emblems/default.svg'}
+                    alt={characterData[0]?.title ?? ''}
+                  />
+                </div>
+              </a>
+              <div class="shelf-hero__info">
+                <p class="shelf-hero__eyebrow">
+                  character · 1 / {characterData.length}
+                </p>
+                <h3 class="shelf-hero__name">{characterData[0]?.title ?? ''}</h3>
+                <div class="shelf-hero__tags">
+                  {(characterData[0]?.tags ?? []).map(tag => (
+                    <span class="shelf-hero__tag">{tag}</span>
+                  ))}
+                </div>
+                {characterData[0]?.excerpt && (
+                  <p class="shelf-hero__excerpt">{characterData[0].excerpt}</p>
+                )}
+                <a class="shelf-hero__link" href={`/shelf/${characterData[0]?.slug}`}>
+                  Read more →
+                </a>
+              </div>
+              <button class="shelf-hero__next" aria-label="Next character" type="button">›</button>
+            </div>
+          )}
+
+          <div class="shelf-grid">
+            {entries.map((entry, i) => (
+              <a
+                href={`/shelf/${entry.slug}`}
+                class:list={[
+                  'shelf-card',
+                  { 'shelf-card--dim': !entry.isFavorite && !entry.hasContent },
+                ]}
+                data-slug={entry.slug}
+                style={`--card-index: ${i}`}
+                aria-label={entry.data.title}
+              >
+                <div class="shelf-card__poster">
+                  <img
+                    src={entry.data.emblem ?? '/images/emblems/default.svg'}
+                    alt=""
+                    class="shelf-card__img"
+                    loading="lazy"
+                  />
+                </div>
+                <div class:list={['shelf-card__bar', { 'shelf-card__bar--fav': entry.isFavorite }]}>
+                  <span class:list={['shelf-card__title', { 'shelf-card__title--fav': entry.isFavorite }]}>
+                    {entry.data.title}
+                  </span>
+                  {entry.isFavorite && (
+                    <span class="shelf-card__star" aria-hidden="true">★</span>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      </>
+    ))}
   </div>
 
-  <!-- Fullscreen overlay -->
-  <div
-    class="media-overlay"
-    id="media-overlay"
+  <!-- Slide-in panel (activated in Task 5) -->
+  <div id="shelf-backdrop" class="shelf-backdrop" hidden aria-hidden="true"></div>
+  <aside
+    id="shelf-panel"
+    class="shelf-panel"
     hidden
     role="dialog"
     aria-modal="true"
     aria-label="Entry detail"
     tabindex="-1"
   >
-    <button class="media-overlay__close" id="media-overlay-close" aria-label="Close">✕</button>
-    <div class="media-overlay__inner" id="media-overlay-inner">
-      <div class="media-overlay__poster">
-        <img src="" alt="" class="media-overlay__poster-img" id="media-overlay-img" />
-      </div>
-      <div class="media-overlay__content" id="media-overlay-content">
-        <!-- Populated by JS -->
-      </div>
+    <button class="shelf-panel__close" id="shelf-panel-close" aria-label="Close panel">✕</button>
+    <div class="shelf-panel__poster">
+      <img src="" alt="" class="shelf-panel__poster-img" id="shelf-panel-img" />
     </div>
-  </div>
+    <div class="shelf-panel__content" id="shelf-panel-content"></div>
+    <a class="shelf-panel__link" id="shelf-panel-link" href="#">Open full entry →</a>
+  </aside>
 
   <NavPill />
 </BaseLayout>
 
 <style>
-  /* ── Page layout ───────────────────────────────── */
-  .media-page {
+  /* ── Page ────────────────────────────────────────── */
+  .shelf-page {
     max-width: 1400px;
     margin: 0 auto;
     padding: var(--space-xl) var(--space-lg) calc(var(--space-xl) * 3);
   }
 
-  /* ── Header ────────────────────────────────────── */
-  .media-header {
+  /* ── Header ──────────────────────────────────────── */
+  .shelf-header {
     display: flex;
     align-items: baseline;
     gap: var(--space-md);
     margin-bottom: var(--space-xl);
     flex-wrap: wrap;
   }
-  .media-header__label {
+  .shelf-header__eyebrow {
     font-family: var(--font-mono);
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.14em;
     color: var(--color-muted);
   }
-  .media-header__title {
+  .shelf-header__title {
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 900;
     color: var(--color-text);
     line-height: 1;
   }
-  .media-header__count {
+  .shelf-header__count {
     font-family: var(--font-mono);
     font-size: 12px;
     color: var(--color-muted);
     margin-left: auto;
   }
 
-  /* ── Filter bar ────────────────────────────────── */
-  .filter-bar {
+  /* ── Sticky Jump-Bar ─────────────────────────────── */
+  .shelf-jumpbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
     display: flex;
     align-items: stretch;
+    background: var(--color-bg-base);
     border-bottom: 1px solid var(--color-border, #2a2a2a);
     margin-bottom: var(--space-xl);
     overflow-x: auto;
     scrollbar-width: none;
   }
-  .filter-bar::-webkit-scrollbar { display: none; }
+  .shelf-jumpbar::-webkit-scrollbar { display: none; }
 
-  .filter-bar__divider {
-    width: 1px;
-    background: var(--color-border, #2a2a2a);
-    margin: 6px 4px;
-    flex-shrink: 0;
-  }
-
-  .filter-bar__tabs {
-    display: flex;
-  }
-
-  .filter-tab {
+  .shelf-jumpbar__link {
     padding: 10px 16px;
     background: none;
     border: none;
@@ -178,63 +263,97 @@ const count = sortedShelf.length;
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    cursor: pointer;
     white-space: nowrap;
+    text-decoration: none;
     transition: color 150ms, border-color 150ms;
     margin-bottom: -1px;
     min-height: 44px;
     display: flex;
     align-items: center;
   }
-  .filter-tab:hover { color: var(--color-text); }
-  .filter-tab.is-active,
-  .filter-tab[aria-pressed="true"] {
-    color: var(--color-gold);
-    border-bottom-color: var(--color-gold);
-  }
-  .filter-tab--fav {
-    color: rgba(255, 229, 44, 0.4);
-    padding: 10px 14px;
-  }
-  .filter-tab--fav.is-active,
-  .filter-tab--fav[aria-pressed="true"] {
+  .shelf-jumpbar__link:hover { color: var(--color-text); }
+  .shelf-jumpbar__link.is-active,
+  .shelf-jumpbar__link[aria-current="true"] {
     color: var(--color-gold);
     border-bottom-color: var(--color-gold);
   }
 
-  /* ── Poster card grid ──────────────────────────── */
-  .media-grid {
+  /* ── Section ─────────────────────────────────────── */
+  .shelf-section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .shelf-section__header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: var(--space-lg);
+  }
+
+  .shelf-section__header h2 {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    background: linear-gradient(
+      90deg,
+      var(--color-text) 0%,
+      var(--color-gold) 40%,
+      var(--color-gold-orange) 50%,
+      var(--color-text) 65%
+    );
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer-sweep 12s ease-in-out infinite;
+  }
+
+  .shelf-section__line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 229, 44, 0.3) 0%,
+      transparent 100%
+    );
+  }
+
+  .shelf-section__count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--color-muted);
+  }
+
+  /* ── Card Grid ───────────────────────────────────── */
+  .shelf-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
     gap: var(--space-md);
     align-content: start;
   }
 
-  /* ── Individual poster card ────────────────────── */
-  .media-card {
+  /* ── Individual Card ─────────────────────────────── */
+  .shelf-card {
     position: relative;
     display: block;
     text-decoration: none;
     color: var(--color-text);
     cursor: pointer;
     animation: card-in 400ms var(--animation-easing, ease) both;
-    animation-delay: min(calc(var(--card-index, 0) * 50ms), 1500ms);
+    animation-delay: min(calc(var(--card-index, 0) * 40ms), 1200ms);
   }
+
   @keyframes card-in {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  .media-card[data-hidden="true"] { display: none; }
 
-  .media-card--has-note .media-card__poster {
-    border-color: rgba(255, 229, 44, 0.5);
-    box-shadow: 0 0 12px rgba(255, 229, 44, 0.15), inset 0 0 0 1px rgba(255, 229, 44, 0.1);
-  }
-  .media-card:not(.media-card--has-note) {
-    filter: opacity(0.55);
-  }
+  .shelf-card--dim { filter: opacity(0.52); }
 
-  .media-card__poster {
+  .shelf-card__poster {
     position: relative;
     aspect-ratio: 2/3;
     overflow: hidden;
@@ -243,97 +362,220 @@ const count = sortedShelf.length;
     border: 1px solid transparent;
     transition: border-color 200ms, box-shadow 200ms;
   }
-  .media-card:hover .media-card__poster {
+
+  .shelf-card:hover .shelf-card__poster {
     border-color: var(--color-gold);
     box-shadow: 0 0 14px rgba(255, 229, 44, 0.15);
   }
 
-  .media-card__img {
+  .shelf-card__img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
     transition: filter 200ms;
   }
-  .media-card:hover .media-card__img { filter: brightness(1.08); }
+  .shelf-card:hover .shelf-card__img { filter: brightness(1.08); }
 
-  .media-card__overlay {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 28px 8px 8px;
-    background: linear-gradient(transparent, rgba(0,0,0,0.88));
+  .shelf-card__bar {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 6px 5px;
+    background: #0d0d0d;
+    border-top: 1px solid #252525;
+    border-radius: 0 0 4px 4px;
   }
-  .media-card__type {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: rgba(255,255,255,0.45);
+  .shelf-card__bar--fav {
+    border-top-color: rgba(255, 229, 44, 0.35);
   }
-  .media-card__title {
+
+  .shelf-card__title {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 8px;
     color: var(--color-text);
     line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+  }
+  .shelf-card__title--fav { color: var(--color-gold); }
+
+  .shelf-card__star {
+    font-size: 8px;
+    color: var(--color-gold);
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  /* ── Character Hero ──────────────────────────────── */
+  .shelf-hero {
+    display: grid;
+    grid-template-columns: auto 200px 1fr auto;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    padding: var(--space-lg);
+    background: var(--color-bg-elevated);
+    border-left: 4px solid var(--color-gold);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 18px,
+      rgba(255, 229, 44, 0.02) 18px,
+      rgba(255, 229, 44, 0.02) 19px
+    );
+    position: relative;
+  }
+
+  .shelf-hero__prev,
+  .shelf-hero__next {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--color-muted);
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: color 150ms, background 150ms, border-color 150ms;
+  }
+  .shelf-hero__prev:hover,
+  .shelf-hero__next:hover {
+    color: var(--color-gold);
+    background: rgba(255, 229, 44, 0.08);
+    border-color: rgba(255, 229, 44, 0.3);
+  }
+
+  .shelf-hero__portrait-link { display: block; }
+
+  .shelf-hero__portrait {
+    width: 200px;
+    aspect-ratio: 2/3;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-surface);
+    box-shadow: var(--shadow-hard);
+    flex-shrink: 0;
+  }
+
+  .shelf-hero__portrait-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 300ms ease;
+  }
+
+  .shelf-hero__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    min-width: 0;
+  }
+
+  .shelf-hero__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-muted);
+  }
+
+  .shelf-hero__name {
+    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-weight: 900;
+    color: var(--color-gold);
+    line-height: 1.1;
+    transition: opacity 300ms ease, transform 300ms ease;
+  }
+
+  .shelf-hero__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .shelf-hero__tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1px solid rgba(255, 229, 44, 0.25);
+    border-radius: 12px;
+    color: rgba(255, 229, 44, 0.6);
+    background: rgba(255, 229, 44, 0.05);
+  }
+
+  .shelf-hero__excerpt {
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    line-height: 1.6;
+    margin: 0;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
-  .media-card__star {
-    position: absolute;
-    top: 6px;
-    right: 6px;
+  .shelf-hero__link {
+    font-family: var(--font-mono);
     font-size: 11px;
-    color: var(--color-gold);
-    line-height: 1;
-    text-shadow: 0 0 6px rgba(0,0,0,0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-gold-dim);
+    text-decoration: none;
+    align-self: flex-start;
+    transition: color 150ms;
   }
+  .shelf-hero__link:hover { color: var(--color-gold); }
 
-  /* ── Responsive ────────────────────────────────── */
-  @media (max-width: 480px) {
-    .media-grid {
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: var(--space-sm);
-    }
-    .media-header__count { margin-left: 0; width: 100%; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .media-card { animation: none; }
-    .media-card__img { transition: none; }
-    .media-card__poster { transition: none; }
-  }
-
-  /* ── Fullscreen overlay ────────────────────────── */
-  .media-overlay {
+  /* ── Slide-In Panel ──────────────────────────────── */
+  .shelf-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 110;
-    background: rgba(8, 8, 8, 0.96);
-    animation: overlay-in 350ms var(--animation-easing, ease) both;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 90;
+  }
+  .shelf-backdrop[hidden] { display: none; }
+
+  .shelf-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 360px;
+    z-index: 100;
+    background: var(--color-bg-deep, #0a0a0a);
+    border-left: 1px solid rgba(255, 229, 44, 0.15);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
     outline: none;
   }
-  .media-overlay[hidden] { display: none; }
+  .shelf-panel[hidden] { display: none; }
+  .shelf-panel.is-open { transform: translateX(0); }
 
-  @keyframes overlay-in {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .media-overlay__close {
-    position: absolute;
-    top: var(--space-md, 16px);
-    right: var(--space-lg, 24px);
+  .shelf-panel__close {
+    position: sticky;
+    top: 0;
+    align-self: flex-end;
+    margin: var(--space-md) var(--space-md) 0;
     z-index: 10;
     background: none;
     border: none;
     color: var(--color-muted);
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
     min-width: 44px;
     min-height: 44px;
@@ -343,39 +585,35 @@ const count = sortedShelf.length;
     border-radius: 50%;
     transition: color 150ms, background 150ms;
   }
-  .media-overlay__close:hover {
+  .shelf-panel__close:hover {
     color: var(--color-text);
-    background: rgba(255,255,255,0.06);
+    background: rgba(255, 255, 255, 0.06);
   }
 
-  .media-overlay__inner {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    height: 100%;
+  .shelf-panel__poster {
+    flex-shrink: 0;
     overflow: hidden;
+    background: var(--color-bg-elevated);
   }
-
-  .media-overlay__poster {
-    overflow: hidden;
-    background: #0a0a0a;
-  }
-  .media-overlay__poster-img {
+  .shelf-panel__poster-img {
     width: 100%;
-    height: 100%;
+    aspect-ratio: 2/3;
     object-fit: cover;
     display: block;
+    max-height: 320px;
+    object-position: top;
   }
 
-  .media-overlay__content {
-    overflow-y: auto;
-    padding: var(--space-xl, 40px);
+  .shelf-panel__content {
+    padding: var(--space-lg);
     display: flex;
     flex-direction: column;
-    gap: var(--space-md, 16px);
-    padding-right: calc(var(--space-xl, 40px) + 44px);
+    gap: var(--space-md);
+    flex: 1;
   }
 
-  .ov-type {
+  /* Panel content JS-injected classes */
+  :global(.sp-type) {
     font-family: var(--font-mono);
     font-size: 10px;
     text-transform: uppercase;
@@ -383,344 +621,112 @@ const count = sortedShelf.length;
     color: var(--color-muted);
     margin: 0;
   }
-  .ov-title {
-    font-size: clamp(1.4rem, 3vw, 2rem);
+  :global(.sp-title) {
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
     font-weight: 900;
     color: var(--color-gold);
     line-height: 1.1;
     margin: 0;
   }
-  .ov-tags {
+  :global(.sp-tags) {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
     margin: 0;
   }
-  .ov-tag {
+  :global(.sp-tag) {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 3px 10px;
+    padding: 2px 8px;
     border: 1px solid rgba(255, 229, 44, 0.25);
     border-radius: 12px;
-    color: rgba(255, 229, 44, 0.65);
+    color: rgba(255, 229, 44, 0.6);
     background: rgba(255, 229, 44, 0.05);
   }
-
-  .ov-date {
+  :global(.sp-date) {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 10px;
     color: var(--color-muted);
     margin: 0;
   }
-
-  .ov-loading {
+  :global(.sp-prose) {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 11px;
     color: var(--color-muted);
-    padding: var(--space-lg, 24px) 0;
   }
 
+  .shelf-panel__link {
+    display: block;
+    margin: 0 var(--space-lg) var(--space-xl);
+    padding: 10px 16px;
+    border: 1px solid rgba(255, 229, 44, 0.25);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-gold-dim);
+    text-decoration: none;
+    text-align: center;
+    transition: color 150ms, border-color 150ms, background 150ms;
+  }
+  .shelf-panel__link:hover {
+    color: var(--color-gold);
+    border-color: rgba(255, 229, 44, 0.5);
+    background: rgba(255, 229, 44, 0.05);
+  }
+
+  /* ── Responsive ──────────────────────────────────── */
   @media (max-width: 768px) {
-    .media-overlay__inner {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto 1fr;
-      overflow-y: auto;
-      height: 100%;
+    .shelf-hero {
+      grid-template-columns: auto 1fr auto;
+      grid-template-rows: auto auto;
     }
-    .media-overlay__poster {
-      aspect-ratio: 16/9;
-      height: auto;
+    .shelf-hero__portrait-link {
+      grid-column: 1 / -1;
+      grid-row: 1;
     }
-    .media-overlay__poster-img {
-      object-position: top;
+    .shelf-hero__portrait { width: 100%; max-width: 180px; margin: 0 auto; }
+    .shelf-hero__prev { grid-column: 1; grid-row: 2; }
+    .shelf-hero__info { grid-column: 2; grid-row: 2; }
+    .shelf-hero__next { grid-column: 3; grid-row: 2; }
+
+    .shelf-panel {
+      width: 100vw;
+      top: auto;
+      height: 90vh;
+      border-left: none;
+      border-top: 1px solid rgba(255, 229, 44, 0.15);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      transform: translateY(100%);
     }
-    .media-overlay__content {
-      padding: var(--space-lg, 24px);
-      padding-right: var(--space-lg, 24px);
+    .shelf-panel.is-open { transform: translateY(0); }
+
+    .shelf-grid {
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: var(--space-sm);
     }
+    .shelf-header__count { margin-left: 0; width: 100%; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .media-overlay { animation: none; }
-    .media-overlay__close { transition: none; }
+    .shelf-card { animation: none; }
+    .shelf-card__img,
+    .shelf-card__poster { transition: none; }
+    .shelf-section__header h2 {
+      animation: none;
+      -webkit-text-fill-color: var(--color-text);
+      background: none;
+      color: var(--color-text);
+    }
+    .shelf-hero__portrait-img,
+    .shelf-hero__name { transition: none; }
+    .shelf-panel { transition: none; }
   }
 </style>
 
 <script>
-  import { parseFilterState, buildFilterURL } from '../../utils/mediaGrid/filterEngine';
-
-  type EntryData = {
-    slug: string;
-    title: string;
-    type: string;
-    isFavorite: boolean;
-    emblem: string;
-    tags: string[];
-    publishedAt: string | null;
-    updatedAt: string | null;
-  };
-
-  let activeFetch: AbortController | null = null;
-  let pageCleanup: AbortController | null = null;
-
-  function esc(s: unknown): string {
-    return String(s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
-  function formatEntryDate(publishedAt: string | null, updatedAt: string | null): string {
-    if (!publishedAt) return '';
-    const opts: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' };
-    const pub = new Date(publishedAt);
-    const pubStr = pub.toLocaleDateString('en-US', opts);
-    if (updatedAt) {
-      const upd = new Date(updatedAt);
-      if (upd > pub) {
-        const updStr = upd.toLocaleDateString('en-US', opts);
-        return `${pubStr} · Updated ${updStr}`;
-      }
-    }
-    return pubStr;
-  }
-
-  function updateFilterURL(type: string, favOnly: boolean) {
-    const base = buildFilterURL({ type, favOnly });
-    history.replaceState(null, '', base || location.pathname);
-  }
-
-  function initMediaPage() {
-    pageCleanup?.abort();
-    pageCleanup = new AbortController();
-    document.body.style.overflow = ''; // reset in case page navigated while overlay was open
-    const grid = document.getElementById('media-grid');
-    const overlay = document.getElementById('media-overlay') as HTMLElement | null;
-    const overlayImg = document.getElementById('media-overlay-img') as HTMLImageElement | null;
-    const overlayContent = document.getElementById('media-overlay-content') as HTMLElement | null;
-    const closeBtn = document.getElementById('media-overlay-close');
-    const entryDataEl = document.getElementById('entry-data');
-
-    if (!grid) return;
-
-    let entries: EntryData[] = [];
-    if (entryDataEl) {
-      try { entries = JSON.parse(entryDataEl.dataset.entries || '[]'); } catch {}
-    }
-    const entryMap = new Map(entries.map((e) => [e.slug, e]));
-
-    const { type: initialType, favOnly: initialFav } = parseFilterState(location.search);
-    const params = new URLSearchParams(location.search);
-    const initialOpen = params.get('open') || null;
-    let activeType = initialType;
-    let favOnly = initialFav;
-    let isFirstFilter = true;
-    let previouslyFocused: HTMLElement | null = null;
-    let overlayPushedHistory = false;
-
-    function applyFilters() {
-      const cards = grid!.querySelectorAll<HTMLElement>('.media-card');
-      let visibleIndex = 0;
-      const shouldAnimate = !isFirstFilter;
-      isFirstFilter = false;
-
-      cards.forEach((card) => {
-        const type = card.dataset.type ?? '';
-        const isFav = card.dataset.fav === 'true';
-        const typeMatch = activeType === 'all' || type === activeType;
-        const favMatch = !favOnly || isFav;
-        const visible = typeMatch && favMatch;
-        card.dataset.hidden = visible ? 'false' : 'true';
-        if (visible) {
-          card.style.setProperty('--card-index', String(visibleIndex));
-          visibleIndex++;
-          if (shouldAnimate) {
-            card.style.animation = 'none';
-            void card.offsetWidth;
-            card.style.animation = '';
-          }
-        }
-      });
-
-      const countEl = document.querySelector<HTMLElement>('.media-header__count');
-      if (countEl) countEl.textContent = `${visibleIndex} entries`;
-    }
-
-    const typeTabs = document.querySelectorAll<HTMLButtonElement>('[data-filter-type]');
-    typeTabs.forEach((tab) => {
-      const isActive = tab.dataset.filterType === initialType;
-      tab.classList.toggle('is-active', isActive);
-      tab.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-      tab.addEventListener('click', () => {
-        const type = tab.dataset.filterType ?? 'all';
-        activeType = type;
-        typeTabs.forEach((t) => {
-          const active = t.dataset.filterType === type;
-          t.classList.toggle('is-active', active);
-          t.setAttribute('aria-pressed', active ? 'true' : 'false');
-        });
-        updateFilterURL(activeType, favOnly);
-        applyFilters();
-      });
-    });
-
-    const favTab = document.querySelector<HTMLButtonElement>('[data-filter-fav]');
-    if (favTab) {
-      favTab.classList.toggle('is-active', initialFav);
-      favTab.setAttribute('aria-pressed', initialFav ? 'true' : 'false');
-      favTab.addEventListener('click', () => {
-        favOnly = !favOnly;
-        favTab.classList.toggle('is-active', favOnly);
-        favTab.setAttribute('aria-pressed', favOnly ? 'true' : 'false');
-        updateFilterURL(activeType, favOnly);
-        applyFilters();
-      });
-    }
-
-    applyFilters();
-
-    function openOverlay(slug: string, entry: EntryData) {
-      if (!overlay || !overlayImg || !overlayContent) return;
-
-      activeFetch?.abort();
-      activeFetch = new AbortController();
-
-      overlayImg.src = entry.emblem;
-      overlayImg.alt = entry.title;
-
-      const dateStr = formatEntryDate(entry.publishedAt, entry.updatedAt);
-
-      overlayContent.innerHTML = `
-        <p class="ov-type">${esc(entry.type)}</p>
-        <h2 class="ov-title">${esc(entry.title)}</h2>
-        ${entry.tags.length
-          ? `<div class="ov-tags">${entry.tags.map((t) => `<span class="ov-tag">${esc(t)}</span>`).join('')}</div>`
-          : ''}
-        ${dateStr ? `<p class="ov-date">${esc(dateStr)}</p>` : ''}
-        <div class="ov-loading" id="ov-prose">Loading…</div>
-      `;
-
-      const loadingEl = overlayContent.querySelector<HTMLElement>('#ov-prose');
-
-      overlay.hidden = false;
-      document.body.style.overflow = 'hidden';
-      overlay.focus();
-
-      fetch(`/shelf/${encodeURIComponent(slug)}`, { signal: activeFetch.signal })
-        .then((r) => {
-          if (!r.ok) throw new Error(`${r.status}`);
-          return r.text();
-        })
-        .then((html) => {
-          const doc = new DOMParser().parseFromString(html, 'text/html');
-          const prose = doc.querySelector('.entry__content');
-          if (loadingEl) {
-            if (prose) {
-              loadingEl.replaceWith(prose);
-            } else {
-              loadingEl.remove();
-            }
-          }
-        })
-        .catch((err) => {
-          if (err.name === 'AbortError') return;
-          if (loadingEl) {
-            loadingEl.textContent = 'Could not load entry.';
-            loadingEl.removeAttribute('id');
-          }
-        });
-    }
-
-    function closeOverlay(fromPop = false) {
-      if (!overlay) return;
-      overlay.hidden = true;
-      document.body.style.overflow = '';
-      activeFetch?.abort();
-
-      if (!fromPop) {
-        if (overlayPushedHistory) {
-          history.back();
-        } else {
-          const filterURL = buildFilterURL({ type: activeType, favOnly });
-          history.replaceState(null, '', '/shelf' + filterURL);
-        }
-      }
-      overlayPushedHistory = false;
-
-      previouslyFocused?.focus();
-      previouslyFocused = null;
-    }
-
-    if (overlay) {
-      const cards = grid.querySelectorAll<HTMLAnchorElement>('.media-card');
-      cards.forEach((card) => {
-        card.addEventListener('click', (e) => {
-          const slug = card.dataset.slug;
-          if (!slug) return;
-          const entry = entryMap.get(slug);
-          if (!entry) return;
-          e.preventDefault();
-          previouslyFocused = card;
-          history.pushState(null, '', `/shelf/${encodeURIComponent(slug)}`);
-          overlayPushedHistory = true;
-          openOverlay(slug, entry);
-        });
-      });
-
-      closeBtn?.addEventListener('click', (e) => { e.stopPropagation(); closeOverlay(); });
-
-      // Focus trap
-      overlay.addEventListener('keydown', (e: KeyboardEvent) => {
-        if (e.key !== 'Tab') return;
-        const focusable = Array.from(
-          overlay.querySelectorAll<HTMLElement>(
-            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-          )
-        );
-        if (focusable.length === 0) return;
-        if (focusable.length === 1) { e.preventDefault(); return; }
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        if (e.shiftKey) {
-          if (document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
-          }
-        } else {
-          if (document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-          }
-        }
-      }, { signal: pageCleanup!.signal });
-
-      document.addEventListener('keydown', (e: KeyboardEvent) => {
-        if (e.key === 'Escape' && !overlay.hidden) closeOverlay();
-      }, { signal: pageCleanup!.signal });
-
-      window.addEventListener('popstate', () => {
-        if (!overlay.hidden) closeOverlay(true);
-      }, { signal: pageCleanup!.signal });
-
-      overlay.addEventListener('click', (e) => {
-        const content = document.getElementById('media-overlay-content');
-        if (content && !content.contains(e.target as Node)) closeOverlay();
-      }, { signal: pageCleanup!.signal });
-
-      if (initialOpen) {
-        const entry = entryMap.get(initialOpen);
-        if (entry) {
-          history.replaceState(null, '', `/shelf/${encodeURIComponent(initialOpen)}`);
-          overlayPushedHistory = false;
-          previouslyFocused = grid.querySelector<HTMLElement>(`[data-slug="${initialOpen}"]`) ?? document.body as HTMLElement;
-          openOverlay(initialOpen, entry);
-        }
-      }
-    }
-  }
-
-  document.addEventListener('astro:page-load', initMediaPage);
+  // Panel, carousel, and jumpbar JS added in Tasks 5–7
 </script>
