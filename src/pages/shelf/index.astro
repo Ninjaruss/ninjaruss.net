@@ -728,5 +728,172 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
 </style>
 
 <script>
-  // Panel, carousel, and jumpbar JS added in Tasks 5–7
+  type EntryData = {
+    slug: string;
+    title: string;
+    type: string;
+    isFavorite: boolean;
+    emblem: string;
+    tags: string[];
+    publishedAt: string | null;
+    updatedAt: string | null;
+  };
+
+  let activeFetch: AbortController | null = null;
+  let pageCleanup: AbortController | null = null;
+
+  function esc(s: unknown): string {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function formatDate(pub: string | null, upd: string | null): string {
+    if (!pub) return '';
+    const opts: Intl.DateTimeFormatOptions = {
+      year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
+    };
+    const pubStr = new Date(pub).toLocaleDateString('en-US', opts);
+    if (upd) {
+      const updDate = new Date(upd);
+      if (updDate > new Date(pub)) {
+        return `${pubStr} · Updated ${updDate.toLocaleDateString('en-US', opts)}`;
+      }
+    }
+    return pubStr;
+  }
+
+  function initShelfPage() {
+    pageCleanup?.abort();
+    pageCleanup = new AbortController();
+    document.body.style.overflow = '';
+
+    const entryDataEl = document.getElementById('entry-data');
+    let entries: EntryData[] = [];
+    try { entries = JSON.parse(entryDataEl?.dataset.entries || '[]'); } catch {}
+    const entryMap = new Map(entries.map(e => [e.slug, e]));
+
+    const backdrop = document.getElementById('shelf-backdrop') as HTMLElement | null;
+    const panel    = document.getElementById('shelf-panel') as HTMLElement | null;
+    const closeBtn = document.getElementById('shelf-panel-close');
+    const panelImg = document.getElementById('shelf-panel-img') as HTMLImageElement | null;
+    const panelContent = document.getElementById('shelf-panel-content') as HTMLElement | null;
+    const panelLink = document.getElementById('shelf-panel-link') as HTMLAnchorElement | null;
+
+    if (!panel || !backdrop) return;
+
+    let previouslyFocused: HTMLElement | null = null;
+    let panelPushedHistory = false;
+
+    function openPanel(slug: string) {
+      const entry = entryMap.get(slug);
+      if (!entry || !panelImg || !panelContent || !panelLink) return;
+
+      activeFetch?.abort();
+      activeFetch = new AbortController();
+
+      panelImg.src = entry.emblem;
+      panelImg.alt = entry.title;
+      panelLink.href = `/shelf/${encodeURIComponent(slug)}`;
+
+      const dateStr = formatDate(entry.publishedAt, entry.updatedAt);
+      panelContent.innerHTML = `
+        <p class="sp-type">${esc(entry.type)}</p>
+        <h2 class="sp-title">${esc(entry.title)}</h2>
+        ${entry.tags.length
+          ? `<div class="sp-tags">${entry.tags.map(t => `<span class="sp-tag">${esc(t)}</span>`).join('')}</div>`
+          : ''}
+        ${dateStr ? `<p class="sp-date">${esc(dateStr)}</p>` : ''}
+        <div class="sp-prose" id="sp-prose-body">Loading…</div>
+      `;
+
+      const proseEl = panelContent.querySelector<HTMLElement>('#sp-prose-body');
+
+      panel.hidden = false;
+      backdrop.hidden = false;
+      // rAF so the display:none removal happens before the transition fires
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => panel.classList.add('is-open'));
+      });
+      document.body.style.overflow = 'hidden';
+      panel.focus();
+
+      fetch(`/shelf/${encodeURIComponent(slug)}`, { signal: activeFetch.signal })
+        .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.text(); })
+        .then(html => {
+          const doc = new DOMParser().parseFromString(html, 'text/html');
+          const prose = doc.querySelector('.entry__content');
+          if (proseEl) {
+            if (prose) proseEl.replaceWith(prose);
+            else proseEl.remove();
+          }
+        })
+        .catch(err => {
+          if (err.name === 'AbortError') return;
+          if (proseEl) {
+            proseEl.textContent = 'Could not load entry.';
+            proseEl.removeAttribute('id');
+          }
+        });
+    }
+
+    function closePanel(fromPop = false) {
+      panel.classList.remove('is-open');
+      document.body.style.overflow = '';
+      activeFetch?.abort();
+
+      // Wait for slide-out transition before hiding
+      panel.addEventListener('transitionend', () => {
+        panel.hidden = true;
+        backdrop.hidden = true;
+      }, { once: true });
+
+      if (!fromPop) {
+        if (panelPushedHistory) history.back();
+        else history.replaceState(null, '', '/shelf');
+      }
+      panelPushedHistory = false;
+      previouslyFocused?.focus();
+      previouslyFocused = null;
+    }
+
+    // Card click — intercept and open panel instead of navigating
+    document.querySelectorAll<HTMLAnchorElement>('.shelf-card').forEach(card => {
+      card.addEventListener('click', e => {
+        const slug = card.dataset.slug;
+        if (!slug) return;
+        e.preventDefault();
+        previouslyFocused = card;
+        history.pushState(null, '', `/shelf/${encodeURIComponent(slug)}`);
+        panelPushedHistory = true;
+        openPanel(slug);
+      }, { signal: pageCleanup!.signal });
+    });
+
+    // Close on backdrop click, ✕ button, ESC, popstate
+    backdrop.addEventListener('click', () => closePanel(), { signal: pageCleanup!.signal });
+    closeBtn?.addEventListener('click', () => closePanel(), { signal: pageCleanup!.signal });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && !panel.hidden) closePanel();
+    }, { signal: pageCleanup!.signal });
+    window.addEventListener('popstate', () => {
+      if (!panel.hidden) closePanel(true);
+    }, { signal: pageCleanup!.signal });
+
+    // Open on initial ?open= param (legacy compat)
+    const params = new URLSearchParams(location.search);
+    const initialOpen = params.get('open');
+    if (initialOpen && entryMap.has(initialOpen)) {
+      history.replaceState(null, '', `/shelf/${encodeURIComponent(initialOpen)}`);
+      panelPushedHistory = false;
+      previouslyFocused =
+        document.querySelector<HTMLElement>(`[data-slug="${initialOpen}"]`) ??
+        (document.body as HTMLElement);
+      openPanel(initialOpen);
+    }
+
+    // Carousel and jumpbar JS added in Tasks 6–7
+  }
+
+  document.addEventListener('astro:page-load', initShelfPage);
 </script>
