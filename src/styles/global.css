@@ -243,3 +243,38 @@ ul, ol {
   pointer-events: none;
   z-index: 1000;
 }
+
+/* ── Shelf / Homepage section dividers ───────────────── */
+.shelf-divider {
+  height: 36px;
+  background: var(--color-bg-base);
+  clip-path: polygon(0 0, 100% 12px, 100% 100%, 0 100%);
+  position: relative;
+  pointer-events: none;
+}
+
+.shelf-divider::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 229, 44, 0.18) 0%,
+    rgba(255, 229, 44, 0.06) 60%,
+    transparent 100%
+  );
+}
+
+.shelf-divider--flip {
+  clip-path: polygon(0 12px, 100% 0, 100% 100%, 0 100%);
+}
+
+.shelf-divider--flip::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 229, 44, 0.06) 40%,
+    rgba(255, 229, 44, 0.18) 100%
+  );
+}
