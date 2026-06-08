@@ -421,15 +421,15 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       setSidebarCollapsed(localStorage.getItem(LS_KEY) === 'true', true);
     }
 
+    // ── Tab click ────────────────────────────────────────────────────
+    const tabsAc = new AbortController();
+
     tabBtn?.addEventListener('click', () => {
       if (window.innerWidth <= 768) return;
       const nowCollapsed = !sidebar.classList.contains('is-collapsed');
       setSidebarCollapsed(nowCollapsed);
       localStorage.setItem(LS_KEY, String(nowCollapsed));
     }, { signal: tabsAc.signal });
-
-    // ── Tab click ────────────────────────────────────────────────────
-    const tabsAc = new AbortController();
     const tabsEl = document.getElementById('filter-tabs');
     tabsEl?.addEventListener('click', (e) => {
       const tab = (e.target as Element).closest<HTMLElement>('.filter-tab');
