@@ -2,7 +2,7 @@
 title: "Journal with Witch"
 emblem: "/images/media/journal-with-witch.jpg"
 content_type: "anime"
-isFavorite: true
+isFavorite: false
 ---
 
 Why am I tearing up? 

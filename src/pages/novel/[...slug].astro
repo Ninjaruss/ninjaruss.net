@@ -434,6 +434,10 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     tabsEl?.addEventListener('click', (e) => {
       const tab = (e.target as Element).closest<HTMLElement>('.filter-tab');
       if (!tab?.dataset.folder) return;
+      if (sidebar.classList.contains('is-collapsed')) {
+        setSidebarCollapsed(false);
+        localStorage.setItem(LS_KEY, 'false');
+      }
       switchFolder(tab.dataset.folder, tree, sidebar, content);
     }, { signal: tabsAc.signal });
 
@@ -442,6 +446,10 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       const tab = (e.target as Element).closest<HTMLElement>('.filter-tab');
       if (!tab?.dataset.folder) return;
       e.preventDefault();
+      if (sidebar.classList.contains('is-collapsed')) {
+        setSidebarCollapsed(false);
+        localStorage.setItem(LS_KEY, 'false');
+      }
       switchFolder(tab.dataset.folder, tree, sidebar, content);
     }, { signal: tabsAc.signal });
 
