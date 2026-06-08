@@ -222,11 +222,11 @@
 .sidebar-file {
   display: block;
   width: 100%;
-  padding: 5px 12px 5px 24px;
+  padding: 9px 16px 9px 28px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  text-transform: none;
   color: rgba(200,215,235,0.45);
   background: none;
   border: none;
@@ -248,15 +248,15 @@
   color: rgba(var(--panel-accent-rgb, 255,229,44), 0.92);
   background: rgba(var(--panel-accent-rgb, 255,229,44), 0.055);
   border-left-color: rgba(var(--panel-accent-rgb, 255,229,44), 0.6);
-  padding-left: 22px;
+  padding-left: 26px;
 }
 
 /* Flat file list (no subfolder groups — used by Themes, Locations) */
 .novel-sidebar > .sidebar-file {
-  padding-left: 14px;
+  padding-left: 18px;
 }
 .novel-sidebar > .sidebar-file.is-active {
-  padding-left: 12px;
+  padding-left: 16px;
 }
 
 /* ══ Content panel ══ */
