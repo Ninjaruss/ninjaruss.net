@@ -763,6 +763,100 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     return pubStr;
   }
 
+  type CharData = {
+    slug: string;
+    title: string;
+    emblem: string;
+    tags: string[];
+    excerpt: string;
+    publishedAt: string | null;
+  };
+
+  function initCharacterHero() {
+    const hero = document.querySelector<HTMLElement>('.shelf-hero');
+    if (!hero) return;
+
+    let chars: CharData[] = [];
+    try { chars = JSON.parse(hero.dataset.characters || '[]'); } catch {}
+    if (chars.length <= 1) return;
+
+    let current = 0;
+    let timer: ReturnType<typeof setInterval> | null = null;
+
+    const img       = hero.querySelector<HTMLImageElement>('.shelf-hero__portrait-img');
+    const nameEl    = hero.querySelector<HTMLElement>('.shelf-hero__name');
+    const eyebrow   = hero.querySelector<HTMLElement>('.shelf-hero__eyebrow');
+    const excerptEl = hero.querySelector<HTMLElement>('.shelf-hero__excerpt');
+    const tagsEl    = hero.querySelector<HTMLElement>('.shelf-hero__tags');
+    const readLink  = hero.querySelector<HTMLAnchorElement>('.shelf-hero__link');
+    const portLink  = hero.querySelector<HTMLAnchorElement>('.shelf-hero__portrait-link');
+    const prevBtn   = hero.querySelector<HTMLButtonElement>('.shelf-hero__prev');
+    const nextBtn   = hero.querySelector<HTMLButtonElement>('.shelf-hero__next');
+
+    function show(index: number) {
+      const c = chars[index];
+      if (!c || !img || !nameEl || !eyebrow || !excerptEl || !tagsEl || !readLink || !portLink) return;
+
+      img.style.opacity = '0';
+      setTimeout(() => {
+        img.src = c.emblem;
+        img.alt = c.title;
+        img.style.opacity = '1';
+      }, 150);
+
+      nameEl.style.transform = 'translateX(-8px)';
+      nameEl.style.opacity = '0';
+      setTimeout(() => {
+        nameEl.textContent = c.title;
+        nameEl.style.transform = '';
+        nameEl.style.opacity = '1';
+      }, 150);
+
+      excerptEl.textContent = c.excerpt || '';
+      tagsEl.innerHTML = c.tags
+        .map(t => `<span class="shelf-hero__tag">${t.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</span>`)
+        .join('');
+      eyebrow.textContent = `character · ${index + 1} / ${chars.length}`;
+      readLink.href = `/shelf/${encodeURIComponent(c.slug)}`;
+      portLink.href = `/shelf/${encodeURIComponent(c.slug)}`;
+    }
+
+    function advance(dir: 1 | -1) {
+      current = (current + dir + chars.length) % chars.length;
+      show(current);
+    }
+
+    function startTimer() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      timer = setInterval(() => advance(1), 5000);
+    }
+
+    function stopTimer() {
+      if (timer !== null) { clearInterval(timer); timer = null; }
+    }
+
+    prevBtn?.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      stopTimer();
+      advance(-1);
+      startTimer();
+    });
+
+    nextBtn?.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      stopTimer();
+      advance(1);
+      startTimer();
+    });
+
+    hero.addEventListener('mouseenter', stopTimer);
+    hero.addEventListener('mouseleave', startTimer);
+
+    startTimer();
+  }
+
   function initShelfPage() {
     pageCleanup?.abort();
     pageCleanup = new AbortController();
@@ -892,7 +986,8 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
       openPanel(initialOpen);
     }
 
-    // Carousel and jumpbar JS added in Tasks 6–7
+    initCharacterHero();
+    // Jumpbar JS added in Task 7
   }
 
   document.addEventListener('astro:page-load', initShelfPage);
