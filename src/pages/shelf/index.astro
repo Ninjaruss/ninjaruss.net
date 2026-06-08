@@ -802,7 +802,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
         img.src = c.emblem;
         img.alt = c.title;
         img.style.opacity = '1';
-      }, 150);
+      }, 200);
 
       nameEl.style.transform = 'translateX(-8px)';
       nameEl.style.opacity = '0';
@@ -810,11 +810,11 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
         nameEl.textContent = c.title;
         nameEl.style.transform = '';
         nameEl.style.opacity = '1';
-      }, 150);
+      }, 200);
 
       excerptEl.textContent = c.excerpt || '';
       tagsEl.innerHTML = c.tags
-        .map(t => `<span class="shelf-hero__tag">${t.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</span>`)
+        .map(t => `<span class="shelf-hero__tag">${esc(t)}</span>`)
         .join('');
       eyebrow.textContent = `character · ${index + 1} / ${chars.length}`;
       readLink.href = `/shelf/${encodeURIComponent(c.slug)}`;
@@ -841,7 +841,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
       stopTimer();
       advance(-1);
       startTimer();
-    });
+    }, { signal: pageCleanup!.signal });
 
     nextBtn?.addEventListener('click', e => {
       e.preventDefault();
@@ -849,10 +849,12 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
       stopTimer();
       advance(1);
       startTimer();
-    });
+    }, { signal: pageCleanup!.signal });
 
-    hero.addEventListener('mouseenter', stopTimer);
-    hero.addEventListener('mouseleave', startTimer);
+    hero.addEventListener('mouseenter', stopTimer, { signal: pageCleanup!.signal });
+    hero.addEventListener('mouseleave', startTimer, { signal: pageCleanup!.signal });
+
+    pageCleanup!.signal.addEventListener('abort', stopTimer);
 
     startTimer();
   }
