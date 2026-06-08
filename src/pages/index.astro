@@ -87,7 +87,7 @@ const novelLastModifiedISO = novelLastModified?.toISOString() ?? null;
 
 // Stream tile data
 const streamSessions = await getCollection('stream', ({ data }) => !data.draft);
-const streamTallies = tallyStats(streamSessions, 'all');
+const streamTallies = tallyStats(streamSessions, 'recent');
 const streamSessionCount = streamSessions.length;
 
 const STAT_COLORS = {
@@ -212,9 +212,6 @@ const latestEntries = sameDateEntries.map(entry => ({
           {nowMonthYearLocal !== nowMonthYearUTC ? ` — ${nowMonthYearLocal} locally` : ''}
         </span>
       </BentoTile>
-
-      <!-- Diagonal divider — row 1 → rows 2-3 -->
-      <div class="shelf-divider" style="grid-column: 1 / -1;" aria-hidden="true"></div>
 
       <!-- Rows 2-3: Showcase (3×2) + Notes (2×2) + Favorites (1×2) -->
       <BentoTile
@@ -365,9 +362,6 @@ const latestEntries = sameDateEntries.map(entry => ({
           <span id="st-live-badge" class="st-live-badge" hidden>LIVE</span>
         </div>
       </a>
-
-      <!-- Diagonal divider — rows 2-3 → rows 4-5 -->
-      <div class="shelf-divider shelf-divider--flip" style="grid-column: 1 / -1;" aria-hidden="true"></div>
 
       <!-- Rows 4-5: Media (2×2) + Latest (2×1) + Novel (1×2) + MAL/Spotify (stacked 1×1) -->
       <BentoTile
