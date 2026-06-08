@@ -392,6 +392,42 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
     const sidebar = document.getElementById('novel-sidebar')!;
     const content = document.getElementById('novel-content')!;
 
+    // ── Collapse toggle ──────────────────────────────────────────────
+    const LS_KEY = 'novel-sidebar-collapsed';
+    const tabBtn = document.getElementById('sidebar-tab') as HTMLButtonElement | null;
+
+    function setSidebarCollapsed(collapsed: boolean, skipTransition = false): void {
+      if (skipTransition) {
+        sidebar.style.transition = 'none';
+        if (tabBtn) tabBtn.style.transition = 'none';
+        sidebar.offsetHeight; // force reflow so transition is bypassed
+      }
+      sidebar.classList.toggle('is-collapsed', collapsed);
+      if (tabBtn) {
+        tabBtn.classList.toggle('is-collapsed', collapsed);
+        tabBtn.setAttribute('aria-label', collapsed ? 'Show navigation' : 'Hide navigation');
+        tabBtn.textContent = collapsed ? '▶ show' : '◀ hide';
+      }
+      if (skipTransition) {
+        requestAnimationFrame(() => {
+          sidebar.style.transition = '';
+          if (tabBtn) tabBtn.style.transition = '';
+        });
+      }
+    }
+
+    // Restore persisted collapsed state without animation
+    if (window.innerWidth > 768) {
+      setSidebarCollapsed(localStorage.getItem(LS_KEY) === 'true', true);
+    }
+
+    tabBtn?.addEventListener('click', () => {
+      if (window.innerWidth <= 768) return;
+      const nowCollapsed = !sidebar.classList.contains('is-collapsed');
+      setSidebarCollapsed(nowCollapsed);
+      localStorage.setItem(LS_KEY, String(nowCollapsed));
+    });
+
     // ── Tab click ────────────────────────────────────────────────────
     const tabsAc = new AbortController();
     const tabsEl = document.getElementById('filter-tabs');
