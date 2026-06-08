@@ -87,7 +87,7 @@ const novelLastModifiedISO = novelLastModified?.toISOString() ?? null;
 
 // Stream tile data
 const streamSessions = await getCollection('stream', ({ data }) => !data.draft);
-const streamTallies = tallyStats(streamSessions, 'recent');
+const streamTallies = tallyStats(streamSessions, 'all');
 const streamSessionCount = streamSessions.length;
 
 const STAT_COLORS = {
