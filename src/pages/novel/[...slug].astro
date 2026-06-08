@@ -426,7 +426,7 @@ const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : nul
       const nowCollapsed = !sidebar.classList.contains('is-collapsed');
       setSidebarCollapsed(nowCollapsed);
       localStorage.setItem(LS_KEY, String(nowCollapsed));
-    });
+    }, { signal: tabsAc.signal });
 
     // ── Tab click ────────────────────────────────────────────────────
     const tabsAc = new AbortController();
