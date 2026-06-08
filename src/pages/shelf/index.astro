@@ -859,6 +859,41 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     startTimer();
   }
 
+  function initJumpbar() {
+    const jumpbar  = document.querySelector<HTMLElement>('.shelf-jumpbar');
+    if (!jumpbar) return;
+
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('.shelf-section[id]'));
+    const links    = Array.from(jumpbar.querySelectorAll<HTMLAnchorElement>('a.shelf-jumpbar__link'));
+
+    if (sections.length === 0 || links.length === 0) return;
+
+    function setActive(id: string) {
+      links.forEach(link => {
+        const active = link.getAttribute('href') === `#${id}`;
+        link.classList.toggle('is-active', active);
+        link.setAttribute('aria-current', active ? 'true' : 'false');
+      });
+    }
+
+    // Activate the first section on load
+    setActive(sections[0].id);
+
+    const observer = new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+            break;
+          }
+        }
+      },
+      { rootMargin: '-10% 0px -60% 0px' }
+    );
+
+    sections.forEach(s => observer.observe(s));
+  }
+
   function initShelfPage() {
     pageCleanup?.abort();
     pageCleanup = new AbortController();
@@ -989,7 +1024,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     }
 
     initCharacterHero();
-    // Jumpbar JS added in Task 7
+    initJumpbar();
   }
 
   document.addEventListener('astro:page-load', initShelfPage);
