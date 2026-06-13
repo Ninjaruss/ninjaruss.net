@@ -1,36 +1,22 @@
 ---
 import { getCollection } from 'astro:content';
-import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NavPill from '../components/NavPill.astro';
-import ObjectivesBillboard from '../components/ObjectivesBillboard.astro';
-import { parseObjectives } from '../utils/objectives';
 
-// Get the latest now entry from the collection
 const allNowPosts = await getCollection('now', ({ data }) => !data.draft);
 const sortedPosts = allNowPosts.sort((a, b) =>
   b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
 );
 const latestPost = sortedPosts[0];
 
-// Render the markdown content
 const { Content } = await latestPost.render();
 
-// Format date in UTC for consistency
 const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
-  timeZone: 'UTC', // Force UTC
+  timeZone: 'UTC',
   year: 'numeric',
   month: 'long',
   day: 'numeric',
 });
-
-// Load objectives billboard
-const objectivesPath = join(process.cwd(), 'src/content/now/_objectives.md');
-const objectivesSections = existsSync(objectivesPath)
-  ? parseObjectives(readFileSync(objectivesPath, 'utf-8'))
-  : null;
-
 ---
 
 <BaseLayout title="Now" description="What I'm currently focused on.">
@@ -50,10 +36,6 @@ const objectivesSections = existsSync(objectivesPath)
           <p class="now__entry-title">{latestPost.data.title}</p>
         )}
       </header>
-
-      {objectivesSections && objectivesSections.length > 0 && (
-        <ObjectivesBillboard sections={objectivesSections} />
-      )}
 
       <div class="now__content prose">
         <Content />
