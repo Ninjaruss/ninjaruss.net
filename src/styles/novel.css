@@ -40,7 +40,7 @@
 .title-text-group { display: flex; flex-direction: column; }
 
 .title-eyebrow {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -50,7 +50,7 @@
 }
 
 .title-main {
-  font-family: 'Archivo Black', 'Arial Black', sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(1.5rem, 3.5vw, 2.4rem);
   font-weight: 900;
   letter-spacing: 0.06em;
@@ -79,7 +79,7 @@
 }
 
 .title-reflection {
-  font-family: 'Archivo Black', 'Arial Black', sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(1.5rem, 3.5vw, 2.4rem);
   font-weight: 900;
   letter-spacing: 0.06em;
@@ -107,7 +107,7 @@
 }
 
 .filter-tab {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -191,7 +191,7 @@
   gap: 6px;
   width: 100%;
   padding: 7px 12px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -223,7 +223,7 @@
   display: block;
   width: 100%;
   padding: 9px 16px 9px 28px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.82rem;
   letter-spacing: 0.03em;
   text-transform: none;
@@ -267,7 +267,7 @@
   transform: translateY(-50%);
   z-index: 10;
   writing-mode: vertical-lr;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.6rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -325,7 +325,7 @@
   background: rgba(var(--panel-accent-rgb, 122,184,255), 0.5);
 }
 .content-placeholder-text {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.55rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -333,7 +333,7 @@
 }
 
 .content-breadcrumb {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -342,7 +342,7 @@
 }
 
 .content-title {
-  font-family: 'Archivo Black', 'Arial Black', sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(1.5rem, 3vw, 2.4rem);
   font-weight: 900;
   line-height: 1.05;
@@ -351,7 +351,7 @@
 }
 
 .content-date {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.08em;
   color: rgba(var(--panel-accent-rgb, 255,229,44), 0.4);
@@ -365,7 +365,7 @@
 }
 
 .content-body {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.85;
   color: rgba(200,215,235,0.85);
@@ -375,7 +375,7 @@
 .content-body em { color: rgba(200,215,235,0.65); }
 .content-body h2,
 .content-body h3 {
-  font-family: 'Archivo Black', sans-serif;
+  font-family: var(--font-display);
   color: rgba(var(--panel-accent-rgb, 200,220,255), 0.9);
   margin: 2em 0 0.75em;
   font-size: 1.1rem;
@@ -404,7 +404,7 @@
   vertical-align: top;
 }
 .content-body th {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;

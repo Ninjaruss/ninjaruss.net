@@ -33,7 +33,7 @@
   font-size: 0.85rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #ffe52c;
+  color: var(--color-gold);
   padding: 10px 14px;
   margin-bottom: 24px;
   border: 1px solid rgba(255, 229, 44, 0.3);
@@ -65,7 +65,7 @@
   border-radius: 4px;
   background: rgba(255, 229, 44, 0.07);
   border: 1px solid rgba(255, 229, 44, 0.12);
-  border-left: 3px solid #ffe52c;
+  border-left: 3px solid var(--color-gold);
   pointer-events: none;
   transition: top 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 0;
@@ -90,7 +90,7 @@
   user-select: none;
 }
 .s-tab:hover { color: #aaa; }
-.s-tab.active { color: #ffe52c; }
+.s-tab.active { color: var(--color-gold); }
 
 /* ── Content area ────────────────────────────────────────── */
 .s-content {
@@ -262,7 +262,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #ffe52c;
+  color: var(--color-gold);
   margin-bottom: 2px;
 }
 .s-date-num {
@@ -296,7 +296,7 @@
   position: absolute;
   left: 0; top: 0; bottom: 0;
   width: 4px;
-  background: linear-gradient(to bottom, transparent, #ffe52c 20%, #ffe52c 80%, transparent);
+  background: linear-gradient(to bottom, transparent, var(--color-gold) 20%, var(--color-gold) 80%, transparent);
   opacity: 0.8;
 }
 .s-objective::after {
@@ -367,7 +367,7 @@
 .s-toggle-btn:hover { color: #ccc; border-color: #444; }
 .s-toggle-btn.active {
   background: rgba(255, 229, 44, 0.08);
-  color: #ffe52c;
+  color: var(--color-gold);
   border-color: rgba(255, 229, 44, 0.3);
 }
 
@@ -389,12 +389,12 @@
 }
 .s-radar-poly-recent {
   fill: rgba(255, 229, 44, 0.07);
-  stroke: #ffe52c;
+  stroke: var(--color-gold);
   stroke-width: 2.5;
 }
 .s-radar-poly-all.is-primary {
   fill: rgba(255, 229, 44, 0.07);
-  stroke: #ffe52c;
+  stroke: var(--color-gold);
   stroke-width: 2.5;
   stroke-dasharray: none;
 }
@@ -591,7 +591,7 @@
   font-size: 0.6rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #ffe52c;
+  color: var(--color-gold);
   margin-bottom: 2px;
 }
 .j-entry-day-num {

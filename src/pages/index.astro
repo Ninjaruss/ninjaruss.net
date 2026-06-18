@@ -472,8 +472,12 @@ const latestEntries = sameDateEntries.map(entry => ({
       </a>
 
       <!-- Row 5 fillers — fill cols 4 and 6 left empty by Latest (2×1) and MAL (1×1) -->
-      <div class="bento-tile bento-tile--static filler-tile" aria-hidden="true"></div>
-      <div class="bento-tile bento-tile--static filler-tile" aria-hidden="true"></div>
+      <div class="bento-tile bento-tile--static filler-tile" aria-hidden="true">
+        <span class="filler-tile__diamond">◆</span>
+      </div>
+      <div class="bento-tile bento-tile--static filler-tile" aria-hidden="true">
+        <span class="filler-tile__diamond">◆</span>
+      </div>
     </BentoGrid>
   </div>
 </BaseLayout>
@@ -1433,12 +1437,21 @@ const latestEntries = sameDateEntries.map(entry => ({
     border-color: var(--color-gold);
   }
 
-  /* Row 5 filler tiles — invisible grid spacers */
+  /* Row 5 filler tiles — intentional decorative spacers */
   .filler-tile {
     pointer-events: none;
     user-select: none;
     min-height: 0;
-    opacity: 0.15;
+    opacity: 0.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .filler-tile__diamond {
+    font-size: 1.25rem;
+    color: var(--color-gold-dim);
+    opacity: 0.4;
   }
 
   /* Reduced Motion Support */

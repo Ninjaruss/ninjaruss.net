@@ -97,7 +97,7 @@ const hasInitialContent = Astro.slots.has('detail');
               </svg>
             </div>
             <p class="split-view__placeholder-title">Choose an entry</p>
-            <p class="split-view__placeholder-hint">or press <kbd>⌘K</kbd> to search</p>
+            <p class="split-view__placeholder-hint">or press <kbd id="search-kbd">⌘K</kbd> to search</p>
           </div>
         </div>
         <article class:list={['split-view__content', { 'is-active': hasInitialContent }]} aria-live="polite">
@@ -1152,11 +1152,18 @@ const hasInitialContent = Astro.slots.has('detail');
 <script>
   import { initSplitView, initMediaLightbox, initProseImageTilt } from '../utils/splitView';
 
+  // Update ⌘K / Ctrl+K hint based on OS
+  function updateSearchKbd() {
+    const kbd = document.getElementById('search-kbd');
+    if (kbd) kbd.textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl+K';
+  }
+
   // Run on page load (Astro view transitions)
   document.addEventListener('astro:page-load', () => {
     initSplitView();
     initMediaLightbox();
     initProseImageTilt();
+    updateSearchKbd();
   });
 
   // Also initialize on DOMContentLoaded for non-Astro navigation
@@ -1164,9 +1171,11 @@ const hasInitialContent = Astro.slots.has('detail');
     document.addEventListener('DOMContentLoaded', () => {
       initSplitView();
       initMediaLightbox();
+      updateSearchKbd();
     });
   } else {
     initSplitView();
     initMediaLightbox();
+    updateSearchKbd();
   }
 </script>

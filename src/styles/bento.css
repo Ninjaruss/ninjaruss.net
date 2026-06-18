@@ -27,8 +27,8 @@
 .bento-grid:has(.image-tile:hover) .logo-tile:not(:hover),
 .bento-grid:has(.image-tile:hover) .title-tile:not(:hover),
 .bento-grid:has(.image-tile:hover) .image-tile:not(:hover) {
-  opacity: 0.25;
-  filter: blur(1px) brightness(0.7);
+  opacity: 0.45;
+  filter: brightness(0.75);
 }
 
 /* Dense asymmetric layout spans */

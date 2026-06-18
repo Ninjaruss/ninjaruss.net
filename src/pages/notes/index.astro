@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
 import { stripMarkdown, hasMinimalContent } from '../../utils/content';
+import { formatDate } from '../../utils/dates';
 
 const allNotes = await getCollection('notes', ({ data }) => !data.draft);
 const sortedNotes = allNotes.sort((a, b) =>
@@ -23,6 +24,8 @@ const sortedNotes = allNotes.sort((a, b) =>
           href={`/notes/${entry.slug}`}
           slug={entry.slug}
           title={entry.data.title}
+          subtitle={stripMarkdown(entry.body).split('\n').find(l => l.trim().length > 20)?.trim().slice(0, 90)}
+          meta={entry.data.publishedAt ? formatDate(entry.data.publishedAt) : undefined}
           tags={entry.data.tags}
           searchableContent={stripMarkdown(entry.body).slice(0, 500)}
           hasMinimalContent={hasMinimalContent(entry.body)}
