@@ -7,3 +7,4 @@ A self is built through irreversible commitment.
 Avoiding commitment is slow self-erasure.
 
 Memory is the record of the self.
+
