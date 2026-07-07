@@ -64,14 +64,16 @@ const isHome = currentPath === '/';
     background: transparent;
     border-radius: var(--radius-pill);
     position: relative;
+    overflow: hidden;
     transition:
       background-color var(--transition-fast),
       color var(--transition-fast),
       transform var(--transition-fast);
   }
 
-  .nav-pill__item:hover {
-    background: var(--color-gold);
+  .nav-pill__item:hover,
+  .nav-pill__item:focus-visible {
+    background: transparent;
     color: var(--color-black);
     transform: scale(1.05);
   }
@@ -84,8 +86,9 @@ const isHome = currentPath === '/';
     color: var(--color-gold);
   }
 
-  .nav-pill__home:hover {
-    background: var(--color-gold);
+  .nav-pill__home:hover,
+  .nav-pill__home:focus-visible {
+    background: transparent;
     color: var(--color-black);
   }
 
@@ -94,8 +97,19 @@ const isHome = currentPath === '/';
     transition: transform var(--transition-fast);
   }
 
-  .nav-pill__home:hover .nav-pill__icon {
-    transform: rotate(45deg) scale(1.2);
+  .nav-pill__home:hover .nav-pill__icon,
+  .nav-pill__home:focus-visible .nav-pill__icon {
+    transform: rotate(225deg) scale(1.2);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-pill__item::before {
+      transition: none;
+    }
+    .nav-pill__home:hover .nav-pill__icon,
+    .nav-pill__home:focus-visible .nav-pill__icon {
+      transform: none;
+    }
   }
 
   .nav-pill__arrow {
@@ -111,16 +125,26 @@ const isHome = currentPath === '/';
     white-space: nowrap;
   }
 
-  /* P4G Selection indicator */
+  /* P4G diagonal sweep panel */
   .nav-pill__item::before {
     content: '';
     position: absolute;
-    inset: -2px;
+    inset: 0;
     border-radius: var(--radius-pill);
-    opacity: 0;
     background: var(--color-gold);
-    z-index: -1;
-    transition: opacity var(--transition-fast);
+    transform: translateX(-110%) skewX(var(--skew-accent));
+    transition: transform var(--animation-fast) var(--animation-easing);
+    z-index: 0;
+  }
+
+  .nav-pill__item:hover::before,
+  .nav-pill__item:focus-visible::before {
+    transform: translateX(0) skewX(0deg);
+  }
+
+  .nav-pill__item > * {
+    position: relative;
+    z-index: 1;
   }
 
   /* Floating animation */
