@@ -72,8 +72,11 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
 
   <div class="shelf-page">
     <header class="shelf-header">
-      <span class="shelf-header__eyebrow">catalog</span>
-      <h1 class="shelf-header__title">Shelf</h1>
+      <div class="shelf-header__main">
+        <span class="p4g-tab">catalog</span>
+        <h1 class="shelf-header__title"><span class="p4g-heading">Shelf<span class="shelf-header__period">.</span></span></h1>
+        <span class="p4g-underline" aria-hidden="true"></span>
+      </div>
       <p class="shelf-header__count">{totalCount} entries</p>
     </header>
 
@@ -213,17 +216,20 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   /* ── Header ──────────────────────────────────────── */
   .shelf-header {
     display: flex;
-    align-items: baseline;
+    align-items: flex-end;
+    justify-content: space-between;
     gap: var(--space-md);
     margin-bottom: var(--space-xl);
     flex-wrap: wrap;
   }
-  .shelf-header__eyebrow {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--color-muted);
+  .shelf-header__main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+  }
+  .shelf-header__period {
+    color: var(--color-gold);
   }
   .shelf-header__title {
     font-size: clamp(2rem, 5vw, 3.5rem);
@@ -276,11 +282,15 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     display: flex;
     align-items: center;
   }
-  .shelf-jumpbar__link:hover { color: var(--color-text); }
+  .shelf-jumpbar__link:hover,
+  .shelf-jumpbar__link:focus-visible {
+    color: var(--color-gold);
+  }
   .shelf-jumpbar__link.is-active,
   .shelf-jumpbar__link[aria-current="true"] {
     color: var(--color-gold);
     border-bottom-color: var(--color-gold);
+    border-bottom-width: 3px;
   }
 
   /* ── Section ─────────────────────────────────────── */
