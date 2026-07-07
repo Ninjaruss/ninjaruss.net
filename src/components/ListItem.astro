@@ -74,23 +74,28 @@ const { href, slug, title, subtitle, meta, tags = [], searchableContent, content
     z-index: 1;
   }
 
-  .list-item:hover {
+  .list-item:hover,
+  .list-item:focus-visible {
     transform: translateX(4px);
   }
 
-  .list-item:hover::before {
+  .list-item:hover::before,
+  .list-item:focus-visible::before {
     transform: translateX(0) skewX(0deg);
   }
 
-  .list-item:hover .list-item__title {
+  .list-item:hover .list-item__title,
+  .list-item:focus-visible .list-item__title {
     color: var(--color-black);
   }
 
-  .list-item:hover .list-item__subtitle {
+  .list-item:hover .list-item__subtitle,
+  .list-item:focus-visible .list-item__subtitle {
     color: rgba(0, 0, 0, 0.6);
   }
 
-  .list-item:hover .list-item__meta-text {
+  .list-item:hover .list-item__meta-text,
+  .list-item:focus-visible .list-item__meta-text {
     color: rgba(0, 0, 0, 0.55);
   }
 
@@ -98,7 +103,8 @@ const { href, slug, title, subtitle, meta, tags = [], searchableContent, content
     .list-item::before {
       transition: none;
     }
-    .list-item:hover {
+    .list-item:hover,
+    .list-item:focus-visible {
       transform: none;
     }
   }
@@ -215,7 +221,8 @@ const { href, slug, title, subtitle, meta, tags = [], searchableContent, content
     transition: opacity var(--transition-fast), color var(--transition-fast);
   }
 
-  .list-item:hover .list-item__indicator {
+  .list-item:hover .list-item__indicator,
+  .list-item:focus-visible .list-item__indicator {
     opacity: 0.8;
     color: var(--color-black);
   }
@@ -240,7 +247,8 @@ const { href, slug, title, subtitle, meta, tags = [], searchableContent, content
     opacity: 0.7;
   }
 
-  .list-item:hover .list-item__arrow {
+  .list-item:hover .list-item__arrow,
+  .list-item:focus-visible .list-item__arrow {
     opacity: 0.7;
     transform: translateX(0);
     color: var(--color-black);
