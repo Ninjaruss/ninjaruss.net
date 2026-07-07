@@ -51,53 +51,55 @@ const { href, slug, title, subtitle, meta, tags = [], searchableContent, content
     padding: var(--space-md) var(--space-lg);
     border-bottom: var(--border-hairline) solid var(--color-border);
     cursor: pointer;
-    transition:
-      background-color var(--transition-fast),
-      transform var(--transition-fast),
-      box-shadow var(--transition-fast);
+    transition: transform var(--transition-fast);
     text-decoration: none;
     color: inherit;
     position: relative;
+    overflow: hidden;
+    clip-path: polygon(var(--cut-sm) 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
   }
 
   .list-item::before {
     content: '';
     position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
+    inset: 0;
     background: var(--color-gold);
-    transform: scaleY(0);
-    transition:
-      transform var(--transition-fast),
-      box-shadow var(--transition-fast);
+    transform: translateX(-104%) skewX(var(--skew-accent));
+    transition: transform var(--animation-fast) var(--animation-easing);
+    z-index: 0;
+  }
+
+  .list-item > * {
+    position: relative;
+    z-index: 1;
   }
 
   .list-item:hover {
-    background: linear-gradient(90deg, rgba(255, 229, 44, 0.15) 0%, rgba(255, 229, 44, 0.08) 100%);
-    transform: translateX(4px) scale(1.005);
-    box-shadow:
-      inset 4px 0 0 var(--color-gold),
-      0 0 15px rgba(255, 229, 44, 0.1);
+    transform: translateX(4px);
   }
 
   .list-item:hover::before {
-    transform: scaleY(1);
-    box-shadow: 0 0 10px var(--color-gold);
+    transform: translateX(0) skewX(0deg);
   }
 
   .list-item:hover .list-item__title {
-    color: var(--color-gold);
+    color: var(--color-black);
+  }
+
+  .list-item:hover .list-item__subtitle {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .list-item:hover .list-item__meta-text {
+    color: rgba(0, 0, 0, 0.55);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .list-item:hover {
-      transform: translateX(2px);
-      box-shadow: inset 4px 0 0 var(--color-gold);
+    .list-item::before {
+      transition: none;
     }
-    .list-item:hover::before {
-      box-shadow: none;
+    .list-item:hover {
+      transform: none;
     }
   }
 
@@ -106,8 +108,7 @@ const { href, slug, title, subtitle, meta, tags = [], searchableContent, content
   }
 
   .list-item.is-active::before {
-    transform: scaleY(1);
-    background: var(--color-black);
+    content: none;
   }
 
   .list-item.is-active .list-item__title {
@@ -165,7 +166,9 @@ const { href, slug, title, subtitle, meta, tags = [], searchableContent, content
     font-size: var(--text-2xs);
     text-transform: capitalize;
     letter-spacing: var(--tracking-label);
-    border-radius: var(--radius-xs);
+    border-radius: 0;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+    padding-right: calc(var(--space-xs) + 4px);
     white-space: nowrap;
     flex-shrink: 0;
   }
@@ -214,7 +217,7 @@ const { href, slug, title, subtitle, meta, tags = [], searchableContent, content
 
   .list-item:hover .list-item__indicator {
     opacity: 0.8;
-    color: var(--color-gold-dim);
+    color: var(--color-black);
   }
 
   .list-item.is-active .list-item__indicator {
@@ -238,8 +241,9 @@ const { href, slug, title, subtitle, meta, tags = [], searchableContent, content
   }
 
   .list-item:hover .list-item__arrow {
-    opacity: 0.5;
+    opacity: 0.7;
     transform: translateX(0);
+    color: var(--color-black);
   }
 
   /* Animation stagger for list items - uses consistent 50ms stagger */
