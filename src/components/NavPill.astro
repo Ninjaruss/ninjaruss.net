@@ -9,15 +9,16 @@ const currentPath = Astro.url.pathname;
 const isHome = currentPath === '/';
 
 const SECTIONS = [
-  { href: '/', label: 'Home' },
-  { href: '/showcase', label: 'Showcase' },
-  { href: '/notes', label: 'Notes' },
-  { href: '/shelf', label: 'Shelf' },
-  { href: '/now', label: 'Now' },
+  { href: '/', label: 'Home', match: ['/'] },
+  { href: '/journal', label: 'Journal', match: ['/journal', '/notes', '/showcase'] },
+  { href: '/shelf', label: 'Shelf', match: ['/shelf'] },
+  { href: '/now', label: 'Now', match: ['/now'] },
 ];
 
-const isActive = (href: string) =>
-  href === '/' ? isHome : currentPath === href || currentPath.startsWith(`${href}/`);
+const isActive = (section: (typeof SECTIONS)[number]) =>
+  section.href === '/'
+    ? isHome
+    : section.match.some(m => currentPath === m || currentPath.startsWith(`${m}/`));
 ---
 
 {!isHome && (
@@ -27,8 +28,8 @@ const isActive = (href: string) =>
         {SECTIONS.map(section => (
           <a
             href={section.href}
-            class:list={['nav-bar__item', { 'nav-bar__item--active': isActive(section.href) }]}
-            aria-current={isActive(section.href) ? 'page' : undefined}
+            class:list={['nav-bar__item', { 'nav-bar__item--active': isActive(section) }]}
+            aria-current={isActive(section) ? 'page' : undefined}
           >
             <span class="nav-bar__text">{section.label}</span>
           </a>
