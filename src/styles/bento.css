@@ -502,6 +502,7 @@
   .bento-tile--span-3x2,
   .bento-tile--span-2x2,
   .bento-tile--span-2x1,
+  .bento-tile--span-4x2,
   .bento-tile--dominant,
   .bento-tile--medium-wide {
     grid-column: span 1;
