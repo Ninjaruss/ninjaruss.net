@@ -5,7 +5,7 @@ emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-03-06
 ---
 
-# Just like animals, animals, like animals...
+## Just like animals, animals, like animals...
 If there's one thing I get constantly reminded by in the real world, it's that most people act like animals. As in, mostly everyone operates on survival instincts and whatever social conditioning they've received throughout the years. It manifests in people doing the most borderline stupid things without a second thought; almost as if they are a programmed NPC with the sole objective of reminding me the stupidity of most of the population.
 
 I myself am not above this. I don't have the urge to care about every single thing outside of my own life and will only take actions that I myself choose to care about. Even though I do my best to make things easier for everyone like holding a door open, it doesn't excuse the times I am ignorant of my surroundings like cleaning the sink in my house. There's a certain selfishness that I still hold but at least I am self aware of it.

@@ -5,7 +5,7 @@ emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-06-25
 ---
 
-# Can't run away from your problems, yet it's easy to defer them to the point of ruin...
+## Can't run away from your problems, yet it's easy to defer them to the point of ruin...
 
 Anyone who has interacted with me for an extended period of time will have noticed by now, but one of my main coping mechanisms is simply retreating towards myself. I haven't really noticed how much this trend has appeared within every part of my life.
 

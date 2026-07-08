@@ -6,7 +6,7 @@ publishedAt: 2026-02-13
 updatedAt: 2026-03-19
 ---
 
-# My continuous list of objectives.
+## My continuous list of objectives.
 
 ## MAIN
 - Build and focus on a single online business (podcast? community hub?)
