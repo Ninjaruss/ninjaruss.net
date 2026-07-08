@@ -41,13 +41,7 @@
   background: rgba(255, 229, 44, 0.07);
   box-shadow: 0 0 12px rgba(255, 229, 44, 0.08);
   text-align: center;
-  text-decoration: none;
   display: block;
-  transition: background 0.15s, border-color 0.15s;
-}
-.s-logo:hover {
-  background: rgba(255, 229, 44, 0.13);
-  border-color: rgba(255, 229, 44, 0.5);
 }
 
 /* Sliding tab indicator */
