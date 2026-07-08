@@ -15,6 +15,10 @@ describe('stripMarkdown', () => {
     expect(stripMarkdown('before <img\n  src="x.png"\n/> after')).toBe('before after');
   });
 
+  it('leaves comparison operators in prose alone', () => {
+    expect(stripMarkdown('if a < b and b > c then stop')).toBe('if a < b and b > c then stop');
+  });
+
   it('still strips markdown syntax', () => {
     expect(stripMarkdown('# Head\n**bold** [link](https://x.com)')).toBe('Head bold link');
   });

@@ -7,7 +7,7 @@ export function stripMarkdown(markdown: string): string {
   return markdown
     .replace(/```[\s\S]*?```/g, '')           // Remove code blocks
     .replace(/`[^`]+`/g, '')                  // Remove inline code
-    .replace(/<[^>]*>/g, ' ')                 // Remove raw HTML tags (incl. multi-line)
+    .replace(/<\/?[a-zA-Z][^>]*>/g, ' ')                 // Remove raw HTML tags (incl. multi-line)
     .replace(/&[a-z#0-9]+;/gi, ' ')           // Remove HTML entities
     .replace(/!\[.*?\]\(.*?\)/g, '')          // Remove images
     .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Remove links, keep text
