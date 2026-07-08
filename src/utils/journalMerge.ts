@@ -19,8 +19,8 @@ const effectiveDate = (e: { data: { updatedAt?: Date; publishedAt?: Date } }) =>
 
 /** Merge notes + showcase into one date-sorted journal list (pure; unit-tested). */
 export function mergeJournalEntries(
-  notes: any[],
-  showcase: any[]
+  notes: JournalItem['entry'][],
+  showcase: JournalItem['entry'][]
 ): JournalItem[] {
   const items: JournalItem[] = [
     ...notes.map(e => ({ entry: e, type: 'fragment' as const, href: `/notes/${e.slug}` })),
