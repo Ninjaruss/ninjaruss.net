@@ -6,7 +6,8 @@ import EntryHeader from '../../components/EntryHeader.astro';
 import EntryBody from '../../components/EntryBody.astro';
 import RelatedContent from '../../components/RelatedContent.astro';
 import { stripMarkdown, hasMinimalContent } from '../../utils/content';
-import { getAllCollections, getSortedEntries } from '../../utils/collections';
+import { getAllCollections } from '../../utils/collections';
+import { getJournalItems } from '../../utils/journal';
 
 export async function getStaticPaths() {
   const entries = await getCollection('showcase');
@@ -19,7 +20,7 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
-const sortedShowcase = await getSortedEntries('showcase');
+const journalItems = await getJournalItems();
 const { allShelf, allNotes, allShowcase } = await getAllCollections();
 const hasContent = !hasMinimalContent(entry.body);
 
@@ -28,9 +29,9 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
 ---
 
 <SplitViewLayout
-  title="Showcase"
+  title="Journal"
   description={pageDescription}
-  section="showcase"
+  section="journal"
   initialSlug={entry.slug}
   initialEmblem={entry.data.emblem}
   pageTitle={entry.data.title}
@@ -38,14 +39,15 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
   ogType="article"
 >
   <Fragment slot="list">
-    {sortedShowcase.map((exp) => (
+    {journalItems.map(({ entry: item, type, href }) => (
       <ListItem
-        href={`/showcase/${exp.slug}`}
-        slug={exp.slug}
-        title={exp.data.title}
-        tags={exp.data.tags}
-        searchableContent={stripMarkdown(exp.body).slice(0, 500)}
-        hasMinimalContent={hasMinimalContent(exp.body)}
+        href={href}
+        slug={item.slug}
+        title={item.data.title}
+        tags={item.data.tags}
+        contentType={type}
+        searchableContent={stripMarkdown(item.body).slice(0, 500)}
+        hasMinimalContent={hasMinimalContent(item.body)}
       />
     ))}
   </Fragment>
