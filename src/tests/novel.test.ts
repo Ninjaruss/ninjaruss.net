@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { slugify, parseMetaData, buildNovelTree } from '../utils/novel';
+import { slugify, parseMetaData, buildNovelTree, countWords, computeNovelStats, type NovelTree } from '../utils/novel';
 import { join } from 'path';
 
 describe('slugify', () => {
@@ -79,5 +79,69 @@ describe('buildNovelTree', () => {
 
     // Path field drives URL construction
     expect(vesper!.path).toEqual(['characters', 'vesper', 'vesper-characterization']);
+
+    // mtime is captured
+    expect(typeof vesper!.mtime).toBe('string');
+  });
+});
+
+describe('countWords', () => {
+  it('counts words in HTML, ignoring tags and entities', () => {
+    expect(countWords('<p>It rains <em>softly</em> tonight&nbsp;here</p>')).toBe(5);
+  });
+
+  it('returns 0 for empty or tag-only input', () => {
+    expect(countWords('')).toBe(0);
+    expect(countWords('<hr/><br>')).toBe(0);
+  });
+});
+
+describe('computeNovelStats', () => {
+
+  const file = (over: object) => ({
+    slug: 'f', title: 'F', body: '<p>one two three</p>',
+    created: null, modified: null, mtime: null, path: ['x'], ...over,
+  });
+  const folder = (slug: string, files: any[], subfolders = {}) =>
+    ({ slug, title: slug, files, subfolders });
+
+  it('splits story (scenes/) from outline words, recursing subfolders', () => {
+    const tree = {
+      scenes: folder('scenes', [file({})], {
+        'act-1': folder('act-1', [file({ body: '<p>four five</p>' })]),
+      }),
+      characters: folder('characters', [file({ body: '<p>a b c d</p>' })]),
+    };
+    const stats = computeNovelStats(tree);
+    expect(stats.storyWords).toBe(5);
+    expect(stats.outlineWords).toBe(4);
+  });
+
+  it('tracks last modified per group, preferring sidecar over mtime', () => {
+    const tree = {
+      scenes: folder('scenes', [
+        file({ modified: '2026-07-01' }),
+        file({ modified: null, mtime: '2026-07-05T00:00:00.000Z' }),
+      ]),
+      lore: folder('lore', [file({ modified: '2026-06-01' })]),
+    };
+    const stats = computeNovelStats(tree);
+    expect(stats.lastSceneModified).toBe('2026-07-05T00:00:00.000Z');
+    expect(stats.lastOutlineModified).toBe(new Date('2026-06-01').toISOString());
+  });
+
+  it('handles missing scenes folder and empty tree', () => {
+    expect(computeNovelStats({})).toEqual({
+      storyWords: 0, outlineWords: 0,
+      lastSceneModified: null, lastOutlineModified: null,
+    });
+    const stats = computeNovelStats({ lore: folder('lore', [file({})]) });
+    expect(stats.storyWords).toBe(0);
+    expect(stats.lastSceneModified).toBeNull();
+  });
+
+  it('ignores unparseable dates', () => {
+    const tree = { scenes: folder('scenes', [file({ modified: 'not a date' })]) };
+    expect(computeNovelStats(tree).lastSceneModified).toBeNull();
   });
 });

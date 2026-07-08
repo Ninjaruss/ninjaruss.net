@@ -8,6 +8,7 @@ export interface NovelFile {
   body: string;         // markdown pre-rendered to HTML at build time
   created: string | null;
   modified: string | null;
+  mtime: string | null; // filesystem mtime ISO — fallback when no sidecar
   path: string[];       // folder path segments, e.g. ['lore', 'magic-system']
 }
 
@@ -90,6 +91,7 @@ async function buildFolder(
         body,
         created: meta.created,
         modified: meta.modified,
+        mtime: stat.mtime.toISOString(),
         path: [...pathSegments, fileSlug],
       });
     }
@@ -118,4 +120,61 @@ export async function buildNovelTree(baseDir: string): Promise<NovelTree> {
   }
 
   return tree;
+}
+
+export interface NovelStats {
+  storyWords: number;
+  outlineWords: number;
+  lastSceneModified: string | null;   // ISO
+  lastOutlineModified: string | null; // ISO
+}
+
+/** Count words in a pre-rendered HTML body. */
+export function countWords(html: string): number {
+  const text = html.replace(/<[^>]*>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ').trim();
+  return text ? text.split(/\s+/).length : 0;
+}
+
+function collectFiles(folder: NovelFolder): NovelFile[] {
+  return [
+    ...folder.files,
+    ...Object.values(folder.subfolders).flatMap(collectFiles),
+  ];
+}
+
+/**
+ * Story vs outline stats for the homepage rain-gauge tile.
+ * Story = top-level `scenes` folder; outline = every other top-level folder.
+ */
+export function computeNovelStats(tree: NovelTree): NovelStats {
+  let storyWords = 0;
+  let outlineWords = 0;
+  let lastScene: Date | null = null;
+  let lastOutline: Date | null = null;
+
+  for (const [slug, folder] of Object.entries(tree)) {
+    const isStory = slug === 'scenes';
+    for (const file of collectFiles(folder)) {
+      const words = countWords(file.body);
+      if (isStory) storyWords += words;
+      else outlineWords += words;
+
+      const raw = file.modified ?? file.mtime;
+      if (!raw) continue;
+      const d = new Date(raw);
+      if (isNaN(d.getTime())) continue;
+      if (isStory) {
+        if (!lastScene || d > lastScene) lastScene = d;
+      } else {
+        if (!lastOutline || d > lastOutline) lastOutline = d;
+      }
+    }
+  }
+
+  return {
+    storyWords,
+    outlineWords,
+    lastSceneModified: lastScene?.toISOString() ?? null,
+    lastOutlineModified: lastOutline?.toISOString() ?? null,
+  };
 }
