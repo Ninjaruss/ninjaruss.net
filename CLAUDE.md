@@ -94,7 +94,7 @@ Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--sp
 **Current Homepage Grid Pattern:**
 - Row 1: Title (4×1) + YouTube (1×1) + Now (1×1)
 - Rows 2-3: Showcase (3×2, core) + Notes (2×2, core) + Stream (1×2)
-- Rows 4-5: Shelf (2×2, core) + Latest (2×1, row 4) + Novel (1×2) + MAL (1×1, row 4) + Spotify (1×1, row 5) + 2× filler static tiles (1×1, row 5)
+- Rows 4-5: Shelf (2×2, core) + Latest (2×1, row 4) + Novel (1×2) + MAL (1×1, row 4) + Spotify (1×1, row 5) + back-to-top tile (1×1, row 5)
 
 Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title-tile { grid-column: span 4 }`), not a span class.
 
