@@ -64,11 +64,14 @@ export async function loadContent(
     activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
+  const activeHref = activeItem?.getAttribute('href');
+  const path = activeHref ?? `/${state.section}/${slug}/`;
+
   splitView.classList.add('has-selection', 'is-loading');
   contentArea.classList.remove('is-active');
 
   try {
-    const response = await fetch(`/${state.section}/${slug}/`);
+    const response = await fetch(path);
     const html = await response.text();
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
@@ -78,7 +81,7 @@ export async function loadContent(
       contentArea.innerHTML = entryContent.outerHTML;
       contentArea.classList.add('is-active');
       if (pushHistory) {
-        history.pushState({ slug }, '', `/${state.section}/${slug}/`);
+        history.pushState({ slug }, '', path);
         // Sync page metadata from the fetched document
         syncPageMeta(doc);
       }
@@ -105,7 +108,7 @@ export async function loadContent(
     }
   } catch (error) {
     console.error('Failed to load content:', error);
-    window.location.href = `/${state.section}/${slug}/`;
+    window.location.href = path;
   } finally {
     splitView.classList.remove('is-loading');
   }
