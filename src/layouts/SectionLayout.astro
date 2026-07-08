@@ -17,7 +17,7 @@ const { title, description, subtitle, kicker } = Astro.props;
   <div class="container">
     <header class="section-header">
       {kicker && <span class="p4g-tab p3r-animate">{kicker}</span>}
-      <h1 class="section-header__title p3r-animate-left"><span class="p4g-heading">{title}<span class="section-header__period">.</span></span></h1>
+      <h1 class="section-header__title p3r-animate-left"><span class="p4g-heading">{title}</span></h1>
       <span class="p4g-underline" aria-hidden="true"></span>
       {subtitle && <p class="section-header__subtitle p3r-animate" style="--stagger-delay: 80ms;">{subtitle}</p>}
     </header>
@@ -42,11 +42,6 @@ const { title, description, subtitle, kicker } = Astro.props;
     text-shadow:
       0 0 30px rgba(255, 229, 44, 0.4),
       0 0 60px rgba(255, 229, 44, 0.2);
-  }
-
-  .section-header__period {
-    color: var(--color-text);
-    text-shadow: none;
   }
 
   .section-header__subtitle {
