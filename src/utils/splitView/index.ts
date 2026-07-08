@@ -1,6 +1,7 @@
 import type { SplitViewElements, SplitViewState } from './types';
 import { getFiltersFromURL } from './urlState';
 import { applyFilters } from './filterEngine';
+import { loadContent } from './contentLoader';
 import { populateTypes, populateTags } from './filterUI';
 import { createIdleManager, initIdleEventListeners, initEmblemHoverListeners } from './idleManager';
 import { bindFilterEvents, bindGlobalEvents, bindListEvents } from './eventBindings';
@@ -119,5 +120,18 @@ export function initSplitView(): void {
   // Start floating if initial content is loaded
   if (initialSlug) {
     idleManager.startFloating();
+  } else {
+    // No slug in the URL — auto-open the newest visible entry so visitors
+    // land on content instead of the empty placeholder. URL stays untouched
+    // until the user actually selects something. Desktop only: in the
+    // single-column layout .has-selection collapses the list panel, which
+    // must stay visible — detect the applied layout, not the viewport.
+    const isDesktopLayout =
+      getComputedStyle(splitView).gridTemplateColumns.trim().split(/\s+/).length >= 3;
+    const firstVisible = elements.listItems.find(item => !item.classList.contains('is-filtered'));
+    const firstSlug = firstVisible?.dataset.slug;
+    if (isDesktopLayout && firstSlug) {
+      loadContent(firstSlug, elements, state, idleManager, { pushHistory: false, focusHeading: false });
+    }
   }
 }

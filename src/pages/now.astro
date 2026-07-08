@@ -24,14 +24,15 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
   <div class="container">
     <article class="now p3r-animate">
       <header class="now__header">
-        <div class="now__header-rule" aria-hidden="true"></div>
+        <span class="p4g-tab">snapshot</span>
         <div class="now__header-top">
-          <h1 class="now__title">Now</h1>
+          <h1 class="now__title"><span class="p4g-heading">Now<span class="now__period">.</span></span></h1>
           <p class="now__updated" title="Date shown in UTC">
             <span class="now__updated-icon" aria-hidden="true">◈</span>
             {lastUpdated}
           </p>
         </div>
+        <span class="p4g-underline" aria-hidden="true"></span>
         {latestPost.data.title && latestPost.data.title !== 'Now' && (
           <p class="now__entry-title">{latestPost.data.title}</p>
         )}
@@ -61,25 +62,29 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
     padding-bottom: 80px; /* Space for floating nav */
   }
 
-  /* Gradient rule — sweeps in before the title */
-  .now__header-rule {
-    height: 3px;
-    background: linear-gradient(90deg, var(--color-gold) 0%, var(--color-gold-orange) 50%, transparent 100%);
-    margin-bottom: var(--space-lg);
-    animation: p3r-wipe-reveal 500ms var(--animation-easing) backwards;
-    border-radius: 2px;
-  }
-
   .now__header {
     margin-bottom: var(--space-xl);
   }
 
+  .now__header :global(.p4g-tab) {
+    margin-bottom: var(--space-xs);
+  }
+
+  .now__header :global(.p4g-underline) {
+    margin-bottom: var(--space-md);
+  }
+
+  .now__period {
+    color: var(--color-text);
+    text-shadow: none;
+  }
+
   .now__header-top {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
     gap: var(--space-md);
-    margin-bottom: var(--space-sm);
+    margin-bottom: var(--space-xs);
   }
 
   .now__title {
@@ -208,7 +213,6 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .now__header-rule,
     .now__title,
     .now__entry-title,
     .now__updated {

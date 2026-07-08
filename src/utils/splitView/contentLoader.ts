@@ -41,8 +41,10 @@ export async function loadContent(
   slug: string,
   elements: SplitViewElements,
   state: SplitViewState,
-  idleManager: IdleManager
+  idleManager: IdleManager,
+  options: { pushHistory?: boolean; focusHeading?: boolean } = {}
 ): Promise<void> {
+  const { pushHistory = true, focusHeading = true } = options;
   const { splitView, contentArea, listItems } = elements;
 
   if (slug === state.currentSlug) return;
@@ -75,16 +77,19 @@ export async function loadContent(
     if (entryContent) {
       contentArea.innerHTML = entryContent.outerHTML;
       contentArea.classList.add('is-active');
-      history.pushState({ slug }, '', `/${state.section}/${slug}/`);
-
-      // Sync page metadata from the fetched document
-      syncPageMeta(doc);
+      if (pushHistory) {
+        history.pushState({ slug }, '', `/${state.section}/${slug}/`);
+        // Sync page metadata from the fetched document
+        syncPageMeta(doc);
+      }
       state.currentSlug = slug;
 
-      const heading = contentArea.querySelector('h1, h2, .entry__title') as HTMLElement;
-      if (heading) {
-        heading.setAttribute('tabindex', '-1');
-        heading.focus({ preventScroll: true });
+      if (focusHeading) {
+        const heading = contentArea.querySelector('h1, h2, .entry__title') as HTMLElement;
+        if (heading) {
+          heading.setAttribute('tabindex', '-1');
+          heading.focus({ preventScroll: true });
+        }
       }
 
       setTimeout(() => initMediaLightbox(), 50);

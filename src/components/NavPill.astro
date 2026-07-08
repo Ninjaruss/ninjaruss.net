@@ -2,189 +2,164 @@
 interface Props {
   backLink?: string;
   backLabel?: string;
-  showHome?: boolean;
 }
 
-const { backLink, backLabel, showHome = true } = Astro.props;
+const { backLink, backLabel } = Astro.props;
 const currentPath = Astro.url.pathname;
 const isHome = currentPath === '/';
+
+const SECTIONS = [
+  { href: '/', label: 'Home' },
+  { href: '/showcase', label: 'Showcase' },
+  { href: '/notes', label: 'Notes' },
+  { href: '/shelf', label: 'Shelf' },
+  { href: '/now', label: 'Now' },
+];
+
+const isActive = (href: string) =>
+  href === '/' ? isHome : currentPath === href || currentPath.startsWith(`${href}/`);
 ---
 
 {!isHome && (
-  <nav class="nav-pill">
-    <div class="nav-pill__inner">
-      {showHome && (
-        <a href="/" class="nav-pill__item nav-pill__home" title="Home">
-          <span class="nav-pill__icon">&#9670;</span>
-          <span class="nav-pill__text">Home</span>
-        </a>
-      )}
-      {backLink && backLabel && (
-        <a href={backLink} class="nav-pill__item nav-pill__back">
-          <span class="nav-pill__arrow">&larr;</span>
-          <span class="nav-pill__text">{backLabel}</span>
-        </a>
-      )}
+  <nav class="nav-bar" aria-label="Site sections">
+    <div class="nav-bar__shadow">
+      <div class="nav-bar__inner">
+        {SECTIONS.map(section => (
+          <a
+            href={section.href}
+            class:list={['nav-bar__item', { 'nav-bar__item--active': isActive(section.href) }]}
+            aria-current={isActive(section.href) ? 'page' : undefined}
+          >
+            <span class="nav-bar__text">{section.label}</span>
+          </a>
+        ))}
+        {backLink && backLabel && (
+          <a href={backLink} class="nav-bar__item nav-bar__back">
+            <span class="nav-bar__text">&larr; {backLabel}</span>
+          </a>
+        )}
+      </div>
     </div>
   </nav>
 )}
 
 <style>
-  .nav-pill {
+  .nav-bar {
     position: fixed;
-    bottom: var(--space-xl);
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: var(--space-md);
+    left: var(--space-md);
     z-index: 100;
   }
 
-  .nav-pill__inner {
-    display: flex;
-    gap: var(--space-sm);
-    background: var(--color-black);
-    padding: var(--space-sm);
-    border-radius: var(--radius-pill);
-    border: var(--border-medium) solid var(--color-gold);
-    box-shadow:
-      0 4px 20px rgba(0, 0, 0, 0.3),
-      0 0 0 2px var(--color-gold-orange);
+  /* clip-path clips box-shadow — hard gold shadow lives on a drop-shadow wrapper */
+  .nav-bar__shadow {
+    filter: drop-shadow(4px 4px 0 rgba(255, 229, 44, 0.3));
   }
 
-  .nav-pill__item {
+  .nav-bar__inner {
+    display: flex;
+    align-items: stretch;
+    background: var(--color-black);
+    border: var(--border-medium) solid var(--color-gold);
+    clip-path: polygon(
+      var(--cut-md) 0,
+      100% 0,
+      100% calc(100% - var(--cut-md)),
+      calc(100% - var(--cut-md)) 100%,
+      0 100%,
+      0 var(--cut-md)
+    );
+  }
+
+  .nav-bar__item {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-xs);
-    padding: var(--space-sm) var(--space-lg);
+    min-height: 44px;
+    padding: var(--space-xs) var(--space-md);
     font-family: var(--font-display);
-    font-size: var(--text-sm);
+    font-size: var(--text-xs);
     text-transform: uppercase;
     letter-spacing: var(--tracking-label);
-    color: var(--color-white);
-    background: transparent;
-    border-radius: var(--radius-pill);
-    position: relative;
+    color: var(--color-text-muted);
+    text-decoration: none;
     overflow: hidden;
-    transition:
-      background-color var(--transition-fast),
-      color var(--transition-fast),
-      transform var(--transition-fast);
+    transition: color var(--transition-fast);
   }
 
-  .nav-pill__item:hover,
-  .nav-pill__item:focus-visible {
-    background: transparent;
-    color: var(--color-black);
-    transform: scale(1.05);
+  .nav-bar__item + .nav-bar__item {
+    border-left: 1px solid rgba(255, 229, 44, 0.18);
   }
 
-  .nav-pill__item:active {
-    transform: scale(0.98);
-  }
-
-  .nav-pill__home {
-    color: var(--color-gold);
-  }
-
-  .nav-pill__home:hover,
-  .nav-pill__home:focus-visible {
-    background: transparent;
-    color: var(--color-black);
-  }
-
-  .nav-pill__icon {
-    font-size: var(--text-base);
-    transition: transform var(--transition-fast);
-  }
-
-  .nav-pill__home:hover .nav-pill__icon,
-  .nav-pill__home:focus-visible .nav-pill__icon {
-    transform: rotate(225deg) scale(1.2);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .nav-pill__item::before {
-      transition: none;
-    }
-    .nav-pill__home:hover .nav-pill__icon,
-    .nav-pill__home:focus-visible .nav-pill__icon {
-      transform: none;
-    }
-  }
-
-  .nav-pill__arrow {
-    font-size: var(--text-lg);
-    transition: transform var(--transition-fast);
-  }
-
-  .nav-pill__back:hover .nav-pill__arrow {
-    transform: translateX(-4px);
-  }
-
-  .nav-pill__text {
+  .nav-bar__text {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    transform: skewX(var(--skew-display));
     white-space: nowrap;
   }
 
-  /* P4G diagonal sweep panel */
-  .nav-pill__item::before {
+  /* P4G diagonal gold sweep on hover/focus */
+  .nav-bar__item::before {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: var(--radius-pill);
     background: var(--color-gold);
     transform: translateX(-110%) skewX(var(--skew-accent));
     transition: transform var(--animation-fast) var(--animation-easing);
-    z-index: 0;
   }
 
-  .nav-pill__item:hover::before,
-  .nav-pill__item:focus-visible::before {
+  .nav-bar__item:hover,
+  .nav-bar__item:focus-visible {
+    color: var(--color-black);
+  }
+
+  .nav-bar__item:hover::before,
+  .nav-bar__item:focus-visible::before {
     transform: translateX(0) skewX(0deg);
   }
 
-  .nav-pill__item > * {
-    position: relative;
-    z-index: 1;
+  .nav-bar__item:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: -2px;
   }
 
-  /* Floating animation */
-  @keyframes float {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(-4px); }
+  /* Current section — solid gold command */
+  .nav-bar__item--active {
+    background: var(--color-gold);
+    color: var(--color-black);
   }
 
-  .nav-pill {
-    animation: float 3s ease-in-out infinite;
+  .nav-bar__item--active::before {
+    display: none;
   }
 
-  .nav-pill:hover {
-    animation-play-state: paused;
+  .nav-bar__back {
+    color: var(--color-gold);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-bar__item::before {
+      transition: none;
+    }
   }
 
   @media (max-width: 480px) {
-    .nav-pill {
-      bottom: var(--space-lg);
+    .nav-bar {
+      left: var(--space-sm);
+      right: var(--space-sm);
+      bottom: var(--space-sm);
     }
 
-    .nav-pill__inner {
-      padding: var(--space-xs);
+    .nav-bar__inner {
+      justify-content: space-between;
     }
 
-    .nav-pill__item {
-      /* Ensure minimum 44x44px touch target */
-      min-width: 44px;
-      min-height: 44px;
-      padding: var(--space-sm);
-      font-size: var(--text-xs);
-    }
-
-    .nav-pill__text {
-      display: none;
-    }
-
-    .nav-pill__icon,
-    .nav-pill__arrow {
-      font-size: var(--text-lg);
+    .nav-bar__item {
+      flex: 1;
+      padding: var(--space-xs) var(--space-xs);
+      font-size: 0.6rem;
     }
   }
 </style>

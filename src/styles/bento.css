@@ -90,7 +90,7 @@
   content: '';
   position: absolute;
   inset: -2px;
-  background: linear-gradient(135deg, var(--color-gold) 0%, #ffb52c 50%, var(--color-gold) 100%);
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-orange) 50%, var(--color-gold) 100%);
   border-radius: var(--radius-md);
   opacity: 0;
   z-index: -1;
@@ -111,118 +111,6 @@
   opacity: 0.15;
 }
 
-/* P4G Corner Bracket Decorations — gold L-shapes at each corner on hover */
-.bento-tile--interactive::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0;
-  transition: opacity var(--transition-base);
-  background-image:
-    /* TL H */ linear-gradient(var(--color-gold), var(--color-gold)),
-    /* TL V */ linear-gradient(var(--color-gold), var(--color-gold)),
-    /* TR H */ linear-gradient(var(--color-gold), var(--color-gold)),
-    /* TR V */ linear-gradient(var(--color-gold), var(--color-gold)),
-    /* BL H */ linear-gradient(var(--color-gold), var(--color-gold)),
-    /* BL V */ linear-gradient(var(--color-gold), var(--color-gold)),
-    /* BR H */ linear-gradient(var(--color-gold), var(--color-gold)),
-    /* BR V */ linear-gradient(var(--color-gold), var(--color-gold));
-  background-size:
-    16px 2px, 2px 16px,
-    16px 2px, 2px 16px,
-    16px 2px, 2px 16px,
-    16px 2px, 2px 16px;
-  background-position:
-    10px 10px,
-    10px 10px,
-    calc(100% - 10px) 10px,
-    calc(100% - 11px) 10px,
-    10px calc(100% - 11px),
-    10px calc(100% - 26px),
-    calc(100% - 10px) calc(100% - 11px),
-    calc(100% - 11px) calc(100% - 26px);
-  background-repeat: no-repeat;
-}
-
-.bento-tile--interactive:hover::after {
-  opacity: 1;
-}
-
-/* Corner brackets for dark tiles — gold */
-.bento-tile--dark::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0;
-  transition: opacity var(--transition-base);
-  background-image:
-    linear-gradient(var(--color-gold), var(--color-gold)),
-    linear-gradient(var(--color-gold), var(--color-gold)),
-    linear-gradient(var(--color-gold), var(--color-gold)),
-    linear-gradient(var(--color-gold), var(--color-gold)),
-    linear-gradient(var(--color-gold), var(--color-gold)),
-    linear-gradient(var(--color-gold), var(--color-gold)),
-    linear-gradient(var(--color-gold), var(--color-gold)),
-    linear-gradient(var(--color-gold), var(--color-gold));
-  background-size:
-    16px 2px, 2px 16px,
-    16px 2px, 2px 16px,
-    16px 2px, 2px 16px,
-    16px 2px, 2px 16px;
-  background-position:
-    10px 10px, 10px 10px,
-    calc(100% - 10px) 10px, calc(100% - 11px) 10px,
-    10px calc(100% - 11px), 10px calc(100% - 26px),
-    calc(100% - 10px) calc(100% - 11px), calc(100% - 11px) calc(100% - 26px);
-  background-repeat: no-repeat;
-}
-
-.bento-tile--dark:hover::after {
-  opacity: 1;
-}
-
-/* Corner brackets for highlight tiles — black */
-.bento-tile--highlight::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0;
-  transition: opacity var(--transition-base);
-  background-image:
-    linear-gradient(var(--color-black), var(--color-black)),
-    linear-gradient(var(--color-black), var(--color-black)),
-    linear-gradient(var(--color-black), var(--color-black)),
-    linear-gradient(var(--color-black), var(--color-black)),
-    linear-gradient(var(--color-black), var(--color-black)),
-    linear-gradient(var(--color-black), var(--color-black)),
-    linear-gradient(var(--color-black), var(--color-black)),
-    linear-gradient(var(--color-black), var(--color-black));
-  background-size:
-    16px 2px, 2px 16px,
-    16px 2px, 2px 16px,
-    16px 2px, 2px 16px,
-    16px 2px, 2px 16px;
-  background-position:
-    10px 10px, 10px 10px,
-    calc(100% - 10px) 10px, calc(100% - 11px) 10px,
-    10px calc(100% - 11px), 10px calc(100% - 26px),
-    calc(100% - 10px) calc(100% - 11px), calc(100% - 11px) calc(100% - 26px);
-  background-repeat: no-repeat;
-}
-
-.bento-tile--highlight:hover::after {
-  opacity: 1;
-}
-
 .bento-tile--interactive:hover .bento-tile__title {
   color: var(--color-gold);
 }
@@ -238,11 +126,6 @@
     filter: none;
   }
   .bento-tile--interactive::before {
-    display: none;
-  }
-  .bento-tile--interactive::after,
-  .bento-tile--dark::after,
-  .bento-tile--highlight::after {
     display: none;
   }
 
@@ -316,28 +199,6 @@
 
 .bento-tile--highlight:hover .bento-tile__title {
   color: var(--color-dark);
-}
-
-/* Cyan Accent Tile — P4G secondary color */
-.bento-tile--cyan {
-  background: var(--color-cyan);
-  color: var(--color-black);
-}
-
-.bento-tile--cyan .bento-tile__label {
-  background: var(--color-black);
-  color: var(--color-cyan);
-}
-
-.bento-tile--cyan:hover {
-  transform: translate(-4px, -4px);
-  box-shadow: var(--shadow-hard-hover);
-  border-color: var(--color-black);
-}
-
-.bento-tile--cyan:active {
-  transform: translate(0, 0);
-  box-shadow: var(--shadow-hard-sm);
 }
 
 /* Dark Tile Variant — Deeper dark for contrast */
@@ -428,16 +289,10 @@
     0 8px 32px rgba(255, 229, 44, 0.25);
 }
 
-/* P4G corner-cut reveal — gold triangle slides into top-right on hover */
-.bento-tile--core {
-  overflow: hidden;
-}
-
+/* P4G corner-cut reveal — gold triangle slides into top-right on hover.
+   The single hover signature for every interactive bento tile (replaces the
+   old corner brackets and accent dot). */
 .bento-tile__corner {
-  display: none;
-}
-
-.bento-tile--core .bento-tile__corner {
   display: block;
   position: absolute;
   top: 0;
@@ -452,8 +307,17 @@
   z-index: 3;
 }
 
-.bento-tile--core:hover .bento-tile__corner,
-.bento-tile--core:focus-visible .bento-tile__corner {
+.bento-tile--static .bento-tile__corner {
+  display: none;
+}
+
+/* Gold-background tiles invert the triangle for contrast */
+.bento-tile--highlight .bento-tile__corner {
+  background: var(--color-black);
+}
+
+.bento-tile:hover .bento-tile__corner,
+.bento-tile:focus-visible .bento-tile__corner {
   transform: translate(0, 0);
 }
 
@@ -480,7 +344,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bento-tile--core .bento-tile__corner {
+  .bento-tile__corner {
     transition: none;
   }
 }
@@ -554,33 +418,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* P4G Corner Accent — Small circle in corner */
-.bento-tile--accent::before {
-  content: '';
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 12px;
-  height: 12px;
-  background: var(--color-gold-orange);
-  border-radius: 50%;
-}
-
-.bento-tile--dominant.bento-tile--accent::before {
-  width: 16px;
-  height: 16px;
-  top: 16px;
-  right: 16px;
-}
-
-.bento-tile--highlight.bento-tile--accent::before {
-  background: var(--color-black);
-}
-
-.bento-tile--dark.bento-tile--accent::before {
-  background: var(--color-gold);
 }
 
 /* Tile with Full Content */

@@ -3,7 +3,6 @@ interface Props {
   href?: string;
   size?: 'dominant' | 'medium-wide' | 'medium-tall' | 'small';
   variant?: 'interactive' | 'static' | 'highlight' | 'dark';
-  accent?: boolean;
   label?: string;
   title: string;
   description?: string;
@@ -14,7 +13,6 @@ const {
   href,
   size = 'small',
   variant = 'interactive',
-  accent = false,
   label,
   title,
   description,
@@ -24,12 +22,11 @@ const {
 const Tag = href ? 'a' : 'div';
 const sizeClass = `bento-tile--${size}`;
 const variantClass = `bento-tile--${variant}`;
-const accentClass = accent ? 'bento-tile--accent' : '';
 ---
 
 <Tag
   href={href}
-  class:list={['bento-tile', 'bento-tile--full', sizeClass, variantClass, accentClass, className]}
+  class:list={['bento-tile', 'bento-tile--full', sizeClass, variantClass, className]}
 >
   <div class="bento-tile__header">
     {label && <span class="bento-tile__label">{label}</span>}

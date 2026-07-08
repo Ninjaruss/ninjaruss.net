@@ -37,7 +37,12 @@
   align-items: flex-end;
   gap: 2.5rem;
 }
-.title-text-group { display: flex; flex-direction: column; }
+.title-text-group { display: flex; flex-direction: column; align-items: flex-start; }
+
+/* Unified section kicker — same P4G tab as other pages */
+.novel-kicker {
+  margin-bottom: 6px;
+}
 
 .title-eyebrow {
   font-family: var(--font-mono);

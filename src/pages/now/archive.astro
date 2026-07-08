@@ -24,7 +24,9 @@ const latestSlug = sortedPosts[0]?.slug;
   <div class="container">
     <article class="now-archive">
       <header class="now-archive__header">
-        <h1 class="now-archive__title">Now Archive</h1>
+        <span class="p4g-tab">snapshot</span>
+        <h1 class="now-archive__title"><span class="p4g-heading">Archive<span class="now-archive__period">.</span></span></h1>
+        <span class="p4g-underline" aria-hidden="true"></span>
         <p class="now-archive__description">Past snapshots of what I was focused on.</p>
         <a href="/now" class="now-archive__back">
           <span class="now-archive__back-arrow">&larr;</span>
@@ -67,14 +69,26 @@ const latestSlug = sortedPosts[0]?.slug;
     border-bottom: var(--border-thick) solid var(--color-gold-dim);
   }
 
+  .now-archive__header :global(.p4g-tab) {
+    margin-bottom: var(--space-xs);
+  }
+
+  .now-archive__header :global(.p4g-underline) {
+    margin-bottom: var(--space-md);
+  }
+
   .now-archive__title {
-    font-family: var(--font-display);
     font-size: var(--text-4xl);
     color: var(--color-gold);
-    margin-bottom: var(--space-sm);
+    margin-bottom: var(--space-xs);
     text-shadow:
       0 0 30px rgba(255, 229, 44, 0.4),
       0 0 60px rgba(255, 229, 44, 0.2);
+  }
+
+  .now-archive__period {
+    color: var(--color-text);
+    text-shadow: none;
   }
 
   .now-archive__description {

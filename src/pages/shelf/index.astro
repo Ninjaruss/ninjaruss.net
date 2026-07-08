@@ -166,6 +166,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
                     class="shelf-card__img"
                     loading="lazy"
                   />
+                  <span class="shelf-card__corner" aria-hidden="true"></span>
                 </div>
                 <div class:list={['shelf-card__bar', { 'shelf-card__bar--fav': entry.isFavorite }]}>
                   <span class:list={['shelf-card__title', { 'shelf-card__title--fav': entry.isFavorite }]}>
@@ -375,12 +376,31 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     border-radius: 4px;
     background: var(--color-bg-elevated, #1a1a1a);
     border: 1px solid transparent;
-    transition: border-color 200ms, box-shadow 200ms;
+    transition: box-shadow 200ms;
   }
 
   .shelf-card:hover .shelf-card__poster {
-    border-color: var(--color-gold);
     box-shadow: 0 0 14px rgba(255, 229, 44, 0.15);
+  }
+
+  /* P4G corner-cut reveal — same hover signature as the homepage tiles */
+  .shelf-card__corner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    background: var(--color-gold);
+    clip-path: polygon(100% 0, 0 0, 100% 100%);
+    transform: translate(32px, -32px);
+    transition: transform var(--animation-fast) var(--animation-easing);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .shelf-card:hover .shelf-card__corner,
+  .shelf-card:focus-visible .shelf-card__corner {
+    transform: translate(0, 0);
   }
 
   .shelf-card__img {
@@ -727,7 +747,8 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   @media (prefers-reduced-motion: reduce) {
     .shelf-card { animation: none; }
     .shelf-card__img,
-    .shelf-card__poster { transition: none; }
+    .shelf-card__poster,
+    .shelf-card__corner { transition: none; }
     .shelf-section__header h2 {
       animation: none;
       -webkit-text-fill-color: var(--color-text);
