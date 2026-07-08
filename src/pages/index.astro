@@ -43,7 +43,7 @@ const recentShowcase = showcase
 const recentMedia = media
   .filter(e => e.data.publishedAt)
   .sort((a, b) => effectiveDate(b) - effectiveDate(a))
-  .slice(0, 4)
+  .slice(0, 8)
   .map(e => ({ href: `/shelf/${e.slug}`, emblem: e.data.emblem ?? DEFAULT_EMBLEM, title: e.data.title }));
 
 type JournalRow = { href: string; title: string; type: 'inquiry' | 'fragment' };
@@ -169,6 +169,7 @@ const latestEntries = sameDateEntries.map(entry => ({
       >
         <!-- Full-bleed channel avatar -->
         <img class="yt-tile__avatar" src="/images/logos/yt-avatar.jpg" alt="Ninjaruss YouTube channel" />
+        <span class="yt-tile__chip" aria-hidden="true">YouTube</span>
 
         <!-- Red tint on hover -->
         <div class="yt-tile__tint" aria-hidden="true"></div>
@@ -211,7 +212,7 @@ const latestEntries = sameDateEntries.map(entry => ({
         href="/now"
         variant="highlight"
         label="Now"
-        title="Current Focus"
+        title={latestNow?.data.title ?? 'Current Focus'}
         description="Where am I at right now?"
       >
         <span class="now-date" title={`Local: ${nowMonthYearLocal}`}>
@@ -406,7 +407,6 @@ const latestEntries = sameDateEntries.map(entry => ({
             ))}
           </div>
         )}
-        <span class="tile-count">{media.length} entries</span>
       </BentoTile>
 
       {latestEntries.length > 0 && (
@@ -473,17 +473,20 @@ const latestEntries = sameDateEntries.map(entry => ({
         <p class="logo-tile__description">The bangers I listen to every day.</p>
       </a>
 
-      <!-- Row 5 — quote card + back-to-top fill cols left empty by Latest (2×1) and MAL (1×1) -->
+      <!-- Row 5 — quote card + email fill cols left empty by Latest (2×1) and MAL (1×1) -->
       <div class="bento-tile bento-tile--dark quote-tile" id="quote-tile">
         <span class="quote-tile__mark" aria-hidden="true">&ldquo;</span>
-        <p class="quote-tile__text" id="quote-text">Live without regret.</p>
+        <p class="quote-tile__text" id="quote-text">The bonds you forge are your true strength.</p>
       </div>
 
-      <button type="button" class="bento-tile bento-tile--dark totop-tile" id="totop-tile" aria-label="Back to top">
-        <span class="totop-tile__arrow" aria-hidden="true">↑</span>
-        <span class="totop-tile__label">Top</span>
-        <span class="bento-tile__corner" aria-hidden="true"></span>
-      </button>
+      <a href="mailto:russ081999@gmail.com" class="logo-tile logo-tile--mail p3r-animate" style="--stagger-delay: 200ms;">
+        <svg class="logo-tile__img" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <rect x="2.5" y="5" width="19" height="14" rx="1.5"/>
+          <path d="M3 6.5l9 6.5 9-6.5"/>
+        </svg>
+        <span class="logo-tile__label">Email</span>
+        <p class="logo-tile__description">Say hi. No forms, no funnels.</p>
+      </a>
     </BentoGrid>
   </div>
 </BaseLayout>
@@ -592,6 +595,15 @@ const latestEntries = sameDateEntries.map(entry => ({
 
   .logo-tile--spotify:hover .logo-tile__label {
     color: #1db954;
+  }
+
+  .logo-tile--mail {
+    color: var(--color-gold-dim);
+  }
+
+  .logo-tile--mail:hover,
+  .logo-tile--mail:focus-visible {
+    color: var(--color-gold);
   }
 
   .logo-tile:focus-visible {
@@ -853,7 +865,7 @@ const latestEntries = sameDateEntries.map(entry => ({
   .tile-poster-strip {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
+    gap: var(--space-xs);
     align-items: center;
   }
 
@@ -876,15 +888,6 @@ const latestEntries = sameDateEntries.map(entry => ({
   .media-tile:hover .tile-poster__img {
     opacity: 0.9;
   }
-
-  .tile-count {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--color-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
 
   /* ─── Now Tile ────────────────────────────────────────── */
   .now-date {
@@ -1171,6 +1174,21 @@ const latestEntries = sameDateEntries.map(entry => ({
     height: 100%;
     object-fit: cover;
     display: block;
+  }
+
+  .yt-tile__chip {
+    position: absolute;
+    top: var(--space-xs);
+    left: var(--space-xs);
+    z-index: 2;
+    padding: 2px 8px 2px 6px;
+    background: var(--color-gold);
+    color: var(--color-black);
+    font-family: var(--font-display);
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    clip-path: polygon(0 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
   }
 
   /* Red tint overlay on hover */
@@ -1488,52 +1506,6 @@ const latestEntries = sameDateEntries.map(entry => ({
     transition: opacity 300ms ease;
   }
 
-  /* Back-to-top tile — self-contained control filling the last cell */
-  .totop-tile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    cursor: pointer;
-    color: var(--color-gold-dim);
-    font-family: var(--font-display);
-    text-align: center;
-    transition:
-      transform var(--transition-fast),
-      border-color var(--transition-fast),
-      box-shadow var(--transition-fast),
-      color var(--transition-fast);
-  }
-
-  .totop-tile:hover {
-    color: var(--color-gold);
-    border-color: var(--color-gold);
-    box-shadow: var(--shadow-hard);
-    transform: translate(-4px, -4px);
-  }
-
-  .totop-tile:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
-  }
-
-  .totop-tile__arrow {
-    font-size: 1.5rem;
-    line-height: 1;
-    transition: transform var(--transition-base);
-  }
-
-  .totop-tile:hover .totop-tile__arrow {
-    transform: translateY(-4px);
-  }
-
-  .totop-tile__label {
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
-  }
-
   /* Reduced Motion Support */
   @media (prefers-reduced-motion: reduce) {
     .logo-tile__description {
@@ -1763,7 +1735,6 @@ const latestEntries = sameDateEntries.map(entry => ({
 
   // Rotating quote tile
   const QUOTES = [
-    'Live without regret.',
     'The bonds you forge are your true strength.',
     'Pierce the heavens with your own hands.',
     'No mask. Just the truth.',
@@ -1800,21 +1771,11 @@ const latestEntries = sameDateEntries.map(entry => ({
     }
   }
 
-  function initializeToTop() {
-    const btn = document.getElementById('totop-tile');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
-    });
-  }
-
   // Run on initial page load
   initializeLatestTile();
   initializeNovelRain();
   initializeTilt();
   initializeQuoteTile();
-  initializeToTop();
   startLivePolling();
 
   // Run after each view transition navigation
@@ -1823,7 +1784,6 @@ const latestEntries = sameDateEntries.map(entry => ({
     initializeNovelRain();
     initializeTilt();
     initializeQuoteTile();
-    initializeToTop();
     startLivePolling();
   });
 
