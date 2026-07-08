@@ -16,7 +16,8 @@ const showUpdated = shouldShowUpdatedDate(publishedAt, updatedAt);
 
 <header class="entry__header">
   {emblem && <span data-page-emblem data-src={emblem} hidden />}
-  <h1 class="entry__title">{title}</h1>
+  <h1 class="entry__title"><span class="p4g-heading">{title}</span></h1>
+  <span class="p4g-underline" aria-hidden="true"></span>
   <div class="entry__meta">
     {tags.length > 0 && (
       <div class="entry__meta-row">

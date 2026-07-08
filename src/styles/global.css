@@ -46,6 +46,13 @@
   --border-thin: 2px;
   --border-hairline: 1px;
 
+  /* P4G Skew & Cut Vocabulary */
+  --skew-display: -6deg;   /* display-type slant */
+  --skew-accent: -12deg;   /* sweep panel slant */
+  --skew-rule: -30deg;     /* underline bar slant */
+  --cut-sm: 6px;           /* parallelogram cut distance, small */
+  --cut-md: 12px;          /* parallelogram cut distance, medium */
+
   /* Spacing Scale */
   --space-2xs: 0.125rem;
   --space-xs: 0.25rem;
@@ -234,6 +241,92 @@ ul, ol {
   text-transform: uppercase;
   letter-spacing: var(--tracking-label);
   border-radius: var(--radius-sm);
+}
+
+/* ── P4G Vocabulary Utilities ───────────────────────────
+   Shared menu-screen moves. NOTE: clip-path clips box-shadow —
+   if a cut element needs the hard gold shadow, put
+   filter: drop-shadow() on a wrapper element instead. */
+
+/* Slanted uppercase display type */
+.p4g-heading {
+  display: inline-block;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-tight);
+  transform: skewX(var(--skew-display));
+}
+
+/* Angled kicker tab — black text on gold, slanted right edge */
+.p4g-tab {
+  display: inline-block;
+  background: var(--color-gold);
+  color: var(--color-black);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  padding: var(--space-2xs) calc(var(--space-sm) + var(--cut-sm)) var(--space-2xs) var(--space-sm);
+  clip-path: polygon(0 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
+}
+
+/* Skewed gold underline that sweeps in on entrance */
+.p4g-underline {
+  display: block;
+  height: 3px;
+  width: 200px;
+  max-width: 60%;
+  background: linear-gradient(90deg, var(--color-gold) 60%, transparent);
+  transform: skewX(var(--skew-rule));
+  transform-origin: left;
+  animation: p4g-underline-in var(--animation-base) var(--animation-easing) backwards;
+}
+
+@keyframes p4g-underline-in {
+  from { transform: skewX(var(--skew-rule)) scaleX(0); }
+  to { transform: skewX(var(--skew-rule)) scaleX(1); }
+}
+
+/* Diagonal gold sweep fill on hover/focus. Children are lifted
+   above the sweep panel automatically. */
+.p4g-sweep {
+  position: relative;
+  overflow: hidden;
+}
+
+.p4g-sweep::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-gold);
+  transform: translateX(-104%) skewX(var(--skew-accent));
+  transition: transform var(--animation-fast) var(--animation-easing);
+  z-index: 0;
+}
+
+.p4g-sweep > * {
+  position: relative;
+  z-index: 1;
+}
+
+.p4g-sweep:hover,
+.p4g-sweep:focus-visible {
+  color: var(--color-black);
+}
+
+.p4g-sweep:hover::before,
+.p4g-sweep:focus-visible::before {
+  transform: translateX(0) skewX(0deg);
+}
+
+/* Parallelogram silhouette */
+.p4g-cut {
+  clip-path: polygon(var(--cut-sm) 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .p4g-underline { animation: none; }
+  .p4g-sweep::before { transition: none; }
 }
 
 /* ── Transition canvas ──────────────────────────── */

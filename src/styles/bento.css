@@ -428,6 +428,63 @@
     0 8px 32px rgba(255, 229, 44, 0.25);
 }
 
+/* P4G corner-cut reveal — gold triangle slides into top-right on hover */
+.bento-tile--core {
+  overflow: hidden;
+}
+
+.bento-tile__corner {
+  display: none;
+}
+
+.bento-tile--core .bento-tile__corner {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 44px;
+  height: 44px;
+  background: var(--color-gold);
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
+  transform: translate(46px, -46px);
+  transition: transform var(--animation-fast) var(--animation-easing);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.bento-tile--core:hover .bento-tile__corner,
+.bento-tile--core:focus-visible .bento-tile__corner {
+  transform: translate(0, 0);
+}
+
+/* Slanted italic titles on core tiles */
+.bento-tile--core .bento-tile__title {
+  display: inline-block;
+  transform: skewX(var(--skew-display));
+  transform-origin: left bottom;
+}
+
+/* Mini kicker tabs for core tile labels */
+.bento-tile--core .bento-tile__label {
+  background: var(--color-gold);
+  color: var(--color-black);
+  border-radius: 0;
+  clip-path: polygon(0 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
+  padding-right: calc(var(--space-sm) + var(--cut-sm));
+}
+
+/* Highlight tiles have a gold background — invert the kicker for contrast */
+.bento-tile--highlight.bento-tile--core .bento-tile__label {
+  background: var(--color-black);
+  color: var(--color-gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bento-tile--core .bento-tile__corner {
+    transition: none;
+  }
+}
+
 /* Tile Content Layout */
 .bento-tile__header {
   margin-bottom: var(--space-xs);

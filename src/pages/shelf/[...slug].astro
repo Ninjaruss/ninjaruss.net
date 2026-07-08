@@ -45,7 +45,7 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
       </div>
 
       <div class="media-detail__content">
-        <p class="media-detail__type">{entry.data.content_type}</p>
+        <p class="media-detail__type p4g-tab">{entry.data.content_type}</p>
         <h1 class="media-detail__title">{entry.data.title}</h1>
         {(entry.data.tags ?? []).length > 0 && (
           <div class="media-detail__tags">
@@ -114,11 +114,6 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
   }
 
   .media-detail__type {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-muted);
     margin: 0;
   }
 

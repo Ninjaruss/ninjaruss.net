@@ -144,7 +144,7 @@ const latestEntries = sameDateEntries.map(entry => ({
       <div class="title-tile p3r-animate-left">
         <div class="title-tile__inner">
           <div class="title-tile__rule title-tile__rule--top" aria-hidden="true"></div>
-          <span class="title-tile__name">Ninjaruss</span>
+          <span class="title-tile__name"><span class="title-tile__name-inner">Ninjaruss<span class="title-tile__period">.</span></span></span>
           <div class="title-tile__rule title-tile__rule--bottom" aria-hidden="true"></div>
         </div>
         <p class="title-tile__description">Live without regret.</p>
@@ -713,6 +713,16 @@ const latestEntries = sameDateEntries.map(entry => ({
       0 0 30px rgba(255, 229, 44, 0.6),
       0 0 60px rgba(255, 229, 44, 0.3);
     animation: p3r-animate-left 500ms var(--animation-easing) 100ms backwards;
+  }
+
+  .title-tile__name-inner {
+    display: inline-block;
+    transform: skewX(var(--skew-display));
+  }
+
+  .title-tile__period {
+    color: var(--color-text);
+    text-shadow: none;
   }
 
   /* Tagline: always subtly visible, sharpens on hover */

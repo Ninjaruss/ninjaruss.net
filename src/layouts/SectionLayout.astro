@@ -6,16 +6,19 @@ interface Props {
   title: string;
   description: string;
   subtitle?: string;
+  kicker?: string;
 }
 
-const { title, description, subtitle } = Astro.props;
+const { title, description, subtitle, kicker } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description}>
   <NavPill />
   <div class="container">
     <header class="section-header">
-      <h1 class="section-header__title p3r-animate-left">{title}</h1>
+      {kicker && <span class="p4g-tab p3r-animate">{kicker}</span>}
+      <h1 class="section-header__title p3r-animate-left"><span class="p4g-heading">{title}<span class="section-header__period">.</span></span></h1>
+      <span class="p4g-underline" aria-hidden="true"></span>
       {subtitle && <p class="section-header__subtitle p3r-animate" style="--stagger-delay: 80ms;">{subtitle}</p>}
     </header>
     <div class="section-content p3r-animate" style="--stagger-delay: 150ms;">
@@ -28,7 +31,6 @@ const { title, description, subtitle } = Astro.props;
   .section-header {
     margin-bottom: var(--space-2xl);
     padding-bottom: var(--space-xl);
-    border-bottom: var(--border-thick) solid var(--color-gold-dim);
   }
 
   .section-header__title {
@@ -42,10 +44,16 @@ const { title, description, subtitle } = Astro.props;
       0 0 60px rgba(255, 229, 44, 0.2);
   }
 
+  .section-header__period {
+    color: var(--color-text);
+    text-shadow: none;
+  }
+
   .section-header__subtitle {
     font-size: var(--text-lg);
     color: var(--color-text-muted);
     max-width: 60ch;
+    margin-top: var(--space-md);
   }
 
   .section-content {

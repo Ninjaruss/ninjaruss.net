@@ -68,7 +68,7 @@ Collection-specific extensions:
 | Layout | Purpose |
 |--------|---------|
 | `BaseLayout.astro` | Foundation wrapper with meta, styles, view transitions |
-| `SectionLayout.astro` | Content pages with NavPill and animated header |
+| `SectionLayout.astro` | Content pages with NavPill and animated P4G header (currently unused by routes; canonical section header) |
 | `SplitViewLayout.astro` | Three-panel list/detail/emblem interface with client-side navigation and emblem card sidebar |
 
 ## Component Inventory
@@ -135,6 +135,17 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 --animation-base: 400ms;
 ```
 
+### P4G Vocabulary Utilities (global.css)
+Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
+- `.p4g-heading` — slanted uppercase display type (`--skew-display`)
+- `.p4g-tab` — angled black-on-gold kicker label bar
+- `.p4g-underline` — skewed gold underline, sweeps in on entrance
+- `.p4g-sweep` — diagonal gold fill on hover/focus (children auto-lifted above panel)
+- `.p4g-cut` — parallelogram silhouette via clip-path
+- Tokens: `--skew-display: -6deg`, `--skew-accent: -12deg`, `--skew-rule: -30deg`, `--cut-sm: 6px`, `--cut-md: 12px`
+- Caveat: `clip-path` clips `box-shadow` — cut elements needing the hard gold shadow use `filter: drop-shadow()` on a wrapper
+- Convention: every `:hover` treatment gets `:focus-visible` parity (comma-paired selectors)
+
 ### Animation Classes
 - `.p3r-animate` — Standard entrance (translateY + fade)
 - `.p3r-animate-left` — Left entrance
@@ -152,7 +163,7 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 ## Pages & Routes
 
 ### Content Collection Pages
-- `/shelf` — Full-width emblem card grid with filter bar (★ favorites pill + type pills) and inline quick-view panel. URL state: `?type=anime&fav=1&open=slug`. Progressive enhancement: cards link to `/shelf/[slug]` without JS.
+- `/shelf` — Full-width emblem card grid grouped by content type, with a sticky jump bar (section anchor links) and inline quick-view panel. Progressive enhancement: cards link to `/shelf/[slug]` without JS; JS intercepts clicks to push `/shelf/[slug]` into history and open the panel instead (`?open=slug` supported for legacy links only).
 - `/shelf/[slug]` — Individual shelf detail pages
 - `/notes` — SplitViewLayout with philosophical fragments
 - `/notes/[slug]` — Individual note detail pages
@@ -175,14 +186,14 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 - `/now/archive` — Historical "Now" entries list
 
 ### Shelf Page Features (`/shelf`)
-- Full-width emblem card grid: `repeat(auto-fill, minmax(160px, 1fr))`
-- **Filter bar**: `★ favorites` pill (filters `isFavorite: true`) + type pills (all, anime, manga, film, series, music, book, game, character, other). Filters stack. State persisted in URL: `?type=anime&fav=1`.
-- **Quick-view panel**: clicking a card slides in a panel from the right (`grid-template-columns: 1fr 340px`). Panel shows emblem, type, title, tags, excerpt, and link to full entry. URL updates to `?open=[slug]`. ESC/✕ closes.
-- Cards are `<a>` tags linking to `/shelf/[slug]` (works without JS). JS intercepts click to open quick-view instead.
+- Entries are grouped by `content_type` into sections (anime, manga, film, series, music, book, game, character, other), each rendered server-side with a `shelf-section` header and `shelf-grid` of cards.
+- **Jump bar** (`.shelf-jumpbar`): sticky (`position: sticky; top: 0`) row of section anchor links (`#section-[type]`) below the page header. Active section gets a gold underline (`.is-active` / `[aria-current="true"]`, 3px gold `border-bottom`), tracked via scroll position in client JS.
+- **Character section**: renders an additional `shelf-hero` carousel (prev/next through character entries) above the character `shelf-grid`.
+- **Quick-view panel**: clicking a `.shelf-card` intercepts navigation, pushes `/shelf/[slug]` into history, and slides in a panel from the right. Panel shows emblem, type, title, tags, excerpt, and link to full entry. ESC/✕/backdrop-click closes. `?open=[slug]` query param still opens the panel on load for legacy links, but is not written by current interactions.
+- Cards are `<a>` tags linking to `/shelf/[slug]` (works without JS) — the standalone detail page itself redirects (`window.location.replace`) back to `/shelf?open=slug` when JS is available, so the quick-view panel is the JS-enabled experience.
 - Entry data pre-rendered as JSON in `data-entries` attribute — no client fetch needed.
-- Filter/open state read from URL on page load (bookmarkable, shareable).
-- **Content indicator**: cards with a written body get `.media-card--has-note` (gold border glow on `.media-card__poster`); empty cards dim via `filter: opacity(0.55)` on `.media-card`.
-- `src/utils/mediaGrid/filterEngine.ts` — shared pure functions: `filterEntries`, `parseFilterState`, `buildFilterURL`. Imported by both the page script and tests.
+- **Content indicator**: favorites get a gold star badge (`.shelf-card__bar--fav`, `.shelf-card__star`) and gold title (`.shelf-card__title--fav`); entries that are neither a favorite nor have written content dim via `.shelf-card--dim` (`filter: opacity(0.52)`, not `opacity` — see Code Style Notes).
+- No client-side type/favorites filter pills exist on this page (the `★ favorites` filter and `?type=/&fav=` URL params described elsewhere in this doc were removed; `src/utils/mediaGrid/filterEngine.ts` no longer exists). The `/favorites` route still 301-redirects to `/shelf?fav=1`, which is now a no-op query param.
 
 ## Novel System ("Remember Rain")
 
@@ -227,7 +238,7 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 
 6. **Latest Tile**: Homepage shows most recent content across all collections with "X days ago" indicator
 
-7. **Shelf Page Grid**: `/shelf` is a full emblem card grid (not SplitViewLayout). `isFavorite: true` entries are surfaced via the `★ favorites` filter pill. Quick-view panel opens on card click without navigating away. Filter and open state live in URL params. See `src/utils/mediaGrid/filterEngine.ts` for the shared filter utility. Cards with a written body show `.media-card--has-note`; empty cards dim with `filter: opacity(0.55)` (not `opacity` — see Code Style Notes).
+7. **Shelf Page Grid**: `/shelf` is a full emblem card grid grouped by content type (not SplitViewLayout), with a sticky jump bar for section navigation. `isFavorite: true` entries get a gold star badge and gold title on their card (no separate favorites filter exists anymore). Quick-view panel opens on card click without navigating away, pushing `/shelf/[slug]` into history. Cards that are neither a favorite nor have written content dim with `.shelf-card--dim` (`filter: opacity(0.52)`, not `opacity` — see Code Style Notes).
 
 8. **Related Content System**: Uses `collections` field in frontmatter for cross-referencing. Calculates relevance scores based on matching collections, displays up to 6 related entries in card grid at bottom of detail pages. Shows emblem thumbnail, section badge, and title.
 
@@ -260,13 +271,13 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 3. Add `emblem: '/images/emblems/your-emblem.svg'` for custom emblem (optional)
 4. Use `collections: ['tag1', 'tag2']` field to cross-reference related content (enables RelatedContent component)
 5. Set `draft: true` while working, remove for publishing
-6. For shelf entries: Set `isFavorite: true` to surface the entry via the `★ favorites` filter on `/shelf` (optional, defaults to false)
+6. For shelf entries: Set `isFavorite: true` to mark the entry as a curated highlight — shows a gold star badge and gold title on its `/shelf` card (optional, defaults to false)
 7. Run `npm run build` to validate schema
 
 ### Content Type Guidelines
 - **Shelf**: All reviews, consumption logs, and inspirational content (anime, manga, film, series, music, book, game, character, other)
   - Set `isFavorite: false` (or omit) for reviews/notes that appear only in /shelf
-  - Set `isFavorite: true` for curated highlights; surfaced via the `★ favorites` filter on `/shelf`
+  - Set `isFavorite: true` for curated highlights; shown with a gold star badge on its `/shelf` card
 - **Notes**: Philosophical fragments and thoughts
 - **Showcase**: Project inquiries and experiments
 - **Now**: Current focus snapshots (time-based)
