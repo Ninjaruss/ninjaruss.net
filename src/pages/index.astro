@@ -4,7 +4,7 @@ import { join } from 'path';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 import BentoTile from '../components/BentoTile.astro';
-import { buildNovelTree } from '../utils/novel';
+import { buildNovelTree, computeNovelStats } from '../utils/novel';
 import { tallyStats, buildDonutArcs, STAT_ORDER } from '../utils/stream';
 import { stripMarkdown } from '../utils/content';
 
@@ -90,7 +90,7 @@ for (const folder of Object.values(novelTree)) {
     }
   }
 }
-const novelLastModifiedISO = novelLastModified?.toISOString() ?? null;
+const novelStats = computeNovelStats(novelTree);
 
 // Stream tile data
 const streamSessions = await getCollection('stream', ({ data }) => !data.draft);
@@ -253,6 +253,38 @@ const latestEntries = sameDateEntries.map(entry => ({
       </div>
 
       <a
+        href="/novel"
+        class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--interactive bento-tile--span-1x2 novel-tile"
+        id="novel-tile"
+        data-scene-modified={novelStats.lastSceneModified ?? ''}
+        data-outline-modified={novelStats.lastOutlineModified ?? ''}
+      >
+        <div class="novel-rain" aria-hidden="true">
+          {[0, 1, 2, 3, 4, 5, 6, 7].map(i => (
+            <span class="novel-rain__drop" style={`--i: ${i};`}></span>
+          ))}
+        </div>
+        <div class="bento-tile__header">
+          <span class="bento-tile__label">Novel</span>
+          <h3 class="bento-tile__title">Remember Rain</h3>
+        </div>
+        {novelRecentFolderTitle && novelRecentFileTitle && (
+          <p class="novel-tile__recent">
+            <span class="novel-tile__folder">{novelRecentFolderTitle}</span>
+            <span class="novel-tile__sep">›</span>
+            <span class="novel-tile__file">{novelRecentFileTitle}</span>
+          </p>
+        )}
+        <p class="novel-tile__waits">the rain waits.</p>
+        <div class="novel-tile__words">
+          <span class="novel-tile__story">{novelStats.storyWords.toLocaleString('en-US')}</span>
+          <span class="novel-tile__story-label">story words</span>
+          <span class="novel-tile__outline">{novelStats.outlineWords.toLocaleString('en-US')} outline</span>
+        </div>
+        <span class="bento-tile__corner" aria-hidden="true"></span>
+      </a>
+
+      <a
         id="stream-tile"
         href="/stream"
         class="bento-tile bento-tile--dark bento-tile--interactive stream-tile"
@@ -357,7 +389,7 @@ const latestEntries = sameDateEntries.map(entry => ({
         <span class="bento-tile__corner" aria-hidden="true"></span>
       </a>
 
-      <!-- Rows 4-5: Media (2×2) + Latest (2×1) + Novel (1×2) + MAL/Spotify (stacked 1×1) -->
+      <!-- Rows 4-5: Media (2×2) + Latest (2×1) + MAL/Spotify (stacked 1×1) -->
       <BentoTile
         href="/shelf"
         variant="dark"
@@ -408,33 +440,6 @@ const latestEntries = sameDateEntries.map(entry => ({
           <span class="bento-tile__corner" aria-hidden="true"></span>
         </a>
       )}
-
-      <!-- Novel tile — 1×2 -->
-      <a
-        href="/novel"
-        class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--interactive bento-tile--span-1x2 novel-tile"
-        id="novel-tile"
-      >
-        <div class="bento-tile__header">
-          <span class="bento-tile__label">Novel</span>
-          <h3 class="bento-tile__title">Remember Rain</h3>
-        </div>
-        {novelRecentFolderTitle && novelRecentFileTitle && (
-          <p class="novel-tile__recent">
-            <span class="novel-tile__folder">{novelRecentFolderTitle}</span>
-            <span class="novel-tile__sep">›</span>
-            <span class="novel-tile__file">{novelRecentFileTitle}</span>
-          </p>
-        )}
-        <div class="bento-tile__footer">
-          <span
-            class="days-ago"
-            id="novel-days-ago"
-            data-novel-date={novelLastModifiedISO ?? ''}
-          ></span>
-        </div>
-        <span class="bento-tile__corner" aria-hidden="true"></span>
-      </a>
 
       <a
         href="https://myanimelist.net/animelist/Ninjaruss_?status=7&order=4&order2=0"
@@ -536,8 +541,7 @@ const latestEntries = sameDateEntries.map(entry => ({
     transition: color var(--transition-fast), border-color var(--transition-fast);
   }
 
-  #latest-tile:hover .days-ago,
-  #novel-tile:hover .days-ago {
+  #latest-tile:hover .days-ago {
     color: var(--color-gold);
     border-color: var(--color-gold);
   }
@@ -1336,10 +1340,99 @@ const latestEntries = sameDateEntries.map(entry => ({
       border-color var(--transition-fast);
   }
 
-  /* Novel tile — center title and date vertically, no dead gap */
+  /* Novel tile — rain gauge: reward recent writing, never count absence */
   .novel-tile {
-    justify-content: center;
+    position: relative;
+    overflow: hidden;
     gap: var(--space-md);
+  }
+
+  .novel-rain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 600ms ease;
+  }
+
+  .novel-tile.is-raining .novel-rain,
+  .novel-tile.is-misting .novel-rain {
+    opacity: var(--rain-strength, 0.5);
+  }
+
+  .novel-rain__drop {
+    position: absolute;
+    top: -30px;
+    left: calc(6% + var(--i) * 12%);
+    width: 1px;
+    height: 22px;
+    background: linear-gradient(to bottom, transparent, rgba(157, 184, 204, 0.8));
+    animation: novel-rain-fall 1.5s linear infinite;
+    animation-delay: calc(var(--i) * 0.21s);
+  }
+
+  .novel-tile.is-misting .novel-rain__drop {
+    height: 9px;
+    animation-duration: 2.6s;
+  }
+
+  @keyframes novel-rain-fall {
+    to { transform: translateY(400px); }
+  }
+
+  .novel-tile__waits {
+    display: none;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-style: italic;
+    color: var(--color-text-muted);
+    margin: auto 0;
+  }
+
+  .novel-tile.is-waiting .novel-tile__waits {
+    display: block;
+  }
+
+  .novel-tile__words {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .novel-tile__story {
+    font-family: var(--font-mono);
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-gold);
+    line-height: 1;
+  }
+
+  .novel-tile__story-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-gold-dim);
+    text-transform: lowercase;
+    letter-spacing: 0.06em;
+  }
+
+  .novel-tile__outline {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-text-muted);
+    margin-top: var(--space-2xs);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .novel-rain__drop {
+      animation: none;
+      top: auto;
+      bottom: 20%;
+      height: 6px;
+      opacity: 0.5;
+    }
   }
 
   .novel-tile__recent {
@@ -1606,22 +1699,36 @@ const latestEntries = sameDateEntries.map(entry => ({
     }
   }
 
-  // Initialize Novel tile days-ago counter
-  function initializeNovelTile() {
-    const el = document.getElementById('novel-days-ago') as HTMLElement | null;
-    if (!el) return;
-    const isoDate = el.dataset.novelDate;
-    if (!isoDate) return;
+  // Novel rain gauge — full rain for recent scene work, mist for outline-only,
+  // still "the rain waits." past 14 quiet days. Reward accretion; never count absence.
+  function initializeNovelRain() {
+    const tile = document.getElementById('novel-tile');
+    if (!tile) return;
+    tile.classList.remove('is-raining', 'is-misting', 'is-waiting');
 
-    const today = new Date();
-    const modDate = new Date(isoDate);
-    const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
-    const modUTC = Date.UTC(modDate.getUTCFullYear(), modDate.getUTCMonth(), modDate.getUTCDate());
-    const diffDays = Math.floor((todayUTC - modUTC) / (1000 * 60 * 60 * 24));
+    const daysSince = (iso: string | undefined): number | null => {
+      if (!iso) return null;
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return null;
+      const today = new Date();
+      const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+      const dUTC = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+      return Math.floor((todayUTC - dUTC) / 86_400_000);
+    };
 
-    if (diffDays === 0) el.textContent = 'updated today';
-    else if (diffDays === 1) el.textContent = 'updated yesterday';
-    else el.textContent = `updated ${diffDays} days ago`;
+    const WINDOW = 14;
+    const sceneDays = daysSince((tile as HTMLElement).dataset.sceneModified);
+    const outlineDays = daysSince((tile as HTMLElement).dataset.outlineModified);
+
+    if (sceneDays !== null && sceneDays <= WINDOW) {
+      tile.classList.add('is-raining');
+      (tile as HTMLElement).style.setProperty('--rain-strength', String(Math.max(0.2, 1 - sceneDays / WINDOW)));
+    } else if (outlineDays !== null && outlineDays <= WINDOW) {
+      tile.classList.add('is-misting');
+      (tile as HTMLElement).style.setProperty('--rain-strength', String(Math.max(0.15, 0.5 * (1 - outlineDays / WINDOW))));
+    } else {
+      tile.classList.add('is-waiting');
+    }
   }
 
   // Mouse-tracking 3D tilt for all tile types
@@ -1704,7 +1811,7 @@ const latestEntries = sameDateEntries.map(entry => ({
 
   // Run on initial page load
   initializeLatestTile();
-  initializeNovelTile();
+  initializeNovelRain();
   initializeTilt();
   initializeQuoteTile();
   initializeToTop();
@@ -1713,7 +1820,7 @@ const latestEntries = sameDateEntries.map(entry => ({
   // Run after each view transition navigation
   document.addEventListener('astro:page-load', () => {
     initializeLatestTile();
-    initializeNovelTile();
+    initializeNovelRain();
     initializeTilt();
     initializeQuoteTile();
     initializeToTop();
