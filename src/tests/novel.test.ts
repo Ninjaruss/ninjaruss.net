@@ -140,6 +140,11 @@ describe('computeNovelStats', () => {
     expect(stats.lastSceneModified).toBeNull();
   });
 
+  it('anchors day-precision sidecar dates to UTC midnight', () => {
+    const tree: NovelTree = { scenes: folder('scenes', [file({ modified: 'July 1, 2026' })]) };
+    expect(computeNovelStats(tree).lastSceneModified).toBe('2026-07-01T00:00:00.000Z');
+  });
+
   it('ignores unparseable dates', () => {
     const tree = { scenes: folder('scenes', [file({ modified: 'not a date' })]) };
     expect(computeNovelStats(tree).lastSceneModified).toBeNull();

@@ -135,6 +135,17 @@ export function countWords(html: string): number {
   return text ? text.split(/\s+/).length : 0;
 }
 
+/** Parse a date value to UTC. Day-precision sidecar dates anchor to UTC midnight. */
+function parseNovelDate(raw: string): Date | null {
+  const d = new Date(raw);
+  if (isNaN(d.getTime())) return null;
+  // ISO strings (mtime timestamps, date-only ISO) already parse as UTC; sidecar
+  // dates like "July 1, 2026" parse in local time — re-anchor those to UTC
+  // midnight for stable comparison across build machines
+  if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return d;
+  return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+}
+
 function collectFiles(folder: NovelFolder): NovelFile[] {
   return [
     ...folder.files,
@@ -161,8 +172,8 @@ export function computeNovelStats(tree: NovelTree): NovelStats {
 
       const raw = file.modified ?? file.mtime;
       if (!raw) continue;
-      const d = new Date(raw);
-      if (isNaN(d.getTime())) continue;
+      const d = parseNovelDate(raw);
+      if (!d) continue;
       if (isStory) {
         if (!lastScene || d > lastScene) lastScene = d;
       } else {
