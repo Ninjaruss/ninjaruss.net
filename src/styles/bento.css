@@ -410,16 +410,6 @@
   padding-top: var(--space-sm);
 }
 
-/* When footer contains emblems, grow to fill remaining height and center them */
-.bento-tile__footer:has(.tile-emblems) {
-  flex: 1;
-  margin-top: 0;
-  padding-top: var(--space-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Tile with Full Content */
 .bento-tile--full {
   display: flex;

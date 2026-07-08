@@ -141,7 +141,7 @@ const latestEntries = sameDateEntries.map(entry => ({
   publishedAt: entry.data.publishedAt!.toISOString(),
   updatedAt: entry.data.updatedAt?.toISOString(),
   emblem: entry.data.emblem ?? DEFAULT_EMBLEM,
-  excerpt: stripMarkdown(entry.body).slice(0, 140),
+  excerpt: stripMarkdown(entry.body ?? '').slice(0, 140),
 }));
 ---
 
@@ -243,7 +243,7 @@ const latestEntries = sameDateEntries.map(entry => ({
         {recentShowcase.length > 0 && (
           <div class="journal-tile__emblems">
             {recentShowcase.map(entry => (
-              <a href={entry.href} class="journal-tile__emblem" title={entry.title}>
+              <a href={entry.href} class="journal-tile__emblem" title={entry.title} aria-label={entry.title}>
                 <img src={entry.emblem} alt="" loading="lazy" aria-hidden="true" />
               </a>
             ))}
@@ -741,8 +741,6 @@ const latestEntries = sameDateEntries.map(entry => ({
 
   /* ─── Journal Tile ────────────────────────────────────── */
   .journal-tile {
-    display: flex;
-    flex-direction: column;
     gap: var(--space-sm);
   }
 
@@ -1490,11 +1488,6 @@ const latestEntries = sameDateEntries.map(entry => ({
     .image-tile--youtube {
       grid-column: span 2;
       min-height: 200px;
-    }
-
-    .journal-tile__emblem {
-      width: 56px;
-      height: 56px;
     }
 
     .latest-tile__emblem-wrap {
