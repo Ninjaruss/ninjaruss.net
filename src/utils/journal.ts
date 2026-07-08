@@ -1,7 +1,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { mergeJournalEntries as mergePure, type JournalType, type JournalItem as BasePureItem } from './journalMerge';
+import { mergeJournalEntries as mergePure, type JournalType } from './journalMerge';
 
-export type JournalType = JournalType;
+export type { JournalType };
 
 export interface JournalItem {
   entry: CollectionEntry<'notes'> | CollectionEntry<'showcase'>;
