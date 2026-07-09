@@ -220,32 +220,40 @@ const latestEntries = latestPool.map(entry => ({
         </span>
       </BentoTile>
 
-      <!-- Rows 2-3: Journal (4×2) + Stream (1×2) -->
+      <!-- Rows 2-3: Journal (4×2, slash split) + Novel (1×2) + Stream (1×2) -->
       <div class="bento-tile bento-tile--full bento-tile--highlight bento-tile--core bento-tile--span-4x2 journal-tile">
-        <a href="/journal" class="journal-tile__head">
-          <div class="bento-tile__header">
-            <span class="bento-tile__label">Journal</span>
-            <h3 class="bento-tile__title">Notes & Showcases</h3>
-          </div>
-          <p class="bento-tile__description">Projects I'm building and ideas I'm turning over.</p>
-        </a>
-        {recentJournal.length > 0 && (
-          <div class="journal-tile__list">
-            {recentJournal.map(row => (
-              <a class="journal-tile__row" href={row.href} title={row.title}>
-                <span class="journal-tile__row-title">{row.title}</span>
-                <span class="journal-tile__date">{row.date}</span>
-              </a>
-            ))}
-          </div>
-        )}
+        <div class="journal-tile__notes">
+          <a href="/journal?types=note" class="journal-tile__head">
+            <div class="bento-tile__header">
+              <span class="bento-tile__label">Journal</span>
+              <h3 class="bento-tile__title">Notes</h3>
+            </div>
+          </a>
+          {recentJournal.length > 0 && (
+            <div class="journal-tile__list">
+              {recentJournal.map(row => (
+                <a class="journal-tile__row" href={row.href} title={row.title}>
+                  <span class="journal-tile__row-title">{row.title}</span>
+                  <span class="journal-tile__date">{row.date}</span>
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
         {recentShowcase.length > 0 && (
-          <div class="journal-tile__emblems">
-            {recentShowcase.map(entry => (
-              <a href={entry.href} class="journal-tile__emblem" title={entry.title} aria-label={entry.title}>
-                <img src={entry.emblem} alt="" loading="lazy" aria-hidden="true" />
-              </a>
-            ))}
+          <div class="journal-tile__showcases">
+            <a href="/journal?types=showcase" class="journal-tile__showcase-tab">Showcases</a>
+            <div class="journal-tile__projects">
+              {recentShowcase.map((entry, i) => (
+                <a
+                  href={entry.href}
+                  class:list={['journal-tile__project', { 'journal-tile__project--recent': i === 0 }]}
+                >
+                  <img src={entry.emblem} alt="" loading="lazy" />
+                  <span class="journal-tile__project-title">{entry.title}</span>
+                </a>
+              ))}
+            </div>
           </div>
         )}
         <span class="bento-tile__corner" aria-hidden="true"></span>
