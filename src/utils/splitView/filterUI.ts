@@ -1,60 +1,63 @@
 /**
- * Populate types dropdown and restore selected state
+ * Populate the type facet — an always-visible segmented control:
+ * [All] [type] [type]… with per-type counts. Single-select; "All" = no filter.
  */
 export function populateTypes(
   typesList: HTMLElement,
   listItems: HTMLElement[],
-  selectedTypes: Set<string>,
-  typeFilter: HTMLElement,
-  typeToggle: HTMLElement
+  selectedTypes: Set<string>
 ): void {
-  const allTypes = new Set<string>();
+  const counts = new Map<string, number>();
   listItems.forEach((item) => {
     const type = item.dataset.contentType;
-    if (type) allTypes.add(type);
+    if (type) counts.set(type, (counts.get(type) || 0) + 1);
   });
 
-  // URL may carry stale/unknown types (e.g. hand-edited ?types=) — drop them
+  // URL may carry stale/unknown types (e.g. legacy ?types=fragment) — drop them
   selectedTypes.forEach((t) => {
-    if (!allTypes.has(t)) selectedTypes.delete(t);
+    if (!counts.has(t)) selectedTypes.delete(t);
   });
 
-  const sortedTypes = Array.from(allTypes).sort();
-  typesList.innerHTML = sortedTypes
-    .map((type) => {
-      const isSelected = selectedTypes.has(type);
-      return `<button class="split-view__type-pill ${isSelected ? 'is-selected' : ''}" type="button" data-type="${type}">${type}</button>`;
-    })
-    .join('');
+  // Fewer than two types — nothing to segment
+  if (counts.size < 2) {
+    typesList.hidden = true;
+    typesList.innerHTML = '';
+    return;
+  }
 
-  typeFilter.style.display = sortedTypes.length === 0 ? 'none' : '';
-  typeToggle.classList.toggle('has-selection', selectedTypes.size > 0);
+  const sortedTypes = Array.from(counts.keys()).sort();
+  const pill = (type: string, label: string, count: number, selected: boolean) =>
+    `<button class="split-view__type-pill ${selected ? 'is-selected' : ''}" type="button" data-type="${type}" aria-pressed="${selected}">${label}<span class="split-view__pill-count">${count}</span></button>`;
+
+  typesList.innerHTML = [
+    pill('', 'All', listItems.length, selectedTypes.size === 0),
+    ...sortedTypes.map((type) => pill(type, type, counts.get(type)!, selectedTypes.has(type))),
+  ].join('');
+  typesList.hidden = false;
 }
 
 /**
- * Populate tags dropdown and restore selected state
+ * Populate the tag facet — an inline wrapping pill row with per-tag counts.
+ * Multi-select toggles.
  */
 export function populateTags(
   tagsList: HTMLElement,
   listItems: HTMLElement[],
-  selectedTags: Set<string>,
-  tagsFilter: HTMLElement,
-  tagsToggle: HTMLElement
+  selectedTags: Set<string>
 ): void {
-  const allTags = new Set<string>();
+  const counts = new Map<string, number>();
   listItems.forEach((item) => {
     const tags = item.dataset.tags?.split(',').filter(Boolean) || [];
-    tags.forEach((tag) => allTags.add(tag));
+    tags.forEach((tag) => counts.set(tag, (counts.get(tag) || 0) + 1));
   });
 
-  const sortedTags = Array.from(allTags).sort();
+  const sortedTags = Array.from(counts.keys()).sort();
   tagsList.innerHTML = sortedTags
     .map((tag) => {
       const isSelected = selectedTags.has(tag);
-      return `<button class="split-view__tag-pill ${isSelected ? 'is-selected' : ''}" type="button" data-tag="${tag}">${tag}</button>`;
+      return `<button class="split-view__tag-pill ${isSelected ? 'is-selected' : ''}" type="button" data-tag="${tag}" aria-pressed="${isSelected}">${tag}<span class="split-view__pill-count">${counts.get(tag)}</span></button>`;
     })
     .join('');
 
-  tagsFilter.style.display = sortedTags.length === 0 ? 'none' : '';
-  tagsToggle.classList.toggle('has-selection', selectedTags.size > 0);
+  tagsList.hidden = sortedTags.length === 0;
 }

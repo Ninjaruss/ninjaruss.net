@@ -6,29 +6,15 @@ import { formatDate } from '../../utils/dates';
 import { getJournalItems } from '../../utils/journal';
 
 const items = await getJournalItems();
-
-const FEATURED = [
-  { href: '/novel', label: 'Novel', title: 'Remember Rain', blurb: 'An in-progress novel with its own reader.' },
-  { href: '/stream', label: 'Stream', title: 'Stream Log', blurb: 'Session stats, journal, and bonds.' },
-];
 ---
 
 <SplitViewLayout
   title="Journal"
-  description="Inquiries I'm building and fragments I'm turning over."
+  description="Showcases I'm building and notes I'm turning over."
   section="journal"
   ogImage="/social-default.svg"
 >
   <Fragment slot="list">
-    <div class="journal-featured" role="presentation">
-      {FEATURED.map(card => (
-        <a href={card.href} class="journal-featured__card">
-          <span class="journal-featured__label">{card.label}</span>
-          <span class="journal-featured__title">{card.title}</span>
-          <span class="journal-featured__blurb">{card.blurb}</span>
-        </a>
-      ))}
-    </div>
     {items.length > 0 ? (
       items.map(({ entry, type, href }) => (
         <ListItem
@@ -50,51 +36,6 @@ const FEATURED = [
 </SplitViewLayout>
 
 <style>
-  .journal-featured {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-xs);
-    padding: var(--space-sm) var(--space-md);
-    border-bottom: var(--border-hairline) solid var(--color-border);
-  }
-
-  .journal-featured__card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2xs);
-    padding: var(--space-sm);
-    background: var(--color-bg-deep);
-    border: var(--border-medium) solid var(--color-border);
-    text-decoration: none;
-    clip-path: polygon(var(--cut-sm) 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
-    transition: border-color var(--transition-fast), background var(--transition-fast);
-  }
-
-  .journal-featured__card:hover,
-  .journal-featured__card:focus-visible {
-    border-color: var(--color-gold);
-    background: rgba(255, 229, 44, 0.06);
-  }
-
-  .journal-featured__label {
-    font-family: var(--font-display);
-    font-size: var(--text-2xs);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
-    color: var(--color-gold);
-  }
-
-  .journal-featured__title {
-    font-family: var(--font-display);
-    font-size: var(--text-sm);
-    color: var(--color-text);
-  }
-
-  .journal-featured__blurb {
-    font-size: var(--text-2xs);
-    color: var(--color-text-muted);
-  }
-
   .empty-state {
     color: var(--color-muted);
     font-style: italic;

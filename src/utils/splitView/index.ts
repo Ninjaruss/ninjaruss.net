@@ -15,16 +15,8 @@ export { initProseImageTilt } from './proseImageTilt';
  */
 function queryElements(splitView: HTMLElement): SplitViewElements | null {
   const searchInput = splitView.querySelector('.split-view__search') as HTMLInputElement | null;
-  const typesList = splitView.querySelector('.split-view__type-list') as HTMLElement | null;
-  const typeToggle = splitView.querySelector('.split-view__type-toggle') as HTMLElement | null;
-  const typeDropdown = splitView.querySelector('.split-view__type-dropdown') as HTMLElement | null;
-  const typeClear = splitView.querySelector('.split-view__type-clear') as HTMLElement | null;
-  const typeFilter = splitView.querySelector('.split-view__type-filter') as HTMLElement | null;
-  const tagsList = splitView.querySelector('.split-view__tags-list') as HTMLElement | null;
-  const tagsToggle = splitView.querySelector('.split-view__tags-toggle') as HTMLElement | null;
-  const tagsDropdown = splitView.querySelector('.split-view__tags-dropdown') as HTMLElement | null;
-  const tagsClear = splitView.querySelector('.split-view__tags-clear') as HTMLElement | null;
-  const tagsFilter = splitView.querySelector('.split-view__tags-filter') as HTMLElement | null;
+  const typesList = splitView.querySelector('.split-view__types') as HTMLElement | null;
+  const tagsList = splitView.querySelector('.split-view__tags') as HTMLElement | null;
   const clearAllButton = splitView.querySelector('.split-view__clear-all-filters') as HTMLElement | null;
   const noResults = splitView.querySelector('.split-view__no-results') as HTMLElement | null;
   const contentArea = splitView.querySelector('.split-view__content') as HTMLElement | null;
@@ -33,9 +25,7 @@ function queryElements(splitView: HTMLElement): SplitViewElements | null {
   const listPanel = splitView.querySelector('.split-view__list') as HTMLElement | null;
   const detailPanel = splitView.querySelector('.split-view__detail') as HTMLElement | null;
 
-  if (!searchInput || !typesList || !typeToggle || !typeDropdown || !typeClear || !typeFilter ||
-      !tagsList || !tagsToggle || !tagsDropdown || !tagsClear || !tagsFilter ||
-      !clearAllButton || !noResults || !contentArea) {
+  if (!searchInput || !typesList || !tagsList || !clearAllButton || !noResults || !contentArea) {
     console.error('Split view: missing required elements');
     return null;
   }
@@ -44,15 +34,7 @@ function queryElements(splitView: HTMLElement): SplitViewElements | null {
     splitView,
     searchInput,
     typesList,
-    typeToggle,
-    typeDropdown,
-    typeClear,
-    typeFilter,
     tagsList,
-    tagsToggle,
-    tagsDropdown,
-    tagsClear,
-    tagsFilter,
     clearAllButton,
     noResults,
     contentArea,
@@ -95,8 +77,10 @@ export function initSplitView(): void {
   // Restore filter state from URL
   const { search: initialSearch, tags: initialTags, types: initialTypes } = getFiltersFromURL();
   elements.searchInput.value = initialSearch;
-  populateTags(elements.tagsList, elements.listItems, initialTags, elements.tagsFilter, elements.tagsToggle);
-  populateTypes(elements.typesList, elements.listItems, initialTypes, elements.typeFilter, elements.typeToggle);
+  populateTags(elements.tagsList, elements.listItems, initialTags);
+  populateTypes(elements.typesList, elements.listItems, initialTypes);
+  // Reflect restored (non-search) filters on the clear button
+  elements.clearAllButton.hidden = initialTags.size === 0 && initialTypes.size === 0;
   applyFilters(elements.listItems, elements.noResults);
 
   // Mark initial active item

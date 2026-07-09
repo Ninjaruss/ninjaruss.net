@@ -144,7 +144,6 @@ function colorBg(hex: string, a: number): string {
 
     <!-- Sidebar -->
     <div class="s-sidebar" id="sidebar">
-      <span class="s-logo">Ninjaruss</span>
       <div class="s-tabs" id="tab-list" role="tablist">
         <div class="s-tab-indicator" id="tab-indicator"></div>
         <button class="s-tab active" data-tab="status"  role="tab" aria-selected="true">Status</button>
@@ -443,7 +442,8 @@ function colorBg(hex: string, a: number): string {
             <div class="mail-inner">
               <div class="mail-title">Mailbox</div>
               <div class="mail-sub">Send mail to be read on stream</div>
-              <a href=`mailto:${'mailbox'}@${'ninjaruss.net'}` class="mail-address">{'mailbox'}@{'ninjaruss.net'}</a>
+              {/* Address + href injected client-side so it never sits in the served HTML */}
+              <a href="#mailbox" class="mail-address" id="mail-address"></a>
             </div>
           </div>
 
@@ -466,6 +466,18 @@ function colorBg(hex: string, a: number): string {
   }
   checkLiveStatus();
   setInterval(checkLiveStatus, 300_000);
+
+  /* ── Mailbox address — assembled at runtime so scrapers reading the
+     served HTML never see a mailto or full address ─────────────────── */
+  function initMailAddress(): void {
+    const el = document.getElementById('mail-address') as HTMLAnchorElement | null;
+    if (!el || el.textContent) return;
+    const addr = ['mailbox', ['ninjaruss', 'net'].join('.')].join('@');
+    el.textContent = addr;
+    el.href = 'mailto:' + addr;
+  }
+  initMailAddress();
+  document.addEventListener('astro:page-load', initMailAddress);
 
   /* ── DOM init ─────────────────────────────────────────── */
   document.addEventListener('astro:page-load', () => {

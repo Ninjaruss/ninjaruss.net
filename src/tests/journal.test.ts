@@ -22,8 +22,8 @@ describe('mergeJournalEntries', () => {
 
   it('tags each item with type and href', () => {
     const merged = mergeJournalEntries([entry('a', '2026-01-01')] as any, [entry('b', '2026-02-01')] as any);
-    expect(merged[0]).toMatchObject({ type: 'inquiry', href: '/showcase/b' });
-    expect(merged[1]).toMatchObject({ type: 'fragment', href: '/notes/a' });
+    expect(merged[0]).toMatchObject({ type: 'showcase', href: '/showcase/b' });
+    expect(merged[1]).toMatchObject({ type: 'note', href: '/notes/a' });
   });
 
   it('prefers updatedAt over publishedAt for ordering', () => {
