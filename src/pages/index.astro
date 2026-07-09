@@ -46,27 +46,25 @@ const recentMedia = media
   .slice(0, 8)
   .map(e => ({ href: `/shelf/${e.slug}`, emblem: e.data.emblem ?? DEFAULT_EMBLEM, title: e.data.title }));
 
-type JournalRow = { href: string; title: string; type: 'inquiry' | 'fragment' };
+const shortDate = (ms: number) =>
+  new Date(ms).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).toLowerCase();
+
+type JournalRow = { href: string; title: string; type: 'note' | 'showcase'; date: string };
 const recentJournal: JournalRow[] = [
-  ...notes.map(e => ({ href: `/notes/${e.slug}`, title: e.data.title, type: 'fragment' as const, d: effectiveDate(e) })),
-  ...showcase.map(e => ({ href: `/showcase/${e.slug}`, title: e.data.title, type: 'inquiry' as const, d: effectiveDate(e) })),
+  ...notes.map(e => ({ href: `/notes/${e.slug}`, title: e.data.title, type: 'note' as const, d: effectiveDate(e) })),
+  ...showcase.map(e => ({ href: `/showcase/${e.slug}`, title: e.data.title, type: 'showcase' as const, d: effectiveDate(e) })),
 ]
   .sort((a, b) => b.d - a.d)
   .slice(0, 5)
-  .map(({ href, title, type }) => ({ href, title, type }));
+  .map(({ href, title, type, d }) => ({ href, title, type, date: shortDate(d) }));
 
-// Find the most recently published/updated content, excluding entries already in the Journal tile
-const journalHrefs = new Set(recentJournal.map(r => r.href));
-const allContent = [...notes, ...media, ...showcase];
-const sorted = allContent.sort((a, b) => effectiveDate(b) - effectiveDate(a));
-const eligible = sorted.filter(e => !journalHrefs.has(`/${e.collection}/${e.slug}`));
-const latestPool = eligible.length > 0 ? eligible : sorted;
-
-// Get entries with the most recent date for client-side randomization
-const mostRecentDate = latestPool[0] ? effectiveDate(latestPool[0]) : null;
-const sameDateEntries = mostRecentDate
-  ? latestPool.filter(entry => effectiveDate(entry) === mostRecentDate)
-  : [];
+// Latest tile pool — the latest 2 notes and latest 1 showcase, interleaved
+// (note, showcase, note) so the client-side cycle alternates types.
+const byDateDesc = (a: (typeof notes)[number], b: (typeof notes)[number]) =>
+  effectiveDate(b) - effectiveDate(a);
+const latestNotes = [...notes].sort(byDateDesc).slice(0, 2);
+const latestShowcase = [...showcase].sort(byDateDesc).slice(0, 1);
+const latestPool = [latestNotes[0], latestShowcase[0], latestNotes[1]].filter(Boolean);
 
 // Novel — find most recently modified file date from MetaData.txt
 const novelDir = join(process.cwd(), 'src/content/novel');
@@ -134,8 +132,8 @@ const singleIcon = leadingStats.length === 1 ? leadingStats[0] : null;
 
 const donutArcs = buildDonutArcs(streamTallies, 32);
 
-// Prepare data for client-side randomization
-const latestEntries = sameDateEntries.map(entry => ({
+// Prepare data for client-side cycling
+const latestEntries = latestPool.map(entry => ({
   title: entry.data.title,
   href: `/${entry.collection}/${entry.slug}`,
   publishedAt: entry.data.publishedAt!.toISOString(),
@@ -145,7 +143,7 @@ const latestEntries = sameDateEntries.map(entry => ({
 }));
 ---
 
-<BaseLayout title="Home" description="Fragments, media, and showcase.">
+<BaseLayout title="Home" description="Notes, media, and showcases.">
   <div class="container" id="page-container">
     <BentoGrid>
       <!-- Row 1: Title (4×1) + YouTube (1×1) + Now (1×1) -->
@@ -227,7 +225,7 @@ const latestEntries = sameDateEntries.map(entry => ({
         <a href="/journal" class="journal-tile__head">
           <div class="bento-tile__header">
             <span class="bento-tile__label">Journal</span>
-            <h3 class="bento-tile__title">Inquiries & Fragments</h3>
+            <h3 class="bento-tile__title">Notes & Showcases</h3>
           </div>
           <p class="bento-tile__description">Projects I'm building and ideas I'm turning over.</p>
         </a>
@@ -235,8 +233,8 @@ const latestEntries = sameDateEntries.map(entry => ({
           <div class="journal-tile__list">
             {recentJournal.map(row => (
               <a class="journal-tile__row" href={row.href} title={row.title}>
-                <span class="journal-tile__type">{row.type}</span>
                 <span class="journal-tile__row-title">{row.title}</span>
+                <span class="journal-tile__date">{row.date}</span>
               </a>
             ))}
           </div>
@@ -473,8 +471,10 @@ const latestEntries = sameDateEntries.map(entry => ({
         <p class="logo-tile__description">The bangers I listen to every day.</p>
       </a>
 
-      <!-- Row 5 — email (2×1) fills the cols under MAL/Spotify (quote tile removed) -->
-      <a href="mailto:russ081999@gmail.com" class="logo-tile logo-tile--mail bento-tile--span-2x1 p3r-animate" style="--stagger-delay: 200ms;">
+      <!-- Row 5 — email (2×1) fills the cols under MAL/Spotify (quote tile removed).
+           href assembled client-side on first interaction so the address never
+           appears in the static HTML (bot-scrape mitigation). -->
+      <a href="#contact" id="mail-tile" class="logo-tile logo-tile--mail bento-tile--span-2x1 p3r-animate" style="--stagger-delay: 200ms;">
         <svg class="logo-tile__img" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
           <rect x="2.5" y="5" width="19" height="14" rx="1.5"/>
           <path d="M3 6.5l9 6.5 9-6.5"/>
@@ -787,23 +787,18 @@ const latestEntries = sameDateEntries.map(entry => ({
     color: var(--color-gold);
   }
 
-  .journal-tile__type {
-    flex-shrink: 0;
-    padding: 1px 6px;
-    background: var(--color-black);
-    color: var(--color-gold);
-    font-family: var(--font-display);
-    font-size: var(--text-2xs);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
-    clip-path: polygon(0 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
-    padding-right: 10px;
-  }
-
   .journal-tile__row-title {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .journal-tile__date {
+    flex-shrink: 0;
+    margin-left: auto;
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    opacity: 0.55;
   }
 
   .journal-tile__emblems {
@@ -1306,6 +1301,12 @@ const latestEntries = sameDateEntries.map(entry => ({
     justify-content: space-between;
     flex: 1;
     gap: var(--space-sm);
+    transition: opacity 250ms var(--animation-easing);
+  }
+
+  /* Fade out while the cycle script swaps in the next entry */
+  .latest-tile__inner.is-cycling {
+    opacity: 0;
   }
 
   .latest-tile__text {
@@ -1596,42 +1597,74 @@ const latestEntries = sameDateEntries.map(entry => ({
     }
   }
 
-  // Initialize Latest tile - runs on initial load and after view transitions
+  // Latest tile — cycles through the latest notes/showcase entries.
+  // Runs on initial load and after view transitions.
+  let latestCycleTimer: number | undefined;
+
   function initializeLatestTile() {
+    clearInterval(latestCycleTimer);
     const latestTile = document.getElementById('latest-tile') as HTMLAnchorElement | null;
-    if (latestTile) {
-      const entries = JSON.parse(latestTile.dataset.entries || '[]');
-      if (entries.length > 0) {
-        // Pick a random entry
-        const entry = entries[Math.floor(Math.random() * entries.length)];
+    if (!latestTile) return;
+    const entries = JSON.parse(latestTile.dataset.entries || '[]');
+    if (entries.length === 0) return;
 
-        // Update tile
-        latestTile.href = entry.href;
-        const titleEl = document.getElementById('latest-title');
-        if (titleEl) titleEl.textContent = entry.title;
+    const render = (entry: { href: string; title: string; excerpt?: string; emblem?: string; publishedAt: string; updatedAt?: string }) => {
+      latestTile.href = entry.href;
+      const titleEl = document.getElementById('latest-title');
+      if (titleEl) titleEl.textContent = entry.title;
 
-        const excerptEl = document.getElementById('latest-excerpt');
-        if (excerptEl) excerptEl.textContent = entry.excerpt || '';
+      const excerptEl = document.getElementById('latest-excerpt');
+      if (excerptEl) excerptEl.textContent = entry.excerpt || '';
 
-        // Update emblem
-        const emblemEl = document.getElementById('latest-emblem') as HTMLImageElement | null;
-        if (emblemEl && entry.emblem) emblemEl.src = entry.emblem;
+      const emblemEl = document.getElementById('latest-emblem') as HTMLImageElement | null;
+      if (emblemEl && entry.emblem) emblemEl.src = entry.emblem;
 
-        // Calculate "X days ago"
-        const daysAgoEl = document.getElementById('latest-days-ago');
-        if (daysAgoEl) {
-          const today = new Date();
-          const publishedDate = new Date(entry.updatedAt || entry.publishedAt);
-          const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
-          const publishedUTC = Date.UTC(publishedDate.getUTCFullYear(), publishedDate.getUTCMonth(), publishedDate.getUTCDate());
-          const diffDays = Math.floor((todayUTC - publishedUTC) / (1000 * 60 * 60 * 24));
+      // Calculate "X days ago"
+      const daysAgoEl = document.getElementById('latest-days-ago');
+      if (daysAgoEl) {
+        const today = new Date();
+        const publishedDate = new Date(entry.updatedAt || entry.publishedAt);
+        const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+        const publishedUTC = Date.UTC(publishedDate.getUTCFullYear(), publishedDate.getUTCMonth(), publishedDate.getUTCDate());
+        const diffDays = Math.floor((todayUTC - publishedUTC) / (1000 * 60 * 60 * 24));
 
-          if (diffDays === 0) daysAgoEl.textContent = 'today';
-          else if (diffDays === 1) daysAgoEl.textContent = 'yesterday';
-          else daysAgoEl.textContent = `${diffDays} days ago`;
-        }
+        if (diffDays === 0) daysAgoEl.textContent = 'today';
+        else if (diffDays === 1) daysAgoEl.textContent = 'yesterday';
+        else daysAgoEl.textContent = `${diffDays} days ago`;
       }
+    };
+
+    render(entries[0]);
+
+    if (entries.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const inner = latestTile.querySelector('.latest-tile__inner');
+      let index = 0;
+      latestCycleTimer = window.setInterval(() => {
+        index = (index + 1) % entries.length;
+        inner?.classList.add('is-cycling');
+        window.setTimeout(() => {
+          render(entries[index]);
+          inner?.classList.remove('is-cycling');
+        }, 250);
+      }, 7000);
     }
+  }
+
+  // Email tile — assemble the mailto only on first interaction so the
+  // address never sits in the served HTML for scrapers.
+  function initializeMailTile() {
+    const tile = document.getElementById('mail-tile') as HTMLAnchorElement | null;
+    if (!tile) return;
+    const addr = ['mailbox', ['ninjaruss', 'net'].join('.')].join('@');
+    const arm = () => tile.setAttribute('href', 'mailto:' + addr);
+    tile.addEventListener('pointerenter', arm, { once: true });
+    tile.addEventListener('focus', arm, { once: true });
+    tile.addEventListener('touchstart', arm, { once: true, passive: true });
+    tile.addEventListener('click', (e) => {
+      if (tile.getAttribute('href')?.startsWith('mailto:')) return;
+      e.preventDefault();
+      window.location.href = 'mailto:' + addr;
+    });
   }
 
   // Novel rain gauge — full rain for recent scene work, mist for outline-only,
@@ -1701,6 +1734,7 @@ const latestEntries = sameDateEntries.map(entry => ({
   initializeLatestTile();
   initializeNovelRain();
   initializeTilt();
+  initializeMailTile();
   startLivePolling();
 
   // Run after each view transition navigation
@@ -1708,11 +1742,13 @@ const latestEntries = sameDateEntries.map(entry => ({
     initializeLatestTile();
     initializeNovelRain();
     initializeTilt();
+    initializeMailTile();
     startLivePolling();
   });
 
   // Clean up intervals before navigating away
   document.addEventListener('astro:before-preparation', () => {
     stopLivePolling();
+    clearInterval(latestCycleTimer);
   });
 </script>

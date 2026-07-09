@@ -35,9 +35,10 @@ export function applyFilters(
 
   noResults.hidden = visibleCount > 0;
 
-  // Update count display
+  // Update "visible / total" count display
   const countEl = document.getElementById('split-count');
   if (countEl) {
-    countEl.textContent = `${visibleCount}`;
+    countEl.textContent =
+      visibleCount === listItems.length ? `${visibleCount}` : `${visibleCount} / ${listItems.length}`;
   }
 }

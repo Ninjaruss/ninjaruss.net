@@ -12,11 +12,23 @@ export function bindFilterEvents(
   state: SplitViewState,
   idleManager: IdleManager
 ): void {
-  const {
-    searchInput, typesList, typeToggle, typeDropdown, typeClear,
-    tagsList, tagsToggle, tagsDropdown, tagsClear, clearAllButton,
-    listItems, noResults
-  } = elements;
+  const { searchInput, typesList, tagsList, clearAllButton, listItems, noResults } = elements;
+
+  // Reflect a type selection onto the segmented control (single-select)
+  const syncTypePills = (types: Set<string>) => {
+    typesList.querySelectorAll<HTMLElement>('.split-view__type-pill').forEach((p) => {
+      const isSelected = p.dataset.type === '' ? types.size === 0 : types.has(p.dataset.type || '');
+      p.classList.toggle('is-selected', isSelected);
+      p.setAttribute('aria-pressed', String(isSelected));
+    });
+  };
+
+  const clearTagPills = () => {
+    tagsList.querySelectorAll<HTMLElement>('.split-view__tag-pill').forEach((p) => {
+      p.classList.remove('is-selected');
+      p.setAttribute('aria-pressed', 'false');
+    });
+  };
 
   // Search input
   searchInput.addEventListener('input', () => {
@@ -26,23 +38,24 @@ export function bindFilterEvents(
     idleManager.stopFloating();
   });
 
-  // Tags toggle
-  tagsToggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isExpanded = tagsToggle.getAttribute('aria-expanded') === 'true';
-    tagsToggle.setAttribute('aria-expanded', String(!isExpanded));
-    tagsDropdown.hidden = isExpanded;
+  // Type pill clicks — segmented single-select; "All" (data-type="") or
+  // re-clicking the active type clears the filter
+  typesList.addEventListener('click', (e) => {
+    const pill = (e.target as HTMLElement).closest('.split-view__type-pill') as HTMLElement | null;
+    if (!pill) return;
 
-    // Close type dropdown when opening tags
-    if (!isExpanded) {
-      typeToggle.setAttribute('aria-expanded', 'false');
-      typeDropdown.hidden = true;
-    }
+    const type = pill.dataset.type ?? '';
+    const { search, tags, types } = getFiltersFromURL();
+    const next = type && !types.has(type) ? new Set([type]) : new Set<string>();
+
+    syncTypePills(next);
+    updateURL(search, tags, next, clearAllButton);
+    applyFilters(listItems, noResults);
   });
 
-  // Tag pill clicks (event delegation)
+  // Tag pill clicks — multi-select toggle
   tagsList.addEventListener('click', (e) => {
-    const pill = (e.target as HTMLElement).closest('.split-view__tag-pill') as HTMLElement;
+    const pill = (e.target as HTMLElement).closest('.split-view__tag-pill') as HTMLElement | null;
     if (!pill) return;
 
     const tag = pill.dataset.tag;
@@ -53,90 +66,23 @@ export function bindFilterEvents(
     if (tags.has(tag)) {
       tags.delete(tag);
       pill.classList.remove('is-selected');
+      pill.setAttribute('aria-pressed', 'false');
     } else {
       tags.add(tag);
       pill.classList.add('is-selected');
+      pill.setAttribute('aria-pressed', 'true');
     }
 
-    tagsToggle.classList.toggle('has-selection', tags.size > 0);
     updateURL(search, tags, types, clearAllButton);
     applyFilters(listItems, noResults);
   });
 
-  // Clear tags
-  tagsClear.addEventListener('click', () => {
-    const { search, types } = getFiltersFromURL();
-    updateURL(search, new Set(), types, clearAllButton);
-    tagsList.querySelectorAll('.split-view__tag-pill').forEach((p) => {
-      p.classList.remove('is-selected');
-    });
-    tagsToggle.classList.remove('has-selection');
-    applyFilters(listItems, noResults);
-  });
-
-  // Type toggle
-  typeToggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isExpanded = typeToggle.getAttribute('aria-expanded') === 'true';
-    typeToggle.setAttribute('aria-expanded', String(!isExpanded));
-    typeDropdown.hidden = isExpanded;
-
-    // Close tags dropdown when opening type
-    if (!isExpanded) {
-      tagsToggle.setAttribute('aria-expanded', 'false');
-      tagsDropdown.hidden = true;
-    }
-  });
-
-  // Type pill clicks (event delegation)
-  typesList.addEventListener('click', (e) => {
-    const pill = (e.target as HTMLElement).closest('.split-view__type-pill') as HTMLElement;
-    if (!pill) return;
-
-    const type = pill.dataset.type;
-    if (!type) return;
-
-    const { search, tags, types } = getFiltersFromURL();
-
-    if (types.has(type)) {
-      types.delete(type);
-      pill.classList.remove('is-selected');
-    } else {
-      types.add(type);
-      pill.classList.add('is-selected');
-    }
-
-    typeToggle.classList.toggle('has-selection', types.size > 0);
-    updateURL(search, tags, types, clearAllButton);
-    applyFilters(listItems, noResults);
-  });
-
-  // Clear types
-  typeClear.addEventListener('click', () => {
-    const { search, tags } = getFiltersFromURL();
-    updateURL(search, tags, new Set(), clearAllButton);
-    typesList.querySelectorAll('.split-view__type-pill').forEach((p) => {
-      p.classList.remove('is-selected');
-    });
-    typeToggle.classList.remove('has-selection');
-    applyFilters(listItems, noResults);
-  });
-
-  // Clear all filters
+  // Clear all filters (types + tags; search stays)
   clearAllButton.addEventListener('click', () => {
     const { search } = getFiltersFromURL();
     updateURL(search, new Set(), new Set(), clearAllButton);
-
-    tagsList.querySelectorAll('.split-view__tag-pill').forEach((p) => {
-      p.classList.remove('is-selected');
-    });
-    tagsToggle.classList.remove('has-selection');
-
-    typesList.querySelectorAll('.split-view__type-pill').forEach((p) => {
-      p.classList.remove('is-selected');
-    });
-    typeToggle.classList.remove('has-selection');
-
+    clearTagPills();
+    syncTypePills(new Set());
     applyFilters(listItems, noResults);
   });
 }
@@ -148,31 +94,9 @@ export function bindGlobalEvents(section: string): void {
   if ((window as any).__splitViewGlobalHandlers) return;
   (window as any).__splitViewGlobalHandlers = true;
 
-  // Close dropdown when clicking outside
-  document.addEventListener('click', (e) => {
-    const tagsToggle = document.querySelector('.split-view__tags-toggle') as HTMLElement | null;
-    const tagsDropdown = document.querySelector('.split-view__tags-dropdown') as HTMLElement | null;
-    const typeToggle = document.querySelector('.split-view__type-toggle') as HTMLElement | null;
-    const typeDropdown = document.querySelector('.split-view__type-dropdown') as HTMLElement | null;
-
-    if (tagsToggle && tagsDropdown && !tagsToggle.contains(e.target as Node) && !tagsDropdown.contains(e.target as Node)) {
-      tagsToggle.setAttribute('aria-expanded', 'false');
-      tagsDropdown.hidden = true;
-    }
-
-    if (typeToggle && typeDropdown && !typeToggle.contains(e.target as Node) && !typeDropdown.contains(e.target as Node)) {
-      typeToggle.setAttribute('aria-expanded', 'false');
-      typeDropdown.hidden = true;
-    }
-  });
-
   // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
     const search = document.querySelector('.split-view__search') as HTMLInputElement | null;
-    const tagsToggle = document.querySelector('.split-view__tags-toggle') as HTMLElement | null;
-    const tagsDropdown = document.querySelector('.split-view__tags-dropdown') as HTMLElement | null;
-    const typeToggle = document.querySelector('.split-view__type-toggle') as HTMLElement | null;
-    const typeDropdown = document.querySelector('.split-view__type-dropdown') as HTMLElement | null;
 
     if ((e.metaKey || e.ctrlKey) && e.key === 'k' && search) {
       e.preventDefault();
@@ -187,14 +111,6 @@ export function bindGlobalEvents(section: string): void {
         const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
         history.replaceState(null, '', newURL);
         window.dispatchEvent(new Event('filterschanged'));
-      }
-      if (tagsToggle && tagsDropdown) {
-        tagsToggle.setAttribute('aria-expanded', 'false');
-        tagsDropdown.hidden = true;
-      }
-      if (typeToggle && typeDropdown) {
-        typeToggle.setAttribute('aria-expanded', 'false');
-        typeDropdown.hidden = true;
       }
     }
   });

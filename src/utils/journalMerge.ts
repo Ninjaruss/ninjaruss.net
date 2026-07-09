@@ -1,4 +1,4 @@
-export type JournalType = 'inquiry' | 'fragment';
+export type JournalType = 'note' | 'showcase';
 
 export interface JournalItem {
   entry: {
@@ -23,8 +23,8 @@ export function mergeJournalEntries(
   showcase: JournalItem['entry'][]
 ): JournalItem[] {
   const items: JournalItem[] = [
-    ...notes.map(e => ({ entry: e, type: 'fragment' as const, href: `/notes/${e.slug}` })),
-    ...showcase.map(e => ({ entry: e, type: 'inquiry' as const, href: `/showcase/${e.slug}` })),
+    ...notes.map(e => ({ entry: e, type: 'note' as const, href: `/notes/${e.slug}` })),
+    ...showcase.map(e => ({ entry: e, type: 'showcase' as const, href: `/showcase/${e.slug}` })),
   ];
   return items.sort((a, b) => effectiveDate(b.entry) - effectiveDate(a.entry));
 }

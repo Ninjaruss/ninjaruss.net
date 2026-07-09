@@ -1270,7 +1270,7 @@ Delete the `<button ... id="totop-tile">` block (lines 488-492), the `initialize
           <path d="M3 6.5l9 6.5 9-6.5"/>
         </svg>
         <span class="logo-tile__label">Email</span>
-        <p class="logo-tile__description">Say hi. No forms, no funnels.</p>
+        <p class="logo-tile__description">Connect with me directly.</p>
       </a>
 ```
 

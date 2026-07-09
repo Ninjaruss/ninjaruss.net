@@ -75,16 +75,16 @@ Collection-specific extensions:
 
 ### Structural
 - `BentoGrid.astro` / `BentoTile.astro` — Homepage grid system with visual hierarchy
-- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Journal/Shelf/Now with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /stream. (No longer the centered floating Home pill.)
+- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Journal/Novel/Shelf/Stream/Now with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /stream. (No longer the centered floating Home pill.)
 
 ### Bento Tile Hierarchy
 The homepage uses a visual hierarchy pattern:
-- **Journal tile** (`.journal-tile`, 4×2, core, gold highlight): the single dominant entry point. Root is a `div` (not `<a>` — avoids nested anchors); contains a header link to `/journal`, five real deep-link rows with INQUIRY/FRAGMENT type badges, and an emblem strip of recent showcase entries.
+- **Journal tile** (`.journal-tile`, 4×2, core, gold highlight): the single dominant entry point, headed "Notes & Showcases". Root is a `div` (not `<a>` — avoids nested anchors); contains a header link to `/journal`, five real deep-link rows with right-aligned muted short dates (`.journal-tile__date`, no type chips), and an emblem strip of recent showcase entries.
 - **Core tiles** (`.bento-tile--core`): Journal and Shelf (Media Log) with elevated gold glow and larger typography
-- **Signal tiles**: Current activity indicators (Now, Latest) — Now shows the latest now-entry's title; Latest is 2×2 with a stripped-markdown excerpt and shows the most recent entry *not already listed in the Journal tile* (falls back to overall latest if that empties the pool)
+- **Signal tiles**: Current activity indicators (Now, Latest) — Now shows the latest now-entry's title; Latest is 2×2 with a stripped-markdown excerpt and cycles client-side through the latest 2 notes + latest 1 showcase (interleaved note/showcase/note, 7s interval, 250ms fade via `.is-cycling`; static first entry under `prefers-reduced-motion`)
 - **Novel tile** (`.novel-tile`, 1×2, rows 2-3): "rain gauge" — story words (Scenes/ folder, big gold) vs outline words (other folders, small grey) from `computeNovelStats()`. Client script (`initializeNovelRain`) reads `data-scene-modified`/`data-outline-modified` and sets `is-raining` (scene work ≤14 days, CSS rain animation scaled by `--rain-strength`), `is-misting` (outline-only work ≤14 days, sparse slow drizzle), or `is-waiting` (static "the rain waits." line). Design invariant: never red, never displays a count of absent days — the tile rewards accumulation, it does not shame absence.
 - **Stream tile**: Dark 1×2 tile linking to `/stream`; shows live stat donut chart with leading stat emblem and session count. Pulsing red border (`--color-live`) when live.
-- **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) and a `mailto:` Email tile (2×1) with 48x48px logos/icons and hover effects
+- **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) and an Email tile (2×1, `#mail-tile`) with 48x48px logos/icons and hover effects. The email address (mailbox@ninjaruss.net) is never in the served HTML — `initializeMailTile()` assembles the `mailto:` on first pointerenter/focus/touch/click (bot-scrape mitigation; same pattern fills `#mail-address` on `/stream`'s Mailbox tab)
 - **YouTube tile**: Full-bleed channel avatar with an angled gold "YouTube" kicker chip (`.yt-tile__chip`); switches to Twitch live preview when streaming (live overlay covers the chip)
 
 Tile variants: `interactive` (default), `highlight` (gold bg), `dark`, `static`
@@ -175,15 +175,15 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 ## Pages & Routes
 
 ### Content Collection Pages
-- `/journal` — SplitViewLayout merging the `notes` + `showcase` collections into one date-sorted list ("fragments & inquiries" kicker). Type filter (All / inquiry / fragment) via the split-view type facet (`?types=` URL param, plural); unknown `?types=` values are ignored (fall back to All, enforced in `filterEngine.applyFilters`). A featured strip above the list links to `/novel` and `/stream`.
+- `/journal` — SplitViewLayout merging the `notes` + `showcase` collections into one date-sorted list ("notes & showcases" kicker). Filters are inline (no dropdowns): a segmented type control (All / note / showcase, single-select with per-type counts, `?types=` URL param) and a wrapping tag pill row (multi-select with per-tag counts, `?tags=`), plus a "visible / total" count and a compact ✕ clear-all beside search. Unknown `?types=` values — including the legacy `fragment`/`inquiry` — are dropped (fall back to All, enforced in `filterUI.populateTypes` + `filterEngine.applyFilters`). (The old featured strip linking `/novel` and `/stream` was removed; those live in the NavPill now.)
 - `/notes/[slug]` — Individual note detail pages (left panel shows the merged journal list, `section="journal"`)
 - `/showcase/[slug]` — Individual project detail pages (same merged list)
 - `/shelf` — Full-width emblem card grid grouped by content type, with a sticky jump bar (section anchor links) and inline quick-view panel. Progressive enhancement: cards link to `/shelf/[slug]` without JS; JS intercepts clicks to push `/shelf/[slug]` into history and open the panel instead (`?open=slug` supported for legacy links only).
 - `/shelf/[slug]` — Individual shelf detail pages
 
 ### Legacy Routes (301 Redirects)
-- `/notes` → redirects to `/journal?types=fragment` (list page only; detail routes live)
-- `/showcase` → redirects to `/journal?types=inquiry` (list page only; detail routes live)
+- `/notes` → redirects to `/journal?types=note` (list page only; detail routes live)
+- `/showcase` → redirects to `/journal?types=showcase` (list page only; detail routes live)
 - `/favorites` → redirects to `/shelf?fav=1`
 - `/favorites/[slug]` → redirects to `/shelf/[slug]`
 - `/media` → redirects to `/shelf` (via `astro.config.mjs` redirects)
@@ -226,7 +226,7 @@ The `/novel` route serves a standalone in-progress novel with its own UI, separa
 |------|---------|---------|
 | `src/utils/content.ts` | `stripMarkdown()`, `hasMinimalContent()` | Strip markdown AND raw HTML/entities for excerpts + client-side search; detect empty entries |
 | `src/utils/collections.ts` | `getAllCollections()` → `{ allShelf, allNotes, allShowcase }` | Fetch all non-draft entries; `SectionName = 'shelf' \| 'notes' \| 'showcase'` |
-| `src/utils/journal.ts` | `getJournalItems()`, `mergeJournalEntries()`, `JournalItem`, `JournalType` | Merge notes (`fragment`) + showcase (`inquiry`) into one date-sorted list |
+| `src/utils/journal.ts` | `getJournalItems()`, `mergeJournalEntries()`, `JournalItem`, `JournalType` | Merge notes (`note`) + showcase (`showcase`) into one date-sorted list |
 | `src/utils/journalMerge.ts` | pure merge/sort logic (no astro imports) | Unit-testable core of journal.ts (vitest can't resolve `astro:content`) |
 | `src/utils/dates.ts` | `formatDate()`, `shouldShowUpdatedDate()` | Date formatting and update-date display logic |
 | `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `countWords()`, `computeNovelStats()` | Scrivener-backed novel content loader + rain-gauge stats |
@@ -252,9 +252,9 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 
 5. **Now Page**: Dynamically renders the latest entry from the `now` collection. To update, add a new markdown file to `src/content/now/` with `publishedAt` frontmatter. Archive available at `/now/archive`. The homepage Now tile shows the latest entry's title.
 
-6. **Latest Tile**: Homepage 2×2 tile with "X days ago" indicator and excerpt; shows the most recent entry NOT already listed in the Journal tile (falls back to overall latest if that empties the pool)
+6. **Latest Tile**: Homepage 2×2 tile with "X days ago" indicator and excerpt; cycles client-side through the latest 2 notes and latest 1 showcase (interleaved note/showcase/note, 7s interval with fade swap; static under `prefers-reduced-motion`)
 
-6b. **NavPill**: 4 items — Home / Journal / Shelf / Now — rendered on every non-home page including `/stream` (which has no "Ninjaruss" home link anymore). `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array. `/novel` and `/stream` have no pill entry of their own; they're reached via the Journal featured cards and homepage tiles.
+6b. **NavPill**: 6 items — Home / Journal / Novel / Shelf / Stream / Now — rendered on every non-home page including `/stream` (whose sidebar "Ninjaruss" logo badge was removed). `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array.
 
 7. **Shelf Page Grid**: `/shelf` is a full emblem card grid grouped by content type (not SplitViewLayout), with a sticky jump bar for section navigation. `isFavorite: true` entries get a gold star badge and gold title on their card (no separate favorites filter exists anymore). Quick-view panel opens on card click without navigating away, pushing `/shelf/[slug]` into history. Cards that are neither a favorite nor have written content dim with `.shelf-card--dim` (`filter: opacity(0.52)`, not `opacity` — see Code Style Notes).
 

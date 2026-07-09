@@ -1,16 +1,10 @@
 export interface SplitViewElements {
   splitView: HTMLElement;
   searchInput: HTMLInputElement;
+  /** Segmented type control (.split-view__types); hidden when <2 types */
   typesList: HTMLElement;
-  typeToggle: HTMLElement;
-  typeDropdown: HTMLElement;
-  typeClear: HTMLElement;
-  typeFilter: HTMLElement;
+  /** Inline tag pill row (.split-view__tags); hidden when no tags */
   tagsList: HTMLElement;
-  tagsToggle: HTMLElement;
-  tagsDropdown: HTMLElement;
-  tagsClear: HTMLElement;
-  tagsFilter: HTMLElement;
   clearAllButton: HTMLElement;
   noResults: HTMLElement;
   contentArea: HTMLElement;
