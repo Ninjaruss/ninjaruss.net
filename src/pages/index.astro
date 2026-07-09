@@ -1453,8 +1453,8 @@ const latestEntries = latestPool.map(entry => ({
     align-items: center;
   }
 
-  /* Gold hairline tracing the seam; skew approximates the clip edge angle —
-     tune left/skew at preview so it hugs the edge */
+  /* Gold hairline tracing the seam; -4deg measured against the rendered
+     clip edge (24%→6% over the tile's height) so the line hugs it */
   .latest-tile__emblem-wrap::before {
     content: '';
     position: absolute;
@@ -1463,7 +1463,7 @@ const latestEntries = latestPool.map(entry => ({
     left: 15%;
     width: 2px;
     background: var(--color-gold);
-    transform: skewX(-8deg);
+    transform: skewX(-4deg);
     opacity: 0.7;
   }
 
