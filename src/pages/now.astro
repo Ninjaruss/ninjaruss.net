@@ -26,7 +26,7 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
       <header class="now__header">
         <span class="p4g-tab">snapshot</span>
         <div class="now__header-top">
-          <h1 class="now__title"><span class="p4g-heading">Now<span class="now__period">.</span></span></h1>
+          <h1 class="now__title"><span class="p4g-heading">Now</span></h1>
           <p class="now__updated" title="Date shown in UTC">
             <span class="now__updated-icon" aria-hidden="true">◈</span>
             {lastUpdated}
@@ -72,11 +72,6 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
 
   .now__header :global(.p4g-underline) {
     margin-bottom: var(--space-md);
-  }
-
-  .now__period {
-    color: var(--color-text);
-    text-shadow: none;
   }
 
   .now__header-top {

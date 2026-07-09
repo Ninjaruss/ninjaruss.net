@@ -39,7 +39,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
       <header class="split-view__header">
         <span class="p4g-tab">{kickerText}</span>
         <div class="split-view__header-top">
-          <h1 class="split-view__title"><span class="p4g-heading">{title}<span class="split-view__period">.</span></span></h1>
+          <h1 class="split-view__title"><span class="p4g-heading">{title}</span></h1>
           <span class="split-view__count" id="split-count" aria-live="polite"></span>
         </div>
         <span class="p4g-underline" aria-hidden="true"></span>
@@ -179,10 +179,6 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     line-height: 1.1;
     word-wrap: break-word;
     overflow-wrap: break-word;
-  }
-
-  .split-view__period {
-    color: var(--color-gold);
   }
 
   .split-view__header .p4g-underline {

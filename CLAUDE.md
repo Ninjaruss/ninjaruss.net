@@ -68,14 +68,14 @@ Collection-specific extensions:
 | Layout | Purpose |
 |--------|---------|
 | `BaseLayout.astro` | Foundation wrapper with meta, styles, view transitions |
-| `SectionLayout.astro` | Content pages with NavPill and animated P4G header (currently unused by routes; canonical section header) |
-| `SplitViewLayout.astro` | Three-panel list/detail/emblem interface with client-side navigation and emblem card sidebar |
+| `SectionLayout.astro` | Content pages with NavPill and animated P4G header (still unused by routes; the unified section header now lives in `SplitViewLayout`) |
+| `SplitViewLayout.astro` | Three-panel list/detail/emblem interface with client-side navigation and emblem card sidebar. Optional `kicker` prop; renders the unified P4G section header (`p4g-tab` + `p4g-heading` + `p4g-underline`) — the same header pattern is replicated on the Now, Now-archive, and Novel pages |
 
 ## Component Inventory
 
 ### Structural
 - `BentoGrid.astro` / `BentoTile.astro` — Homepage grid system with visual hierarchy
-- `NavPill.astro` — Floating bottom navigation
+- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Journal/Shelf/Now with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /stream. (No longer the centered floating Home pill.)
 
 ### Bento Tile Hierarchy
 The homepage uses a visual hierarchy pattern:
@@ -83,19 +83,20 @@ The homepage uses a visual hierarchy pattern:
 - **Core tiles** (`.bento-tile--core`): Journal and Shelf (Media Log) with elevated gold glow and larger typography
 - **Signal tiles**: Current activity indicators (Now, Latest) — Now shows the latest now-entry's title; Latest is 2×2 with a stripped-markdown excerpt and shows the most recent entry *not already listed in the Journal tile* (falls back to overall latest if that empties the pool)
 - **Novel tile** (`.novel-tile`, 1×2, rows 2-3): "rain gauge" — story words (Scenes/ folder, big gold) vs outline words (other folders, small grey) from `computeNovelStats()`. Client script (`initializeNovelRain`) reads `data-scene-modified`/`data-outline-modified` and sets `is-raining` (scene work ≤14 days, CSS rain animation scaled by `--rain-strength`), `is-misting` (outline-only work ≤14 days, sparse slow drizzle), or `is-waiting` (static "the rain waits." line). Design invariant: never red, never displays a count of absent days — the tile rewards accumulation, it does not shame absence.
-- **Stream tile**: Dark 1×2 tile linking to `/stream`; shows live stat donut chart with leading stat emblem and session count. Pulsing red border when live.
-- **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) and a `mailto:` Email tile with 48x48px logos/icons and hover effects
+- **Stream tile**: Dark 1×2 tile linking to `/stream`; shows live stat donut chart with leading stat emblem and session count. Pulsing red border (`--color-live`) when live.
+- **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) and a `mailto:` Email tile (2×1) with 48x48px logos/icons and hover effects
 - **YouTube tile**: Full-bleed channel avatar with an angled gold "YouTube" kicker chip (`.yt-tile__chip`); switches to Twitch live preview when streaming (live overlay covers the chip)
-- **Quote tile**: rotating P4G lines; the rotation excludes "Live without regret." (it's the title-tile tagline)
 
 Tile variants: `interactive` (default), `highlight` (gold bg), `dark`, `static`
 Sizes: `dominant` (2x2), `medium-wide` (2x1), `medium-tall` (1x2), `small` (1x1)
+
+**Hover signature**: the corner-cut triangle (`.bento-tile__corner` — gold triangle slides into the top-right on hover/focus) is the single hover signature for every interactive bento tile. Gold-background (`highlight`) tiles use a black triangle for contrast; `static` tiles hide it. Shelf cards have a matching `.shelf-card__corner`. BentoTile has no `accent` prop — the old `.bento-tile--accent` dot, corner-bracket `::after` decorations, and `.bento-tile--cyan` variant were all removed.
 Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--span-2x2`, `.bento-tile--span-2x1`, `.bento-tile--span-1x2`
 
 **Current Homepage Grid Pattern:**
 - Row 1: Title (4×1) + YouTube (1×1) + Now (1×1)
 - Rows 2-3: Journal (4×2, core) + Novel (1×2, rain gauge) + Stream (1×2)
-- Rows 4-5: Shelf/Media Log (2×2, core) + Latest (2×2) + MAL (1×1, row 4) + Spotify (1×1, row 4) + quote (1×1, row 5) + Email (1×1, row 5)
+- Rows 4-5: Shelf/Media Log (2×2, core) + Latest (2×2) + MAL (1×1, row 4) + Spotify (1×1, row 4) + Email (2×1, row 5)
 
 Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title-tile { grid-column: span 4 }`), not a span class.
 
@@ -128,6 +129,14 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 --color-gold: #ffe52c;           /* Primary accent (P4G yellow) */
 --color-bg-base: #111111;        /* Main background */
 --color-text: #f5f5f5;           /* Primary text */
+--color-live: #ff4040;           /* Live/stream red (badges, borders) */
+--color-live-rgb: 255, 64, 64;   /* For rgba() alpha variants */
+
+/* Radii — deliberately angular (P4G cuts corners, doesn't round them) */
+--radius-xs: 2px;
+--radius-sm: 3px;
+--radius-md: 4px;
+--radius-lg: 6px;
 
 /* Shadows (gold glow effect) */
 --shadow-hard: 4px 4px 0 rgba(255, 229, 44, 0.3);
@@ -233,7 +242,7 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 
 ## Important Implementation Details
 
-1. **SplitViewLayout JavaScript**: Three-panel layout (list/detail/emblem) with client-side fetch for detail content, History API for navigation, search/tag/type filtering (Cmd/Ctrl+K to focus search), emblem card flipping on content selection, falls back gracefully without JS. `contentLoader.loadContent` fetches by each list item's own `href` (not the page section), so mixed-collection lists like `/journal` work.
+1. **SplitViewLayout JavaScript**: Three-panel layout (list/detail/emblem) with client-side fetch for detail content, History API for navigation, search/tag/type filtering (Cmd/Ctrl+K to focus search), emblem card flipping on content selection, falls back gracefully without JS. `contentLoader.loadContent` fetches by each list item's own `href` (not the page section), so mixed-collection lists like `/journal` work. On load with no slug in the URL, auto-opens the newest visible entry — desktop layout only (detected via the applied grid columns, not viewport width) and without pushing history or moving focus (`src/utils/splitView/index.ts`; `loadContent` accepts `{ pushHistory, focusHeading }` options)
 
 2. **View Transitions**: Uses Astro's ClientRouter with custom P4G-style slide animations
 

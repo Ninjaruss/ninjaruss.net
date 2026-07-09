@@ -152,7 +152,7 @@ const latestEntries = sameDateEntries.map(entry => ({
       <div class="title-tile p3r-animate-left">
         <div class="title-tile__inner">
           <div class="title-tile__rule title-tile__rule--top" aria-hidden="true"></div>
-          <span class="title-tile__name"><span class="title-tile__name-inner">Ninjaruss<span class="title-tile__period">.</span></span></span>
+          <span class="title-tile__name"><span class="title-tile__name-inner">Ninjaruss</span></span>
           <div class="title-tile__rule title-tile__rule--bottom" aria-hidden="true"></div>
         </div>
         <p class="title-tile__description">Live without regret.</p>
@@ -473,13 +473,8 @@ const latestEntries = sameDateEntries.map(entry => ({
         <p class="logo-tile__description">The bangers I listen to every day.</p>
       </a>
 
-      <!-- Row 5 — quote card + email fill cols left empty by Latest (2×1) and MAL (1×1) -->
-      <div class="bento-tile bento-tile--dark quote-tile" id="quote-tile">
-        <span class="quote-tile__mark" aria-hidden="true">&ldquo;</span>
-        <p class="quote-tile__text" id="quote-text">The bonds you forge are your true strength.</p>
-      </div>
-
-      <a href="mailto:russ081999@gmail.com" class="logo-tile logo-tile--mail p3r-animate" style="--stagger-delay: 200ms;">
+      <!-- Row 5 — email (2×1) fills the cols under MAL/Spotify (quote tile removed) -->
+      <a href="mailto:russ081999@gmail.com" class="logo-tile logo-tile--mail bento-tile--span-2x1 p3r-animate" style="--stagger-delay: 200ms;">
         <svg class="logo-tile__img" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
           <rect x="2.5" y="5" width="19" height="14" rx="1.5"/>
           <path d="M3 6.5l9 6.5 9-6.5"/>
@@ -730,11 +725,6 @@ const latestEntries = sameDateEntries.map(entry => ({
   .title-tile__name-inner {
     display: inline-block;
     transform: skewX(var(--skew-display));
-  }
-
-  .title-tile__period {
-    color: var(--color-text);
-    text-shadow: none;
   }
 
   /* Tagline: always subtly visible, sharpens on hover */
@@ -1479,33 +1469,6 @@ const latestEntries = sameDateEntries.map(entry => ({
     opacity: 1;
   }
 
-  /* Quote tile — replaces a dead spacer with a rotating P4G line */
-  .quote-tile {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: var(--space-xs);
-    overflow: hidden;
-  }
-
-  .quote-tile__mark {
-    font-family: var(--font-display);
-    font-size: 2.4rem;
-    line-height: 0.6;
-    color: var(--color-gold-dim);
-    opacity: 0.45;
-  }
-
-  .quote-tile__text {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    font-style: italic;
-    line-height: 1.45;
-    color: var(--color-text-muted);
-    transition: opacity 300ms ease;
-  }
-
   /* Reduced Motion Support */
   @media (prefers-reduced-motion: reduce) {
     .logo-tile__description {
@@ -1733,49 +1696,11 @@ const latestEntries = sameDateEntries.map(entry => ({
     });
   }
 
-  // Rotating quote tile
-  const QUOTES = [
-    'The bonds you forge are your true strength.',
-    'Pierce the heavens with your own hands.',
-    'No mask. Just the truth.',
-    'Into the dark without a torch.',
-    'So the world will not forget.',
-  ];
-  let quoteInterval: ReturnType<typeof setInterval> | undefined;
-
-  function initializeQuoteTile() {
-    stopQuoteRotation();
-    const el = document.getElementById('quote-text');
-    if (!el) return;
-    let i = QUOTES.indexOf(el.textContent?.trim() ?? '');
-    if (i < 0) i = 0;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    quoteInterval = setInterval(() => {
-      i = (i + 1) % QUOTES.length;
-      if (reduce) {
-        el.textContent = QUOTES[i];
-        return;
-      }
-      el.style.opacity = '0';
-      setTimeout(() => {
-        el.textContent = QUOTES[i];
-        el.style.opacity = '';
-      }, 300);
-    }, 6000);
-  }
-
-  function stopQuoteRotation() {
-    if (quoteInterval !== undefined) {
-      clearInterval(quoteInterval);
-      quoteInterval = undefined;
-    }
-  }
 
   // Run on initial page load
   initializeLatestTile();
   initializeNovelRain();
   initializeTilt();
-  initializeQuoteTile();
   startLivePolling();
 
   // Run after each view transition navigation
@@ -1783,13 +1708,11 @@ const latestEntries = sameDateEntries.map(entry => ({
     initializeLatestTile();
     initializeNovelRain();
     initializeTilt();
-    initializeQuoteTile();
     startLivePolling();
   });
 
   // Clean up intervals before navigating away
   document.addEventListener('astro:before-preparation', () => {
     stopLivePolling();
-    stopQuoteRotation();
   });
 </script>
