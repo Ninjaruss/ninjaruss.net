@@ -872,9 +872,19 @@ const latestEntries = latestPool.map(entry => ({
       grid-template-columns: 1fr;
     }
 
+    /* The tile-relative diagonal can't track stacked content heights —
+       paint the black field on the showcases block itself instead. */
     .journal-tile::before,
     .journal-tile:hover::before {
-      clip-path: polygon(0 66%, 100% 60%, 100% 100%, 0 100%);
+      display: none;
+    }
+
+    .journal-tile__showcases {
+      margin: 0 calc(-1 * var(--space-md)) calc(-1 * var(--space-md));
+      padding: var(--space-md);
+      padding-top: calc(var(--space-md) + 16px);
+      background: var(--color-bg-base);
+      clip-path: polygon(0 16px, 100% 0, 100% 100%, 0 100%);
     }
   }
 
