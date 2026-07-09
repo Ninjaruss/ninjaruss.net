@@ -248,6 +248,7 @@ const latestEntries = latestPool.map(entry => ({
                 <a
                   href={entry.href}
                   class:list={['journal-tile__project', { 'journal-tile__project--recent': i === 0 }]}
+                  title={entry.title}
                 >
                   <img src={entry.emblem} alt="" loading="lazy" />
                   <span class="journal-tile__project-title">{entry.title}</span>
@@ -754,8 +755,116 @@ const latestEntries = latestPool.map(entry => ({
   }
 
   /* ─── Journal Tile ────────────────────────────────────── */
+  /* Journal tile — slash split: gold notes field / black showcases field.
+     The black field is a ::before overlay clipped diagonally; both content
+     columns are positioned to paint above it. */
   .journal-tile {
-    gap: var(--space-sm);
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+    gap: var(--space-md);
+  }
+
+  .journal-tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-bg-base);
+    clip-path: polygon(66% 0, 100% 0, 100% 100%, 58% 100%);
+    transition: clip-path var(--animation-base) var(--animation-easing);
+    pointer-events: none;
+  }
+
+  .journal-tile:hover::before {
+    clip-path: polygon(64% 0, 100% 0, 100% 100%, 56% 100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .journal-tile::before {
+      transition: none;
+    }
+    .journal-tile:hover::before {
+      clip-path: polygon(66% 0, 100% 0, 100% 100%, 58% 100%);
+    }
+  }
+
+  .journal-tile__notes,
+  .journal-tile__showcases {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* Corner triangle sits on the black field now — gold, not the highlight
+     black (which would vanish). Extra class specificity beats bento.css. */
+  .journal-tile.bento-tile--highlight .bento-tile__corner {
+    background: var(--color-gold);
+  }
+
+  /* Showcases field — gold kicker tab + emblem/title project rows */
+  .journal-tile__showcase-tab {
+    align-self: flex-start;
+    padding: 2px 12px;
+    background: var(--color-gold);
+    color: var(--color-black);
+    font-family: var(--font-display);
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    text-decoration: none;
+    transform: skewX(var(--skew-accent));
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .journal-tile__showcase-tab:hover,
+  .journal-tile__showcase-tab:focus-visible {
+    background: var(--color-text);
+  }
+
+  .journal-tile__projects {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+    margin-top: var(--space-sm);
+  }
+
+  .journal-tile__project {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-2xs) var(--space-xs);
+    text-decoration: none;
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  /* Mirror of the note rows' hover: gold-on-black side inverts to gold bg */
+  .journal-tile__project:hover,
+  .journal-tile__project:focus-visible {
+    background: var(--color-gold);
+    color: var(--color-black);
+  }
+
+  .journal-tile__project img {
+    width: 42px;
+    height: 42px;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
+    border: 2px solid var(--color-border-strong);
+  }
+
+  .journal-tile__project--recent img {
+    border-color: var(--color-gold);
+  }
+
+  .journal-tile__project-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .journal-tile__head {
@@ -807,32 +916,6 @@ const latestEntries = latestPool.map(entry => ({
     font-size: var(--text-2xs);
     letter-spacing: var(--tracking-label);
     opacity: 0.55;
-  }
-
-  .journal-tile__emblems {
-    display: flex;
-    gap: var(--space-xs);
-  }
-
-  .journal-tile__emblem {
-    width: 56px;
-    height: 56px;
-    border: 2px solid var(--color-black);
-    overflow: hidden;
-    flex-shrink: 0;
-    transition: transform var(--transition-fast);
-  }
-
-  .journal-tile__emblem:hover,
-  .journal-tile__emblem:focus-visible {
-    transform: translateY(-3px);
-  }
-
-  .journal-tile__emblem img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
   }
 
   /* ─── Media Tile ──────────────────────────────────────── */
@@ -1494,7 +1577,6 @@ const latestEntries = latestPool.map(entry => ({
       animation: none;
     }
 
-    .journal-tile__emblem,
     .tile-poster__img,
     .latest-tile__emblem {
       transition: none;
@@ -1543,11 +1625,6 @@ const latestEntries = latestPool.map(entry => ({
 
     .image-tile--youtube {
       grid-column: span 1;
-    }
-
-    .journal-tile__emblem {
-      width: 44px;
-      height: 44px;
     }
 
     .latest-tile__emblem-wrap {
