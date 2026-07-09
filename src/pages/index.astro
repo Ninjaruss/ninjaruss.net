@@ -867,6 +867,17 @@ const latestEntries = latestPool.map(entry => ({
     text-overflow: ellipsis;
   }
 
+  @media (max-width: 1024px) {
+    .journal-tile {
+      grid-template-columns: 1fr;
+    }
+
+    .journal-tile::before,
+    .journal-tile:hover::before {
+      clip-path: polygon(0 66%, 100% 60%, 100% 100%, 0 100%);
+    }
+  }
+
   .journal-tile__head {
     text-decoration: none;
     color: inherit;
