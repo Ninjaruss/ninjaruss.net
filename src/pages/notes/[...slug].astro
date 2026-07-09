@@ -6,7 +6,8 @@ import EntryHeader from '../../components/EntryHeader.astro';
 import EntryBody from '../../components/EntryBody.astro';
 import RelatedContent from '../../components/RelatedContent.astro';
 import { stripMarkdown, hasMinimalContent } from '../../utils/content';
-import { getAllCollections, getSortedEntries } from '../../utils/collections';
+import { getAllCollections } from '../../utils/collections';
+import { getJournalItems } from '../../utils/journal';
 
 export async function getStaticPaths() {
   const entries = await getCollection('notes');
@@ -19,7 +20,7 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
-const sortedNotes = await getSortedEntries('notes');
+const journalItems = await getJournalItems();
 const { allShelf, allNotes, allShowcase } = await getAllCollections();
 const hasContent = !hasMinimalContent(entry.body);
 
@@ -28,9 +29,9 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
 ---
 
 <SplitViewLayout
-  title="Notes"
+  title="Journal"
   description={pageDescription}
-  section="notes"
+  section="journal"
   initialSlug={entry.slug}
   initialEmblem={entry.data.emblem}
   pageTitle={entry.data.title}
@@ -38,14 +39,15 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
   ogType="article"
 >
   <Fragment slot="list">
-    {sortedNotes.map((noteEntry) => (
+    {journalItems.map(({ entry: item, type, href }) => (
       <ListItem
-        href={`/notes/${noteEntry.slug}`}
-        slug={noteEntry.slug}
-        title={noteEntry.data.title}
-        tags={noteEntry.data.tags}
-        searchableContent={stripMarkdown(noteEntry.body).slice(0, 500)}
-        hasMinimalContent={hasMinimalContent(noteEntry.body)}
+        href={href}
+        slug={item.slug}
+        title={item.data.title}
+        tags={item.data.tags}
+        contentType={type}
+        searchableContent={stripMarkdown(item.body).slice(0, 500)}
+        hasMinimalContent={hasMinimalContent(item.body)}
       />
     ))}
   </Fragment>

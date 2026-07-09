@@ -14,6 +14,11 @@ export function populateTypes(
     if (type) allTypes.add(type);
   });
 
+  // URL may carry stale/unknown types (e.g. hand-edited ?types=) — drop them
+  selectedTypes.forEach((t) => {
+    if (!allTypes.has(t)) selectedTypes.delete(t);
+  });
+
   const sortedTypes = Array.from(allTypes).sort();
   typesList.innerHTML = sortedTypes
     .map((type) => {

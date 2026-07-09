@@ -33,8 +33,8 @@ src/
 ├── layouts/          # Page layout templates
 ├── pages/            # File-based routing
 ├── styles/           # Global CSS (no frameworks)
-├── tests/            # Vitest unit tests (novel.test.ts)
-└── utils/            # Shared utilities (content, collections, dates, novel, splitView/)
+├── tests/            # Vitest unit tests (novel, content, journal, shelf, stream, ...)
+└── utils/            # Shared utilities (content, collections, journal, dates, novel, splitView/)
 ```
 
 ### Key Patterns
@@ -75,15 +75,17 @@ Collection-specific extensions:
 
 ### Structural
 - `BentoGrid.astro` / `BentoTile.astro` — Homepage grid system with visual hierarchy
-- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Showcase/Notes/Shelf/Now with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage. (No longer the centered floating Home pill.)
+- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Journal/Shelf/Now with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /stream. (No longer the centered floating Home pill.)
 
 ### Bento Tile Hierarchy
 The homepage uses a visual hierarchy pattern:
-- **Core tiles** (`.bento-tile--core`): Main entry points (Showcase, Notes, Shelf) with elevated gold glow and larger typography
-- **Signal tiles**: Current activity indicators (Now, Latest) - smaller, secondary visual weight
+- **Journal tile** (`.journal-tile`, 4×2, core, gold highlight): the single dominant entry point. Root is a `div` (not `<a>` — avoids nested anchors); contains a header link to `/journal`, five real deep-link rows with INQUIRY/FRAGMENT type badges, and an emblem strip of recent showcase entries.
+- **Core tiles** (`.bento-tile--core`): Journal and Shelf (Media Log) with elevated gold glow and larger typography
+- **Signal tiles**: Current activity indicators (Now, Latest) — Now shows the latest now-entry's title; Latest is 2×2 with a stripped-markdown excerpt and shows the most recent entry *not already listed in the Journal tile* (falls back to overall latest if that empties the pool)
+- **Novel tile** (`.novel-tile`, 1×2, rows 2-3): "rain gauge" — story words (Scenes/ folder, big gold) vs outline words (other folders, small grey) from `computeNovelStats()`. Client script (`initializeNovelRain`) reads `data-scene-modified`/`data-outline-modified` and sets `is-raining` (scene work ≤14 days, CSS rain animation scaled by `--rain-strength`), `is-misting` (outline-only work ≤14 days, sparse slow drizzle), or `is-waiting` (static "the rain waits." line). Design invariant: never red, never displays a count of absent days — the tile rewards accumulation, it does not shame absence.
 - **Stream tile**: Dark 1×2 tile linking to `/stream`; shows live stat donut chart with leading stat emblem and session count. Pulsing red border (`--color-live`) when live.
-- **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) with 48x48px logos and hover effects
-- **YouTube tile**: Full-bleed channel avatar; switches to Twitch live preview when streaming
+- **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) and a `mailto:` Email tile (2×1) with 48x48px logos/icons and hover effects
+- **YouTube tile**: Full-bleed channel avatar with an angled gold "YouTube" kicker chip (`.yt-tile__chip`); switches to Twitch live preview when streaming (live overlay covers the chip)
 
 Tile variants: `interactive` (default), `highlight` (gold bg), `dark`, `static`
 Sizes: `dominant` (2x2), `medium-wide` (2x1), `medium-tall` (1x2), `small` (1x1)
@@ -93,8 +95,8 @@ Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--sp
 
 **Current Homepage Grid Pattern:**
 - Row 1: Title (4×1) + YouTube (1×1) + Now (1×1)
-- Rows 2-3: Showcase (3×2, core) + Notes (2×2, core) + Stream (1×2)
-- Rows 4-5: Shelf (2×2, core) + Latest (2×1, row 4) + Novel (1×2) + MAL (1×1, row 4) + Spotify (1×1, row 5) + back-to-top tile (1×1, row 5)
+- Rows 2-3: Journal (4×2, core) + Novel (1×2, rain gauge) + Stream (1×2)
+- Rows 4-5: Shelf/Media Log (2×2, core) + Latest (2×2) + MAL (1×1, row 4) + Spotify (1×1, row 4) + Email (2×1, row 5)
 
 Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title-tile { grid-column: span 4 }`), not a span class.
 
@@ -173,14 +175,15 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 ## Pages & Routes
 
 ### Content Collection Pages
+- `/journal` — SplitViewLayout merging the `notes` + `showcase` collections into one date-sorted list ("fragments & inquiries" kicker). Type filter (All / inquiry / fragment) via the split-view type facet (`?types=` URL param, plural); unknown `?types=` values are ignored (fall back to All, enforced in `filterEngine.applyFilters`). A featured strip above the list links to `/novel` and `/stream`.
+- `/notes/[slug]` — Individual note detail pages (left panel shows the merged journal list, `section="journal"`)
+- `/showcase/[slug]` — Individual project detail pages (same merged list)
 - `/shelf` — Full-width emblem card grid grouped by content type, with a sticky jump bar (section anchor links) and inline quick-view panel. Progressive enhancement: cards link to `/shelf/[slug]` without JS; JS intercepts clicks to push `/shelf/[slug]` into history and open the panel instead (`?open=slug` supported for legacy links only).
 - `/shelf/[slug]` — Individual shelf detail pages
-- `/notes` — SplitViewLayout with philosophical fragments
-- `/notes/[slug]` — Individual note detail pages
-- `/showcase` — SplitViewLayout with project inquiries
-- `/showcase/[slug]` — Individual project detail pages
 
 ### Legacy Routes (301 Redirects)
+- `/notes` → redirects to `/journal?types=fragment` (list page only; detail routes live)
+- `/showcase` → redirects to `/journal?types=inquiry` (list page only; detail routes live)
 - `/favorites` → redirects to `/shelf?fav=1`
 - `/favorites/[slug]` → redirects to `/shelf/[slug]`
 - `/media` → redirects to `/shelf` (via `astro.config.mjs` redirects)
@@ -213,17 +216,20 @@ The `/novel` route serves a standalone in-progress novel with its own UI, separa
 - **Build utility**: `src/utils/novel.ts` — `buildNovelTree()` reads the directory at build time and returns a `NovelTree` (recursive `NovelFolder`/`NovelFile` types). Files are slugified and markdown is pre-rendered to HTML via `marked`.
 - **Routing**: `src/pages/novel/[...slug].astro` uses `getStaticPaths()` to enumerate all folder + file paths. The rest param slug encodes the full path (e.g. `lore/magic-system/overview`).
 - **UI**: Frosted glass two-panel layout (`novel.css`) with an animated canvas background. No SplitViewLayout — entirely custom.
-- **Testing**: `src/tests/novel.test.ts` covers `slugify`, `parseMetaData`, and `buildNovelTree` via vitest.
+- **Homepage stats**: `computeNovelStats(tree)` returns `{ storyWords, outlineWords, lastSceneModified, lastOutlineModified }` for the rain-gauge tile — story = top-level `Scenes` folder, outline = everything else; sidecar `Modified:` dates preferred, filesystem `mtime` fallback (`NovelFile.mtime`), all anchored to UTC.
+- **Testing**: `src/tests/novel.test.ts` covers `slugify`, `parseMetaData`, `buildNovelTree`, `countWords`, and `computeNovelStats` via vitest.
 - **Adding content**: Drop `.md` files into the appropriate `src/content/novel/` subfolder. Scrivener MetaData.txt sidecars are auto-read if present; other `.txt` files are silently skipped.
 
 ## Utility Modules
 
 | File | Exports | Purpose |
 |------|---------|---------|
-| `src/utils/content.ts` | `stripMarkdown()`, `hasMinimalContent()` | Strip markdown for client-side search; detect empty entries |
-| `src/utils/collections.ts` | `getAllCollections()` → `{ allShelf, allNotes, allShowcase }`; `getSortedEntries<T>()` | Fetch all non-draft entries; `SectionName = 'shelf' \| 'notes' \| 'showcase'` |
+| `src/utils/content.ts` | `stripMarkdown()`, `hasMinimalContent()` | Strip markdown AND raw HTML/entities for excerpts + client-side search; detect empty entries |
+| `src/utils/collections.ts` | `getAllCollections()` → `{ allShelf, allNotes, allShowcase }` | Fetch all non-draft entries; `SectionName = 'shelf' \| 'notes' \| 'showcase'` |
+| `src/utils/journal.ts` | `getJournalItems()`, `mergeJournalEntries()`, `JournalItem`, `JournalType` | Merge notes (`fragment`) + showcase (`inquiry`) into one date-sorted list |
+| `src/utils/journalMerge.ts` | pure merge/sort logic (no astro imports) | Unit-testable core of journal.ts (vitest can't resolve `astro:content`) |
 | `src/utils/dates.ts` | `formatDate()`, `shouldShowUpdatedDate()` | Date formatting and update-date display logic |
-| `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()` | Scrivener-backed novel content loader |
+| `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `countWords()`, `computeNovelStats()` | Scrivener-backed novel content loader + rain-gauge stats |
 | `src/utils/splitView/` | (10 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
 
 The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `eventBindings`, `filterEngine`, `filterUI`, `idleManager`, `mediaHandlers`, `proseImageTilt`, `types`, `urlState`.
@@ -236,7 +242,7 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 
 ## Important Implementation Details
 
-1. **SplitViewLayout JavaScript**: Three-panel layout (list/detail/emblem) with client-side fetch for detail content, History API for navigation, search/tag filtering (Cmd/Ctrl+K to focus search), emblem card flipping on content selection, falls back gracefully without JS. On load with no slug in the URL, auto-opens the newest visible entry — desktop layout only (detected via the applied grid columns, not viewport width) and without pushing history or moving focus (`src/utils/splitView/index.ts`; `loadContent` accepts `{ pushHistory, focusHeading }` options)
+1. **SplitViewLayout JavaScript**: Three-panel layout (list/detail/emblem) with client-side fetch for detail content, History API for navigation, search/tag/type filtering (Cmd/Ctrl+K to focus search), emblem card flipping on content selection, falls back gracefully without JS. `contentLoader.loadContent` fetches by each list item's own `href` (not the page section), so mixed-collection lists like `/journal` work. On load with no slug in the URL, auto-opens the newest visible entry — desktop layout only (detected via the applied grid columns, not viewport width) and without pushing history or moving focus (`src/utils/splitView/index.ts`; `loadContent` accepts `{ pushHistory, focusHeading }` options)
 
 2. **View Transitions**: Uses Astro's ClientRouter with custom P4G-style slide animations
 
@@ -244,9 +250,11 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 
 4. **Accessibility**: Focus-visible gold rings, prefers-reduced-motion respected, 44px minimum touch targets
 
-5. **Now Page**: Dynamically renders the latest entry from the `now` collection. To update, add a new markdown file to `src/content/now/` with `publishedAt` frontmatter. Archive available at `/now/archive`
+5. **Now Page**: Dynamically renders the latest entry from the `now` collection. To update, add a new markdown file to `src/content/now/` with `publishedAt` frontmatter. Archive available at `/now/archive`. The homepage Now tile shows the latest entry's title.
 
-6. **Latest Tile**: Homepage shows most recent content across all collections with "X days ago" indicator
+6. **Latest Tile**: Homepage 2×2 tile with "X days ago" indicator and excerpt; shows the most recent entry NOT already listed in the Journal tile (falls back to overall latest if that empties the pool)
+
+6b. **NavPill**: 4 items — Home / Journal / Shelf / Now — rendered on every non-home page including `/stream` (which has no "Ninjaruss" home link anymore). `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array. `/novel` and `/stream` have no pill entry of their own; they're reached via the Journal featured cards and homepage tiles.
 
 7. **Shelf Page Grid**: `/shelf` is a full emblem card grid grouped by content type (not SplitViewLayout), with a sticky jump bar for section navigation. `isFavorite: true` entries get a gold star badge and gold title on their card (no separate favorites filter exists anymore). Quick-view panel opens on card click without navigating away, pushing `/shelf/[slug]` into history. Cards that are neither a favorite nor have written content dim with `.shelf-card--dim` (`filter: opacity(0.52)`, not `opacity` — see Code Style Notes).
 
@@ -256,7 +264,7 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 
 10. **Date Display**: Uses `updatedAt` from frontmatter if present. `shouldShowUpdatedDate()` only renders "Last Edited" when `updatedAt > publishedAt`. `formatDate()` always uses UTC to avoid timezone drift.
 
-11. **Content Search**: Uses `stripMarkdown()` function to remove code blocks, links, headings, and formatting for client-side search. Truncates to 500 chars for search index.
+11. **Content Search**: Uses `stripMarkdown()` function to remove code blocks, links, headings, formatting, raw HTML tags, and HTML entities for client-side search (prose comparisons like `a < b` are preserved — the tag regex requires a letter or `/` after `<`). Truncates to 500 chars for search index.
 
 ## Image Assets
 

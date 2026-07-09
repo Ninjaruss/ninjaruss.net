@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import NavPill from '../../components/NavPill.astro';
 import {
   tallyStats,
   buildRadarPoints,
@@ -136,13 +137,14 @@ function colorBg(hex: string, a: number): string {
 ---
 
 <BaseLayout title="Stream" description="Velvet Room session archive for the ninjaruss_ Twitch stream.">
+  <NavPill />
   <div id="slash"><div class="slash-blade" id="blade"></div></div>
 
   <div class="stream-page">
 
     <!-- Sidebar -->
     <div class="s-sidebar" id="sidebar">
-      <a href="/" class="s-logo">Ninjaruss</a>
+      <span class="s-logo">Ninjaruss</span>
       <div class="s-tabs" id="tab-list" role="tablist">
         <div class="s-tab-indicator" id="tab-indicator"></div>
         <button class="s-tab active" data-tab="status"  role="tab" aria-selected="true">Status</button>

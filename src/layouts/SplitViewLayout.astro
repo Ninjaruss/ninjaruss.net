@@ -22,6 +22,7 @@ const hasInitialContent = Astro.slots.has('detail');
 const SECTION_KICKERS: Record<string, string> = {
   notes: 'fragments',
   showcase: 'inquiries',
+  journal: 'fragments & inquiries',
 };
 const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
 ---
