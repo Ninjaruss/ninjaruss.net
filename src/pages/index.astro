@@ -1439,7 +1439,7 @@ const latestEntries = latestPool.map(entry => ({
   }
 
   #latest-tile.is-cycling .latest-tile__sweep {
-    animation: latest-sweep 520ms var(--animation-easing);
+    animation: latest-sweep 760ms var(--animation-easing);
   }
 
   @keyframes latest-sweep {
@@ -1815,8 +1815,8 @@ const latestEntries = latestPool.map(entry => ({
         // Gold panel sweeps across; swap the entry at the midpoint while the
         // panel covers the tile, then let it sweep out to reveal the new one.
         latestTile.classList.add('is-cycling');
-        window.setTimeout(() => render(entries[index]), 250);
-        window.setTimeout(() => latestTile.classList.remove('is-cycling'), 560);
+        window.setTimeout(() => render(entries[index]), 365);
+        window.setTimeout(() => latestTile.classList.remove('is-cycling'), 800);
       }, 7000);
     }
   }
