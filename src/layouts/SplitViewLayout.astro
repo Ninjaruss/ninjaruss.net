@@ -184,6 +184,8 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     flex: 1;
     overflow-y: auto;
     padding: var(--space-sm) 0;
+    /* Clear the fixed NavPill (bottom-left) so the last entry stays visible */
+    padding-bottom: calc(var(--space-2xl) + 72px);
   }
 
   /* Filter UI */

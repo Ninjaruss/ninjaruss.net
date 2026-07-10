@@ -146,10 +146,11 @@ function parseNovelDate(raw: string): Date | null {
   return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
 }
 
-function collectFiles(folder: NovelFolder): NovelFile[] {
+/** Depth-first flat file list for a folder, in tree order. */
+export function flattenFolderFiles(folder: NovelFolder): NovelFile[] {
   return [
     ...folder.files,
-    ...Object.values(folder.subfolders).flatMap(collectFiles),
+    ...Object.values(folder.subfolders).flatMap(flattenFolderFiles),
   ];
 }
 
@@ -165,7 +166,7 @@ export function computeNovelStats(tree: NovelTree): NovelStats {
 
   for (const [slug, folder] of Object.entries(tree)) {
     const isStory = slug === 'scenes';
-    for (const file of collectFiles(folder)) {
+    for (const file of flattenFolderFiles(folder)) {
       const words = countWords(file.body);
       if (isStory) storyWords += words;
       else outlineWords += words;
@@ -188,4 +189,31 @@ export function computeNovelStats(tree: NovelTree): NovelStats {
     lastSceneModified: lastScene?.toISOString() ?? null,
     lastOutlineModified: lastOutline?.toISOString() ?? null,
   };
+}
+
+export interface RecentFileOptions {
+  /** true → only the top-level `scenes` folder; false → everything else */
+  scenes: boolean;
+  limit: number;
+}
+
+/**
+ * Most recently modified files, newest first. Sidecar `Modified:` dates are
+ * preferred over filesystem mtime (same precedence as computeNovelStats);
+ * files with no parseable date are excluded.
+ */
+export function findRecentFiles(tree: NovelTree, opts: RecentFileOptions): NovelFile[] {
+  const dated: Array<{ file: NovelFile; date: Date }> = [];
+  for (const [slug, folder] of Object.entries(tree)) {
+    if ((slug === 'scenes') !== opts.scenes) continue;
+    for (const file of flattenFolderFiles(folder)) {
+      const raw = file.modified ?? file.mtime;
+      if (!raw) continue;
+      const date = parseNovelDate(raw);
+      if (!date) continue;
+      dated.push({ file, date });
+    }
+  }
+  dated.sort((a, b) => b.date.getTime() - a.date.getTime());
+  return dated.slice(0, opts.limit).map((entry) => entry.file);
 }

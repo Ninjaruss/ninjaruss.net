@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { slugify, parseMetaData, buildNovelTree, countWords, computeNovelStats, type NovelTree } from '../utils/novel';
+import { slugify, parseMetaData, buildNovelTree, countWords, computeNovelStats, flattenFolderFiles, findRecentFiles, type NovelTree } from '../utils/novel';
 import { join } from 'path';
 
 describe('slugify', () => {
@@ -96,14 +96,14 @@ describe('countWords', () => {
   });
 });
 
-describe('computeNovelStats', () => {
+const file = (over: object) => ({
+  slug: 'f', title: 'F', body: '<p>one two three</p>',
+  created: null, modified: null, mtime: null, path: ['x'], ...over,
+});
+const folder = (slug: string, files: any[], subfolders = {}) =>
+  ({ slug, title: slug, files, subfolders });
 
-  const file = (over: object) => ({
-    slug: 'f', title: 'F', body: '<p>one two three</p>',
-    created: null, modified: null, mtime: null, path: ['x'], ...over,
-  });
-  const folder = (slug: string, files: any[], subfolders = {}) =>
-    ({ slug, title: slug, files, subfolders });
+describe('computeNovelStats', () => {
 
   it('splits story (scenes/) from outline words, recursing subfolders', () => {
     const tree = {
@@ -148,5 +148,58 @@ describe('computeNovelStats', () => {
   it('ignores unparseable dates', () => {
     const tree = { scenes: folder('scenes', [file({ modified: 'not a date' })]) };
     expect(computeNovelStats(tree).lastSceneModified).toBeNull();
+  });
+});
+
+describe('flattenFolderFiles', () => {
+  it('returns root files then subfolder files depth-first, in tree order', () => {
+    const tree = folder('lore', [file({ slug: 'root-a' })], {
+      'magic-system': folder('magic-system', [file({ slug: 'sub-a' }), file({ slug: 'sub-b' })], {
+        deeper: folder('deeper', [file({ slug: 'deep-a' })]),
+      }),
+      plot: folder('plot', [file({ slug: 'plot-a' })]),
+    });
+    expect(flattenFolderFiles(tree).map((f: any) => f.slug))
+      .toEqual(['root-a', 'sub-a', 'sub-b', 'deep-a', 'plot-a']);
+  });
+
+  it('returns empty array for empty folder', () => {
+    expect(flattenFolderFiles(folder('themes', []))).toEqual([]);
+  });
+});
+
+describe('findRecentFiles', () => {
+  const tree: NovelTree = {
+    scenes: folder('scenes', [
+      file({ slug: 'old-scene', modified: '2026-05-01' }),
+      file({ slug: 'new-scene', modified: '2026-07-01' }),
+    ]),
+    characters: folder('characters', [], {
+      rain: folder('rain', [file({ slug: 'rain-doc', modified: null, mtime: '2026-06-20T00:00:00.000Z' })]),
+    }),
+    lore: folder('lore', [
+      file({ slug: 'dated-note', modified: 'June 1, 2026' }),
+      file({ slug: 'undated', modified: null, mtime: null }),
+      file({ slug: 'bad-date', modified: 'not a date', mtime: null }),
+    ]),
+  };
+
+  it('returns newest scenes first when scenes=true', () => {
+    const result = findRecentFiles(tree, { scenes: true, limit: 2 });
+    expect(result.map((f) => f.slug)).toEqual(['new-scene', 'old-scene']);
+  });
+
+  it('returns newest non-scene files when scenes=false, using mtime fallback', () => {
+    const result = findRecentFiles(tree, { scenes: false, limit: 2 });
+    expect(result.map((f) => f.slug)).toEqual(['rain-doc', 'dated-note']);
+  });
+
+  it('excludes files without a parseable date and respects limit', () => {
+    const result = findRecentFiles(tree, { scenes: false, limit: 10 });
+    expect(result.map((f) => f.slug)).toEqual(['rain-doc', 'dated-note']);
+  });
+
+  it('returns empty array on empty tree', () => {
+    expect(findRecentFiles({}, { scenes: true, limit: 1 })).toEqual([]);
   });
 });
