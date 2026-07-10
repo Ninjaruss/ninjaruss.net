@@ -2044,5 +2044,6 @@ const mindTile = await getMindTileData();
   document.addEventListener('astro:before-preparation', () => {
     stopLivePolling();
     clearInterval(latestCycleTimer);
+    clearInterval(mindCycleTimer);
   });
 </script>
