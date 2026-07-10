@@ -221,8 +221,7 @@ const latestEntries = latestPool.map(entry => ({
       </BentoTile>
 
       <!-- Rows 2-3: Journal (4×2, slash split) + Novel (1×2) + Stream (1×2) -->
-      <div class="bento-tile bento-tile--full bento-tile--highlight bento-tile--core bento-tile--span-4x2 journal-tile">
-        <a href="/journal" class="journal-tile__stretch" aria-label="Open the journal"></a>
+      <div class="bento-tile bento-tile--full bento-tile--highlight bento-tile--core bento-tile--span-4x2 journal-tile" data-tile-href="/journal">
         <div class="journal-tile__notes">
           <a href="/journal?types=note" class="journal-tile__head">
             <div class="bento-tile__header">
@@ -795,31 +794,6 @@ const latestEntries = latestPool.map(entry => ({
     display: flex;
     flex-direction: column;
     min-width: 0;
-  }
-
-  /* Whole-tile click target: a stretched link under the content. Empty areas
-     of both fields let clicks fall through to it (pointer-events: none on the
-     wrappers); the real entry links re-enable pointer events and win. */
-  .journal-tile__stretch {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    /* Span every grid track so the abspos containing block is the whole tile,
-       not just the first column. */
-    grid-column: 1 / -1;
-    grid-row: 1 / -1;
-  }
-
-  .journal-tile__notes,
-  .journal-tile__showcases {
-    pointer-events: none;
-  }
-
-  .journal-tile__head,
-  .journal-tile__row,
-  .journal-tile__showcase-tab,
-  .journal-tile__project {
-    pointer-events: auto;
   }
 
   /* Push showcase content clear of the seam so the diagonal never cuts across
@@ -1447,12 +1421,29 @@ const latestEntries = latestPool.map(entry => ({
     justify-content: space-between;
     flex: 1;
     gap: var(--space-sm);
-    transition: opacity 250ms var(--animation-easing);
+    transition:
+      opacity 260ms var(--animation-easing),
+      transform 260ms var(--animation-easing),
+      clip-path 260ms var(--animation-easing);
   }
 
-  /* Fade out while the cycle script swaps in the next entry */
+  /* Diagonal wipe while the cycle script swaps in the next entry — the content
+     slides up the seam's diagonal and skews off, echoing the tile language.
+     The clip-path shaves the trailing corner along the same angle. */
   .latest-tile__inner.is-cycling {
     opacity: 0;
+    transform: translate(18px, -14px) skewX(-8deg);
+    clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .latest-tile__inner {
+      transition: opacity 200ms var(--animation-easing);
+    }
+    .latest-tile__inner.is-cycling {
+      transform: none;
+      clip-path: none;
+    }
   }
 
   .latest-tile__text {
@@ -1839,6 +1830,22 @@ const latestEntries = latestPool.map(entry => ({
     });
   }
 
+  // Whole-tile navigation for the journal tile: clicking any non-link area
+  // routes to the journal. Entry links (rows, tabs, projects) handle their own
+  // navigation and are left alone. A plain location assignment is used
+  // deliberately — it's guaranteed to fire on a real click regardless of the
+  // view-transition router's trusted-event gating.
+  function initializeJournalTileNav() {
+    const tile = document.querySelector('.journal-tile') as HTMLElement | null;
+    if (!tile || tile.dataset.navBound) return;
+    tile.dataset.navBound = 'true';
+    const href = tile.dataset.tileHref || '/journal';
+    tile.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) return;
+      window.location.href = href;
+    });
+  }
+
   // Novel rain gauge — full rain for recent scene work, mist for outline-only,
   // still "the rain waits." past 14 quiet days. Reward accretion; never count absence.
   function initializeNovelRain() {
@@ -1907,6 +1914,7 @@ const latestEntries = latestPool.map(entry => ({
   initializeNovelRain();
   initializeTilt();
   initializeMailTile();
+  initializeJournalTileNav();
   startLivePolling();
 
   // Run after each view transition navigation
@@ -1915,6 +1923,7 @@ const latestEntries = latestPool.map(entry => ({
     initializeNovelRain();
     initializeTilt();
     initializeMailTile();
+    initializeJournalTileNav();
     startLivePolling();
   });
 
