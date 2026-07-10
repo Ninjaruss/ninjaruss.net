@@ -221,7 +221,7 @@ const latestEntries = latestPool.map(entry => ({
       </BentoTile>
 
       <!-- Rows 2-3: Journal (4×2, slash split) + Novel (1×2) + Stream (1×2) -->
-      <div class="bento-tile bento-tile--full bento-tile--highlight bento-tile--core bento-tile--span-4x2 journal-tile">
+      <div class="bento-tile bento-tile--full bento-tile--highlight bento-tile--core bento-tile--span-4x2 journal-tile" data-tile-href="/journal">
         <div class="journal-tile__notes">
           <a href="/journal?types=note" class="journal-tile__head">
             <div class="bento-tile__header">
@@ -444,6 +444,7 @@ const latestEntries = latestPool.map(entry => ({
               />
             </div>
           </div>
+          <span class="latest-tile__sweep" aria-hidden="true"></span>
           <span class="bento-tile__corner" aria-hidden="true"></span>
         </a>
       )}
@@ -794,6 +795,12 @@ const latestEntries = latestPool.map(entry => ({
     display: flex;
     flex-direction: column;
     min-width: 0;
+  }
+
+  /* Push showcase content clear of the seam so the diagonal never cuts across
+     the chip or the first row — content sits fully on the black field. */
+  .journal-tile__showcases {
+    padding-left: var(--space-xl);
   }
 
   /* Corner triangle sits on the black field now — gold, not the highlight
@@ -1415,12 +1422,37 @@ const latestEntries = latestPool.map(entry => ({
     justify-content: space-between;
     flex: 1;
     gap: var(--space-sm);
-    transition: opacity 250ms var(--animation-easing);
   }
 
-  /* Fade out while the cycle script swaps in the next entry */
-  .latest-tile__inner.is-cycling {
+  /* Cycle transition: a skewed gold panel sweeps across the tile — the same
+     P4G move as the journal-entry hover (`.list-item::before`). It sweeps in to
+     cover the tile, the script swaps the entry behind it, then it sweeps out to
+     reveal the new one. */
+  .latest-tile__sweep {
+    position: absolute;
+    inset: -2px;
+    background: var(--color-gold);
+    transform: translateX(-110%) skewX(var(--skew-accent));
+    z-index: 4;
+    pointer-events: none;
     opacity: 0;
+  }
+
+  #latest-tile.is-cycling .latest-tile__sweep {
+    animation: latest-sweep 760ms var(--animation-easing);
+  }
+
+  @keyframes latest-sweep {
+    0%   { transform: translateX(-110%) skewX(var(--skew-accent)); opacity: 1; }
+    48%  { transform: translateX(0)     skewX(var(--skew-accent)); opacity: 1; }
+    52%  { transform: translateX(0)     skewX(var(--skew-accent)); opacity: 1; }
+    100% { transform: translateX(110%)  skewX(var(--skew-accent)); opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #latest-tile.is-cycling .latest-tile__sweep {
+      animation: none;
+    }
   }
 
   .latest-tile__text {
@@ -1777,15 +1809,14 @@ const latestEntries = latestPool.map(entry => ({
     render(entries[0]);
 
     if (entries.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const inner = latestTile.querySelector('.latest-tile__inner');
       let index = 0;
       latestCycleTimer = window.setInterval(() => {
         index = (index + 1) % entries.length;
-        inner?.classList.add('is-cycling');
-        window.setTimeout(() => {
-          render(entries[index]);
-          inner?.classList.remove('is-cycling');
-        }, 250);
+        // Gold panel sweeps across; swap the entry at the midpoint while the
+        // panel covers the tile, then let it sweep out to reveal the new one.
+        latestTile.classList.add('is-cycling');
+        window.setTimeout(() => render(entries[index]), 365);
+        window.setTimeout(() => latestTile.classList.remove('is-cycling'), 800);
       }, 7000);
     }
   }
@@ -1804,6 +1835,22 @@ const latestEntries = latestPool.map(entry => ({
       if (tile.getAttribute('href')?.startsWith('mailto:')) return;
       e.preventDefault();
       window.location.href = 'mailto:' + addr;
+    });
+  }
+
+  // Whole-tile navigation for the journal tile: clicking any non-link area
+  // routes to the journal. Entry links (rows, tabs, projects) handle their own
+  // navigation and are left alone. A plain location assignment is used
+  // deliberately — it's guaranteed to fire on a real click regardless of the
+  // view-transition router's trusted-event gating.
+  function initializeJournalTileNav() {
+    const tile = document.querySelector('.journal-tile') as HTMLElement | null;
+    if (!tile || tile.dataset.navBound) return;
+    tile.dataset.navBound = 'true';
+    const href = tile.dataset.tileHref || '/journal';
+    tile.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) return;
+      window.location.href = href;
     });
   }
 
@@ -1875,6 +1922,7 @@ const latestEntries = latestPool.map(entry => ({
   initializeNovelRain();
   initializeTilt();
   initializeMailTile();
+  initializeJournalTileNav();
   startLivePolling();
 
   // Run after each view transition navigation
@@ -1883,6 +1931,7 @@ const latestEntries = latestPool.map(entry => ({
     initializeNovelRain();
     initializeTilt();
     initializeMailTile();
+    initializeJournalTileNav();
     startLivePolling();
   });
 
