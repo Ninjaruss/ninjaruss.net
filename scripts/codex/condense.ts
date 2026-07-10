@@ -1,0 +1,42 @@
+import { spawnSync } from 'node:child_process';
+import { gatherCorpus } from '../../src/utils/codex/corpus';
+import { buildCodexPrompt } from '../../src/utils/codex/prompt';
+import { processModelResponse } from '../../src/utils/codex/pipeline';
+import { readExistingCodex, writeCodex, report, CODEX_JSON } from './io';
+
+const corpus = await gatherCorpus();
+const existing = readExistingCodex();
+const prompt = buildCodexPrompt(corpus, existing);
+
+console.log(`Condensing ${corpus.length} entries via the claude CLI...`);
+const proc = spawnSync('claude', ['-p'], {
+  input: prompt,
+  encoding: 'utf-8',
+  maxBuffer: 32 * 1024 * 1024,
+});
+
+if (proc.error || proc.status !== 0) {
+  console.error('✗ Failed to run the `claude` CLI.');
+  if (proc.error) console.error(`  ${proc.error.message}`);
+  if (proc.stderr) console.error(`  ${proc.stderr.trim()}`);
+  // the claude CLI writes some errors (e.g. auth failures) to stdout
+  if (!proc.error && proc.stdout) console.error(`  ${proc.stdout.trim().slice(0, 500)}`);
+  console.error('');
+  console.error('  Make sure Claude Code is installed and authenticated (a paid');
+  console.error('  subscription or ANTHROPIC_API_KEY). No Claude access? Use the');
+  console.error('  free manual mode instead: npm run codex:export');
+  process.exit(1);
+}
+
+const known = new Set(corpus.map(e => e.id));
+const result = processModelResponse(proc.stdout, known, existing);
+report(result.warnings, result.errors);
+
+if (!result.data) {
+  console.error('\nThe model response failed validation; codex.json was NOT modified. Re-run to retry.');
+  process.exit(1);
+}
+
+writeCodex(result.data);
+console.log(`✓ Wrote ${CODEX_JSON} (${result.data.concepts.length} concepts).`);
+console.log('  Review with `git diff src/data/codex.json`, then commit.');

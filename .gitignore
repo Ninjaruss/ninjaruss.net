@@ -28,3 +28,7 @@ pnpm-debug.log*
 .superpowers/
 .vercel
 .env*
+
+# /codex manual-mode scratch files (workflow artifacts, never content)
+codex-prompt.txt
+codex-response.json

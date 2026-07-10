@@ -8,7 +8,10 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run",
-    "add-image": "node scripts/add-image.js"
+    "add-image": "node scripts/add-image.js",
+    "codex": "tsx scripts/codex/condense.ts",
+    "codex:export": "tsx scripts/codex/export.ts",
+    "codex:import": "tsx scripts/codex/import.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
@@ -18,6 +21,8 @@
     "marked": "^17.0.6"
   },
   "devDependencies": {
+    "gray-matter": "^4.0.3",
+    "tsx": "^4.23.0",
     "vitest": "^4.1.2"
   }
 }
