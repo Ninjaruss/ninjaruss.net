@@ -2,570 +2,356 @@
 import { join } from 'path';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NavPill from '../../components/NavPill.astro';
-import { buildNovelTree, slugify } from '../../utils/novel';
-import type { NovelFolder } from '../../utils/novel';
+import {
+  buildNovelTree,
+  computeNovelStats,
+  countWords,
+  flattenFolderFiles,
+  findRecentFiles,
+} from '../../utils/novel';
+import type { NovelFile, NovelFolder, NovelTree } from '../../utils/novel';
+import { stripMarkdown } from '../../utils/content';
+import { formatDate } from '../../utils/dates';
+
+type View = 'desk' | 'folder' | 'file';
+
+interface Props {
+  view: View;
+  tree: NovelTree;
+  topSlug?: string;
+  filePath?: string;
+}
 
 export async function getStaticPaths() {
-  // Collect all URL path strings from the tree
-  function collectPaths(folder: NovelFolder, prefix: string): string[] {
-    const paths: string[] = [prefix];
-    for (const file of folder.files) {
-      paths.push(`${prefix}/${file.slug}`);
-    }
-    for (const sub of Object.values(folder.subfolders)) {
-      paths.push(...collectPaths(sub, `${prefix}/${sub.slug}`));
-    }
-    return paths;
-  }
-
   const novelDir = join(process.cwd(), 'src/content/novel');
   const tree = await buildNovelTree(novelDir);
 
-  const allPaths: string[] = [];
-  for (const folder of Object.values(tree)) {
-    allPaths.push(...collectPaths(folder, folder.slug));
-  }
-
-  return [
-    // /novel index — slug is undefined (rest param matches parent)
-    { params: { slug: undefined }, props: { tree, initialSlug: null } },
-    ...allPaths.map((s) => ({
-      params: { slug: s },
-      props: { tree, initialSlug: s },
-    })),
+  const paths: Array<{ params: { slug: string | undefined }; props: Props }> = [
+    { params: { slug: undefined }, props: { view: 'desk', tree } },
   ];
+
+  function walk(top: NovelFolder, folder: NovelFolder, prefix: string): void {
+    // Folder URLs (top-level and intermediate) all render the top-level folder page
+    paths.push({ params: { slug: prefix }, props: { view: 'folder', tree, topSlug: top.slug } });
+    for (const file of folder.files) {
+      paths.push({
+        params: { slug: `${prefix}/${file.slug}` },
+        props: { view: 'file', tree, topSlug: top.slug, filePath: file.path.join('/') },
+      });
+    }
+    for (const sub of Object.values(folder.subfolders)) {
+      walk(top, sub, `${prefix}/${sub.slug}`);
+    }
+  }
+  for (const top of Object.values(tree)) walk(top, top, top.slug);
+
+  return paths;
 }
 
-interface Props {
-  tree: import('../../utils/novel').NovelTree;
-  initialSlug: string | null;
+const { view, tree, topSlug, filePath } = Astro.props;
+
+// ── Shared helpers ─────────────────────────────────────────────────────
+function editedLabel(f: NovelFile): string {
+  if (f.modified) return f.modified;
+  if (f.mtime) return formatDate(new Date(f.mtime));
+  return '';
 }
 
-const { tree: novelTree, initialSlug } = Astro.props;
+function fileUrl(f: NovelFile): string {
+  return `/novel/${f.path.join('/')}`;
+}
 
-// Determine initial UI state from slug
-const slugParts = initialSlug ? initialSlug.split('/') : [];
-const initialFolder = slugParts[0] ?? null;
-const initialSubPath = slugParts.length > 1 ? slugParts.slice(1).join('/') : null;
+function excerptOf(html: string, max = 300): string {
+  const text = stripMarkdown(html).replace(/\s+/g, ' ').trim();
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  return `${cut.slice(0, cut.lastIndexOf(' '))}…`;
+}
+
+function folderHasContent(f: NovelFolder): boolean {
+  return flattenFolderFiles(f).length > 0;
+}
+
+// ── Desk data ──────────────────────────────────────────────────────────
+const stats = view === 'desk' ? computeNovelStats(tree) : null;
+const latestScene = view === 'desk' ? (findRecentFiles(tree, { scenes: true, limit: 1 })[0] ?? null) : null;
+const recentNotes = view === 'desk' ? findRecentFiles(tree, { scenes: false, limit: 2 }) : [];
+const sceneExcerpt = latestScene ? excerptOf(latestScene.body) : '';
+const archiveCards = view === 'desk'
+  ? Object.values(tree)
+      .filter(folderHasContent)
+      .map((f) => ({ slug: f.slug, title: f.title, count: flattenFolderFiles(f).length }))
+  : [];
+
+// ── Folder / file data ─────────────────────────────────────────────────
+const topFolder: NovelFolder | null = topSlug ? (tree[topSlug] ?? null) : null;
+
+interface FolderGroup { title: string | null; files: NovelFile[]; }
+const folderGroups: FolderGroup[] = view === 'folder' && topFolder
+  ? [
+      ...(topFolder.files.length > 0 ? [{ title: null, files: topFolder.files }] : []),
+      ...Object.values(topFolder.subfolders)
+        .filter(folderHasContent)
+        .map((sub) => ({ title: sub.title, files: flattenFolderFiles(sub) })),
+    ]
+  : [];
+
+let file: NovelFile | null = null;
+let prevFile: NovelFile | null = null;
+let nextFile: NovelFile | null = null;
+let crumbTitles: string[] = [];
+if (view === 'file' && topFolder && filePath) {
+  const siblings = flattenFolderFiles(topFolder);
+  const idx = siblings.findIndex((f) => f.path.join('/') === filePath);
+  file = siblings[idx] ?? null;
+  prevFile = siblings[idx - 1] ?? null;
+  nextFile = siblings[idx + 1] ?? null;
+  // Walk folder titles along the file's path (excluding the file's own slug)
+  if (file) {
+    let cursor: NovelFolder | undefined = topFolder;
+    crumbTitles = [topFolder.title];
+    for (const seg of file.path.slice(1, -1)) {
+      cursor = cursor?.subfolders[seg];
+      if (cursor) crumbTitles.push(cursor.title);
+    }
+  }
+}
+const isScene = topSlug === 'scenes';
+
+const pageTitle =
+  view === 'file' && file ? `${file.title} — Remember Rain`
+  : view === 'folder' && topFolder ? `${topFolder.title} — Remember Rain`
+  : 'Remember Rain';
 ---
 
 <BaseLayout
-  title="Remember Rain"
-  description="A novel in progress — characters, lore, locations, and themes."
+  title={pageTitle}
+  description="A novel in progress — a writer's desk of scenes, characters, lore, and themes."
 >
-  <NavPill />
+  <NavPill backLink={view === 'file' && topFolder ? `/novel/${topFolder.slug}` : view === 'folder' ? '/novel' : undefined}
+           backLabel={view === 'file' && topFolder ? topFolder.title : view === 'folder' ? 'Desk' : undefined} />
 
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-  <main
-    class="novel-page"
-    data-initial-folder={initialFolder}
-    data-initial-subpath={initialSubPath}
-  >
-    <!-- Title block: Rain's afterimage motif -->
-    <div class="title-block">
-      <div class="title-text-group">
-        <span class="p4g-tab novel-kicker">novel</span>
-        <span class="title-main">Remember Rain</span>
-        <span class="waterline" aria-hidden="true"></span>
-        <span class="title-reflection" aria-hidden="true">Remember Rain</span>
+  {view === 'desk' && stats && (
+    <main class="novel-page novel-desk">
+      <header class="novel-header p3r-animate">
+        <div class="novel-header__titles">
+          <span class="p4g-tab">novel</span>
+          <h1 class="p4g-heading novel-header__title">Remember Rain</h1>
+          <span class="p4g-underline"></span>
+        </div>
+        <p class="novel-header__stats">
+          {stats.storyWords.toLocaleString('en-US')} story words · {stats.outlineWords.toLocaleString('en-US')} outline words
+        </p>
+      </header>
+
+      <div class="desk-layout">
+        <section class="desk-main p3r-animate" style="--stagger-delay: 60ms">
+          {latestScene ? (
+            <a class="desk-sheet-wrap" href={fileUrl(latestScene)}>
+              <article class="desk-sheet">
+                <div class="desk-sheet__meta">
+                  <span class="desk-sheet__kicker">where the pen left off</span>
+                  <span class="desk-sheet__count">scene · {countWords(latestScene.body).toLocaleString('en-US')} words</span>
+                </div>
+                <h2 class="desk-sheet__title">{latestScene.title}</h2>
+                <p class="desk-sheet__excerpt">{sceneExcerpt}</p>
+                <span class="desk-sheet__cta">keep reading</span>
+              </article>
+            </a>
+          ) : (
+            <p class="desk-empty">No scenes yet.</p>
+          )}
+
+          {recentNotes.length > 0 && (
+            <div class="desk-recent">
+              {recentNotes.map((f) => (
+                <a class="desk-recent__item" href={fileUrl(f)}>
+                  <span class="desk-recent__title">{f.title}</span>
+                  <span class="desk-recent__date">edited {editedLabel(f)}</span>
+                </a>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <aside class="desk-archive p3r-animate" style="--stagger-delay: 120ms" aria-label="Archive">
+          <h2 class="desk-archive__kicker">archive</h2>
+          {archiveCards.map((card) => (
+            <a
+              class:list={['desk-archive__card', { 'desk-archive__card--scenes': card.slug === 'scenes' }]}
+              href={`/novel/${card.slug}`}
+            >
+              <span class="desk-archive__title">{card.title}</span>
+              <span class="desk-archive__count">{card.count}</span>
+            </a>
+          ))}
+        </aside>
       </div>
-    </div>
+    </main>
+  )}
 
-    <!-- Category filter tabs -->
-    <div class="filter-tabs" id="filter-tabs">
-      {Object.values(novelTree).map((folder) => {
-        function countFiles(f: typeof folder): number {
-          return f.files.length + Object.values(f.subfolders).reduce((n, s) => n + countFiles(s), 0);
-        }
-        const count = countFiles(folder);
-        if (count === 0) return null;
-        return (
-          <button
-            class="filter-tab"
-            data-folder={folder.slug}
-            type="button"
-            aria-pressed="false"
-          >
-            {folder.title}
-            <span class="tab-count">{count}</span>
-          </button>
-        );
-      })}
-    </div>
+  {view === 'folder' && topFolder && (
+    <main class="novel-page novel-folder">
+      <nav class="novel-crumb p3r-animate" aria-label="Breadcrumb">
+        <a href="/novel">desk</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{topFolder.title.toLowerCase()}</span>
+      </nav>
+      <header class="novel-header p3r-animate" style="--stagger-delay: 40ms">
+        <div class="novel-header__titles">
+          <span class="p4g-tab">novel</span>
+          <h1 class="p4g-heading novel-header__title">{topFolder.title}</h1>
+          <span class="p4g-underline"></span>
+        </div>
+        <p class="novel-header__stats">{flattenFolderFiles(topFolder).length} files</p>
+      </header>
 
-    <!-- Two-panel navigator: populated by JS -->
-    <div class="novel-panels">
-      <div class="novel-sidebar" id="novel-sidebar"></div>
-      <button class="sidebar-tab" id="sidebar-tab" type="button" aria-label="Hide navigation">◀ hide</button>
-      <div class="novel-content" id="novel-content"></div>
-    </div>
-  </main>
+      <div class="folder-groups">
+        {folderGroups.map((group, gi) => (
+          <section class="folder-group p3r-animate" style={`--stagger-delay: ${80 + gi * 50}ms`}>
+            {group.title && <h2 class="folder-group__title">{group.title}</h2>}
+            <ul class="folder-list">
+              {group.files.map((f) => (
+                <li>
+                  <a class="folder-row" href={fileUrl(f)}>
+                    <span class="folder-row__title">{f.title}</span>
+                    <span class="folder-row__date">edited {editedLabel(f)}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </main>
+  )}
 
-  {/* Inline data — no client fetches */}
-  <script type="application/json" id="novel-tree" set:html={
-    JSON.stringify(novelTree).replace(/<\/script>/gi, '<\\/script>')
-  }></script>
+  {view === 'file' && topFolder && file && (
+    <main class="novel-page novel-reading">
+      <nav class="novel-crumb p3r-animate" aria-label="Breadcrumb">
+        <a href="/novel">desk</a>
+        <span aria-hidden="true">/</span>
+        <a href={`/novel/${topFolder.slug}`}>{crumbTitles.join(' / ').toLowerCase()}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{file.title.toLowerCase()}</span>
+      </nav>
+
+      <div class:list={['reading-sheet-wrap', { 'reading-sheet-wrap--paper': isScene }]}>
+        <article class:list={['reading', isScene ? 'reading--paper' : 'reading--ink']}>
+          <div class="reading__meta">
+            <span>{topFolder.title}</span>
+            {editedLabel(file) && <span>edited {editedLabel(file)}</span>}
+          </div>
+          <h1 class="reading__title">{file.title}</h1>
+          <div class="reading__rule" aria-hidden="true"></div>
+          <div class="reading__body" set:html={file.body} />
+        </article>
+      </div>
+
+      {(prevFile || nextFile) && (
+        <nav class="page-turn" aria-label="Adjacent files">
+          {prevFile ? (
+            <a class="page-turn__link page-turn__link--prev" href={fileUrl(prevFile)}>
+              <span class="page-turn__dir">← previous</span>
+              <span class="page-turn__name">{prevFile.title}</span>
+            </a>
+          ) : <span></span>}
+          {nextFile && (
+            <a class="page-turn__link page-turn__link--next" href={fileUrl(nextFile)}>
+              <span class="page-turn__dir">next →</span>
+              <span class="page-turn__name">{nextFile.title}</span>
+            </a>
+          )}
+        </nav>
+      )}
+    </main>
+  )}
 </BaseLayout>
 
 <script>
-  // ── Types ────────────────────────────────────────────────────────────
-  interface NovelFile {
-    slug: string; title: string; body: string;
-    created: string | null; modified: string | null; path: string[];
-  }
-  interface NovelFolder {
-    slug: string; title: string;
-    files: NovelFile[]; subfolders: Record<string, NovelFolder>;
-  }
-  type NovelTree = Record<string, NovelFolder>;
+  // Sepia rain canvas — "rain through a lamplit window".
+  // Static single frame under prefers-reduced-motion.
+  function initCanvas() {
+    const canvas = document.getElementById('bg-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d')!;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let w = 0, h = 0;
 
-  // ── Constants ────────────────────────────────────────────────────────
-  const ACCENT_MAP: Record<string, string> = {
-    characters: '255,229,44',
-    locations:  '122,184,255',
-    lore:       '255,136,34',
-    scenes:     '255,102,102',
-    themes:     '170,170,255',
-  };
-
-  // ── Pure helpers ─────────────────────────────────────────────────────
-  function esc(s: string): string {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
-
-  function formatDate(created: string | null, modified: string | null): string {
-    if (!created && !modified) return '';
-    if (!created) return modified!;
-    if (!modified || created === modified) return created;
-    return `${created} · edited ${modified}`;
-  }
-
-  function findSidebarFile(sidebar: HTMLElement, subPath: string): HTMLElement | null {
-    return Array.from(sidebar.querySelectorAll<HTMLElement>('.sidebar-file'))
-      .find((btn) => btn.dataset.subPath === subPath) ?? null;
-  }
-
-  // ── Sidebar renderer ─────────────────────────────────────────────────
-  function renderSidebar(folderKey: string, tree: NovelTree, sidebar: HTMLElement): void {
-    sidebar.innerHTML = '';
-    const folder = tree[folderKey];
-    if (!folder) return;
-
-    const rgb = ACCENT_MAP[folderKey] || '80,120,200';
-    sidebar.style.setProperty('--panel-accent-rgb', rgb);
-
-    const hasSubfolders = Object.keys(folder.subfolders).length > 0;
-
-    if (!hasSubfolders) {
-      // Flat list (Themes, Locations, Scenes)
-      for (const file of folder.files) {
-        const btn = buildFileBtn(file, file.slug, folderKey, folder.title);
-        sidebar.appendChild(btn);
-      }
-      return;
+    function resize() {
+      w = canvas!.width = window.innerWidth;
+      h = canvas!.height = window.innerHeight;
+      if (reduced) drawScene(false);
     }
 
-    // Subfolder groups
-    for (const sub of Object.values(folder.subfolders)) {
-      const entries: Array<{ file: NovelFile; breadcrumb: string; subPath: string }> = [];
-      collectEntries(sub, folder.title, entries);
-      if (entries.length === 0) continue;
+    const towers = Array.from({ length: 16 }, (_, i) => ({
+      x: (i / 15) * 1.1 - 0.05,
+      height: 0.2 + Math.random() * 0.4,
+      width: 0.4 + Math.random() * 1.8,
+      opacity: 0.03 + Math.random() * 0.04,
+    }));
+    const struts = Array.from({ length: 5 }, () => ({
+      y: 0.45 + Math.random() * 0.45,
+      opacity: 0.02 + Math.random() * 0.015,
+    }));
+    const drops = Array.from({ length: 110 }, () => ({
+      x: Math.random(), y: Math.random(),
+      speed: (1.8 + Math.random() * 2.2) / 800,
+      len: (7 + Math.random() * 16) / 800,
+      opacity: 0.06 + Math.random() * 0.14,
+      lean: -0.035 + Math.random() * 0.02,
+    }));
 
-      const group = document.createElement('div');
-      group.className = 'sidebar-group';
+    function drawScene(withDrops: boolean) {
+      ctx.clearRect(0, 0, w, h);
+      const grd = ctx.createRadialGradient(w * 0.5, h * 0.92, 0, w * 0.5, h * 0.65, h * 0.7);
+      grd.addColorStop(0, 'rgba(190,125,40,0.09)');
+      grd.addColorStop(0.5, 'rgba(130,85,25,0.045)');
+      grd.addColorStop(1, 'transparent');
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, w, h);
 
-      const groupBtn = document.createElement('button');
-      groupBtn.className = 'sidebar-group-btn is-open';
-      groupBtn.type = 'button';
-      groupBtn.setAttribute('aria-expanded', 'true');
-      groupBtn.innerHTML = `<span class="sidebar-arrow">&#9658;</span>${esc(sub.title)}`;
-
-      const fileList = document.createElement('div');
-      fileList.className = 'sidebar-files is-open';
-
-      groupBtn.addEventListener('click', () => {
-        groupBtn.classList.toggle('is-open');
-        fileList.classList.toggle('is-open');
-        groupBtn.setAttribute('aria-expanded', groupBtn.classList.contains('is-open') ? 'true' : 'false');
+      towers.forEach((t) => {
+        ctx.fillStyle = `rgba(150,115,70,${t.opacity})`;
+        ctx.fillRect(t.x * w - t.width / 2, h - t.height * h, t.width, t.height * h);
       });
-
-      for (const { file, breadcrumb, subPath } of entries) {
-        fileList.appendChild(buildFileBtn(file, subPath, folderKey, breadcrumb));
-      }
-
-      group.appendChild(groupBtn);
-      group.appendChild(fileList);
-      sidebar.appendChild(group);
-    }
-
-    // Root-level files alongside subfolders (if any)
-    for (const file of folder.files) {
-      sidebar.appendChild(buildFileBtn(file, file.slug, folderKey, folder.title));
-    }
-  }
-
-  function collectEntries(
-    sub: NovelFolder,
-    parentLabel: string,
-    out: Array<{ file: NovelFile; breadcrumb: string; subPath: string }>
-  ): void {
-    const bc = `${parentLabel} / ${sub.title}`;
-    for (const file of sub.files) {
-      const subPath = file.path.slice(1).join('/') || file.slug;
-      out.push({ file, breadcrumb: bc, subPath });
-    }
-    for (const nested of Object.values(sub.subfolders)) {
-      collectEntries(nested, bc, out);
-    }
-  }
-
-  function buildFileBtn(
-    file: NovelFile, subPath: string, folderKey: string, breadcrumb: string
-  ): HTMLButtonElement {
-    const btn = document.createElement('button');
-    btn.className = 'sidebar-file';
-    btn.type = 'button';
-    btn.textContent = file.title;
-    btn.dataset.subPath  = subPath;
-    btn.dataset.folderKey  = folderKey;
-    btn.dataset.breadcrumb = breadcrumb;
-    btn.dataset.fileEncoded = encodeURIComponent(JSON.stringify(file));
-    btn.setAttribute('aria-pressed', 'false');
-    return btn;
-  }
-
-  // ── Content panel ────────────────────────────────────────────────────
-  function showPlaceholder(folderKey: string, content: HTMLElement): void {
-    const rgb = ACCENT_MAP[folderKey] || '122,184,255';
-    content.style.setProperty('--panel-accent-rgb', rgb);
-    content.innerHTML = `
-      <div class="content-placeholder">
-        <div class="content-placeholder-line"></div>
-        <div class="content-placeholder-text">select a file to read</div>
-        <div class="content-placeholder-line"></div>
-      </div>`;
-  }
-
-  function renderContent(
-    folderKey: string, file: NovelFile, breadcrumb: string, content: HTMLElement
-  ): void {
-    const rgb = ACCENT_MAP[folderKey] || '80,120,200';
-    content.style.setProperty('--panel-accent-rgb', rgb);
-    content.scrollTop = 0;
-    const dateStr = formatDate(file.created, file.modified);
-    // file.body is build-time-rendered Markdown from the repository — not runtime user input
-    content.innerHTML = `
-      <div class="content-breadcrumb">${esc(breadcrumb)}</div>
-      <h1 class="content-title">${esc(file.title)}</h1>
-      ${dateStr ? `<div class="content-date">${esc(dateStr)}</div>` : ''}
-      <div class="content-divider"></div>
-      <div class="content-body">${file.body}</div>`;
-  }
-
-  // ── File selection ────────────────────────────────────────────────────
-  function selectFile(
-    folderKey: string, file: NovelFile, breadcrumb: string, subPath: string,
-    sidebar: HTMLElement, content: HTMLElement, pushState = true
-  ): void {
-    sidebar.querySelectorAll<HTMLElement>('.sidebar-file').forEach((btn) => {
-      const isActive = btn.dataset.subPath === subPath;
-      btn.classList.toggle('is-active', isActive);
-      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-    });
-    renderContent(folderKey, file, breadcrumb, content);
-    if (pushState && currentFolderSlug) {
-      history.pushState(
-        { folderSlug: currentFolderSlug, fileSubPath: subPath },
-        '',
-        `/novel/${currentFolderSlug}/${subPath}`
-      );
-    }
-  }
-
-  // ── Folder switching ──────────────────────────────────────────────────
-  let currentFolderSlug: string | null = null;
-  let isSwitching = false;
-
-  async function switchFolder(
-    folderKey: string, tree: NovelTree,
-    sidebar: HTMLElement, content: HTMLElement,
-    pushState = true
-  ): Promise<void> {
-    if (isSwitching) return;
-    isSwitching = true;
-    try {
-      document.querySelectorAll<HTMLElement>('.filter-tab').forEach((tab) => {
-        const isActive = tab.dataset.folder === folderKey;
-        tab.classList.toggle('is-active', isActive);
-        tab.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      struts.forEach((s) => {
+        ctx.strokeStyle = `rgba(150,115,70,${s.opacity})`;
+        ctx.lineWidth = 0.5;
+        ctx.beginPath(); ctx.moveTo(0, s.y * h); ctx.lineTo(w, s.y * h); ctx.stroke();
       });
-      currentFolderSlug = folderKey;
-      renderSidebar(folderKey, tree, sidebar);
-      showPlaceholder(folderKey, content);
-      if (pushState) {
-        history.pushState({ folderSlug: folderKey, fileSubPath: null }, '', `/novel/${folderKey}`);
-      }
-    } finally {
-      isSwitching = false;
-    }
-  }
-
-  // ── Main init ────────────────────────────────────────────────────────
-  function init() {
-    currentFolderSlug = null;
-    isSwitching = false;
-    const treeEl = document.getElementById('novel-tree');
-    if (!treeEl) return;
-    const tree: NovelTree = JSON.parse(treeEl.textContent!);
-
-    // ── Rain canvas ──────────────────────────────────────────────────
-    (function () {
-      const canvas = document.getElementById('bg-canvas') as HTMLCanvasElement | null;
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d')!;
-      let w = 0, h = 0;
-
-      function resize() {
-        w = canvas!.width  = window.innerWidth;
-        h = canvas!.height = window.innerHeight;
-      }
-      resize();
-      window.addEventListener('resize', resize);
-
-      const towers = Array.from({ length: 16 }, (_, i) => ({
-        x: (i / 15) * 1.1 - 0.05,
-        height: 0.2 + Math.random() * 0.4,
-        width: 0.4 + Math.random() * 1.8,
-        opacity: 0.025 + Math.random() * 0.035,
-      }));
-      const struts = Array.from({ length: 5 }, () => ({
-        y: 0.45 + Math.random() * 0.45,
-        opacity: 0.015 + Math.random() * 0.015,
-      }));
-      const drops = Array.from({ length: 110 }, () => ({
-        x: Math.random(), y: Math.random(),
-        speed: (1.8 + Math.random() * 2.2) / 800,
-        len: (7 + Math.random() * 16) / 800,
-        opacity: 0.07 + Math.random() * 0.18,
-        lean: -0.035 + Math.random() * 0.02,
-      }));
-
-      let rafId = 0;
-      function draw() {
-        ctx.clearRect(0, 0, w, h);
-        const grd = ctx.createRadialGradient(w * 0.5, h * 0.92, 0, w * 0.5, h * 0.65, h * 0.7);
-        grd.addColorStop(0, 'rgba(180,75,15,0.08)');
-        grd.addColorStop(0.5, 'rgba(140,55,10,0.04)');
-        grd.addColorStop(1, 'transparent');
-        ctx.fillStyle = grd;
-        ctx.fillRect(0, 0, w, h);
-
-        towers.forEach((t) => {
-          ctx.fillStyle = `rgba(90,130,200,${t.opacity})`;
-          ctx.fillRect(t.x * w - t.width / 2, h - t.height * h, t.width, t.height * h);
-        });
-        struts.forEach((s) => {
-          ctx.strokeStyle = `rgba(90,130,200,${s.opacity})`;
-          ctx.lineWidth = 0.5;
-          ctx.beginPath(); ctx.moveTo(0, s.y * h); ctx.lineTo(w, s.y * h); ctx.stroke();
-        });
-        drops.forEach((d) => {
-          const px = d.x * w, py = d.y * h, plen = d.len * h;
-          ctx.strokeStyle = `rgba(130,180,255,${d.opacity})`;
-          ctx.lineWidth = 0.55;
-          ctx.beginPath(); ctx.moveTo(px, py);
-          ctx.lineTo(px + Math.sin(d.lean) * plen, py + plen); ctx.stroke();
-          d.y += d.speed;
-          if (d.y > 1) { d.y = -d.len; d.x = Math.random(); }
-        });
-        rafId = requestAnimationFrame(draw);
-      }
-      rafId = requestAnimationFrame(draw);
-
-      document.addEventListener('astro:before-swap', () => {
-        cancelAnimationFrame(rafId);
-        window.removeEventListener('resize', resize);
-      }, { once: true });
-    })();
-
-    // ── Panel refs ───────────────────────────────────────────────────
-    const sidebar = document.getElementById('novel-sidebar')!;
-    const content = document.getElementById('novel-content')!;
-
-    // ── Collapse toggle ──────────────────────────────────────────────
-    const LS_KEY = 'novel-sidebar-collapsed';
-    const tabBtn = document.getElementById('sidebar-tab') as HTMLButtonElement | null;
-
-    function setSidebarCollapsed(collapsed: boolean, skipTransition = false): void {
-      if (skipTransition) {
-        sidebar.style.transition = 'none';
-        if (tabBtn) tabBtn.style.transition = 'none';
-        sidebar.offsetHeight; // force reflow so transition is bypassed
-      }
-      sidebar.classList.toggle('is-collapsed', collapsed);
-      if (tabBtn) {
-        tabBtn.classList.toggle('is-collapsed', collapsed);
-        tabBtn.setAttribute('aria-label', collapsed ? 'Show navigation' : 'Hide navigation');
-        tabBtn.textContent = collapsed ? '▶ show' : '◀ hide';
-      }
-      if (skipTransition) {
-        requestAnimationFrame(() => {
-          sidebar.style.transition = '';
-          if (tabBtn) tabBtn.style.transition = '';
-        });
-      }
+      if (!withDrops) return;
+      drops.forEach((d) => {
+        const px = d.x * w, py = d.y * h, plen = d.len * h;
+        ctx.strokeStyle = `rgba(215,175,110,${d.opacity})`;
+        ctx.lineWidth = 0.55;
+        ctx.beginPath(); ctx.moveTo(px, py);
+        ctx.lineTo(px + Math.sin(d.lean) * plen, py + plen); ctx.stroke();
+        d.y += d.speed;
+        if (d.y > 1) { d.y = -d.len; d.x = Math.random(); }
+      });
     }
 
-    // Restore persisted collapsed state without animation
-    if (window.innerWidth > 768) {
-      setSidebarCollapsed(localStorage.getItem(LS_KEY) === 'true', true);
+    resize();
+    window.addEventListener('resize', resize);
+
+    let rafId = 0;
+    if (reduced) {
+      drawScene(false);
+    } else {
+      const loop = () => { drawScene(true); rafId = requestAnimationFrame(loop); };
+      rafId = requestAnimationFrame(loop);
     }
-
-    // ── Tab click ────────────────────────────────────────────────────
-    const tabsAc = new AbortController();
-
-    tabBtn?.addEventListener('click', () => {
-      if (window.innerWidth <= 768) return;
-      const nowCollapsed = !sidebar.classList.contains('is-collapsed');
-      setSidebarCollapsed(nowCollapsed);
-      localStorage.setItem(LS_KEY, String(nowCollapsed));
-    }, { signal: tabsAc.signal });
-    const tabsEl = document.getElementById('filter-tabs');
-    tabsEl?.addEventListener('click', (e) => {
-      const tab = (e.target as Element).closest<HTMLElement>('.filter-tab');
-      if (!tab?.dataset.folder) return;
-      if (sidebar.classList.contains('is-collapsed')) {
-        setSidebarCollapsed(false);
-        localStorage.setItem(LS_KEY, 'false');
-      }
-      switchFolder(tab.dataset.folder, tree, sidebar, content);
-    }, { signal: tabsAc.signal });
-
-    tabsEl?.addEventListener('keydown', (e) => {
-      if (e.key !== 'Enter' && e.key !== ' ') return;
-      const tab = (e.target as Element).closest<HTMLElement>('.filter-tab');
-      if (!tab?.dataset.folder) return;
-      e.preventDefault();
-      if (sidebar.classList.contains('is-collapsed')) {
-        setSidebarCollapsed(false);
-        localStorage.setItem(LS_KEY, 'false');
-      }
-      switchFolder(tab.dataset.folder, tree, sidebar, content);
-    }, { signal: tabsAc.signal });
-
-    document.addEventListener('astro:before-swap', () => tabsAc.abort(), { once: true });
-
-    // ── Sidebar delegated click ──────────────────────────────────────
-    sidebar.addEventListener('click', (e) => {
-      const fileBtn = (e.target as Element).closest<HTMLElement>('.sidebar-file');
-      if (!fileBtn?.dataset.fileEncoded || !fileBtn.dataset.folderKey) return;
-      try {
-        const file: NovelFile = JSON.parse(decodeURIComponent(fileBtn.dataset.fileEncoded));
-        selectFile(
-          fileBtn.dataset.folderKey, file,
-          fileBtn.dataset.breadcrumb ?? currentFolderSlug ?? '',
-          fileBtn.dataset.subPath ?? file.slug,
-          sidebar, content
-        );
-      } catch { /* malformed data attribute */ }
-    });
-
-    sidebar.addEventListener('keydown', (e) => {
-      if (e.key !== 'Enter' && e.key !== ' ') return;
-      const fileBtn = (e.target as Element).closest<HTMLElement>('.sidebar-file');
-      if (!fileBtn) return;
-      e.preventDefault();
-      fileBtn.click();
-    });
-
-    // ── Popstate — browser back/forward ─────────────────────────────
-    function handlePopstate(e: PopStateEvent) {
-      const state = e.state as { folderSlug: string | null; fileSubPath: string | null } | null;
-
-      if (!state?.folderSlug) {
-        sidebar.innerHTML = '';
-        content.innerHTML = '';
-        currentFolderSlug = null;
-        document.querySelectorAll<HTMLElement>('.filter-tab').forEach((t) => {
-          t.classList.remove('is-active');
-          t.setAttribute('aria-pressed', 'false');
-        });
-        return;
-      }
-
-      const folderSwitchPromise = currentFolderSlug !== state.folderSlug
-        ? switchFolder(state.folderSlug, tree, sidebar, content, false)
-        : Promise.resolve();
-
-      if (state.fileSubPath) {
-        const targetSubPath = state.fileSubPath;
-        folderSwitchPromise.then(() => {
-          requestAnimationFrame(() => {
-            const fileBtn = findSidebarFile(sidebar, targetSubPath);
-            if (fileBtn?.dataset.fileEncoded && fileBtn.dataset.folderKey) {
-              try {
-                const file: NovelFile = JSON.parse(decodeURIComponent(fileBtn.dataset.fileEncoded));
-                selectFile(
-                  fileBtn.dataset.folderKey, file,
-                  fileBtn.dataset.breadcrumb ?? currentFolderSlug ?? '',
-                  targetSubPath, sidebar, content, false
-                );
-              } catch { /* malformed */ }
-            }
-          });
-        });
-      }
-    }
-
-    window.addEventListener('popstate', handlePopstate);
 
     document.addEventListener('astro:before-swap', () => {
-      window.removeEventListener('popstate', handlePopstate);
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', resize);
     }, { once: true });
-
-    // ── Initial state from server-rendered URL props ──────────────────
-    const page       = document.querySelector('.novel-page') as HTMLElement;
-    const initFolder = page.dataset.initialFolder  || null;
-    const initSubPath = page.dataset.initialSubpath || null;
-
-    function folderHasContent(f: NovelFolder): boolean {
-      return f.files.length > 0 || Object.values(f.subfolders).some((s) => folderHasContent(s));
-    }
-
-    const firstFolder = (initFolder && tree[initFolder] && folderHasContent(tree[initFolder]))
-      ? initFolder
-      : Object.values(tree).find(folderHasContent)?.slug ?? null;
-
-    if (firstFolder) {
-      history.replaceState(
-        { folderSlug: firstFolder, fileSubPath: initSubPath ?? null },
-        '',
-        window.location.pathname
-      );
-      switchFolder(firstFolder, tree, sidebar, content, false).then(() => {
-        if (initSubPath) {
-          requestAnimationFrame(() => {
-            const fileBtn = findSidebarFile(sidebar, initSubPath);
-            if (fileBtn?.dataset.fileEncoded && fileBtn.dataset.folderKey) {
-              try {
-                const file: NovelFile = JSON.parse(decodeURIComponent(fileBtn.dataset.fileEncoded));
-                selectFile(
-                  fileBtn.dataset.folderKey, file,
-                  fileBtn.dataset.breadcrumb ?? firstFolder,
-                  initSubPath, sidebar, content, false
-                );
-              } catch { /* malformed */ }
-            }
-          });
-        }
-      });
-    } else {
-      history.replaceState({ folderSlug: null, fileSubPath: null }, '', '/novel');
-    }
   }
 
-  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:page-load', initCanvas);
 </script>
 
 <style is:global>
