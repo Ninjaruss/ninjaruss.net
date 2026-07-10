@@ -40,8 +40,8 @@ New CSS custom properties at the top of `novel.css` (replacing the blue-rain val
 | `--novel-paper-rule` | `#c4b494` | hairlines on paper |
 | `--novel-parchment` | `#d8cbb0` | prose text in ink treatment |
 | `--novel-warm-muted` | `#a8905f` | metadata, dates |
-| `--novel-warm-dim` | `#8a7355` | kickers, labels |
-| `--novel-warm-faint` | `#6b5a42` | flavor lines, lowest-emphasis text |
+| `--novel-warm-dim` | `#9d8560` | kickers, labels (raised from `#8a7355` for AA contrast on dark surfaces) |
+| `--novel-paper-meta` | `#665238` | metadata/labels on cream paper (`.desk-sheet__kicker`, `.desk-sheet__count`, `.reading--paper .reading__meta`) — added because `--novel-warm-dim` fails AA on paper |
 
 Gold stays `--color-gold` (`#ffe52c`) from `global.css` — used for the NOVEL tab,
 skewed underline, active/hover states, the Scenes archive card marker, and ink-page
