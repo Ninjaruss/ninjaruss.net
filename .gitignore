@@ -28,3 +28,7 @@ pnpm-debug.log*
 .superpowers/
 .vercel
 .env*
+
+# /mind manual-mode scratch files (workflow artifacts, never content)
+mind-prompt.txt
+mind-response.json
