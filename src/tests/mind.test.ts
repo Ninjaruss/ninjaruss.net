@@ -118,3 +118,47 @@ describe('extractJsonBlock', () => {
     expect(() => extractJsonBlock('no json here at all')).toThrow(/no json/i);
   });
 });
+
+import { stabilizeSlugs } from '../utils/mind/stabilize';
+import type { MindConcept } from '../utils/mind/schema';
+
+function concept(slug: string, name: string, related: string[] = []): MindConcept {
+  return { slug, name, synthesis: '', entries: ['notes/x'], related };
+}
+
+describe('stabilizeSlugs', () => {
+  it('rewrites a new slug to the old one when concept names match (case-insensitive)', () => {
+    const old = [concept('japanese-study', 'Japanese Study')];
+    const next = [concept('learning-japanese', 'japanese study')];
+    const result = stabilizeSlugs(old, next);
+    expect(result[0].slug).toBe('japanese-study');
+  });
+
+  it('rewrites related refs that pointed at the renamed slug', () => {
+    const old = [concept('identity', 'Identity')];
+    const next = [
+      concept('the-self', 'Identity'),
+      concept('discipline', 'Discipline', ['the-self']),
+    ];
+    const result = stabilizeSlugs(old, next);
+    expect(result[0].slug).toBe('identity');
+    expect(result[1].related).toEqual(['identity']);
+  });
+
+  it('leaves genuinely new concepts untouched', () => {
+    const old = [concept('identity', 'Identity')];
+    const next = [concept('craft', 'Craft')];
+    expect(stabilizeSlugs(old, next)[0].slug).toBe('craft');
+  });
+
+  it('does not create duplicate slugs when the old slug is already taken', () => {
+    const old = [concept('identity', 'Identity')];
+    const next = [
+      concept('identity', 'Something Else'),
+      concept('the-self', 'Identity'),
+    ];
+    const result = stabilizeSlugs(old, next);
+    const slugs = result.map(c => c.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+  });
+});
