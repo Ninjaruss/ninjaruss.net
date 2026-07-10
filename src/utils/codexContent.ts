@@ -64,7 +64,7 @@ async function buildEntryMap(): Promise<Map<string, ResolvedEntry>> {
     notes: s => `/notes/${s}`,
     showcase: s => `/showcase/${s}`,
     shelf: s => `/shelf/${s}`,
-    now: () => `/now/archive`,
+    now: s => `/now/${s}`,
   };
 
   for (const name of ['notes', 'showcase', 'shelf', 'now'] as const) {
