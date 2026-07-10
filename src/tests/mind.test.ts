@@ -221,3 +221,28 @@ describe('resolveMind', () => {
     expect(result.generatedAt).toBeNull();
   });
 });
+
+import { gatherCorpus } from '../utils/mind/corpus';
+
+describe('gatherCorpus', () => {
+  it('gathers entries from all five sources with well-formed ids', async () => {
+    const corpus = await gatherCorpus();
+    const byPrefix = (p: string) => corpus.filter(e => e.id.startsWith(p + '/'));
+    expect(byPrefix('notes').length).toBeGreaterThan(0);
+    expect(byPrefix('showcase').length).toBeGreaterThan(0);
+    expect(byPrefix('shelf').length).toBeGreaterThan(0);
+    expect(byPrefix('now').length).toBeGreaterThan(0);
+    expect(byPrefix('novel').length).toBeGreaterThan(0);
+    for (const e of corpus) {
+      expect(e.id).toMatch(/^(notes|showcase|shelf|now)\/[a-z0-9-]+$|^novel\/[a-z0-9-]+(\/[a-z0-9-]+)+$/);
+      expect(e.title.length).toBeGreaterThan(0);
+      expect(typeof e.text).toBe('string');
+    }
+  });
+
+  it('excludes draft entries', async () => {
+    const corpus = await gatherCorpus();
+    const ids = corpus.map(e => e.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+});
