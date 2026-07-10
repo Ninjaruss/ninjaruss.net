@@ -48,7 +48,20 @@ Script: `scripts/mind-condense.mjs`.
 3. Validate: every entry ref resolves to a real entry, slugs well-formed, count within range, every entry assigned. On failure, print errors and leave the old file untouched.
 4. Write `mind.json`. The user reviews the diff and commits — this is the veto step.
 
-No API key management: uses existing Claude Code CLI auth.
+No API key management: uses existing Claude Code CLI auth (any paid subscription or an `ANTHROPIC_API_KEY` with pay-as-you-go credits).
+
+### Manual mode (no paid AI access required)
+
+The CLI call is optional. The same script supports a copy/paste workflow with any chatbot (DeepSeek, free claude.ai, etc.):
+
+- `npm run mind -- --export` — gathers the corpus, wraps it in the same prompt (JSON output format + existing concept slugs for URL stability), and writes it to a single text file for pasting into any model.
+- `npm run mind -- --import <file>` — takes the model's JSON reply and runs the exact same validation as CLI output (entry refs resolve, slugs well-formed, every entry assigned, count in range). On failure it reports the specific problems and leaves `mind.json` untouched; on success it writes the file for the usual diff review.
+
+Because validation gatekeeps and the build re-resolves all facts from real content, a sloppy free-model response can never corrupt the site — worst case is re-paste and retry. The default no-flag invocation (`npm run mind`) remains the one-command CLI path.
+
+### Missing-synthesis fallback
+
+A concept whose `synthesis` is empty or missing renders its excerpt timeline without the synthesis block (no error, no placeholder text). This keeps hand-edited or partially-filled `mind.json` files fully usable.
 
 ## Pages
 
