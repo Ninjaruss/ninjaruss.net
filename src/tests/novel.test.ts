@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { slugify, parseMetaData, buildNovelTree, countWords, computeNovelStats, type NovelTree } from '../utils/novel';
+import { slugify, parseMetaData, buildNovelTree, countWords, computeNovelStats, flattenFolderFiles, type NovelTree } from '../utils/novel';
 import { join } from 'path';
 
 describe('slugify', () => {
@@ -96,14 +96,14 @@ describe('countWords', () => {
   });
 });
 
-describe('computeNovelStats', () => {
+const file = (over: object) => ({
+  slug: 'f', title: 'F', body: '<p>one two three</p>',
+  created: null, modified: null, mtime: null, path: ['x'], ...over,
+});
+const folder = (slug: string, files: any[], subfolders = {}) =>
+  ({ slug, title: slug, files, subfolders });
 
-  const file = (over: object) => ({
-    slug: 'f', title: 'F', body: '<p>one two three</p>',
-    created: null, modified: null, mtime: null, path: ['x'], ...over,
-  });
-  const folder = (slug: string, files: any[], subfolders = {}) =>
-    ({ slug, title: slug, files, subfolders });
+describe('computeNovelStats', () => {
 
   it('splits story (scenes/) from outline words, recursing subfolders', () => {
     const tree = {
@@ -148,5 +148,22 @@ describe('computeNovelStats', () => {
   it('ignores unparseable dates', () => {
     const tree = { scenes: folder('scenes', [file({ modified: 'not a date' })]) };
     expect(computeNovelStats(tree).lastSceneModified).toBeNull();
+  });
+});
+
+describe('flattenFolderFiles', () => {
+  it('returns root files then subfolder files depth-first, in tree order', () => {
+    const tree = folder('lore', [file({ slug: 'root-a' })], {
+      'magic-system': folder('magic-system', [file({ slug: 'sub-a' }), file({ slug: 'sub-b' })], {
+        deeper: folder('deeper', [file({ slug: 'deep-a' })]),
+      }),
+      plot: folder('plot', [file({ slug: 'plot-a' })]),
+    });
+    expect(flattenFolderFiles(tree).map((f: any) => f.slug))
+      .toEqual(['root-a', 'sub-a', 'sub-b', 'deep-a', 'plot-a']);
+  });
+
+  it('returns empty array for empty folder', () => {
+    expect(flattenFolderFiles(folder('themes', []))).toEqual([]);
   });
 });

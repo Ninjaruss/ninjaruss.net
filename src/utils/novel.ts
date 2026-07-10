@@ -146,10 +146,11 @@ function parseNovelDate(raw: string): Date | null {
   return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
 }
 
-function collectFiles(folder: NovelFolder): NovelFile[] {
+/** Depth-first flat file list for a folder, in tree order. */
+export function flattenFolderFiles(folder: NovelFolder): NovelFile[] {
   return [
     ...folder.files,
-    ...Object.values(folder.subfolders).flatMap(collectFiles),
+    ...Object.values(folder.subfolders).flatMap(flattenFolderFiles),
   ];
 }
 
@@ -165,7 +166,7 @@ export function computeNovelStats(tree: NovelTree): NovelStats {
 
   for (const [slug, folder] of Object.entries(tree)) {
     const isStory = slug === 'scenes';
-    for (const file of collectFiles(folder)) {
+    for (const file of flattenFolderFiles(folder)) {
       const words = countWords(file.body);
       if (isStory) storyWords += words;
       else outlineWords += words;
