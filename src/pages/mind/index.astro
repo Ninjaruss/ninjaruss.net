@@ -1,0 +1,90 @@
+---
+import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
+import ListItem from '../../components/ListItem.astro';
+import { getMindPageData } from '../../utils/mindContent';
+
+const { concepts, looseThreads } = await getMindPageData();
+---
+
+<SplitViewLayout
+  title="Mind"
+  description="A condensed encyclopedia of the thinking behind this site."
+  section="mind"
+  kicker="second brain"
+  ogImage="/social-default.svg"
+>
+  <Fragment slot="list">
+    {concepts.length > 0 ? (
+      concepts.map((concept) => (
+        <ListItem
+          href={`/mind/${concept.slug}`}
+          slug={concept.slug}
+          title={concept.name}
+          subtitle={concept.synthesis ? concept.synthesis.split(/(?<=[.!?])\s/)[0].slice(0, 90) : undefined}
+          meta={`${concept.entries.length} ${concept.entries.length === 1 ? 'entry' : 'entries'}`}
+          searchableContent={`${concept.name} ${concept.synthesis} ${concept.entries.map(e => e.title).join(' ')}`.slice(0, 500)}
+        />
+      ))
+    ) : (
+      <p class="empty-state">the mind is unformed — run <code>npm run mind</code></p>
+    )}
+    {looseThreads.length > 0 && (
+      <div class="loose-threads">
+        <span class="loose-threads__label">loose threads ({looseThreads.length})</span>
+        <p class="loose-threads__hint">raw material awaiting condensation — run <code>npm run mind</code></p>
+        <ul class="loose-threads__list">
+          {looseThreads.map((thread) => (
+            <li><a href={thread.href}>{thread.title}</a></li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </Fragment>
+</SplitViewLayout>
+
+<style>
+  .empty-state {
+    color: var(--color-text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: var(--space-xl);
+  }
+
+  .loose-threads {
+    margin: var(--space-lg);
+    padding: var(--space-md);
+    border: 1px solid rgba(255, 229, 44, 0.25);
+    clip-path: polygon(var(--cut-sm) 0, 100% 0, 100% calc(100% - var(--cut-sm)), calc(100% - var(--cut-sm)) 100%, 0 100%, 0 var(--cut-sm));
+  }
+
+  .loose-threads__label {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-gold);
+    transform: skewX(var(--skew-display));
+  }
+
+  .loose-threads__hint {
+    margin: var(--space-xs) 0 var(--space-sm);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .loose-threads__list {
+    margin: 0;
+    padding-left: var(--space-md);
+    font-size: var(--text-sm);
+  }
+
+  .loose-threads__list a {
+    color: var(--color-text);
+  }
+
+  .loose-threads__list a:hover,
+  .loose-threads__list a:focus-visible {
+    color: var(--color-gold);
+  }
+</style>

@@ -1,0 +1,222 @@
+---
+import { marked } from 'marked';
+import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
+import ListItem from '../../components/ListItem.astro';
+import { formatDate } from '../../utils/dates';
+import { getMindPageData } from '../../utils/mindContent';
+
+export async function getStaticPaths() {
+  const { concepts } = await getMindPageData();
+  return concepts.map((concept) => ({
+    params: { slug: concept.slug },
+    props: { concept },
+  }));
+}
+
+const { concept } = Astro.props;
+const { concepts } = await getMindPageData();
+const generatedAt = (await getMindPageData()).generatedAt;
+
+const hasSynthesis = concept.synthesis.trim().length > 0;
+const synthesisHtml = hasSynthesis ? marked.parse(concept.synthesis) : '';
+
+const BADGES: Record<string, string> = {
+  notes: 'note',
+  showcase: 'showcase',
+  shelf: 'shelf',
+  now: 'now',
+  novel: 'novel',
+};
+---
+
+<SplitViewLayout
+  title="Mind"
+  description={hasSynthesis ? concept.synthesis.slice(0, 160) : `Entries orbiting ${concept.name}.`}
+  section="mind"
+  kicker="second brain"
+  initialSlug={concept.slug}
+  pageTitle={concept.name}
+  ogImage="/social-default.svg"
+  ogType="article"
+>
+  <Fragment slot="list">
+    {concepts.map((item) => (
+      <ListItem
+        href={`/mind/${item.slug}`}
+        slug={item.slug}
+        title={item.name}
+        meta={`${item.entries.length} ${item.entries.length === 1 ? 'entry' : 'entries'}`}
+        searchableContent={`${item.name} ${item.synthesis}`.slice(0, 500)}
+      />
+    ))}
+  </Fragment>
+
+  <Fragment slot="detail">
+    <article class="entry">
+      <div class="container">
+        <header class="concept__header">
+          <h1 class="entry__title">{concept.name}</h1>
+        </header>
+
+        {hasSynthesis && (
+          <div class="concept__synthesis">
+            {generatedAt && (
+              <span class="concept__stamp">condensed {formatDate(new Date(generatedAt))}</span>
+            )}
+            <div class="concept__synthesis-body" set:html={synthesisHtml} />
+          </div>
+        )}
+
+        <section class="concept__sources" aria-label="Source entries">
+          <h2 class="concept__sources-title">sources</h2>
+          <ol class="concept__timeline">
+            {concept.entries.map((entry) => (
+              <li class="concept__card">
+                <div class="concept__card-top">
+                  <span class="concept__badge">{BADGES[entry.collection] ?? entry.collection}</span>
+                  {entry.publishedAt && (
+                    <span class="concept__date">{formatDate(new Date(entry.publishedAt))}</span>
+                  )}
+                </div>
+                <a class="concept__card-title" href={entry.href}>{entry.title}</a>
+                {entry.excerpt && <p class="concept__excerpt">{entry.excerpt}</p>}
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        {concept.related.length > 0 && (
+          <nav class="concept__related" aria-label="Related concepts">
+            <h2 class="concept__sources-title">related</h2>
+            <div class="concept__chips">
+              {concept.related.map((rel) => (
+                <a class="concept__chip" href={`/mind/${rel.slug}`}>{rel.name}</a>
+              ))}
+            </div>
+          </nav>
+        )}
+      </div>
+    </article>
+  </Fragment>
+</SplitViewLayout>
+
+<style is:global>
+  .concept__header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .concept__synthesis {
+    position: relative;
+    margin-bottom: var(--space-xl);
+    padding: var(--space-md) var(--space-lg);
+    border-left: 3px solid var(--color-gold);
+    background: rgba(255, 229, 44, 0.04);
+  }
+
+  .concept__stamp {
+    display: block;
+    margin-bottom: var(--space-xs);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .concept__synthesis-body p {
+    margin: 0 0 var(--space-sm);
+    line-height: 1.7;
+  }
+
+  .concept__synthesis-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .concept__sources-title {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-gold);
+    transform: skewX(var(--skew-display));
+    margin-bottom: var(--space-md);
+  }
+
+  .concept__timeline {
+    list-style: none;
+    margin: 0 0 var(--space-xl);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .concept__card {
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    clip-path: polygon(var(--cut-sm) 0, 100% 0, 100% calc(100% - var(--cut-sm)), calc(100% - var(--cut-sm)) 100%, 0 100%, 0 var(--cut-sm));
+  }
+
+  .concept__card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-xs);
+  }
+
+  .concept__badge {
+    display: inline-block;
+    padding: 1px 8px;
+    background: var(--color-gold);
+    color: #111;
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    transform: skewX(var(--skew-accent));
+  }
+
+  .concept__date {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  .concept__card-title {
+    font-weight: 700;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .concept__card-title:hover,
+  .concept__card-title:focus-visible {
+    color: var(--color-gold);
+  }
+
+  .concept__excerpt {
+    margin: var(--space-xs) 0 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .concept__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .concept__chip {
+    padding: var(--space-xs) var(--space-md);
+    border: 1px solid var(--color-gold);
+    color: var(--color-gold);
+    text-decoration: none;
+    font-size: var(--text-sm);
+    clip-path: polygon(var(--cut-sm) 0, 100% 0, 100% calc(100% - var(--cut-sm)), calc(100% - var(--cut-sm)) 100%, 0 100%, 0 var(--cut-sm));
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .concept__chip:hover,
+  .concept__chip:focus-visible {
+    background: var(--color-gold);
+    color: #111;
+  }
+</style>

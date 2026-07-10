@@ -1,0 +1,12 @@
+{
+  "generatedAt": "2026-07-09T00:00:00.000Z",
+  "concepts": [
+    {
+      "slug": "smoke-test",
+      "name": "Smoke Test",
+      "synthesis": "You are testing whether the mind renders. It does, and you notice you enjoy watching structure emerge from writing.",
+      "entries": ["notes/addiction", "notes/animals"],
+      "related": []
+    }
+  ]
+}
