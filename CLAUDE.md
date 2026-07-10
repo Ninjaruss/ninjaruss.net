@@ -125,7 +125,7 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 - `typography.css` — Fonts (Archivo Black, Inter, JetBrains Mono), type scale
 - `bento.css` — Grid system and tile variants
 - `transitions.css` — P4G-style animations and view transitions
-- `novel.css` — Novel reader UI (frosted glass two-panel navigator, canvas background)
+- `novel.css` — Novel writer's-desk UI (gold/black/brown; desk landing, folder pages, paper/ink reading pages, sepia rain canvas)
 
 ### Key CSS Variables
 ```css
@@ -195,8 +195,8 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 - `/media/[...slug]` → redirects to `/shelf/[...slug]`
 
 ### Novel Pages
-- `/novel` — "Remember Rain" novel index (two-panel frosted glass navigator)
-- `/novel/[...slug]` — Individual folder/file pages; slug encodes folder+file path (e.g. `/novel/characters/rain`)
+- `/novel` — "Remember Rain" novel index (writer's desk landing: latest scene excerpt, recent files, archive)
+- `/novel/[...slug]` — Folder structure browser and focused reading pages; slug encodes folder+file path (e.g. `/novel/characters/rain`)
 
 ### Utility Pages
 - `/` — Homepage with BentoGrid tiles
@@ -219,8 +219,8 @@ The `/novel` route serves a standalone in-progress novel with its own UI, separa
 
 - **Content location**: `src/content/novel/` — Scrivener export structure with top-level folders (`Characters`, `Locations`, `Lore`, `Scenes`, `Themes`). Each `.md` file may have a sidecar `<Title> MetaData.txt` with Scrivener-format `Created:` / `Modified:` dates.
 - **Build utility**: `src/utils/novel.ts` — `buildNovelTree()` reads the directory at build time and returns a `NovelTree` (recursive `NovelFolder`/`NovelFile` types). Files are slugified and markdown is pre-rendered to HTML via `marked`.
-- **Routing**: `src/pages/novel/[...slug].astro` uses `getStaticPaths()` to enumerate all folder + file paths. The rest param slug encodes the full path (e.g. `lore/magic-system/overview`).
-- **UI**: Frosted glass two-panel layout (`novel.css`) with an animated canvas background. No SplitViewLayout — entirely custom.
+- **Routing**: `src/pages/novel/[...slug].astro` renders three static views from `getStaticPaths()`: `/novel` (desk landing: latest scene as a cream paper sheet with excerpt, 2 recent non-scene files, archive folder cards), `/novel/[folder]` (file list grouped by subfolder), `/novel/[folder]/.../[file]` (focused reading page — paper treatment for Scenes, ink for everything else, prev/next page-turn links in tree order). Intermediate subfolder URLs render the parent folder page. No client-side rendering — plain links + view transitions; the only script is the sepia rain canvas (static frame under reduced motion).
+- **UI**: "Writer's desk" — gold/black/brown palette (`--novel-*` tokens in `novel.css`), P4G header pattern, dates always shown as facts ("edited …", never time-since — no-shame invariant). Story vs. outline split is visual: Scenes render on paper, outline docs in ink.
 - **Homepage stats**: `computeNovelStats(tree)` returns `{ storyWords, outlineWords, lastSceneModified, lastOutlineModified }` for the rain-gauge tile — story = top-level `Scenes` folder, outline = everything else; sidecar `Modified:` dates preferred, filesystem `mtime` fallback (`NovelFile.mtime`), all anchored to UTC.
 - **Testing**: `src/tests/novel.test.ts` covers `slugify`, `parseMetaData`, `buildNovelTree`, `countWords`, and `computeNovelStats` via vitest.
 - **Adding content**: Drop `.md` files into the appropriate `src/content/novel/` subfolder. Scrivener MetaData.txt sidecars are auto-read if present; other `.txt` files are silently skipped.
@@ -251,7 +251,7 @@ codex-response.json are gitignored. Tests: src/tests/codex.test.ts (pure modules
 | `src/utils/journal.ts` | `getJournalItems()`, `mergeJournalEntries()`, `JournalItem`, `JournalType` | Merge notes (`note`) + showcase (`showcase`) into one date-sorted list |
 | `src/utils/journalMerge.ts` | pure merge/sort logic (no astro imports) | Unit-testable core of journal.ts (vitest can't resolve `astro:content`) |
 | `src/utils/dates.ts` | `formatDate()`, `shouldShowUpdatedDate()` | Date formatting and update-date display logic |
-| `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `countWords()`, `computeNovelStats()` | Scrivener-backed novel content loader + rain-gauge stats |
+| `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `countWords()`, `computeNovelStats()`, `flattenFolderFiles()`, `findRecentFiles()` | Scrivener-backed novel content loader + rain-gauge stats + desk recency helpers |
 | `src/utils/codexContent.ts` + `src/utils/codex/` | `getCodexPageData()`, `getCodexTileData()`; pure modules: schema, json, stabilize, resolve, corpus, prompt, pipeline | /codex data layer — see Codex System section |
 | `src/utils/splitView/` | (10 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
 
