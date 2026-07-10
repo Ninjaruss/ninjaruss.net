@@ -246,3 +246,75 @@ describe('gatherCorpus', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 });
+
+import { buildMindPrompt } from '../utils/mind/prompt';
+import { processModelResponse } from '../utils/mind/pipeline';
+
+describe('buildMindPrompt', () => {
+  const corpus = [
+    { id: 'notes/a', title: 'On A', tags: ['life'], publishedAt: '2026-06-01T00:00:00.000Z', text: 'body of a' },
+  ];
+
+  it('includes instructions, the output schema, and every corpus entry', () => {
+    const prompt = buildMindPrompt(corpus, null);
+    expect(prompt).toContain('6');
+    expect(prompt).toContain('12');
+    expect(prompt).toContain('second person');
+    expect(prompt).toContain('"generatedAt"');
+    expect(prompt).toContain('notes/a');
+    expect(prompt).toContain('body of a');
+  });
+
+  it('lists existing concept slugs for stability when provided', () => {
+    const existing = {
+      generatedAt: '2026-07-01T00:00:00.000Z',
+      concepts: [{ slug: 'identity', name: 'Identity', synthesis: '', entries: ['notes/a'], related: [] }],
+    };
+    const prompt = buildMindPrompt(corpus, existing);
+    expect(prompt).toContain('identity');
+    expect(prompt).toContain('existing concept');
+  });
+});
+
+describe('processModelResponse', () => {
+  const known = new Set(['notes/a']);
+
+  it('extracts, stabilizes, validates, and returns data on success', () => {
+    const reply = '```json\n' + JSON.stringify({
+      generatedAt: '2026-07-09T00:00:00.000Z',
+      concepts: [{ slug: 'the-self', name: 'Identity', synthesis: 'You return here.', entries: ['notes/a'], related: [] }],
+    }) + '\n```';
+    const existing = {
+      generatedAt: '2026-07-01T00:00:00.000Z',
+      concepts: [{ slug: 'identity', name: 'Identity', synthesis: '', entries: ['notes/a'], related: [] }],
+    };
+    const result = processModelResponse(reply, known, existing);
+    expect(result.errors).toEqual([]);
+    expect(result.data?.concepts[0].slug).toBe('identity');
+  });
+
+  it('fills in generatedAt when the model omitted it', () => {
+    const reply = JSON.stringify({
+      concepts: [{ slug: 'x', name: 'X', synthesis: '', entries: ['notes/a'], related: [] }],
+    });
+    const result = processModelResponse(reply, known, null);
+    expect(result.errors).toEqual([]);
+    expect(result.data?.generatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+  });
+
+  it('returns errors (no data) for invalid responses', () => {
+    const reply = JSON.stringify({
+      generatedAt: 'now',
+      concepts: [{ slug: 'x', name: 'X', synthesis: '', entries: ['notes/hallucinated'], related: [] }],
+    });
+    const result = processModelResponse(reply, known, null);
+    expect(result.data).toBeUndefined();
+    expect(result.errors.join(' ')).toContain('notes/hallucinated');
+  });
+
+  it('reports unparseable text as an error, not a throw', () => {
+    const result = processModelResponse('total garbage', known, null);
+    expect(result.data).toBeUndefined();
+    expect(result.errors.join(' ')).toMatch(/no json/i);
+  });
+});
