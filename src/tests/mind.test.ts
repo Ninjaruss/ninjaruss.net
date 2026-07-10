@@ -162,3 +162,62 @@ describe('stabilizeSlugs', () => {
     expect(new Set(slugs).size).toBe(slugs.length);
   });
 });
+
+import { resolveMind, type ResolvedEntry } from '../utils/mind/resolve';
+
+function entry(id: string, publishedAt: string | null, title = id): ResolvedEntry {
+  const collection = id.split('/')[0];
+  return { id, title, href: `/${id}`, collection, publishedAt, excerpt: `excerpt of ${id}` };
+}
+
+function entryMap(...entries: ResolvedEntry[]): Map<string, ResolvedEntry> {
+  return new Map(entries.map(e => [e.id, e]));
+}
+
+describe('resolveMind', () => {
+  const mind = {
+    generatedAt: '2026-07-01T00:00:00.000Z',
+    concepts: [
+      {
+        slug: 'discipline',
+        name: 'Discipline',
+        synthesis: 'You keep circling.',
+        entries: ['notes/a', 'notes/deleted', 'notes/b'],
+        related: ['rain'],
+      },
+      { slug: 'rain', name: 'Rain', synthesis: '', entries: ['notes/b'], related: [] },
+    ],
+  };
+
+  it('resolves entries, drops dead refs, and reports them', () => {
+    const map = entryMap(entry('notes/a', '2026-06-01'), entry('notes/b', '2026-06-15'));
+    const result = resolveMind(mind, map);
+    expect(result.concepts[0].entries.map(e => e.id)).toEqual(['notes/b', 'notes/a']);
+    expect(result.droppedRefs).toEqual(['notes/deleted']);
+  });
+
+  it('resolves related concepts to {slug, name} pairs', () => {
+    const map = entryMap(entry('notes/a', '2026-06-01'), entry('notes/b', '2026-06-15'));
+    const result = resolveMind(mind, map);
+    expect(result.concepts[0].related).toEqual([{ slug: 'rain', name: 'Rain' }]);
+  });
+
+  it('loose threads = unassigned entries published after generatedAt', () => {
+    const map = entryMap(
+      entry('notes/a', '2026-06-01'),
+      entry('notes/b', '2026-06-15'),
+      entry('notes/new-thought', '2026-07-05'),
+      entry('notes/old-unfiled', '2026-01-01'),
+      entry('novel/themes/undated', null)
+    );
+    const result = resolveMind(mind, map);
+    expect(result.looseThreads.map(e => e.id)).toEqual(['notes/new-thought']);
+  });
+
+  it('null mind data yields empty concepts and no loose threads', () => {
+    const result = resolveMind(null, entryMap(entry('notes/a', '2026-06-01')));
+    expect(result.concepts).toEqual([]);
+    expect(result.looseThreads).toEqual([]);
+    expect(result.generatedAt).toBeNull();
+  });
+});
