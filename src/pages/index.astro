@@ -222,6 +222,7 @@ const latestEntries = latestPool.map(entry => ({
 
       <!-- Rows 2-3: Journal (4×2, slash split) + Novel (1×2) + Stream (1×2) -->
       <div class="bento-tile bento-tile--full bento-tile--highlight bento-tile--core bento-tile--span-4x2 journal-tile">
+        <a href="/journal" class="journal-tile__stretch" aria-label="Open the journal"></a>
         <div class="journal-tile__notes">
           <a href="/journal?types=note" class="journal-tile__head">
             <div class="bento-tile__header">
@@ -794,6 +795,37 @@ const latestEntries = latestPool.map(entry => ({
     display: flex;
     flex-direction: column;
     min-width: 0;
+  }
+
+  /* Whole-tile click target: a stretched link under the content. Empty areas
+     of both fields let clicks fall through to it (pointer-events: none on the
+     wrappers); the real entry links re-enable pointer events and win. */
+  .journal-tile__stretch {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    /* Span every grid track so the abspos containing block is the whole tile,
+       not just the first column. */
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+  }
+
+  .journal-tile__notes,
+  .journal-tile__showcases {
+    pointer-events: none;
+  }
+
+  .journal-tile__head,
+  .journal-tile__row,
+  .journal-tile__showcase-tab,
+  .journal-tile__project {
+    pointer-events: auto;
+  }
+
+  /* Push showcase content clear of the seam so the diagonal never cuts across
+     the chip or the first row — content sits fully on the black field. */
+  .journal-tile__showcases {
+    padding-left: var(--space-xl);
   }
 
   /* Corner triangle sits on the black field now — gold, not the highlight
