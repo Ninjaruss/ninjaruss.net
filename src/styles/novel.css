@@ -6,7 +6,6 @@
 
 .novel-page {
   /* Palette tokens (spec: 2026-07-10-novel-writers-desk-design.md) */
-  --novel-bg: #141110;
   --novel-panel: #241c12;
   --novel-panel-deep: #1c1712;
   --novel-border: #4a3a24;

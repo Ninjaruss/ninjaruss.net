@@ -29,7 +29,6 @@ New CSS custom properties at the top of `novel.css` (replacing the blue-rain val
 
 | Token | Value | Use |
 |---|---|---|
-| `--novel-bg` | `#141110` | page base (near-black, warm) |
 | `--novel-panel` | `#241c12` | archive cards, furniture panels |
 | `--novel-panel-deep` | `#1c1712` | list rows, recent strips |
 | `--novel-border` | `#4a3a24` | default panel borders |
