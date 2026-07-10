@@ -19,6 +19,8 @@ if (proc.error || proc.status !== 0) {
   console.error('✗ Failed to run the `claude` CLI.');
   if (proc.error) console.error(`  ${proc.error.message}`);
   if (proc.stderr) console.error(`  ${proc.stderr.trim()}`);
+  // the claude CLI writes some errors (e.g. auth failures) to stdout
+  if (!proc.error && proc.stdout) console.error(`  ${proc.stdout.trim().slice(0, 500)}`);
   console.error('');
   console.error('  Make sure Claude Code is installed and authenticated (a paid');
   console.error('  subscription or ANTHROPIC_API_KEY). No Claude access? Use the');
