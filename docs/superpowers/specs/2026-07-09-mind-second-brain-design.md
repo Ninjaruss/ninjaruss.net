@@ -52,10 +52,13 @@ No API key management: uses existing Claude Code CLI auth (any paid subscription
 
 ### Manual mode (no paid AI access required)
 
-The CLI call is optional. The same script supports a copy/paste workflow with any chatbot (DeepSeek, free claude.ai, etc.):
+The CLI call is optional. Two bare npm scripts support a copy/paste workflow with any chatbot (DeepSeek, free claude.ai, etc.) — no arguments or flags, fixed file paths in the project root:
 
-- `npm run mind -- --export` — gathers the corpus, wraps it in the same prompt (JSON output format + existing concept slugs for URL stability), and writes it to a single text file for pasting into any model.
-- `npm run mind -- --import <file>` — takes the model's JSON reply and runs the exact same validation as CLI output (entry refs resolve, slugs well-formed, every entry assigned, count in range). On failure it reports the specific problems and leaves `mind.json` untouched; on success it writes the file for the usual diff review.
+- `npm run mind:export` — gathers the corpus, wraps it in the same prompt (JSON output format + existing concept slugs for URL stability), and writes it to **`mind-prompt.txt`**. Open the file, select all, paste into any model.
+- Save the model's JSON reply as **`mind-response.json`** in the project root (pasting the whole reply is fine — the script extracts the JSON block even if the model wrapped it in prose or code fences).
+- `npm run mind:import` — reads `mind-response.json` and runs the exact same validation as CLI output (entry refs resolve, slugs well-formed, every entry assigned, count in range). On failure it reports the specific problems and leaves `mind.json` untouched; on success it writes `src/data/mind.json` for the usual diff review and deletes `mind-response.json`.
+
+Both scratch files (`mind-prompt.txt`, `mind-response.json`) are gitignored — they're workflow artifacts, never content.
 
 Because validation gatekeeps and the build re-resolves all facts from real content, a sloppy free-model response can never corrupt the site — worst case is re-paste and retry. The default no-flag invocation (`npm run mind`) remains the one-command CLI path.
 
