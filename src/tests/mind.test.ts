@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { validateMindData, type MindData } from '../utils/mind/schema';
+import { extractJsonBlock } from '../utils/mind/json';
 
 const KNOWN = new Set(['notes/on-discipline', 'showcase/site', 'novel/themes/rain']);
 
@@ -87,5 +88,33 @@ describe('validateMindData', () => {
     const result = validateMindData(data, KNOWN);
     expect(result.ok).toBe(false);
     expect(result.errors.join(' ')).toContain('no entries');
+  });
+});
+
+describe('extractJsonBlock', () => {
+  const obj = { generatedAt: 'x', concepts: [] };
+  const json = JSON.stringify(obj, null, 2);
+
+  it('parses bare JSON', () => {
+    expect(extractJsonBlock(json)).toEqual(obj);
+  });
+
+  it('parses JSON inside a ```json fence with surrounding prose', () => {
+    const reply = `Sure! Here is your mind:\n\n\`\`\`json\n${json}\n\`\`\`\n\nLet me know if you need changes.`;
+    expect(extractJsonBlock(reply)).toEqual(obj);
+  });
+
+  it('parses JSON inside a bare ``` fence', () => {
+    const reply = `\`\`\`\n${json}\n\`\`\``;
+    expect(extractJsonBlock(reply)).toEqual(obj);
+  });
+
+  it('parses a JSON object embedded in prose without fences', () => {
+    const reply = `Here you go: ${json} — enjoy!`;
+    expect(extractJsonBlock(reply)).toEqual(obj);
+  });
+
+  it('throws a helpful error when no JSON is found', () => {
+    expect(() => extractJsonBlock('no json here at all')).toThrow(/no json/i);
   });
 });
