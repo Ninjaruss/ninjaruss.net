@@ -59,8 +59,12 @@ folder → folder page; deeper → reading page.
 
 - **Header:** gold `p4g-tab` "NOVEL" kicker, "Remember Rain" display title, skewed
   gold `p4g-underline`. Right-aligned status line: story/outline word counts from
-  `computeNovelStats()` plus a quiet subline ("the manuscript grows"). The old
-  reflected-title/waterline motif is retired.
+  `computeNovelStats()` — no decorative subline. The old reflected-title/waterline
+  motif is retired.
+
+  **Copy restraint:** flavor text is kept to a minimum across all views. The only
+  framing label is the "where the pen left off" kicker on the open sheet; everything
+  else is functional (titles, counts, dates).
 - **The open sheet (left, ~60%):** the most recently modified file in `Scenes/`
   rendered as a cream paper panel — corner-cut top-right, hard brown drop shadow
   (via `filter: drop-shadow` wrapper, since clip-path clips box-shadow). Contains:
@@ -69,11 +73,10 @@ folder → folder page; deeper → reading page.
   "keep reading" link (dark skewed chip) to the scene's reading page.
 - **Also on the desk:** below the sheet, up to 2 most recently modified non-scene
   files as small ink rows (title + edited date), linking to their reading pages.
-- **The archive (right, ~40%):** five folder cards ("THE ARCHIVE" kicker above),
-  each a corner-cut panel with folder title, file count, and a one-line flavor
-  description from a config map in the page frontmatter (e.g. Characters — "index
-  cards — Rain, Claire, Shiori…"). The Scenes card is gold-marked (gold title +
-  strong border) as "the manuscript itself." Cards link to folder pages.
+- **The archive (right, ~40%):** five folder cards ("ARCHIVE" kicker above),
+  each a corner-cut panel with folder title and file count only — no flavor
+  descriptions. The Scenes card is gold-marked (gold title + strong border).
+  Cards link to folder pages.
 - **Mobile (≤768px):** stacks vertically — sheet, recent strip, archive cards.
 
 ### 2. `/novel/[folder]` — folder page
