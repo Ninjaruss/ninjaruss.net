@@ -1,9 +1,9 @@
 import { extractJsonBlock } from './json';
 import { stabilizeSlugs } from './stabilize';
-import { validateMindData, type MindData } from './schema';
+import { validateCodexData, type CodexData } from './schema';
 
 export interface PipelineResult {
-  data?: MindData;
+  data?: CodexData;
   errors: string[];
   warnings: string[];
 }
@@ -16,7 +16,7 @@ export interface PipelineResult {
 export function processModelResponse(
   text: string,
   knownEntryIds: Set<string>,
-  existing: MindData | null
+  existing: CodexData | null
 ): PipelineResult {
   let raw: unknown;
   try {
@@ -36,10 +36,10 @@ export function processModelResponse(
   ) {
     (raw as Record<string, unknown>).concepts = stabilizeSlugs(
       existing.concepts,
-      (raw as { concepts: MindData['concepts'] }).concepts
+      (raw as { concepts: CodexData['concepts'] }).concepts
     );
   }
 
-  const result = validateMindData(raw, knownEntryIds);
+  const result = validateCodexData(raw, knownEntryIds);
   return { data: result.ok ? result.data : undefined, errors: result.errors, warnings: result.warnings };
 }

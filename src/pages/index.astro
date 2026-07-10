@@ -7,7 +7,7 @@ import BentoTile from '../components/BentoTile.astro';
 import { buildNovelTree, computeNovelStats } from '../utils/novel';
 import { tallyStats, buildDonutArcs, STAT_ORDER } from '../utils/stream';
 import { stripMarkdown } from '../utils/content';
-import { getMindTileData } from '../utils/mindContent';
+import { getCodexTileData } from '../utils/codexContent';
 
 // Query all content collections for items with publishedAt dates
 const notes = await getCollection('notes', ({ data }) => !data.draft && data.publishedAt);
@@ -143,7 +143,7 @@ const latestEntries = latestPool.map(entry => ({
   excerpt: stripMarkdown(entry.body ?? '').slice(0, 140),
 }));
 
-const mindTile = await getMindTileData();
+const codexTile = await getCodexTileData();
 ---
 
 <BaseLayout title="Home" description="Notes, media, and showcases.">
@@ -496,29 +496,29 @@ const mindTile = await getMindTileData();
         <p class="logo-tile__description">Connect with me directly.</p>
       </a>
 
-      <!-- Row 6: Mind (2×1) -->
+      <!-- Row 6: Codex (2×1) -->
       <a
-        href="/mind"
-        id="mind-tile"
+        href="/codex"
+        id="codex-tile"
         class="bento-tile bento-tile--interactive bento-tile--span-2x1 p3r-animate"
         style="--stagger-delay: 240ms;"
-        data-lines={JSON.stringify(mindTile.lines)}
+        data-lines={JSON.stringify(codexTile.lines)}
       >
         <span class="bento-tile__corner" aria-hidden="true"></span>
-        <div class="mind-tile__inner">
-          <div class="mind-tile__top">
-            <span class="p4g-tab">Mind</span>
-            <span class="mind-tile__count">
-              {mindTile.conceptCount > 0
-                ? `${mindTile.conceptCount} concepts`
+        <div class="codex-tile__inner">
+          <div class="codex-tile__top">
+            <span class="p4g-tab">Codex</span>
+            <span class="codex-tile__count">
+              {codexTile.conceptCount > 0
+                ? `${codexTile.conceptCount} concepts`
                 : 'not yet condensed'}
             </span>
           </div>
-          <p class="mind-tile__line" id="mind-line">
-            {mindTile.lines[0] ?? 'a second brain, waiting to form.'}
+          <p class="codex-tile__line" id="codex-line">
+            {codexTile.lines[0] ?? 'a second brain, waiting to form.'}
           </p>
         </div>
-        <span class="mind-tile__sweep" aria-hidden="true"></span>
+        <span class="codex-tile__sweep" aria-hidden="true"></span>
       </a>
     </BentoGrid>
   </div>
@@ -1483,8 +1483,8 @@ const mindTile = await getMindTileData();
     }
   }
 
-  /* Mind tile — rotating synthesis line with the P4G gold sweep */
-  .mind-tile__inner {
+  /* Codex tile — rotating synthesis line with the P4G gold sweep */
+  .codex-tile__inner {
     position: relative;
     z-index: 1;
     display: flex;
@@ -1494,20 +1494,20 @@ const mindTile = await getMindTileData();
     justify-content: center;
   }
 
-  .mind-tile__top {
+  .codex-tile__top {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-sm);
   }
 
-  .mind-tile__count {
+  .codex-tile__count {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-text-muted);
   }
 
-  .mind-tile__line {
+  .codex-tile__line {
     margin: 0;
     font-size: var(--text-sm);
     line-height: 1.55;
@@ -1518,7 +1518,7 @@ const mindTile = await getMindTileData();
     overflow: hidden;
   }
 
-  .mind-tile__sweep {
+  .codex-tile__sweep {
     position: absolute;
     inset: -1px;
     background: var(--color-gold);
@@ -1527,12 +1527,12 @@ const mindTile = await getMindTileData();
     z-index: 2;
   }
 
-  #mind-tile.is-cycling .mind-tile__sweep {
+  #codex-tile.is-cycling .codex-tile__sweep {
     animation: latest-sweep 760ms var(--animation-easing);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    #mind-tile.is-cycling .mind-tile__sweep {
+    #codex-tile.is-cycling .codex-tile__sweep {
       animation: none;
     }
   }
@@ -1903,20 +1903,20 @@ const mindTile = await getMindTileData();
     }
   }
 
-  // Mind tile — rotates one synthesis line at a time behind the gold sweep.
-  let mindCycleTimer: number | undefined;
+  // Codex tile — rotates one synthesis line at a time behind the gold sweep.
+  let codexCycleTimer: number | undefined;
 
-  function initializeMindTile() {
-    clearInterval(mindCycleTimer);
-    const tile = document.getElementById('mind-tile');
+  function initializeCodexTile() {
+    clearInterval(codexCycleTimer);
+    const tile = document.getElementById('codex-tile');
     if (!tile) return;
     const lines: string[] = JSON.parse((tile as HTMLElement).dataset.lines || '[]');
-    const lineEl = document.getElementById('mind-line');
+    const lineEl = document.getElementById('codex-line');
     if (!lineEl || lines.length < 2) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     let index = 0;
-    mindCycleTimer = window.setInterval(() => {
+    codexCycleTimer = window.setInterval(() => {
       index = (index + 1) % lines.length;
       tile.classList.add('is-cycling');
       window.setTimeout(() => { lineEl.textContent = lines[index]; }, 365);
@@ -2022,7 +2022,7 @@ const mindTile = await getMindTileData();
 
   // Run on initial page load
   initializeLatestTile();
-  initializeMindTile();
+  initializeCodexTile();
   initializeNovelRain();
   initializeTilt();
   initializeMailTile();
@@ -2032,7 +2032,7 @@ const mindTile = await getMindTileData();
   // Run after each view transition navigation
   document.addEventListener('astro:page-load', () => {
     initializeLatestTile();
-    initializeMindTile();
+    initializeCodexTile();
     initializeNovelRain();
     initializeTilt();
     initializeMailTile();
@@ -2044,6 +2044,6 @@ const mindTile = await getMindTileData();
   document.addEventListener('astro:before-preparation', () => {
     stopLivePolling();
     clearInterval(latestCycleTimer);
-    clearInterval(mindCycleTimer);
+    clearInterval(codexCycleTimer);
   });
 </script>

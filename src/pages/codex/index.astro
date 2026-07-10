@@ -1,15 +1,15 @@
 ---
 import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
 import ListItem from '../../components/ListItem.astro';
-import { getMindPageData } from '../../utils/mindContent';
+import { getCodexPageData } from '../../utils/codexContent';
 
-const { concepts, looseThreads } = await getMindPageData();
+const { concepts, looseThreads } = await getCodexPageData();
 ---
 
 <SplitViewLayout
-  title="Mind"
+  title="Codex"
   description="A condensed encyclopedia of the thinking behind this site."
-  section="mind"
+  section="codex"
   kicker="second brain"
   ogImage="/social-default.svg"
 >
@@ -17,7 +17,7 @@ const { concepts, looseThreads } = await getMindPageData();
     {concepts.length > 0 ? (
       concepts.map((concept) => (
         <ListItem
-          href={`/mind/${concept.slug}`}
+          href={`/codex/${concept.slug}`}
           slug={concept.slug}
           title={concept.name}
           subtitle={concept.synthesis ? concept.synthesis.split(/(?<=[.!?])\s/)[0].slice(0, 90) : undefined}
@@ -26,12 +26,12 @@ const { concepts, looseThreads } = await getMindPageData();
         />
       ))
     ) : (
-      <p class="empty-state">the mind is unformed — run <code>npm run mind</code></p>
+      <p class="empty-state">the codex is unwritten — run <code>npm run codex</code></p>
     )}
     {looseThreads.length > 0 && (
       <div class="loose-threads">
         <span class="loose-threads__label">loose threads ({looseThreads.length})</span>
-        <p class="loose-threads__hint">raw material awaiting condensation — run <code>npm run mind</code></p>
+        <p class="loose-threads__hint">raw material awaiting condensation — run <code>npm run codex</code></p>
         <ul class="loose-threads__list">
           {looseThreads.map((thread) => (
             <li><a href={thread.href}>{thread.title}</a></li>

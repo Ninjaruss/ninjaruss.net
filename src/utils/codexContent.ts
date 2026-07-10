@@ -3,26 +3,26 @@ import path from 'node:path';
 import { getCollection } from 'astro:content';
 import { stripMarkdown } from './content';
 import { buildNovelTree, type NovelFolder } from './novel';
-import { validateMindData, type MindData } from './mind/schema';
-import { resolveMind, type ResolvedEntry, type ResolvedMind } from './mind/resolve';
+import { validateCodexData, type CodexData } from './codex/schema';
+import { resolveCodex, type ResolvedEntry, type ResolvedCodex } from './codex/resolve';
 
-export type { ResolvedMind, ResolvedEntry };
+export type { ResolvedCodex, ResolvedEntry };
 
-const MIND_JSON = path.resolve('src/data/mind.json');
+const CODEX_JSON = path.resolve('src/data/codex.json');
 const NOVEL_DIR = path.resolve('src/content/novel');
 const NOVEL_FOLDER_SLUGS = ['themes', 'lore'];
 
-/** Read + validate the committed mind.json; missing/invalid → null (never fails the build). */
-function readMindData(): MindData | null {
+/** Read + validate the committed codex.json; missing/invalid → null (never fails the build). */
+function readCodexData(): CodexData | null {
   let raw: unknown;
   try {
-    raw = JSON.parse(fs.readFileSync(MIND_JSON, 'utf-8'));
+    raw = JSON.parse(fs.readFileSync(CODEX_JSON, 'utf-8'));
   } catch {
-    console.warn('[mind] src/data/mind.json missing or unreadable — /mind renders the empty state');
+    console.warn('[codex] src/data/codex.json missing or unreadable — /codex renders the empty state');
     return null;
   }
   // Structural check only at build time: pass the doc's own refs as the known
-  // set so stale entry refs surface as dropped-ref warnings in resolveMind,
+  // set so stale entry refs surface as dropped-ref warnings in resolveCodex,
   // not build failures.
   const concepts = (raw as { concepts?: unknown })?.concepts;
   const knownFromDoc = new Set<string>(
@@ -32,9 +32,9 @@ function readMindData(): MindData | null {
         )
       : []
   );
-  const structural = validateMindData(raw, knownFromDoc);
+  const structural = validateCodexData(raw, knownFromDoc);
   if (!structural.ok) {
-    console.warn(`[mind] mind.json failed validation — /mind renders the empty state:\n  ${structural.errors.join('\n  ')}`);
+    console.warn(`[codex] codex.json failed validation — /codex renders the empty state:\n  ${structural.errors.join('\n  ')}`);
     return null;
   }
   return structural.data!;
@@ -92,27 +92,27 @@ async function buildEntryMap(): Promise<Map<string, ResolvedEntry>> {
   return map;
 }
 
-let cached: ResolvedMind | null = null;
+let cached: ResolvedCodex | null = null;
 
-/** Full resolved mind for /mind pages and the homepage tile. Cached per build. */
-export async function getMindPageData(): Promise<ResolvedMind> {
+/** Full resolved codex for /codex pages and the homepage tile. Cached per build. */
+export async function getCodexPageData(): Promise<ResolvedCodex> {
   if (cached) return cached;
-  const resolved = resolveMind(readMindData(), await buildEntryMap());
+  const resolved = resolveCodex(readCodexData(), await buildEntryMap());
   for (const ref of resolved.droppedRefs) {
-    console.warn(`[mind] dropped stale entry ref "${ref}" (entry deleted or drafted)`);
+    console.warn(`[codex] dropped stale entry ref "${ref}" (entry deleted or drafted)`);
   }
   cached = resolved;
   return resolved;
 }
 
-export interface MindTileData {
+export interface CodexTileData {
   conceptCount: number;
   lines: string[];
 }
 
 /** Lightweight view for the homepage tile. */
-export async function getMindTileData(): Promise<MindTileData> {
-  const { concepts } = await getMindPageData();
+export async function getCodexTileData(): Promise<CodexTileData> {
+  const { concepts } = await getCodexPageData();
   const lines = concepts
     .filter(c => c.synthesis.trim().length > 0)
     .map(c => {

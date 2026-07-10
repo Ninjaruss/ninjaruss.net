@@ -1,11 +1,11 @@
 import type { CorpusEntry } from './corpus';
-import type { MindData } from './schema';
+import type { CodexData } from './schema';
 
 /**
  * Build the full prompt for the condensation pass. Used verbatim by both the
- * CLI mode (piped to `claude -p`) and manual mode (written to mind-prompt.txt).
+ * CLI mode (piped to `claude -p`) and manual mode (written to codex-prompt.txt).
  */
-export function buildMindPrompt(corpus: CorpusEntry[], existing: MindData | null): string {
+export function buildCodexPrompt(corpus: CorpusEntry[], existing: CodexData | null): string {
   const entryIds = corpus.map(e => e.id).join('\n');
 
   const stability = existing && existing.concepts.length > 0

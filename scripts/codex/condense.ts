@@ -1,12 +1,12 @@
 import { spawnSync } from 'node:child_process';
-import { gatherCorpus } from '../../src/utils/mind/corpus';
-import { buildMindPrompt } from '../../src/utils/mind/prompt';
-import { processModelResponse } from '../../src/utils/mind/pipeline';
-import { readExistingMind, writeMind, report, MIND_JSON } from './io';
+import { gatherCorpus } from '../../src/utils/codex/corpus';
+import { buildCodexPrompt } from '../../src/utils/codex/prompt';
+import { processModelResponse } from '../../src/utils/codex/pipeline';
+import { readExistingCodex, writeCodex, report, CODEX_JSON } from './io';
 
 const corpus = await gatherCorpus();
-const existing = readExistingMind();
-const prompt = buildMindPrompt(corpus, existing);
+const existing = readExistingCodex();
+const prompt = buildCodexPrompt(corpus, existing);
 
 console.log(`Condensing ${corpus.length} entries via the claude CLI...`);
 const proc = spawnSync('claude', ['-p'], {
@@ -24,7 +24,7 @@ if (proc.error || proc.status !== 0) {
   console.error('');
   console.error('  Make sure Claude Code is installed and authenticated (a paid');
   console.error('  subscription or ANTHROPIC_API_KEY). No Claude access? Use the');
-  console.error('  free manual mode instead: npm run mind:export');
+  console.error('  free manual mode instead: npm run codex:export');
   process.exit(1);
 }
 
@@ -33,10 +33,10 @@ const result = processModelResponse(proc.stdout, known, existing);
 report(result.warnings, result.errors);
 
 if (!result.data) {
-  console.error('\nThe model response failed validation; mind.json was NOT modified. Re-run to retry.');
+  console.error('\nThe model response failed validation; codex.json was NOT modified. Re-run to retry.');
   process.exit(1);
 }
 
-writeMind(result.data);
-console.log(`✓ Wrote ${MIND_JSON} (${result.data.concepts.length} concepts).`);
-console.log('  Review with `git diff src/data/mind.json`, then commit.');
+writeCodex(result.data);
+console.log(`✓ Wrote ${CODEX_JSON} (${result.data.concepts.length} concepts).`);
+console.log('  Review with `git diff src/data/codex.json`, then commit.');

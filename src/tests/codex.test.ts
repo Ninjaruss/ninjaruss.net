@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { validateMindData, type MindData } from '../utils/mind/schema';
-import { extractJsonBlock } from '../utils/mind/json';
+import { validateCodexData, type CodexData } from '../utils/codex/schema';
+import { extractJsonBlock } from '../utils/codex/json';
 
 const KNOWN = new Set(['notes/on-discipline', 'showcase/site', 'novel/themes/rain']);
 
-function goodData(): MindData {
+function goodData(): CodexData {
   return {
     generatedAt: '2026-07-09T00:00:00.000Z',
     concepts: [
@@ -26,16 +26,16 @@ function goodData(): MindData {
   };
 }
 
-describe('validateMindData', () => {
+describe('validateCodexData', () => {
   it('accepts a valid document', () => {
-    const result = validateMindData(goodData(), KNOWN);
+    const result = validateCodexData(goodData(), KNOWN);
     expect(result.ok).toBe(true);
     expect(result.errors).toEqual([]);
     expect(result.data?.concepts).toHaveLength(2);
   });
 
   it('rejects structurally invalid input', () => {
-    const result = validateMindData({ concepts: 'nope' }, KNOWN);
+    const result = validateCodexData({ concepts: 'nope' }, KNOWN);
     expect(result.ok).toBe(false);
     expect(result.errors.length).toBeGreaterThan(0);
   });
@@ -43,7 +43,7 @@ describe('validateMindData', () => {
   it('rejects malformed concept slugs', () => {
     const data = goodData();
     data.concepts[0].slug = 'Not A Slug!';
-    const result = validateMindData(data, KNOWN);
+    const result = validateCodexData(data, KNOWN);
     expect(result.ok).toBe(false);
     expect(result.errors.join(' ')).toContain('Not A Slug!');
   });
@@ -51,7 +51,7 @@ describe('validateMindData', () => {
   it('rejects duplicate concept slugs', () => {
     const data = goodData();
     data.concepts[1].slug = 'discipline';
-    const result = validateMindData(data, KNOWN);
+    const result = validateCodexData(data, KNOWN);
     expect(result.ok).toBe(false);
     expect(result.errors.join(' ')).toContain('duplicate');
   });
@@ -59,7 +59,7 @@ describe('validateMindData', () => {
   it('rejects entry refs that do not exist', () => {
     const data = goodData();
     data.concepts[0].entries.push('notes/hallucinated');
-    const result = validateMindData(data, KNOWN);
+    const result = validateCodexData(data, KNOWN);
     expect(result.ok).toBe(false);
     expect(result.errors.join(' ')).toContain('notes/hallucinated');
   });
@@ -67,7 +67,7 @@ describe('validateMindData', () => {
   it('rejects related refs pointing at unknown concepts', () => {
     const data = goodData();
     data.concepts[0].related = ['ghost-concept'];
-    const result = validateMindData(data, KNOWN);
+    const result = validateCodexData(data, KNOWN);
     expect(result.ok).toBe(false);
     expect(result.errors.join(' ')).toContain('ghost-concept');
   });
@@ -76,7 +76,7 @@ describe('validateMindData', () => {
     const data = goodData();
     data.concepts[1].entries = ['novel/themes/rain'];
     const known = new Set([...KNOWN, 'notes/unassigned-one']);
-    const result = validateMindData(data, known);
+    const result = validateCodexData(data, known);
     expect(result.ok).toBe(true);
     expect(result.warnings.join(' ')).toContain('notes/unassigned-one');
     expect(result.warnings.join(' ')).toContain('concept count');
@@ -85,7 +85,7 @@ describe('validateMindData', () => {
   it('rejects a concept with zero entries', () => {
     const data = goodData();
     data.concepts[1].entries = [];
-    const result = validateMindData(data, KNOWN);
+    const result = validateCodexData(data, KNOWN);
     expect(result.ok).toBe(false);
     expect(result.errors.join(' ')).toContain('no entries');
   });
@@ -119,10 +119,10 @@ describe('extractJsonBlock', () => {
   });
 });
 
-import { stabilizeSlugs } from '../utils/mind/stabilize';
-import type { MindConcept } from '../utils/mind/schema';
+import { stabilizeSlugs } from '../utils/codex/stabilize';
+import type { CodexConcept } from '../utils/codex/schema';
 
-function concept(slug: string, name: string, related: string[] = []): MindConcept {
+function concept(slug: string, name: string, related: string[] = []): CodexConcept {
   return { slug, name, synthesis: '', entries: ['notes/x'], related };
 }
 
@@ -163,7 +163,7 @@ describe('stabilizeSlugs', () => {
   });
 });
 
-import { resolveMind, type ResolvedEntry } from '../utils/mind/resolve';
+import { resolveCodex, type ResolvedEntry } from '../utils/codex/resolve';
 
 function entry(id: string, publishedAt: string | null, title = id): ResolvedEntry {
   const collection = id.split('/')[0];
@@ -174,8 +174,8 @@ function entryMap(...entries: ResolvedEntry[]): Map<string, ResolvedEntry> {
   return new Map(entries.map(e => [e.id, e]));
 }
 
-describe('resolveMind', () => {
-  const mind = {
+describe('resolveCodex', () => {
+  const codex = {
     generatedAt: '2026-07-01T00:00:00.000Z',
     concepts: [
       {
@@ -191,14 +191,14 @@ describe('resolveMind', () => {
 
   it('resolves entries, drops dead refs, and reports them', () => {
     const map = entryMap(entry('notes/a', '2026-06-01'), entry('notes/b', '2026-06-15'));
-    const result = resolveMind(mind, map);
+    const result = resolveCodex(codex, map);
     expect(result.concepts[0].entries.map(e => e.id)).toEqual(['notes/b', 'notes/a']);
     expect(result.droppedRefs).toEqual(['notes/deleted']);
   });
 
   it('resolves related concepts to {slug, name} pairs', () => {
     const map = entryMap(entry('notes/a', '2026-06-01'), entry('notes/b', '2026-06-15'));
-    const result = resolveMind(mind, map);
+    const result = resolveCodex(codex, map);
     expect(result.concepts[0].related).toEqual([{ slug: 'rain', name: 'Rain' }]);
   });
 
@@ -210,19 +210,19 @@ describe('resolveMind', () => {
       entry('notes/old-unfiled', '2026-01-01'),
       entry('novel/themes/undated', null)
     );
-    const result = resolveMind(mind, map);
+    const result = resolveCodex(codex, map);
     expect(result.looseThreads.map(e => e.id)).toEqual(['notes/new-thought']);
   });
 
-  it('null mind data yields empty concepts and no loose threads', () => {
-    const result = resolveMind(null, entryMap(entry('notes/a', '2026-06-01')));
+  it('null codex data yields empty concepts and no loose threads', () => {
+    const result = resolveCodex(null, entryMap(entry('notes/a', '2026-06-01')));
     expect(result.concepts).toEqual([]);
     expect(result.looseThreads).toEqual([]);
     expect(result.generatedAt).toBeNull();
   });
 });
 
-import { gatherCorpus } from '../utils/mind/corpus';
+import { gatherCorpus } from '../utils/codex/corpus';
 
 describe('gatherCorpus', () => {
   it('gathers entries from all five sources with well-formed ids', async () => {
@@ -247,16 +247,16 @@ describe('gatherCorpus', () => {
   });
 });
 
-import { buildMindPrompt } from '../utils/mind/prompt';
-import { processModelResponse } from '../utils/mind/pipeline';
+import { buildCodexPrompt } from '../utils/codex/prompt';
+import { processModelResponse } from '../utils/codex/pipeline';
 
-describe('buildMindPrompt', () => {
+describe('buildCodexPrompt', () => {
   const corpus = [
     { id: 'notes/a', title: 'On A', tags: ['life'], publishedAt: '2026-06-01T00:00:00.000Z', text: 'body of a' },
   ];
 
   it('includes instructions, the output schema, and every corpus entry', () => {
-    const prompt = buildMindPrompt(corpus, null);
+    const prompt = buildCodexPrompt(corpus, null);
     expect(prompt).toContain('6');
     expect(prompt).toContain('12');
     expect(prompt).toContain('second person');
@@ -270,7 +270,7 @@ describe('buildMindPrompt', () => {
       generatedAt: '2026-07-01T00:00:00.000Z',
       concepts: [{ slug: 'identity', name: 'Identity', synthesis: '', entries: ['notes/a'], related: [] }],
     };
-    const prompt = buildMindPrompt(corpus, existing);
+    const prompt = buildCodexPrompt(corpus, existing);
     expect(prompt).toContain('identity');
     expect(prompt).toContain('existing concept');
   });

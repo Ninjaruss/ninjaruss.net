@@ -1,4 +1,4 @@
-import type { MindConcept } from './schema';
+import type { CodexConcept } from './schema';
 
 /**
  * Keep concept URLs stable across AI runs: if a new concept has the same name
@@ -7,9 +7,9 @@ import type { MindConcept } from './schema';
  * rename when it would collide with a slug already used in the new set.
  */
 export function stabilizeSlugs(
-  oldConcepts: MindConcept[],
-  newConcepts: MindConcept[]
-): MindConcept[] {
+  oldConcepts: CodexConcept[],
+  newConcepts: CodexConcept[]
+): CodexConcept[] {
   const oldByName = new Map(oldConcepts.map(c => [c.name.toLowerCase(), c.slug]));
   const result = newConcepts.map(c => ({ ...c, related: [...c.related] }));
   const taken = new Set(result.map(c => c.slug));

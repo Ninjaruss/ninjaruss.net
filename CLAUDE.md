@@ -14,9 +14,9 @@ npm run build     # Build static site to ./dist/
 npm run preview   # Preview production build locally
 npm run test      # Run vitest unit tests
 npm run astro     # Direct Astro CLI access
-npm run mind         # AI-condense site content into src/data/mind.json (claude CLI)
-npm run mind:export  # manual mode: write mind-prompt.txt for any chatbot
-npm run mind:import  # manual mode: validate mind-response.json → mind.json
+npm run codex         # AI-condense site content into src/data/codex.json (claude CLI)
+npm run codex:export  # manual mode: write codex-prompt.txt for any chatbot
+npm run codex:import  # manual mode: validate codex-response.json → codex.json
 ```
 
 ## Architecture
@@ -78,7 +78,7 @@ Collection-specific extensions:
 
 ### Structural
 - `BentoGrid.astro` / `BentoTile.astro` — Homepage grid system with visual hierarchy
-- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Journal/Novel/Shelf/Stream/Now/Mind with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /stream. (No longer the centered floating Home pill.)
+- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Journal/Novel/Shelf/Stream/Now/Codex with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /stream. (No longer the centered floating Home pill.)
 
 ### Bento Tile Hierarchy
 The homepage uses a visual hierarchy pattern:
@@ -100,7 +100,7 @@ Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--sp
 - Row 1: Title (4×1) + YouTube (1×1) + Now (1×1)
 - Rows 2-3: Journal (4×2, core) + Novel (1×2, rain gauge) + Stream (1×2)
 - Rows 4-5: Shelf/Media Log (2×2, core) + Latest (2×2) + MAL (1×1, row 4) + Spotify (1×1, row 4) + Email (2×1, row 5)
-- Row 6: Mind (2×1, cycling synthesis line)
+- Row 6: Codex (2×1, cycling synthesis line)
 
 Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title-tile { grid-column: span 4 }`), not a span class.
 
@@ -225,22 +225,22 @@ The `/novel` route serves a standalone in-progress novel with its own UI, separa
 - **Testing**: `src/tests/novel.test.ts` covers `slugify`, `parseMetaData`, `buildNovelTree`, `countWords`, and `computeNovelStats` via vitest.
 - **Adding content**: Drop `.md` files into the appropriate `src/content/novel/` subfolder. Scrivener MetaData.txt sidecars are auto-read if present; other `.txt` files are silently skipped.
 
-## Mind System (/mind second brain)
+## Codex System (/codex second brain)
 
-`/mind` is an AI-condensed encyclopedia of the site's content. `src/data/mind.json`
+`/codex` is an AI-condensed encyclopedia of the site's content. `src/data/codex.json`
 (committed, reviewed via git diff before commit) holds the interpretation: 6-12
 concepts, each with a second-person synthesis and entry refs like `notes/<slug>` /
 `novel/themes/<slug>`. The build resolves all facts (titles, dates, excerpts, links)
-live from collections + the novel tree (`src/utils/mindContent.ts` → pure logic in
-`src/utils/mind/`), so a stale mind.json can never show wrong facts — staleness only
-means new entries sit in the "loose threads" tray on /mind (accumulation framing;
+live from collections + the novel tree (`src/utils/codexContent.ts` → pure logic in
+`src/utils/codex/`), so a stale codex.json can never show wrong facts — staleness only
+means new entries sit in the "loose threads" tray on /codex (accumulation framing;
 never shows time-since-last-run — same no-shame invariant as the novel rain gauge).
-Missing/invalid mind.json → the build still succeeds and /mind renders an empty state.
-Concepts whose synthesis is empty render sources-only. Pages: /mind (SplitViewLayout,
-kicker "second brain") + /mind/[slug]. NavPill has a Mind item (7 items). Homepage
-has a 2×1 Mind tile cycling synthesis first-sentences with the latest-sweep pattern.
-Scripts live in scripts/mind/ (tsx); manual mode scratch files mind-prompt.txt /
-mind-response.json are gitignored. Tests: src/tests/mind.test.ts (pure modules only).
+Missing/invalid codex.json → the build still succeeds and /codex renders an empty state.
+Concepts whose synthesis is empty render sources-only. Pages: /codex (SplitViewLayout,
+kicker "second brain") + /codex/[slug]. NavPill has a Codex item (7 items). Homepage
+has a 2×1 Codex tile cycling synthesis first-sentences with the latest-sweep pattern.
+Scripts live in scripts/codex/ (tsx); manual mode scratch files codex-prompt.txt /
+codex-response.json are gitignored. Tests: src/tests/codex.test.ts (pure modules only).
 
 ## Utility Modules
 
@@ -252,7 +252,7 @@ mind-response.json are gitignored. Tests: src/tests/mind.test.ts (pure modules o
 | `src/utils/journalMerge.ts` | pure merge/sort logic (no astro imports) | Unit-testable core of journal.ts (vitest can't resolve `astro:content`) |
 | `src/utils/dates.ts` | `formatDate()`, `shouldShowUpdatedDate()` | Date formatting and update-date display logic |
 | `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `countWords()`, `computeNovelStats()` | Scrivener-backed novel content loader + rain-gauge stats |
-| `src/utils/mindContent.ts` + `src/utils/mind/` | `getMindPageData()`, `getMindTileData()`; pure modules: schema, json, stabilize, resolve, corpus, prompt, pipeline | /mind data layer — see Mind System section |
+| `src/utils/codexContent.ts` + `src/utils/codex/` | `getCodexPageData()`, `getCodexTileData()`; pure modules: schema, json, stabilize, resolve, corpus, prompt, pipeline | /codex data layer — see Codex System section |
 | `src/utils/splitView/` | (10 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
 
 The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `eventBindings`, `filterEngine`, `filterUI`, `idleManager`, `mediaHandlers`, `proseImageTilt`, `types`, `urlState`.
@@ -277,7 +277,7 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 
 6. **Latest Tile**: Homepage 2×2 tile with "X days ago" indicator and excerpt; cycles client-side through the latest 2 notes and latest 1 showcase (interleaved note/showcase/note, 7s interval; each swap is a P4G gold sweep — a skewed gold panel (`.latest-tile__sweep`) sweeps across via the `latest-sweep` keyframes on `#latest-tile.is-cycling`, matching the journal-entry hover, with the entry swapped behind it mid-sweep; cycling skipped under `prefers-reduced-motion`). The emblem sits on a deeper-black angled field (`.latest-tile__emblem-wrap`, `clip-path` + negative-margin bleed) traced by a gold hairline (`::before`, skewX(-4deg) measured against the clip edge); ≤768px the field flattens to the tile's bottom edge and the hairline hides.
 
-6b. **NavPill**: 7 items — Home / Journal / Novel / Shelf / Stream / Now / Mind — rendered on every non-home page including `/stream` (whose sidebar "Ninjaruss" logo badge was removed). `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array.
+6b. **NavPill**: 7 items — Home / Journal / Novel / Shelf / Stream / Now / Codex — rendered on every non-home page including `/stream` (whose sidebar "Ninjaruss" logo badge was removed). `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array.
 
 7. **Shelf Page Grid**: `/shelf` is a full emblem card grid grouped by content type (not SplitViewLayout), with a sticky jump bar for section navigation. `isFavorite: true` entries get a gold star badge and gold title on their card (no separate favorites filter exists anymore). Quick-view panel opens on card click without navigating away, pushing `/shelf/[slug]` into history. Cards that are neither a favorite nor have written content dim with `.shelf-card--dim` (`filter: opacity(0.52)`, not `opacity` — see Code Style Notes).
 

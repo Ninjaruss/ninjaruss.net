@@ -29,6 +29,6 @@ pnpm-debug.log*
 .vercel
 .env*
 
-# /mind manual-mode scratch files (workflow artifacts, never content)
-mind-prompt.txt
-mind-response.json
+# /codex manual-mode scratch files (workflow artifacts, never content)
+codex-prompt.txt
+codex-response.json

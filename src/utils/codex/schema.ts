@@ -1,6 +1,6 @@
 import { z } from 'astro/zod';
 
-export interface MindConcept {
+export interface CodexConcept {
   slug: string;
   name: string;
   synthesis: string;
@@ -8,16 +8,16 @@ export interface MindConcept {
   related: string[];
 }
 
-export interface MindData {
+export interface CodexData {
   generatedAt: string;
-  concepts: MindConcept[];
+  concepts: CodexConcept[];
 }
 
 export interface ValidationResult {
   ok: boolean;
   errors: string[];
   warnings: string[];
-  data?: MindData;
+  data?: CodexData;
 }
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -30,21 +30,21 @@ const conceptSchema = z.object({
   related: z.array(z.string()).default([]),
 });
 
-const mindSchema = z.object({
+const codexSchema = z.object({
   generatedAt: z.string(),
   concepts: z.array(conceptSchema),
 });
 
 /**
- * Validate a candidate mind.json document.
+ * Validate a candidate codex.json document.
  * Errors block writing the file; warnings are printed but non-blocking.
  * `knownEntryIds` is the set of entry refs that exist in the content right now.
  */
-export function validateMindData(raw: unknown, knownEntryIds: Set<string>): ValidationResult {
+export function validateCodexData(raw: unknown, knownEntryIds: Set<string>): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
 
-  const parsed = mindSchema.safeParse(raw);
+  const parsed = codexSchema.safeParse(raw);
   if (!parsed.success) {
     return {
       ok: false,
@@ -52,7 +52,7 @@ export function validateMindData(raw: unknown, knownEntryIds: Set<string>): Vali
       warnings,
     };
   }
-  const data = parsed.data as MindData;
+  const data = parsed.data as CodexData;
 
   const slugs = new Set<string>();
   for (const concept of data.concepts) {

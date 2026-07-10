@@ -1,4 +1,4 @@
-import type { MindData } from './schema';
+import type { CodexData } from './schema';
 
 export interface ResolvedEntry {
   id: string;
@@ -17,7 +17,7 @@ export interface ResolvedConcept {
   related: { slug: string; name: string }[];
 }
 
-export interface ResolvedMind {
+export interface ResolvedCodex {
   generatedAt: string | null;
   concepts: ResolvedConcept[];
   droppedRefs: string[];
@@ -25,23 +25,23 @@ export interface ResolvedMind {
 }
 
 /**
- * Pure structural layer: marries the committed interpretation (mind.json)
+ * Pure structural layer: marries the committed interpretation (codex.json)
  * with the live content (entryMap built at build time). Facts always come
- * from entryMap, so a stale mind.json can never show a wrong date/excerpt.
+ * from entryMap, so a stale codex.json can never show a wrong date/excerpt.
  */
-export function resolveMind(
-  mind: MindData | null,
+export function resolveCodex(
+  codex: CodexData | null,
   entryMap: Map<string, ResolvedEntry>
-): ResolvedMind {
-  if (!mind) {
+): ResolvedCodex {
+  if (!codex) {
     return { generatedAt: null, concepts: [], droppedRefs: [], looseThreads: [] };
   }
 
-  const nameBySlug = new Map(mind.concepts.map(c => [c.slug, c.name]));
+  const nameBySlug = new Map(codex.concepts.map(c => [c.slug, c.name]));
   const droppedRefs: string[] = [];
   const assigned = new Set<string>();
 
-  const concepts: ResolvedConcept[] = mind.concepts.map(concept => {
+  const concepts: ResolvedConcept[] = codex.concepts.map(concept => {
     const entries: ResolvedEntry[] = [];
     for (const ref of concept.entries) {
       const resolved = entryMap.get(ref);
@@ -65,8 +65,8 @@ export function resolveMind(
   });
 
   const looseThreads = [...entryMap.values()]
-    .filter(e => !assigned.has(e.id) && e.publishedAt !== null && e.publishedAt > mind.generatedAt)
+    .filter(e => !assigned.has(e.id) && e.publishedAt !== null && e.publishedAt > codex.generatedAt)
     .sort((a, b) => (b.publishedAt ?? '').localeCompare(a.publishedAt ?? ''));
 
-  return { generatedAt: mind.generatedAt, concepts, droppedRefs, looseThreads };
+  return { generatedAt: codex.generatedAt, concepts, droppedRefs, looseThreads };
 }

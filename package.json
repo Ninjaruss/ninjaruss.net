@@ -9,9 +9,9 @@
     "astro": "astro",
     "test": "vitest run",
     "add-image": "node scripts/add-image.js",
-    "mind": "tsx scripts/mind/condense.ts",
-    "mind:export": "tsx scripts/mind/export.ts",
-    "mind:import": "tsx scripts/mind/import.ts"
+    "codex": "tsx scripts/codex/condense.ts",
+    "codex:export": "tsx scripts/codex/export.ts",
+    "codex:import": "tsx scripts/codex/import.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
