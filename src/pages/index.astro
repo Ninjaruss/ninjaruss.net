@@ -444,6 +444,7 @@ const latestEntries = latestPool.map(entry => ({
               />
             </div>
           </div>
+          <span class="latest-tile__sweep" aria-hidden="true"></span>
           <span class="bento-tile__corner" aria-hidden="true"></span>
         </a>
       )}
@@ -1421,28 +1422,36 @@ const latestEntries = latestPool.map(entry => ({
     justify-content: space-between;
     flex: 1;
     gap: var(--space-sm);
-    transition:
-      opacity 260ms var(--animation-easing),
-      transform 260ms var(--animation-easing),
-      clip-path 260ms var(--animation-easing);
   }
 
-  /* Diagonal wipe while the cycle script swaps in the next entry — the content
-     slides up the seam's diagonal and skews off, echoing the tile language.
-     The clip-path shaves the trailing corner along the same angle. */
-  .latest-tile__inner.is-cycling {
+  /* Cycle transition: a skewed gold panel sweeps across the tile — the same
+     P4G move as the journal-entry hover (`.list-item::before`). It sweeps in to
+     cover the tile, the script swaps the entry behind it, then it sweeps out to
+     reveal the new one. */
+  .latest-tile__sweep {
+    position: absolute;
+    inset: -2px;
+    background: var(--color-gold);
+    transform: translateX(-110%) skewX(var(--skew-accent));
+    z-index: 4;
+    pointer-events: none;
     opacity: 0;
-    transform: translate(18px, -14px) skewX(-8deg);
-    clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  #latest-tile.is-cycling .latest-tile__sweep {
+    animation: latest-sweep 520ms var(--animation-easing);
+  }
+
+  @keyframes latest-sweep {
+    0%   { transform: translateX(-110%) skewX(var(--skew-accent)); opacity: 1; }
+    48%  { transform: translateX(0)     skewX(var(--skew-accent)); opacity: 1; }
+    52%  { transform: translateX(0)     skewX(var(--skew-accent)); opacity: 1; }
+    100% { transform: translateX(110%)  skewX(var(--skew-accent)); opacity: 1; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .latest-tile__inner {
-      transition: opacity 200ms var(--animation-easing);
-    }
-    .latest-tile__inner.is-cycling {
-      transform: none;
-      clip-path: none;
+    #latest-tile.is-cycling .latest-tile__sweep {
+      animation: none;
     }
   }
 
@@ -1800,15 +1809,14 @@ const latestEntries = latestPool.map(entry => ({
     render(entries[0]);
 
     if (entries.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const inner = latestTile.querySelector('.latest-tile__inner');
       let index = 0;
       latestCycleTimer = window.setInterval(() => {
         index = (index + 1) % entries.length;
-        inner?.classList.add('is-cycling');
-        window.setTimeout(() => {
-          render(entries[index]);
-          inner?.classList.remove('is-cycling');
-        }, 250);
+        // Gold panel sweeps across; swap the entry at the midpoint while the
+        // panel covers the tile, then let it sweep out to reveal the new one.
+        latestTile.classList.add('is-cycling');
+        window.setTimeout(() => render(entries[index]), 250);
+        window.setTimeout(() => latestTile.classList.remove('is-cycling'), 560);
       }, 7000);
     }
   }
