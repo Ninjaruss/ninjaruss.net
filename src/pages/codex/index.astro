@@ -27,12 +27,12 @@ const { concepts, looseThreads } = await getCodexPageData();
         />
       ))
     ) : (
-      <p class="empty-state">the codex is unwritten — run <code>npm run codex</code></p>
+      <p class="empty-state">no codex yet — run <code>npm run codex</code></p>
     )}
     {looseThreads.length > 0 && (
       <div class="loose-threads">
         <span class="loose-threads__label">loose threads ({looseThreads.length})</span>
-        <p class="loose-threads__hint">raw material awaiting condensation — run <code>npm run codex</code></p>
+        <p class="loose-threads__hint">entries not yet condensed — run <code>npm run codex</code></p>
         <ul class="loose-threads__list">
           {looseThreads.map((thread) => (
             <li><a href={thread.href}>{thread.title}</a></li>

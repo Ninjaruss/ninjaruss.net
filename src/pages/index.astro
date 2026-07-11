@@ -465,7 +465,7 @@ const codexTile = await getCodexTileData();
           class="logo-tile__img"
         />
         <span class="logo-tile__label">MyAnimeList</span>
-        <p class="logo-tile__description">Anime I've watched and rated based on personal enjoyment.</p>
+        <p class="logo-tile__description">Anime ratings and watch history.</p>
       </a>
 
       <a
@@ -481,7 +481,7 @@ const codexTile = await getCodexTileData();
           class="logo-tile__img"
         />
         <span class="logo-tile__label">Spotify</span>
-        <p class="logo-tile__description">The bangers I listen to every day.</p>
+        <p class="logo-tile__description">A running playlist.</p>
       </a>
 
       <!-- Row 5 — email (2×1) fills the cols under MAL/Spotify (quote tile removed).
@@ -493,7 +493,7 @@ const codexTile = await getCodexTileData();
           <path d="M3 6.5l9 6.5 9-6.5"/>
         </svg>
         <span class="logo-tile__label">Email</span>
-        <p class="logo-tile__description">Connect with me directly.</p>
+        <p class="logo-tile__description">Opens your mail client.</p>
       </a>
 
       <!-- Row 6: Codex (2×1) -->
@@ -515,7 +515,7 @@ const codexTile = await getCodexTileData();
             </span>
           </div>
           <p class="codex-tile__line" id="codex-line">
-            {codexTile.lines[0] ?? 'a second brain, waiting to form.'}
+            {codexTile.lines[0] ?? 'no codex generated yet'}
           </p>
         </div>
         <span class="codex-tile__sweep" aria-hidden="true"></span>
