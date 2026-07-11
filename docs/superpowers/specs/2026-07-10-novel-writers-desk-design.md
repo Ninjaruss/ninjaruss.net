@@ -61,32 +61,31 @@ folder → folder page; deeper → reading page.
   `computeNovelStats()` — no decorative subline. The old reflected-title/waterline
   motif is retired.
 
-  **Copy restraint:** flavor text is kept to a minimum across all views. The only
-  framing label is the "where the pen left off" kicker on the open sheet; everything
-  else is functional (titles, counts, dates).
-- **The open sheet (left, ~60%):** the most recently modified file in `Scenes/`
+  **Copy restraint:** no flavor text anywhere. All labels are functional (titles,
+  counts, dates); the sheet kicker is the plain "latest scene".
+- **The open sheet (left, ~40%):** the most recently modified file in `Scenes/`
   rendered as a cream paper panel — corner-cut top-right, hard brown drop shadow
   (via `filter: drop-shadow` wrapper, since clip-path clips box-shadow). Contains:
-  "WHERE THE PEN LEFT OFF" kicker, scene metadata (word count), scene title, a
-  ~300-character plain-text excerpt (via `stripMarkdown()` on the raw body), and a
-  "keep reading" link (dark skewed chip) to the scene's reading page.
-- **Also on the desk:** below the sheet, up to 2 most recently modified non-scene
-  files as small ink rows (title + edited date), linking to their reading pages.
-- **The archive (right, ~40%):** five folder cards ("ARCHIVE" kicker above),
-  each a corner-cut panel with folder title and file count only — no flavor
-  descriptions. The Scenes card is gold-marked (gold title + strong border).
-  Cards link to folder pages.
-- **Mobile (≤768px):** stacks vertically — sheet, recent strip, archive cards.
+  "LATEST SCENE" kicker, word count, scene title, a ~300-character plain-text
+  excerpt (via `stripMarkdown()`), and a "keep reading" link (dark skewed chip)
+  to the scene's reading page.
+- **The index (right, ~60%):** the ENTIRE archive as compact grouped text links —
+  a 2-column `.desk-index` with one group per top-level folder (mono uppercase
+  header + count + hairline; Scenes header gold), subfolder names as small inline
+  sublabels (Rain, Claire, Magic System, …), and every file a direct link to its
+  reading page. Each group carries `id={folder.slug}` so `/novel#characters`
+  anchors work. Flat hierarchy invariant: **two layers only** — desk → reading
+  page. No folder pages, no card stacks, no recent-files strip (recency lives in
+  the sheet).
+- **Mobile (≤768px):** stacks vertically — sheet, then single-column index with
+  44px touch targets.
 
-### 2. `/novel/[folder]` — folder page
+### 2. `/novel/[folder]` — redirect
 
-- Breadcrumb link back to the desk, folder title in the P4G header pattern,
-  file count.
-- Files listed as ink rows (title + edited date), grouped under subfolder headers
-  where subfolders exist (Characters → Rain, Claire, Shiori, …). Flat folders
-  (Themes, Scenes, Locations) render one list.
-- Rows link to reading pages. Hover/focus: gold left edge + text lift, with
-  `:focus-visible` parity.
+Folder and intermediate subfolder URLs (e.g. `/novel/characters`,
+`/novel/characters/rain`) 301-redirect via `Astro.redirect` to the matching desk
+anchor (`/novel#characters`) — build-stable legacy URLs without a third layer.
+Reading-page breadcrumbs and the NavPill back link also point at desk anchors.
 
 ### 3. `/novel/[folder]/[...file]` — reading page
 
