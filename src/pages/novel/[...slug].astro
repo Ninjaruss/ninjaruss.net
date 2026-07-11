@@ -50,6 +50,12 @@ export async function getStaticPaths() {
 
 const { view, tree, topSlug, filePath } = Astro.props;
 
+// Folder URLs stay build-stable but the desk is the only index now —
+// send them to the matching desk anchor.
+if (view === 'folder' && topSlug) {
+  return Astro.redirect(`/novel#${topSlug}`, 301);
+}
+
 // ── Shared helpers ─────────────────────────────────────────────────────
 function editedLabel(f: NovelFile): string {
   if (f.modified) return f.modified;
@@ -75,26 +81,27 @@ function folderHasContent(f: NovelFolder): boolean {
 // ── Desk data ──────────────────────────────────────────────────────────
 const stats = view === 'desk' ? computeNovelStats(tree) : null;
 const latestScene = view === 'desk' ? (findRecentFiles(tree, { scenes: true, limit: 1 })[0] ?? null) : null;
-const recentNotes = view === 'desk' ? findRecentFiles(tree, { scenes: false, limit: 2 }) : [];
 const sceneExcerpt = latestScene ? excerptOf(latestScene.body) : '';
-const archiveCards = view === 'desk'
+
+// Full file index for the desk — every file one click from landing
+interface IndexSub { title: string; files: NovelFile[]; }
+interface IndexGroup { slug: string; title: string; count: number; rootFiles: NovelFile[]; subs: IndexSub[]; }
+const indexGroups: IndexGroup[] = view === 'desk'
   ? Object.values(tree)
       .filter(folderHasContent)
-      .map((f) => ({ slug: f.slug, title: f.title, count: flattenFolderFiles(f).length }))
+      .map((f) => ({
+        slug: f.slug,
+        title: f.title,
+        count: flattenFolderFiles(f).length,
+        rootFiles: f.files,
+        subs: Object.values(f.subfolders)
+          .filter(folderHasContent)
+          .map((sub) => ({ title: sub.title, files: flattenFolderFiles(sub) })),
+      }))
   : [];
 
-// ── Folder / file data ─────────────────────────────────────────────────
+// ── File data ──────────────────────────────────────────────────────────
 const topFolder: NovelFolder | null = topSlug ? (tree[topSlug] ?? null) : null;
-
-interface FolderGroup { title: string | null; files: NovelFile[]; }
-const folderGroups: FolderGroup[] = view === 'folder' && topFolder
-  ? [
-      ...(topFolder.files.length > 0 ? [{ title: null, files: topFolder.files }] : []),
-      ...Object.values(topFolder.subfolders)
-        .filter(folderHasContent)
-        .map((sub) => ({ title: sub.title, files: flattenFolderFiles(sub) })),
-    ]
-  : [];
 
 let file: NovelFile | null = null;
 let prevFile: NovelFile | null = null;
@@ -119,17 +126,15 @@ if (view === 'file' && topFolder && filePath) {
 const isScene = topSlug === 'scenes';
 
 const pageTitle =
-  view === 'file' && file ? `${file.title} — Remember Rain`
-  : view === 'folder' && topFolder ? `${topFolder.title} — Remember Rain`
-  : 'Remember Rain';
+  view === 'file' && file ? `${file.title} — Remember Rain` : 'Remember Rain';
 ---
 
 <BaseLayout
   title={pageTitle}
   description="A novel in progress — a writer's desk of scenes, characters, lore, and themes."
 >
-  <NavPill backLink={view === 'file' && topFolder ? `/novel/${topFolder.slug}` : view === 'folder' ? '/novel' : undefined}
-           backLabel={view === 'file' && topFolder ? topFolder.title : view === 'folder' ? 'Desk' : undefined} />
+  <NavPill backLink={view === 'file' && topFolder ? `/novel#${topFolder.slug}` : undefined}
+           backLabel={view === 'file' && topFolder ? topFolder.title : undefined} />
 
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
@@ -152,8 +157,8 @@ const pageTitle =
             <a class="desk-sheet-wrap" href={fileUrl(latestScene)}>
               <article class="desk-sheet">
                 <div class="desk-sheet__meta">
-                  <span class="desk-sheet__kicker">where the pen left off</span>
-                  <span class="desk-sheet__count">scene · {countWords(latestScene.body).toLocaleString('en-US')} words</span>
+                  <span class="desk-sheet__kicker">latest scene</span>
+                  <span class="desk-sheet__count">{countWords(latestScene.body).toLocaleString('en-US')} words</span>
                 </div>
                 <h2 class="desk-sheet__title">{latestScene.title}</h2>
                 <p class="desk-sheet__excerpt">{sceneExcerpt}</p>
@@ -163,67 +168,35 @@ const pageTitle =
           ) : (
             <p class="desk-empty">No scenes yet.</p>
           )}
-
-          {recentNotes.length > 0 && (
-            <div class="desk-recent">
-              {recentNotes.map((f) => (
-                <a class="desk-recent__item" href={fileUrl(f)}>
-                  <span class="desk-recent__title">{f.title}</span>
-                  <span class="desk-recent__date">edited {editedLabel(f)}</span>
-                </a>
-              ))}
-            </div>
-          )}
         </section>
 
-        <aside class="desk-archive p3r-animate" style="--stagger-delay: 120ms" aria-label="Archive">
-          <h2 class="desk-archive__kicker">archive</h2>
-          {archiveCards.map((card) => (
-            <a
-              class:list={['desk-archive__card', { 'desk-archive__card--scenes': card.slug === 'scenes' }]}
-              href={`/novel/${card.slug}`}
-            >
-              <span class="desk-archive__title">{card.title}</span>
-              <span class="desk-archive__count">{card.count}</span>
-            </a>
-          ))}
-        </aside>
-      </div>
-    </main>
-  )}
-
-  {view === 'folder' && topFolder && (
-    <main class="novel-page novel-folder">
-      <nav class="novel-crumb p3r-animate" aria-label="Breadcrumb">
-        <a href="/novel">desk</a>
-        <span aria-hidden="true">/</span>
-        <span aria-current="page">{topFolder.title.toLowerCase()}</span>
-      </nav>
-      <header class="novel-header p3r-animate" style="--stagger-delay: 40ms">
-        <div class="novel-header__titles">
-          <span class="p4g-tab">novel</span>
-          <h1 class="p4g-heading novel-header__title">{topFolder.title}</h1>
-          <span class="p4g-underline"></span>
-        </div>
-        <p class="novel-header__stats">{flattenFolderFiles(topFolder).length} files</p>
-      </header>
-
-      <div class="folder-groups">
-        {folderGroups.map((group, gi) => (
-          <section class="folder-group p3r-animate" style={`--stagger-delay: ${80 + gi * 50}ms`}>
-            {group.title && <h2 class="folder-group__title">{group.title}</h2>}
-            <ul class="folder-list">
-              {group.files.map((f) => (
-                <li>
-                  <a class="folder-row" href={fileUrl(f)}>
-                    <span class="folder-row__title">{f.title}</span>
-                    <span class="folder-row__date">edited {editedLabel(f)}</span>
-                  </a>
-                </li>
+        <nav class="desk-index p3r-animate" style="--stagger-delay: 120ms" aria-label="All files">
+          {indexGroups.map((group) => (
+            <section class="desk-index__group" id={group.slug}>
+              <h2 class:list={['desk-index__header', { 'desk-index__header--scenes': group.slug === 'scenes' }]}>
+                {group.title}
+                <span class="desk-index__count">{group.count}</span>
+              </h2>
+              {group.rootFiles.length > 0 && (
+                <ul class="desk-index__list">
+                  {group.rootFiles.map((f) => (
+                    <li><a href={fileUrl(f)}>{f.title}</a></li>
+                  ))}
+                </ul>
+              )}
+              {group.subs.map((sub) => (
+                <div class="desk-index__sub">
+                  <h3 class="desk-index__sublabel">{sub.title}</h3>
+                  <ul class="desk-index__list">
+                    {sub.files.map((f) => (
+                      <li><a href={fileUrl(f)}>{f.title}</a></li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
-          </section>
-        ))}
+            </section>
+          ))}
+        </nav>
       </div>
     </main>
   )}
@@ -233,7 +206,7 @@ const pageTitle =
       <nav class="novel-crumb p3r-animate" aria-label="Breadcrumb">
         <a href="/novel">desk</a>
         <span aria-hidden="true">/</span>
-        <a href={`/novel/${topFolder.slug}`}>{crumbTitles.join(' / ').toLowerCase()}</a>
+        <a href={`/novel#${topFolder.slug}`}>{crumbTitles.join(' / ').toLowerCase()}</a>
         <span aria-hidden="true">/</span>
         <span aria-current="page">{file.title.toLowerCase()}</span>
       </nav>

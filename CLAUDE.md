@@ -195,8 +195,8 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 - `/media/[...slug]` → redirects to `/shelf/[...slug]`
 
 ### Novel Pages
-- `/novel` — "Remember Rain" novel index (writer's desk landing: latest scene excerpt, recent files, archive)
-- `/novel/[...slug]` — Folder structure browser and focused reading pages; slug encodes folder+file path (e.g. `/novel/characters/rain`)
+- `/novel` — "Remember Rain" writer's desk (latest scene excerpt + full file index, anchors per folder)
+- `/novel/[folder]/.../[file]` — Focused reading pages; folder-only URLs (e.g. `/novel/characters`) 301-redirect to the matching desk anchor (`/novel#characters`)
 
 ### Utility Pages
 - `/` — Homepage with BentoGrid tiles
@@ -219,8 +219,8 @@ The `/novel` route serves a standalone in-progress novel with its own UI, separa
 
 - **Content location**: `src/content/novel/` — Scrivener export structure with top-level folders (`Characters`, `Locations`, `Lore`, `Scenes`, `Themes`). Each `.md` file may have a sidecar `<Title> MetaData.txt` with Scrivener-format `Created:` / `Modified:` dates.
 - **Build utility**: `src/utils/novel.ts` — `buildNovelTree()` reads the directory at build time and returns a `NovelTree` (recursive `NovelFolder`/`NovelFile` types). Files are slugified and markdown is pre-rendered to HTML via `marked`.
-- **Routing**: `src/pages/novel/[...slug].astro` renders three static views from `getStaticPaths()`: `/novel` (desk landing: latest scene as a cream paper sheet with excerpt, 2 recent non-scene files, archive folder cards), `/novel/[folder]` (file list grouped by subfolder), `/novel/[folder]/.../[file]` (focused reading page — paper treatment for Scenes, ink for everything else, prev/next page-turn links in tree order). Intermediate subfolder URLs render the parent folder page. No client-side rendering — plain links + view transitions; the only script is the sepia rain canvas (static frame under reduced motion).
-- **UI**: "Writer's desk" — gold/black/brown palette (`--novel-*` tokens in `novel.css`), P4G header pattern, dates always shown as facts ("edited …", never time-since — no-shame invariant). Story vs. outline split is visual: Scenes render on paper, outline docs in ink.
+- **Routing**: `src/pages/novel/[...slug].astro` renders two static views from `getStaticPaths()`: `/novel` (desk landing: latest scene as a cream paper sheet with excerpt, plus the full file index — every file grouped by folder/subfolder in a 2-column `.desk-index`, one click from landing) and `/novel/[folder]/.../[file]` (focused reading page — paper treatment for Scenes, ink for everything else, prev/next page-turn links in tree order). Folder and intermediate subfolder URLs 301-redirect (`Astro.redirect`) to the matching desk anchor (`/novel#characters`); reading-page breadcrumbs and the NavPill back link point at those anchors. No client-side rendering — plain links + view transitions; the only script is the sepia rain canvas (static frame under reduced motion).
+- **UI**: "Writer's desk" — gold/black/brown palette (`--novel-*` tokens in `novel.css`), P4G header pattern, dates always shown as facts ("edited …", never time-since — no-shame invariant). Story vs. outline split is visual: Scenes render on paper, outline docs in ink. Flat by design: two layers only (desk → reading page), no folder pages, no decorative copy (the sheet kicker is the functional "latest scene").
 - **Homepage stats**: `computeNovelStats(tree)` returns `{ storyWords, outlineWords, lastSceneModified, lastOutlineModified }` for the rain-gauge tile — story = top-level `Scenes` folder, outline = everything else; sidecar `Modified:` dates preferred, filesystem `mtime` fallback (`NovelFile.mtime`), all anchored to UTC.
 - **Testing**: `src/tests/novel.test.ts` covers `slugify`, `parseMetaData`, `buildNovelTree`, `countWords`, `computeNovelStats`, `flattenFolderFiles`, and `findRecentFiles` via vitest.
 - **Adding content**: Drop `.md` files into the appropriate `src/content/novel/` subfolder. Scrivener MetaData.txt sidecars are auto-read if present; other `.txt` files are silently skipped.

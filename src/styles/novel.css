@@ -1,6 +1,6 @@
 /* ============================================================
    Novel Page — Remember Rain: The Writer's Desk
-   Static views: desk landing / folder page / reading page
+   Two layers: desk landing (sheet + full file index) / reading page
    Palette: gold + black + brown; paper for scenes, ink for the rest
    ============================================================ */
 
@@ -94,8 +94,8 @@
 /* ══ Desk layout ══ */
 .desk-layout {
   display: grid;
-  grid-template-columns: 3fr 2fr;
-  gap: 1.25rem;
+  grid-template-columns: 2fr 3fr;
+  gap: 2rem;
   align-items: start;
 }
 
@@ -164,151 +164,64 @@
   color: var(--novel-warm-dim);
 }
 
-/* Recent non-scene files below the sheet */
-.desk-recent {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 12px;
+/* ══ Desk index — the full archive, one click from landing ══ */
+.desk-index {
+  columns: 2;
+  column-gap: 2rem;
 }
-.desk-recent__item {
+.desk-index__group {
+  break-inside: avoid;
+  margin-bottom: 1.5rem;
+}
+.desk-index__header {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  background: var(--novel-panel-deep);
-  border: 1px solid var(--novel-border);
-  padding: 8px 12px;
-  text-decoration: none;
-  min-height: 44px;
-  justify-content: center;
-  transition: border-color 150ms ease, background 150ms ease;
-}
-.desk-recent__item:hover,
-.desk-recent__item:focus-visible {
-  border-color: var(--color-gold);
-  background: var(--novel-panel);
-}
-.desk-recent__title {
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  color: var(--novel-parchment);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.desk-recent__date {
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  color: var(--novel-warm-dim);
-}
-
-/* ══ Archive cards ══ */
-.desk-archive {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.desk-archive__kicker {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   font-weight: 400;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--novel-warm-dim);
-  margin: 0 0 2px;
+  border-bottom: 1px solid var(--novel-border);
+  padding-bottom: 4px;
+  margin: 0 0 6px;
 }
-.desk-archive__card {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  background: var(--novel-panel);
-  border: 1px solid var(--novel-border);
-  padding: 12px 14px;
-  min-height: 44px;
-  box-sizing: border-box;
-  text-decoration: none;
-  clip-path: polygon(0 0, calc(100% - var(--cut-sm)) 0, 100% var(--cut-sm), 100% 100%, 0 100%);
-  transition: border-color 150ms ease, background 150ms ease;
+.desk-index__header--scenes {
+  color: var(--color-gold);
+  border-bottom-color: var(--novel-border-strong);
 }
-.desk-archive__card:hover,
-.desk-archive__card:focus-visible {
-  border-color: var(--color-gold);
-  background: var(--novel-panel-deep);
-}
-.desk-archive__title {
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--novel-parchment);
-}
-.desk-archive__count {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
+.desk-index__count {
+  font-size: 0.6rem;
   color: var(--novel-warm-dim);
 }
-.desk-archive__card--scenes {
-  border-color: var(--novel-border-strong);
-}
-.desk-archive__card--scenes .desk-archive__title {
-  color: var(--color-gold);
-}
-
-/* ══ Folder page ══ */
-.folder-groups {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  max-width: 720px;
-}
-.folder-group__title {
+.desk-index__sublabel {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.6rem;
   font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--novel-warm-muted);
-  margin: 0 0 8px;
+  color: var(--novel-warm-dim);
+  margin: 10px 0 2px;
 }
-.folder-list {
+.desk-index__list {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 }
-.folder-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  background: var(--novel-panel-deep);
-  border-left: 3px solid var(--novel-border);
-  padding: 10px 14px;
-  min-height: 44px;
-  box-sizing: border-box;
-  text-decoration: none;
-  transition: border-color 150ms ease, background 150ms ease;
-}
-.folder-row:hover,
-.folder-row:focus-visible {
-  border-left-color: var(--color-gold);
-  background: var(--novel-panel);
-}
-.folder-row__title {
+.desk-index__list a {
+  display: block;
+  padding: 5px 0;
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--novel-parchment);
+  text-decoration: none;
+  transition: color 120ms ease;
 }
-.folder-row__date {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
-  color: var(--novel-warm-dim);
-  white-space: nowrap;
+.desk-index__list a:hover,
+.desk-index__list a:focus-visible {
+  color: var(--color-gold);
 }
 
 /* ══ Reading page ══ */
@@ -477,9 +390,7 @@
 /* ══ Reduced motion ══ */
 @media (prefers-reduced-motion: reduce) {
   .desk-sheet-wrap,
-  .desk-recent__item,
-  .desk-archive__card,
-  .folder-row,
+  .desk-index__list a,
   .page-turn__link,
   .novel-crumb a { transition: none; }
   .desk-sheet-wrap:hover,
@@ -491,11 +402,11 @@
   .novel-page { padding: 1.5rem 1.25rem 120px; }
 
   .desk-layout { grid-template-columns: 1fr; }
-  .desk-recent { grid-template-columns: 1fr; }
+  .desk-index { columns: 1; }
+  /* Comfortable touch targets for the dense index */
+  .desk-index__list a { padding: 11px 0; }
 
   .novel-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-
-  .folder-row { flex-direction: column; align-items: flex-start; gap: 2px; }
 
   .reading { padding: 1.5rem 1.25rem; }
 
