@@ -59,7 +59,7 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
   .now {
     max-width: 60ch;
     margin: 0 auto;
-    padding-bottom: 80px; /* Space for floating nav */
+    padding-bottom: calc(var(--nav-clearance, 80px) + var(--space-md)); /* Space for floating nav */
   }
 
   .now__header {

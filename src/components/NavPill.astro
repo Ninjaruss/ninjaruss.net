@@ -149,21 +149,48 @@ const isActive = (section: (typeof SECTIONS)[number]) =>
     }
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     .nav-bar {
       left: var(--space-sm);
       right: var(--space-sm);
       bottom: var(--space-sm);
     }
 
+    /* Two-row wrap: gap + gold-tinted inner background paints hairlines
+       between rows and columns without per-item border bookkeeping */
     .nav-bar__inner {
-      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1px;
+      background: rgba(255, 229, 44, 0.18);
     }
 
     .nav-bar__item {
-      flex: 1;
-      padding: var(--space-xs) var(--space-xs);
+      flex: 1 1 24%;
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-2xs);
       font-size: 0.6rem;
+      background: var(--color-black);
+    }
+
+    .nav-bar__item + .nav-bar__item {
+      border-left: none;
+    }
+
+    .nav-bar__item--active {
+      background: var(--color-gold);
     }
   }
 </style>
+
+<script>
+  // Publishes the nav's real height so pages can pad their bottom edge —
+  // the two-row mobile bar must never cover content.
+  function setNavClearance() {
+    const nav = document.querySelector<HTMLElement>('.nav-bar');
+    const clearance = nav ? nav.offsetHeight + 16 : 0;
+    document.documentElement.style.setProperty('--nav-clearance', `${clearance}px`);
+  }
+  setNavClearance();
+  document.addEventListener('astro:page-load', setNavClearance);
+  window.addEventListener('resize', setNavClearance);
+</script>

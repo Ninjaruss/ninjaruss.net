@@ -447,7 +447,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
   .split-view__detail {
     background: var(--color-bg-base);
     padding: var(--space-xl) var(--space-2xl);
-    padding-bottom: calc(var(--space-3xl) + 80px);
+    padding-bottom: calc(var(--space-3xl) + var(--nav-clearance, 80px));
     overflow-y: auto;
   }
 
