@@ -129,6 +129,12 @@ export function initSplitView(): void {
         loadContent(firstSlug, elements, state, idleManager, { pushHistory: false, focusHeading: false });
       }
     };
-    tryAutoOpen(0);
+    // Viewports below the 1200px breakpoint (SplitViewLayout.astro's tablet
+    // media query drops the 3-column grid to 2 columns, and below 900px it
+    // collapses to a single stacked column) can never satisfy the >=3-column
+    // check above — skip the poll entirely rather than running it dry.
+    if (window.matchMedia('(min-width: 1200px)').matches) {
+      tryAutoOpen(0);
+    }
   }
 }

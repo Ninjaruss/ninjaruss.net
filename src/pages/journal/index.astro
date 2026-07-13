@@ -8,7 +8,7 @@ import { getJournalItems } from '../../utils/journal';
 const items = await getJournalItems();
 const noteCount = items.filter(i => i.type === 'note').length;
 const showcaseCount = items.filter(i => i.type === 'showcase').length;
-const newestDate = items[0]?.entry.data.publishedAt;
+const newestDate = items[0]?.entry.data.updatedAt ?? items[0]?.entry.data.publishedAt;
 const placeholderStats = [
   { label: 'notes', value: String(noteCount) },
   { label: 'showcases', value: String(showcaseCount) },
