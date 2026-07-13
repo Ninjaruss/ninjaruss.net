@@ -56,7 +56,7 @@ const recentJournal: JournalRow[] = [
   ...showcase.map(e => ({ href: `/showcase/${e.slug}`, title: e.data.title, type: 'showcase' as const, d: effectiveDate(e) })),
 ]
   .sort((a, b) => b.d - a.d)
-  .slice(0, 5)
+  .slice(0, 7)
   .map(({ href, title, type, d }) => ({ href, title, type, date: shortDate(d) }));
 
 // Latest tile pool — the latest 2 notes and latest 1 showcase, interleaved
@@ -271,8 +271,8 @@ const codexTile = await getCodexTileData();
         data-outline-modified={novelStats.lastOutlineModified ?? ''}
       >
         <div class="novel-rain" aria-hidden="true">
-          {[0, 1, 2, 3, 4, 5, 6, 7].map(i => (
-            <span class="novel-rain__drop" style={`--i: ${i};`}></span>
+          {Array.from({ length: 14 }, (_, i) => i).map(i => (
+            <span class="novel-rain__drop" style={`--i: ${i}; --len: ${14 + (i % 3) * 8}px;`}></span>
           ))}
         </div>
         <div class="bento-tile__header">
@@ -456,9 +456,10 @@ const codexTile = await getCodexTileData();
         href="https://myanimelist.net/animelist/Ninjaruss_?status=7&order=4&order2=0"
         target="_blank"
         rel="noopener noreferrer"
-        class="logo-tile logo-tile--mal p3r-animate"
+        class="logo-tile logo-tile--mal p4g-sweep p3r-animate"
         style="--stagger-delay: 100ms;"
       >
+        <span class="logo-tile__kicker" aria-hidden="true"><span>Watchlist</span></span>
         <img
           src="/images/logos/myanimelist.svg"
           alt="MyAnimeList"
@@ -472,9 +473,10 @@ const codexTile = await getCodexTileData();
         href="https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD?si=2b68cabcfc26451c"
         target="_blank"
         rel="noopener noreferrer"
-        class="logo-tile logo-tile--spotify p3r-animate"
+        class="logo-tile logo-tile--spotify p4g-sweep p3r-animate"
         style="--stagger-delay: 150ms;"
       >
+        <span class="logo-tile__kicker" aria-hidden="true"><span>Listening</span></span>
         <img
           src="/images/logos/spotify.svg"
           alt="Spotify Playlist"
@@ -487,7 +489,8 @@ const codexTile = await getCodexTileData();
       <!-- Row 5 — email (2×1) fills the cols under MAL/Spotify (quote tile removed).
            href assembled client-side on first interaction so the address never
            appears in the static HTML (bot-scrape mitigation). -->
-      <a href="#contact" id="mail-tile" class="logo-tile logo-tile--mail bento-tile--span-2x1 p3r-animate" style="--stagger-delay: 200ms;">
+      <a href="#contact" id="mail-tile" class="logo-tile logo-tile--mail p4g-sweep bento-tile--span-2x1 p3r-animate" style="--stagger-delay: 200ms;">
+        <span class="logo-tile__kicker" aria-hidden="true"><span>Contact</span></span>
         <svg class="logo-tile__img" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
           <rect x="2.5" y="5" width="19" height="14" rx="1.5"/>
           <path d="M3 6.5l9 6.5 9-6.5"/>
@@ -592,42 +595,54 @@ const codexTile = await getCodexTileData();
     padding: var(--space-md);
     background: var(--color-bg-elevated);
     border: var(--border-medium) solid var(--color-border);
-    border-radius: var(--radius-md);
     text-decoration: none;
     transition: all var(--transition-base);
     min-height: 80px;
+    position: relative;
+    border-radius: 0;
+    /* corner cut — clip-path clips box-shadow, so hover shadow moves to drop-shadow */
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% calc(100% - var(--cut-md)),
+      calc(100% - var(--cut-md)) 100%,
+      0 100%
+    );
   }
 
-  .logo-tile:hover {
+  .logo-tile__kicker {
+    position: absolute;
+    top: var(--space-sm);
+    left: -4px;
+    padding: 2px 12px 2px 14px;
+    background: var(--color-gold);
+    color: var(--color-black);
+    font-family: var(--font-display);
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    transform: skewX(var(--skew-accent));
+    z-index: 1;
+  }
+
+  .logo-tile__kicker > span {
+    display: inline-block;
+    transform: skewX(calc(-1 * var(--skew-accent)));
+  }
+
+  .logo-tile:hover,
+  .logo-tile:focus-visible {
     transform: translate(-4px, -4px);
     border-color: var(--color-gold);
-    box-shadow:
-      4px 4px 0 rgba(255, 229, 44, 0.3),
-      0 0 20px rgba(255, 229, 44, 0.15);
+    filter: drop-shadow(4px 4px 0 rgba(255, 229, 44, 0.3));
   }
 
-  /* MAL brand accent — deep blue */
-  .logo-tile--mal:hover {
-    border-color: #2e51a2;
-    box-shadow:
-      4px 4px 0 rgba(46, 81, 162, 0.4),
-      0 0 24px rgba(46, 81, 162, 0.25);
-  }
-
-  .logo-tile--mal:hover .logo-tile__label {
-    color: #5a88d4;
-  }
-
-  /* Spotify brand accent — signature green */
-  .logo-tile--spotify:hover {
-    border-color: #1db954;
-    box-shadow:
-      4px 4px 0 rgba(29, 185, 84, 0.4),
-      0 0 24px rgba(29, 185, 84, 0.25);
-  }
-
-  .logo-tile--spotify:hover .logo-tile__label {
-    color: #1db954;
+  /* Sweep paints the tile gold — flip text to black for contrast */
+  .logo-tile:hover .logo-tile__label,
+  .logo-tile:focus-visible .logo-tile__label,
+  .logo-tile:hover .logo-tile__description,
+  .logo-tile:focus-visible .logo-tile__description {
+    color: var(--color-black);
   }
 
   .logo-tile--mail {
@@ -636,13 +651,10 @@ const codexTile = await getCodexTileData();
 
   .logo-tile--mail:hover,
   .logo-tile--mail:focus-visible {
-    color: var(--color-gold);
+    color: var(--color-black);
   }
 
-  .logo-tile:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
-  }
+  /* No outline ring: clip-path would clip it — :focus-visible shows via the gold sweep + lift instead */
 
   .logo-tile__img {
     width: 48px;
@@ -657,10 +669,6 @@ const codexTile = await getCodexTileData();
     text-transform: uppercase;
     letter-spacing: var(--tracking-label);
     text-align: center;
-  }
-
-  .logo-tile:hover .logo-tile__label {
-    color: var(--color-gold);
   }
 
   .logo-tile__description {
@@ -1620,12 +1628,12 @@ const codexTile = await getCodexTileData();
   .novel-rain__drop {
     position: absolute;
     top: -30px;
-    left: calc(6% + var(--i) * 12%);
+    left: calc(3% + var(--i) * 7%);
     width: 1px;
-    height: 22px;
+    height: var(--len, 22px);
     background: linear-gradient(to bottom, transparent, rgba(157, 184, 204, 0.8));
     animation: novel-rain-fall 1.5s linear infinite;
-    animation-delay: calc(var(--i) * 0.21s);
+    animation-delay: calc(var(--i) * 0.13s);
   }
 
   .novel-tile.is-misting .novel-rain__drop {
