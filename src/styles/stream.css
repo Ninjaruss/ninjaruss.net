@@ -167,7 +167,7 @@
 .s-shell {
   flex: 1;
   display: grid;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: clamp(200px, 16vw, 280px) 1fr;
   overflow: hidden;
   min-height: 0;
 }
@@ -183,7 +183,7 @@
 }
 
 .s-sprite img {
-  width: 200px;
+  width: clamp(200px, 16vw, 280px);
   height: auto;
   object-fit: cover;
   object-position: top center;

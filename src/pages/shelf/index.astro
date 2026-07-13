@@ -88,7 +88,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
           data-type={type}
           aria-current="false"
         >
-          {TYPE_LABELS[type]}
+          <span class="shelf-jumpbar__label">{TYPE_LABELS[type]}</span>
         </a>
       ))}
     </nav>
@@ -254,6 +254,8 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     z-index: 50;
     display: flex;
     align-items: stretch;
+    gap: 3px;
+    padding: 8px 4px;
     background: var(--color-bg-base);
     border-bottom: 1px solid var(--color-border, #2a2a2a);
     margin-bottom: var(--space-xl);
@@ -264,36 +266,44 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
 
   .shelf-jumpbar__link {
     padding: 10px 16px;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
+    background: transparent;
+    border: 1px solid transparent;
     color: var(--color-muted);
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     white-space: nowrap;
     text-decoration: none;
-    transition: color 150ms, border-color 150ms;
-    margin-bottom: -1px;
+    transform: skewX(var(--skew-accent));
+    transition: color 150ms, background 150ms;
     min-height: 44px;
     display: flex;
     align-items: center;
   }
+
+  .shelf-jumpbar__label {
+    display: inline-block;
+    transform: skewX(calc(-1 * var(--skew-accent)));
+  }
+
   .shelf-jumpbar__link:hover,
   .shelf-jumpbar__link:focus-visible {
     color: var(--color-gold);
+    border-color: rgba(255, 229, 44, 0.35);
   }
+
   .shelf-jumpbar__link.is-active,
   .shelf-jumpbar__link[aria-current="true"] {
-    color: var(--color-gold);
-    border-bottom-color: var(--color-gold);
-    border-bottom-width: 3px;
+    background: var(--color-gold);
+    color: var(--color-black);
+    border-color: var(--color-gold);
   }
 
   /* ── Section ─────────────────────────────────────── */
   .shelf-section {
     margin-bottom: var(--space-2xl);
+    scroll-margin-top: 72px;
   }
 
   .shelf-section__header {
@@ -304,23 +314,14 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   }
 
   .shelf-section__header h2 {
-    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 2.5vw, 1.35rem);
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     white-space: nowrap;
-    background: linear-gradient(
-      90deg,
-      var(--color-text) 0%,
-      var(--color-gold) 40%,
-      var(--color-gold-orange) 50%,
-      var(--color-text) 65%
-    );
-    background-size: 300% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: shimmer-sweep 12s ease-in-out infinite;
+    color: var(--color-gold);
+    transform: skewX(var(--skew-display));
   }
 
   .shelf-section__line {
@@ -746,12 +747,6 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     .shelf-card__img,
     .shelf-card__poster,
     .shelf-card__corner { transition: none; }
-    .shelf-section__header h2 {
-      animation: none;
-      -webkit-text-fill-color: var(--color-text);
-      background: none;
-      color: var(--color-text);
-    }
     .shelf-hero__portrait-img,
     .shelf-hero__name { transition: none; }
     .shelf-panel { transition: none; }

@@ -38,7 +38,7 @@
   margin: 0 auto;
   padding: 2rem 2.5rem;
   /* Clear the fixed NavPill (bottom-left) */
-  padding-bottom: 120px;
+  padding-bottom: calc(var(--nav-clearance, 120px) + var(--space-lg));
   box-sizing: border-box;
   min-height: 100vh;
 }
@@ -399,7 +399,7 @@
 
 /* ══ Mobile ══ */
 @media (max-width: 768px) {
-  .novel-page { padding: 1.5rem 1.25rem 120px; }
+  .novel-page { padding: 1.5rem 1.25rem; padding-bottom: calc(var(--nav-clearance, 120px) + var(--space-lg)); }
 
   .desk-layout { grid-template-columns: 1fr; }
   .desk-index { columns: 1; }
