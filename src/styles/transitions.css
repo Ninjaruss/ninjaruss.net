@@ -129,12 +129,6 @@
   }
 }
 
-/* Shimmer sweep — used on shelf section headers */
-@keyframes shimmer-sweep {
-  0%   { background-position: 300% center; }
-  100% { background-position: -300% center; }
-}
-
 /* Stagger delay utility classes */
 .stagger-1 { --stagger-delay: 0ms; }
 .stagger-2 { --stagger-delay: 50ms; }

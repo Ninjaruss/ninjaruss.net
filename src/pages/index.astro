@@ -600,7 +600,7 @@ const codexTile = await getCodexTileData();
     min-height: 80px;
     position: relative;
     border-radius: 0;
-    /* corner cut — clip-path clips box-shadow, so hover shadow moves to drop-shadow */
+    /* corner cut — clip-path clips box-shadow (and same-element drop-shadow) — hover feedback is the sweep + lift instead */
     clip-path: polygon(
       0 0,
       100% 0,
@@ -634,7 +634,6 @@ const codexTile = await getCodexTileData();
   .logo-tile:focus-visible {
     transform: translate(-4px, -4px);
     border-color: var(--color-gold);
-    filter: drop-shadow(4px 4px 0 rgba(255, 229, 44, 0.3));
   }
 
   /* Sweep paints the tile gold — flip text to black for contrast */
