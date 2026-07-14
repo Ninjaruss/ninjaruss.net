@@ -1,1 +1,0 @@
-The Flare - A global event. Unseen energy swept the world. It resonated with those actively confronting themselves—moving toward change, not stagnant. The energy also infused the water within a dormant volcano, creating the Sacred Water. The Flare is not sentient; it's a force that responds to motion, to commitment, to the act of becoming.

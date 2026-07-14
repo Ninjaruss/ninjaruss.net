@@ -27,19 +27,19 @@ I relate this to the idea of Sisyphus, where he must push the boulder up the hil
 
 The struggle itself is enough. To simply be able to climb the stairs is the journey itself. In fear of sounding like a video essayist with no semblance of what nuance means, I must fundamentally commit to something, anything, over and over and over again. In spite of everything that I believe is not within my grasp. 
 
-In spite of everything that is actively (or more scarily passively) trying to stop me. 
-In spite of whether I know it will work out or not. 
-In spite of knowing I will get hurt and suffer. 
-In spite of feeling like I'm a loser that hasn't done anything "truly" meaningful yet. 
-In spite of my tendencies of wasting my time and not fulfilling my simple mundane tasks timely. 
-In spite of the people and world around me telling me I should settle for something else, ideally something more comfortable and safe. 
-In spite of all my dreams being so seemingly out of reach and feeling as though I simply am not the person that can achieve them all.
-In spite of my mind being flooded with worry and a need for validation.
-In spite of my body flaring up with pain and irritation.
-In spite of the impermanance of every single thing I do or love fading away as time goes on.
-In spite of my dreams feeling like delusions with no evidence of being made into reality.
-In spite of the layers of loneliness that cannot be fully addressed.
-In spite of the futile efforts of everything I've done in the grand scheme of things.
-In spite of my own self (or perhaps shadow) constantly doubting my own abilities and conviction.
+- In spite of everything that is actively (or more scarily passively) trying to stop me. 
+- In spite of whether I know it will work out or not. 
+- In spite of knowing I will get hurt and suffer. 
+- In spite of feeling like I'm a loser that hasn't done anything "truly" meaningful yet. 
+- In spite of my tendencies of wasting my time and not fulfilling my simple mundane tasks timely. 
+- In spite of the people and world around me telling me I should settle for something else, ideally something more comfortable and safe. 
+- In spite of all my dreams being so seemingly out of reach and feeling as though I simply am not the person that can achieve them all.
+- In spite of my mind being flooded with worry and a need for validation.
+- In spite of my body flaring up with pain and irritation.
+- In spite of the impermanance of every single thing I do or love fading away as time goes on.
+- In spite of my dreams feeling like delusions with no evidence of being made into reality.
+- In spite of the layers of loneliness that cannot be fully addressed.
+- In spite of the futile efforts of everything I've done in the grand scheme of things.
+- In spite of my own self (or perhaps shadow) constantly doubting my own abilities and conviction.
 
 In spite of it all, I am Ninjaruss.
