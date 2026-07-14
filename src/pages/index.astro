@@ -496,7 +496,7 @@ const codexTile = await getCodexTileData();
           <path d="M3 6.5l9 6.5 9-6.5"/>
         </svg>
         <span class="logo-tile__label">Email</span>
-        <p class="logo-tile__description">Opens your mail client.</p>
+        <p class="logo-tile__description">Connect with me directly.</p>
       </a>
 
       <!-- Row 6: Codex (2×1) -->
@@ -592,7 +592,8 @@ const codexTile = await getCodexTileData();
     align-items: center;
     justify-content: center;
     gap: var(--space-sm);
-    padding: var(--space-md);
+    /* extra top padding clears the corner tab so centered content never sits under it */
+    padding: calc(var(--space-md) + 1.5rem) var(--space-md) var(--space-md);
     background: var(--color-bg-elevated);
     border: var(--border-medium) solid var(--color-border);
     text-decoration: none;
@@ -610,24 +611,24 @@ const codexTile = await getCodexTileData();
     );
   }
 
+  /* Flush inset corner tab — matches the shared .p4g-tab used on every other tile */
   .logo-tile__kicker {
     position: absolute;
-    top: var(--space-sm);
-    left: -4px;
-    padding: 2px 12px 2px 14px;
+    top: 0;
+    left: 0;
+    padding: var(--space-2xs) calc(var(--space-sm) + var(--cut-sm)) var(--space-2xs) var(--space-sm);
     background: var(--color-gold);
     color: var(--color-black);
     font-family: var(--font-display);
-    font-size: var(--text-2xs);
+    font-size: var(--text-xs);
     text-transform: uppercase;
     letter-spacing: var(--tracking-label);
-    transform: skewX(var(--skew-accent));
+    clip-path: polygon(0 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
     z-index: 1;
   }
 
   .logo-tile__kicker > span {
     display: inline-block;
-    transform: skewX(calc(-1 * var(--skew-accent)));
   }
 
   .logo-tile:hover,
@@ -679,7 +680,7 @@ const codexTile = await getCodexTileData();
 
     /* Always visible, clamped to keep the 1×1 tile tidy; brightens on hover */
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     opacity: 0.6;
@@ -1935,7 +1936,8 @@ const codexTile = await getCodexTileData();
   // address never sits in the served HTML for scrapers.
   function initializeMailTile() {
     const tile = document.getElementById('mail-tile') as HTMLAnchorElement | null;
-    if (!tile) return;
+    if (!tile || tile.dataset.mailBound) return;   // guard: runs on both initial load and astro:page-load
+    tile.dataset.mailBound = 'true';
     const addr = ['mailbox', ['ninjaruss', 'net'].join('.')].join('@');
     const arm = () => tile.setAttribute('href', 'mailto:' + addr);
     tile.addEventListener('pointerenter', arm, { once: true });
@@ -2005,6 +2007,8 @@ const codexTile = await getCodexTileData();
     const MAX_TILT = 6;
 
     document.querySelectorAll<HTMLElement>(SELECTOR).forEach(tile => {
+      if (tile.dataset.tiltBound) return;   // guard: runs on both initial load and astro:page-load
+      tile.dataset.tiltBound = 'true';
       let rafId: number;
 
       tile.addEventListener('mousemove', (e) => {
