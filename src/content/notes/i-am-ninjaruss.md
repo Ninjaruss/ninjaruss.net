@@ -40,6 +40,6 @@ In spite of the impermanance of every single thing I do or love fading away as t
 In spite of my dreams feeling like delusions with no evidence of being made into reality.
 In spite of the layers of loneliness that cannot be fully addressed.
 In spite of the futile efforts of everything I've done in the grand scheme of things.
-In spite of my own self (or perhaps shadow) constantly doubts my own abilities and conviction.
+In spite of my own self (or perhaps shadow) constantly doubting my own abilities and conviction.
 
 In spite of it all, I am Ninjaruss.
