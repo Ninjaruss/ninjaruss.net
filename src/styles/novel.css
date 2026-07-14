@@ -325,7 +325,11 @@
 
 .reading__body ul,
 .reading__body ol { padding-left: 1.5em; margin: 0 0 1.25em; }
+.reading__body ul { list-style: disc; }
+.reading__body ol { list-style: decimal; }
 .reading__body li { margin-bottom: 0.4em; }
+.reading--paper .reading__body li::marker { color: var(--novel-warm-muted); }
+.reading--ink .reading__body li::marker { color: var(--novel-warm-dim); }
 .reading__body img { max-width: 100%; display: block; margin: 1.5em 0; }
 .reading__body a { color: inherit; text-decoration: underline; }
 
