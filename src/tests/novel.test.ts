@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { slugify, parseMetaData, buildNovelTree, countWords, computeNovelStats, flattenFolderFiles, findRecentFiles, unescapeScrivenerMarkdown, type NovelTree } from '../utils/novel';
+import { slugify, parseMetaData, parseOrderPrefix, buildNovelTree, countWords, computeNovelStats, flattenFolderFiles, findRecentFiles, unescapeScrivenerMarkdown, type NovelTree } from '../utils/novel';
 import { join } from 'path';
 
 describe('slugify', () => {
@@ -17,6 +17,37 @@ describe('slugify', () => {
 
   it('collapses multiple spaces', () => {
     expect(slugify('Character  Ability  Table')).toBe('character-ability-table');
+  });
+});
+
+describe('parseOrderPrefix', () => {
+  it('extracts a leading number and strips it from the title', () => {
+    expect(parseOrderPrefix('1 Rain intro')).toEqual({ order: 1, clean: 'Rain intro' });
+    expect(parseOrderPrefix('01. Choice Points')).toEqual({ order: 1, clean: 'Choice Points' });
+    expect(parseOrderPrefix('2 - Asylum')).toEqual({ order: 2, clean: 'Asylum' });
+    expect(parseOrderPrefix('3)Volcano')).toEqual({ order: 3, clean: 'Volcano' });
+  });
+
+  it('leaves un-prefixed names untouched', () => {
+    expect(parseOrderPrefix('Rain intro')).toEqual({ order: null, clean: 'Rain intro' });
+    expect(parseOrderPrefix('Arc 1 - Fugitive')).toEqual({ order: null, clean: 'Arc 1 - Fugitive' });
+  });
+
+  it('does not treat a multi-digit year as a prefix', () => {
+    expect(parseOrderPrefix('1984 Retrospective')).toEqual({ order: null, clean: '1984 Retrospective' });
+  });
+});
+
+describe('buildNovelTree ordering', () => {
+  it('sorts unprefixed sibling folders by natural order (Arc 2 before Arc 10)', async () => {
+    const tree = await buildNovelTree(join(process.cwd(), 'src/content/novel'));
+    const arcs = Object.keys(tree.manuscript.subfolders);
+    const arc1 = arcs.indexOf('arc-1-fugitive');
+    const arc2 = arcs.indexOf('arc-2-asylum');
+    const arc3 = arcs.indexOf('arc-3-prison');
+    expect(arc1).toBeGreaterThanOrEqual(0);
+    expect(arc1).toBeLessThan(arc2);
+    expect(arc2).toBeLessThan(arc3);
   });
 });
 

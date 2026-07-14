@@ -57,6 +57,36 @@ export function slugify(name: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+/**
+ * A leading integer prefix on a file/folder name sets its binder order and is
+ * stripped from the displayed title and URL slug. Exporting Scrivener documents
+ * as `1 Rain intro.md`, `2 Claire and Roxana save Rain.md`, … therefore reproduces
+ * the binder order while the page still shows clean titles ("Rain intro") and clean
+ * URLs. Accepts `1 `, `01. `, `1 - `, `1) `, `1_` separators; a bare title (no
+ * numeric prefix) is returned unchanged. A prefix is 1–3 digits followed by a
+ * separator, so 4-digit years like "1984 Foo" stay part of the title.
+ */
+export function parseOrderPrefix(name: string): { order: number | null; clean: string } {
+  const m = name.match(/^(\d{1,3})[)._\-\s]+(\S.*)$/);
+  if (!m) return { order: null, clean: name };
+  return { order: parseInt(m[1], 10), clean: m[2].trim() };
+}
+
+/**
+ * Sort comparator for parsed entries: numeric-prefixed items first in ascending
+ * order, then everything else by natural (numeric-aware) alphabetical order so
+ * "Arc 2" precedes "Arc 10" even without an explicit prefix.
+ */
+function byOrderThenName(
+  a: { order: number | null; clean: string },
+  b: { order: number | null; clean: string }
+): number {
+  const ao = a.order ?? Infinity;
+  const bo = b.order ?? Infinity;
+  if (ao !== bo) return ao - bo;
+  return a.clean.localeCompare(b.clean, 'en', { numeric: true, sensitivity: 'base' });
+}
+
 /** Parse a Scrivener MetaData.txt file content for created and modified dates. */
 export function parseMetaData(content: string): MetaData {
   const createdMatch = content.match(/^Created:\s*(.+?)\s+at\s+/m);
@@ -69,12 +99,16 @@ export function parseMetaData(content: string): MetaData {
 
 /** Read a MetaData.txt sidecar file next to a given .md file, if it exists. */
 function readSidecarMeta(mdFilePath: string): MetaData {
-  // MetaData file is named "<Title> MetaData.txt" in the same directory
+  // MetaData file is named "<Title> MetaData.txt" in the same directory. Try the
+  // on-disk name first (Scrivener numbers the sidecar to match the file), then the
+  // prefix-stripped name in case only the .md was renumbered by hand.
   const dir = dirname(mdFilePath);
-  const title = basename(mdFilePath, '.md');
-  const metaPath = join(dir, `${title} MetaData.txt`);
-  if (existsSync(metaPath)) {
-    return parseMetaData(readFileSync(metaPath, 'utf-8'));
+  const base = basename(mdFilePath, '.md');
+  for (const title of [base, parseOrderPrefix(base).clean]) {
+    const metaPath = join(dir, `${title} MetaData.txt`);
+    if (existsSync(metaPath)) {
+      return parseMetaData(readFileSync(metaPath, 'utf-8'));
+    }
   }
   return { created: null, modified: null };
 }
@@ -84,30 +118,40 @@ async function buildFolder(
   dirPath: string,
   pathSegments: string[]
 ): Promise<NovelFolder> {
-  const name = basename(dirPath);
-  const slug = slugify(name);
-  const entries = readdirSync(dirPath);
+  // The folder's own display name / slug also honour a numeric prefix.
+  const { clean: folderName } = parseOrderPrefix(basename(dirPath));
+  const slug = slugify(folderName);
+
+  // Read entries, drop non-content, parse each name's order prefix, then sort into
+  // binder order (numeric prefix first, natural-alphabetical fallback).
+  const entries = readdirSync(dirPath)
+    .map((entry) => ({ entry, stat: statSync(join(dirPath, entry)) }))
+    .filter(({ entry, stat }) => stat.isDirectory() || entry.endsWith('.md'))
+    .map(({ entry, stat }) => {
+      const isDir = stat.isDirectory();
+      const rawName = isDir ? entry : basename(entry, '.md');
+      return { entry, stat, isDir, ...parseOrderPrefix(rawName) };
+    })
+    .sort(byOrderThenName);
 
   const files: NovelFile[] = [];
   const subfolders: Record<string, NovelFolder> = {};
 
-  for (const entry of entries) {
+  for (const { entry, stat, isDir, clean } of entries) {
     const fullPath = join(dirPath, entry);
-    const stat = statSync(fullPath);
 
-    if (stat.isDirectory()) {
-      const sub = await buildFolder(fullPath, [...pathSegments, slugify(entry)]);
+    if (isDir) {
+      const sub = await buildFolder(fullPath, [...pathSegments, slugify(clean)]);
       subfolders[sub.slug] = sub;
-    } else if (entry.endsWith('.md')) {
-      const title = basename(entry, '.md');
-      const fileSlug = slugify(title);
+    } else {
+      const fileSlug = slugify(clean);
       const rawMarkdown = unescapeScrivenerMarkdown(readFileSync(fullPath, 'utf-8'));
       const body = await marked.parse(rawMarkdown);
       const meta = readSidecarMeta(fullPath);
 
       files.push({
         slug: fileSlug,
-        title,
+        title: clean,
         body,
         created: meta.created,
         modified: meta.modified,
@@ -115,10 +159,9 @@ async function buildFolder(
         path: [...pathSegments, fileSlug],
       });
     }
-    // .txt files (MetaData) are silently skipped
   }
 
-  return { slug, title: name, files, subfolders };
+  return { slug, title: folderName, files, subfolders };
 }
 
 /**
@@ -127,16 +170,18 @@ async function buildFolder(
  */
 export async function buildNovelTree(baseDir: string): Promise<NovelTree> {
   if (!existsSync(baseDir)) return {};
-  const entries = readdirSync(baseDir);
-  const tree: NovelTree = {};
 
-  for (const entry of entries) {
-    const fullPath = join(baseDir, entry);
-    const stat = statSync(fullPath);
-    if (stat.isDirectory()) {
-      const folder = await buildFolder(fullPath, [slugify(entry)]);
-      tree[folder.slug] = folder;
-    }
+  // Top-level folders honour the same numeric-prefix ordering; insertion order into
+  // the tree object is the render order downstream (Object.values preserves it).
+  const entries = readdirSync(baseDir)
+    .filter((entry) => statSync(join(baseDir, entry)).isDirectory())
+    .map((entry) => ({ entry, ...parseOrderPrefix(entry) }))
+    .sort(byOrderThenName);
+
+  const tree: NovelTree = {};
+  for (const { entry, clean } of entries) {
+    const folder = await buildFolder(join(baseDir, entry), [slugify(clean)]);
+    tree[folder.slug] = folder;
   }
 
   return tree;
