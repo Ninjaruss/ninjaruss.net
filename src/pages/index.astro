@@ -4,7 +4,7 @@ import { join } from 'path';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 import BentoTile from '../components/BentoTile.astro';
-import { buildNovelTree, computeNovelStats } from '../utils/novel';
+import { buildNovelTree, computeNovelStats, flattenFolderFiles } from '../utils/novel';
 import { tallyStats, buildDonutArcs, STAT_ORDER } from '../utils/stream';
 import { stripMarkdown } from '../utils/content';
 import { getCodexTileData } from '../utils/codexContent';
@@ -74,17 +74,15 @@ let novelLastModified: Date | null = null;
 let novelRecentFileTitle: string | null = null;
 let novelRecentFolderTitle: string | null = null;
 for (const folder of Object.values(novelTree)) {
-  const allFiles = [
-    ...folder.files.map(f => ({ file: f, folderTitle: folder.title })),
-    ...Object.values(folder.subfolders).flatMap(s => s.files.map(f => ({ file: f, folderTitle: folder.title }))),
-  ];
-  for (const { file, folderTitle } of allFiles) {
+  // flattenFolderFiles recurses the whole subtree, so files nested more than one
+  // level deep (e.g. Manuscript/Arc 1/Scene) are considered, not just direct children.
+  for (const file of flattenFolderFiles(folder)) {
     if (file.modified) {
       const d = new Date(file.modified);
       if (!isNaN(d.getTime()) && (!novelLastModified || d > novelLastModified)) {
         novelLastModified = d;
         novelRecentFileTitle = file.title;
-        novelRecentFolderTitle = folderTitle;
+        novelRecentFolderTitle = folder.title;
       }
     }
   }
@@ -487,9 +485,11 @@ const codexTile = await getCodexTileData();
       </a>
 
       <!-- Row 5 — email (2×1) fills the cols under MAL/Spotify (quote tile removed).
-           href assembled client-side on first interaction so the address never
-           appears in the static HTML (bot-scrape mitigation). -->
-      <a href="#contact" id="mail-tile" class="logo-tile logo-tile--mail p4g-sweep bento-tile--span-2x1 p3r-animate" style="--stagger-delay: 200ms;">
+           The mailto: is assembled client-side on first interaction so the address
+           never appears in the static HTML (bot-scrape mitigation). The static href
+           is a real no-JS fallback (the /stream Mailbox), not a dead #anchor — with
+           JS the click is always intercepted to open the mailto. -->
+      <a href="/stream" id="mail-tile" class="logo-tile logo-tile--mail p4g-sweep bento-tile--span-2x1 p3r-animate" style="--stagger-delay: 200ms;">
         <span class="logo-tile__kicker" aria-hidden="true"><span>Contact</span></span>
         <svg class="logo-tile__img" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
           <rect x="2.5" y="5" width="19" height="14" rx="1.5"/>
