@@ -60,7 +60,7 @@ const latestSlug = sortedPosts[0]?.slug;
   .now-archive {
     max-width: 60ch;
     margin: 0 auto;
-    padding-bottom: 80px;
+    padding-bottom: calc(var(--nav-clearance, 80px) + var(--space-md));
   }
 
   .now-archive__header {

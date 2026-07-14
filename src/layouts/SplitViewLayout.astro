@@ -14,9 +14,10 @@ interface Props {
   pageTitle?: string;
   ogImage?: string;
   ogType?: string;
+  placeholderStats?: { label: string; value: string }[];
 }
 
-const { title, description, section, kicker, initialSlug, initialEmblem, pageTitle, ogImage, ogType } = Astro.props;
+const { title, description, section, kicker, initialSlug, initialEmblem, pageTitle, ogImage, ogType, placeholderStats } = Astro.props;
 const hasInitialContent = Astro.slots.has('detail');
 
 const SECTION_KICKERS: Record<string, string> = {
@@ -91,7 +92,18 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
                 <circle cx="32" cy="32" r="3" fill="currentColor" opacity="0.35"/>
               </svg>
             </div>
-            <p class="split-view__placeholder-title">Choose an entry</p>
+            {placeholderStats && placeholderStats.length > 0 ? (
+              <dl class="split-view__placeholder-stats">
+                {placeholderStats.map(stat => (
+                  <div class="split-view__placeholder-stat">
+                    <dt>{stat.label}</dt>
+                    <dd>{stat.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : (
+              <p class="split-view__placeholder-title">Choose an entry</p>
+            )}
             <p class="split-view__placeholder-hint">or press <kbd id="search-kbd">⌘K</kbd> to search</p>
           </div>
         </div>
@@ -185,7 +197,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     overflow-y: auto;
     padding: var(--space-sm) 0;
     /* Clear the fixed NavPill (bottom-left) so the last entry stays visible */
-    padding-bottom: calc(var(--space-2xl) + 72px);
+    padding-bottom: calc(var(--space-2xl) + var(--nav-clearance, 72px));
   }
 
   /* Filter UI */
@@ -435,7 +447,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
   .split-view__detail {
     background: var(--color-bg-base);
     padding: var(--space-xl) var(--space-2xl);
-    padding-bottom: calc(var(--space-3xl) + 80px);
+    padding-bottom: calc(var(--space-3xl) + var(--nav-clearance, 80px));
     overflow-y: auto;
   }
 
@@ -633,6 +645,34 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     font-size: var(--text-xs);
     color: var(--color-text-subtle);
     margin: 0;
+  }
+
+  .split-view__placeholder-stats {
+    display: flex;
+    gap: var(--space-xl);
+    margin: 0;
+  }
+
+  .split-view__placeholder-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2xs);
+  }
+
+  .split-view__placeholder-stat dt {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-text-subtle);
+  }
+
+  .split-view__placeholder-stat dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    color: var(--color-text-muted);
   }
 
   .split-view__placeholder-hint kbd {

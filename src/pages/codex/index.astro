@@ -5,6 +5,14 @@ import { getCodexPageData } from '../../utils/codexContent';
 import '../../styles/codex.css';
 
 const { concepts, looseThreads } = await getCodexPageData();
+const sourceCount = concepts.reduce((n, c) => n + c.entries.length, 0);
+const placeholderStats =
+  concepts.length > 0
+    ? [
+        { label: 'concepts', value: String(concepts.length) },
+        { label: 'source entries', value: String(sourceCount) },
+      ]
+    : undefined;
 ---
 
 <SplitViewLayout
@@ -13,6 +21,7 @@ const { concepts, looseThreads } = await getCodexPageData();
   section="codex"
   kicker="second brain"
   ogImage="/social-default.svg"
+  placeholderStats={placeholderStats}
 >
   <Fragment slot="list">
     {concepts.length > 0 ? (

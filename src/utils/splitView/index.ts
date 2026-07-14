@@ -110,12 +110,31 @@ export function initSplitView(): void {
     // until the user actually selects something. Desktop only: in the
     // single-column layout .has-selection collapses the list panel, which
     // must stay visible — detect the applied layout, not the viewport.
-    const isDesktopLayout =
-      getComputedStyle(splitView).gridTemplateColumns.trim().split(/\s+/).length >= 3;
-    const firstVisible = elements.listItems.find(item => !item.classList.contains('is-filtered'));
-    const firstSlug = firstVisible?.dataset.slug;
-    if (isDesktopLayout && firstSlug) {
-      loadContent(firstSlug, elements, state, idleManager, { pushHistory: false, focusHeading: false });
+    // Retried on a timer: styles can land after init (dev serves them via JS
+    // modules), and requestAnimationFrame is throttled or suspended entirely in
+    // background/non-rendering tabs — setTimeout still fires there. Gives up
+    // after ~1.5s (mobile layouts legitimately never reach 3 tracks). A
+    // detached splitView means the page was swapped away — stop.
+    const tryAutoOpen = (attempt: number) => {
+      if (!splitView.isConnected || state.currentSlug !== null) return;
+      const isDesktopLayout =
+        getComputedStyle(splitView).gridTemplateColumns.trim().split(/\s+/).length >= 3;
+      if (!isDesktopLayout) {
+        if (attempt < 20) setTimeout(() => tryAutoOpen(attempt + 1), 75);
+        return;
+      }
+      const firstVisible = elements.listItems.find(item => !item.classList.contains('is-filtered'));
+      const firstSlug = firstVisible?.dataset.slug;
+      if (firstSlug) {
+        loadContent(firstSlug, elements, state, idleManager, { pushHistory: false, focusHeading: false });
+      }
+    };
+    // Viewports below the 1200px breakpoint (SplitViewLayout.astro's tablet
+    // media query drops the 3-column grid to 2 columns, and below 900px it
+    // collapses to a single stacked column) can never satisfy the >=3-column
+    // check above — skip the poll entirely rather than running it dry.
+    if (window.matchMedia('(min-width: 1200px)').matches) {
+      tryAutoOpen(0);
     }
   }
 }
