@@ -305,6 +305,24 @@
 .reading--ink .reading__body h2,
 .reading--ink .reading__body h3 { color: var(--novel-warm-muted); }
 
+/* Subsection headings (Scrivener docs lean on h4/h5) — mono kicker, subordinate to h3 */
+.reading__body h4,
+.reading__body h5,
+.reading__body h6 {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 1.75em 0 0.6em;
+}
+.reading--paper .reading__body h4,
+.reading--paper .reading__body h5,
+.reading--paper .reading__body h6 { color: var(--novel-paper-ink); }
+.reading--ink .reading__body h4,
+.reading--ink .reading__body h5,
+.reading--ink .reading__body h6 { color: var(--novel-warm-dim); }
+
 .reading__body ul,
 .reading__body ol { padding-left: 1.5em; margin: 0 0 1.25em; }
 .reading__body li { margin-bottom: 0.4em; }

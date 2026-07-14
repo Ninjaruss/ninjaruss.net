@@ -34,6 +34,18 @@ export interface MetaData {
   modified: string | null;
 }
 
+/**
+ * Undo Scrivener's blanket markdown escaping. Its compile step backslash-escapes
+ * every markdown-significant character (`\#\#\#`, `\-`, `\*\*`), which `marked`
+ * would otherwise render as literal `###`, `-`, `**` text instead of headings,
+ * lists, and bold. A backslash before ASCII punctuation is always just a literal
+ * in CommonMark, so stripping it here can only turn spuriously-escaped syntax
+ * back into real markdown — safe for this corpus.
+ */
+export function unescapeScrivenerMarkdown(md: string): string {
+  return md.replace(/\\([!"#$%&'()*+,\-./:;<=>?@[\]^_`{|}~])/g, '$1');
+}
+
 /** Convert a filename (without extension) to a URL-safe slug. */
 export function slugify(name: string): string {
   return name
@@ -89,7 +101,7 @@ async function buildFolder(
     } else if (entry.endsWith('.md')) {
       const title = basename(entry, '.md');
       const fileSlug = slugify(title);
-      const rawMarkdown = readFileSync(fullPath, 'utf-8');
+      const rawMarkdown = unescapeScrivenerMarkdown(readFileSync(fullPath, 'utf-8'));
       const body = await marked.parse(rawMarkdown);
       const meta = readSidecarMeta(fullPath);
 

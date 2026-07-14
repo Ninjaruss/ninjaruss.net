@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { slugify, parseMetaData, buildNovelTree, countWords, computeNovelStats, flattenFolderFiles, findRecentFiles, type NovelTree } from '../utils/novel';
+import { slugify, parseMetaData, buildNovelTree, countWords, computeNovelStats, flattenFolderFiles, findRecentFiles, unescapeScrivenerMarkdown, type NovelTree } from '../utils/novel';
 import { join } from 'path';
 
 describe('slugify', () => {
@@ -17,6 +17,18 @@ describe('slugify', () => {
 
   it('collapses multiple spaces', () => {
     expect(slugify('Character  Ability  Table')).toBe('character-ability-table');
+  });
+});
+
+describe('unescapeScrivenerMarkdown', () => {
+  it('strips Scrivener backslash escapes so markdown renders', () => {
+    expect(unescapeScrivenerMarkdown('\\#\\#\\# Rain Azure?')).toBe('### Rain Azure?');
+    expect(unescapeScrivenerMarkdown('\\- \\*\\*Passive: Ghost\\*\\*')).toBe('- **Passive: Ghost**');
+  });
+
+  it('leaves already-clean prose untouched', () => {
+    const prose = "Just a dreamer stuck in the waiting room of his own life.";
+    expect(unescapeScrivenerMarkdown(prose)).toBe(prose);
   });
 });
 
