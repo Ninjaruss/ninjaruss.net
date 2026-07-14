@@ -1,3 +1,0 @@
-Artifacts are ordinary objects. Not inherently magical. During the Flare, objects that witnessed an irreversible human commitment absorbed a latent trace of that moment—not as power, but as memory. This trace is dormant.
-
-When a person actively confronting their wound encounters an object whose latent memory echoes their own struggle, resonance occurs. The object becomes a focus. It channels the passive into the active. The power is the user's. The artifact is the lens. The object is not special. The connection is. The user recognizes themselves in what the object represents—a found medium, a story that speaks to them.

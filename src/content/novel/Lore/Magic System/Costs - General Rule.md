@@ -1,1 +1,0 @@
-All active abilities have a self-affecting physiological cost. The cost is a metaphor for the emotional toll of the wound being channeled. It scales with use—the longer or more intensely the ability is active, the greater the cost. Recovery is possible but not instant. The cost cannot be bypassed; it can only be endured or transformed (see Advanced Abilities).
