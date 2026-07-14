@@ -50,38 +50,37 @@ describe('buildNovelTree', () => {
     const dir = join(process.cwd(), 'src/content/novel');
     const tree = await buildNovelTree(dir);
 
-    // Top-level folders exist
+    // Top-level folders exist (Scrivener reorg: Characters / Manuscript / Story Plan / World)
     expect(tree).toHaveProperty('characters');
-    expect(tree).toHaveProperty('locations');
-    expect(tree).toHaveProperty('lore');
-    expect(tree).toHaveProperty('themes');
+    expect(tree).toHaveProperty('manuscript');
+    expect(tree).toHaveProperty('story-plan');
+    expect(tree).toHaveProperty('world');
 
-    // Characters folder has subfolders for each character (Claire, Rain, Roxana, Vesper)
-    expect(Object.keys(tree.characters.subfolders).length).toBeGreaterThanOrEqual(3);
-    const vesperFolder = tree.characters.subfolders['vesper'];
-    expect(vesperFolder).toBeDefined();
+    // Characters are now flat files directly under Characters/ (not per-character subfolders)
+    const rain = tree.characters.files.find((f) => f.slug === 'rain');
+    expect(rain).toBeDefined();
+    expect(rain!.title).toBe('Rain');
+    expect(rain!.body).toBeTruthy(); // HTML rendered
+    expect(typeof rain!.body).toBe('string');
 
-    const vesper = vesperFolder.files.find((f) => f.slug === 'vesper-characterization');
-    expect(vesper).toBeDefined();
-    expect(vesper!.title).toBe('Vesper Characterization');
-    expect(vesper!.body).toBeTruthy(); // HTML rendered
-    expect(typeof vesper!.body).toBe('string');
+    // Characters still has an Asylum Patients subfolder
+    expect(tree.characters.subfolders).toHaveProperty('asylum-patients');
 
-    // Characters has Rain subfolder
-    expect(tree.characters.subfolders).toHaveProperty('rain');
+    // Manuscript holds the story arcs as subfolders, each with scene files
+    expect(tree.manuscript.subfolders).toHaveProperty('arc-1-fugitive');
+    expect(tree.manuscript.subfolders['arc-1-fugitive'].files.length).toBeGreaterThan(0);
 
-    // Lore has Magic System subfolder
-    expect(tree.lore.subfolders).toHaveProperty('magic-system');
-    expect(tree.lore.subfolders['magic-system'].files.length).toBeGreaterThan(0);
+    // World holds Magic System as a flat file now (was Lore/Magic System/)
+    expect(tree.world.files.some((f) => f.slug === 'magic-system')).toBe(true);
 
     // Dates are parsed
-    expect(vesper!.created).not.toBeNull();
+    expect(rain!.created).not.toBeNull();
 
     // Path field drives URL construction
-    expect(vesper!.path).toEqual(['characters', 'vesper', 'vesper-characterization']);
+    expect(rain!.path).toEqual(['characters', 'rain']);
 
     // mtime is captured
-    expect(typeof vesper!.mtime).toBe('string');
+    expect(typeof rain!.mtime).toBe('string');
   });
 });
 
@@ -105,10 +104,10 @@ const folder = (slug: string, files: any[], subfolders = {}) =>
 
 describe('computeNovelStats', () => {
 
-  it('splits story (scenes/) from outline words, recursing subfolders', () => {
+  it('splits story (manuscript/) from outline words, recursing subfolders', () => {
     const tree = {
-      scenes: folder('scenes', [file({})], {
-        'act-1': folder('act-1', [file({ body: '<p>four five</p>' })]),
+      manuscript: folder('manuscript', [file({})], {
+        'arc-1': folder('arc-1', [file({ body: '<p>four five</p>' })]),
       }),
       characters: folder('characters', [file({ body: '<p>a b c d</p>' })]),
     };
@@ -119,34 +118,34 @@ describe('computeNovelStats', () => {
 
   it('tracks last modified per group, preferring sidecar over mtime', () => {
     const tree = {
-      scenes: folder('scenes', [
+      manuscript: folder('manuscript', [
         file({ modified: '2026-07-01' }),
         file({ modified: null, mtime: '2026-07-05T00:00:00.000Z' }),
       ]),
-      lore: folder('lore', [file({ modified: '2026-06-01' })]),
+      world: folder('world', [file({ modified: '2026-06-01' })]),
     };
     const stats = computeNovelStats(tree);
     expect(stats.lastSceneModified).toBe('2026-07-05T00:00:00.000Z');
     expect(stats.lastOutlineModified).toBe(new Date('2026-06-01').toISOString());
   });
 
-  it('handles missing scenes folder and empty tree', () => {
+  it('handles missing manuscript folder and empty tree', () => {
     expect(computeNovelStats({})).toEqual({
       storyWords: 0, outlineWords: 0,
       lastSceneModified: null, lastOutlineModified: null,
     });
-    const stats = computeNovelStats({ lore: folder('lore', [file({})]) });
+    const stats = computeNovelStats({ world: folder('world', [file({})]) });
     expect(stats.storyWords).toBe(0);
     expect(stats.lastSceneModified).toBeNull();
   });
 
   it('anchors day-precision sidecar dates to UTC midnight', () => {
-    const tree: NovelTree = { scenes: folder('scenes', [file({ modified: 'July 1, 2026' })]) };
+    const tree: NovelTree = { manuscript: folder('manuscript', [file({ modified: 'July 1, 2026' })]) };
     expect(computeNovelStats(tree).lastSceneModified).toBe('2026-07-01T00:00:00.000Z');
   });
 
   it('ignores unparseable dates', () => {
-    const tree = { scenes: folder('scenes', [file({ modified: 'not a date' })]) };
+    const tree = { manuscript: folder('manuscript', [file({ modified: 'not a date' })]) };
     expect(computeNovelStats(tree).lastSceneModified).toBeNull();
   });
 });
@@ -170,14 +169,14 @@ describe('flattenFolderFiles', () => {
 
 describe('findRecentFiles', () => {
   const tree: NovelTree = {
-    scenes: folder('scenes', [
+    manuscript: folder('manuscript', [
       file({ slug: 'old-scene', modified: '2026-05-01' }),
       file({ slug: 'new-scene', modified: '2026-07-01' }),
     ]),
-    characters: folder('characters', [], {
-      rain: folder('rain', [file({ slug: 'rain-doc', modified: null, mtime: '2026-06-20T00:00:00.000Z' })]),
-    }),
-    lore: folder('lore', [
+    characters: folder('characters', [
+      file({ slug: 'rain-doc', modified: null, mtime: '2026-06-20T00:00:00.000Z' }),
+    ]),
+    world: folder('world', [
       file({ slug: 'dated-note', modified: 'June 1, 2026' }),
       file({ slug: 'undated', modified: null, mtime: null }),
       file({ slug: 'bad-date', modified: 'not a date', mtime: null }),

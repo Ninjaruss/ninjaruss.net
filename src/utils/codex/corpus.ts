@@ -13,7 +13,7 @@ export interface CorpusEntry {
 }
 
 const COLLECTIONS = ['notes', 'showcase', 'shelf', 'now'] as const;
-const NOVEL_FOLDERS = ['Themes', 'Lore'];
+const NOVEL_FOLDERS = ['World', 'Story Plan'];
 const MAX_TEXT = 4000;
 
 async function gatherCollection(contentDir: string, name: string): Promise<CorpusEntry[]> {

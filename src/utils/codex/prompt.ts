@@ -23,7 +23,7 @@ export function buildCodexPrompt(corpus: CorpusEntry[], existing: CodexData | nu
 
   return `You are condensing one person's website writing into a personal encyclopedia — a map of their mind.
 
-Below is their complete corpus: philosophical notes, project showcases, media log entries, "now" snapshots, and novel worldbuilding (themes/lore). Each entry starts with "=== <entry-id>".
+Below is their complete corpus: philosophical notes, project showcases, media log entries, "now" snapshots, and novel worldbuilding (world/story plan). Each entry starts with "=== <entry-id>".
 
 Your task:
 1. Propose between 6 and 12 concepts that genuinely organize this person's thinking. The concepts themselves should be discoveries — through-lines the author may not have named. Prefer ideas ("identity", "discipline") over topics ("anime") where the material supports it.

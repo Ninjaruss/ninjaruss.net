@@ -8,6 +8,7 @@ import {
   countWords,
   flattenFolderFiles,
   findRecentFiles,
+  STORY_FOLDER_SLUG,
 } from '../../utils/novel';
 import type { NovelFile, NovelFolder, NovelTree } from '../../utils/novel';
 import { stripMarkdown } from '../../utils/content';
@@ -123,7 +124,7 @@ if (view === 'file' && topFolder && filePath) {
     }
   }
 }
-const isScene = topSlug === 'scenes';
+const isScene = topSlug === STORY_FOLDER_SLUG;
 
 const pageTitle =
   view === 'file' && file ? `${file.title} — Remember Rain` : 'Remember Rain';
@@ -131,7 +132,7 @@ const pageTitle =
 
 <BaseLayout
   title={pageTitle}
-  description="A novel in progress — a writer's desk of scenes, characters, lore, and themes."
+  description="A novel in progress — a writer's desk of manuscript scenes, characters, world, and story plan."
 >
   <NavPill backLink={view === 'file' && topFolder ? `/novel#${topFolder.slug}` : undefined}
            backLabel={view === 'file' && topFolder ? topFolder.title : undefined} />
@@ -173,7 +174,7 @@ const pageTitle =
         <nav class="desk-index p3r-animate" style="--stagger-delay: 120ms" aria-label="All files">
           {indexGroups.map((group) => (
             <section class="desk-index__group" id={group.slug}>
-              <h2 class:list={['desk-index__header', { 'desk-index__header--scenes': group.slug === 'scenes' }]}>
+              <h2 class:list={['desk-index__header', { 'desk-index__header--scenes': group.slug === STORY_FOLDER_SLUG }]}>
                 {group.title}
                 <span class="desk-index__count">{group.count}</span>
               </h2>

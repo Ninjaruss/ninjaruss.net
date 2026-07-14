@@ -21,6 +21,14 @@ export interface NovelFolder {
 
 export type NovelTree = Record<string, NovelFolder>;
 
+/**
+ * Top-level folder slug that holds the manuscript prose (the story). Every other
+ * top-level folder (Characters, Story Plan, World) is treated as outline. This is
+ * the single source of truth for the story/outline split — the novel page and the
+ * homepage rain-gauge tile both key off it.
+ */
+export const STORY_FOLDER_SLUG = 'manuscript';
+
 export interface MetaData {
   created: string | null;
   modified: string | null;
@@ -156,7 +164,7 @@ export function flattenFolderFiles(folder: NovelFolder): NovelFile[] {
 
 /**
  * Story vs outline stats for the homepage rain-gauge tile.
- * Story = top-level `scenes` folder; outline = every other top-level folder.
+ * Story = top-level `manuscript` folder; outline = every other top-level folder.
  */
 export function computeNovelStats(tree: NovelTree): NovelStats {
   let storyWords = 0;
@@ -165,7 +173,7 @@ export function computeNovelStats(tree: NovelTree): NovelStats {
   let lastOutline: Date | null = null;
 
   for (const [slug, folder] of Object.entries(tree)) {
-    const isStory = slug === 'scenes';
+    const isStory = slug === STORY_FOLDER_SLUG;
     for (const file of flattenFolderFiles(folder)) {
       const words = countWords(file.body);
       if (isStory) storyWords += words;
@@ -192,7 +200,7 @@ export function computeNovelStats(tree: NovelTree): NovelStats {
 }
 
 export interface RecentFileOptions {
-  /** true → only the top-level `scenes` folder; false → everything else */
+  /** true → only the top-level `manuscript` (story) folder; false → everything else */
   scenes: boolean;
   limit: number;
 }
@@ -205,7 +213,7 @@ export interface RecentFileOptions {
 export function findRecentFiles(tree: NovelTree, opts: RecentFileOptions): NovelFile[] {
   const dated: Array<{ file: NovelFile; date: Date }> = [];
   for (const [slug, folder] of Object.entries(tree)) {
-    if ((slug === 'scenes') !== opts.scenes) continue;
+    if ((slug === STORY_FOLDER_SLUG) !== opts.scenes) continue;
     for (const file of flattenFolderFiles(folder)) {
       const raw = file.modified ?? file.mtime;
       if (!raw) continue;

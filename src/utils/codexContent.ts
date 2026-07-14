@@ -10,7 +10,7 @@ export type { ResolvedCodex, ResolvedEntry };
 
 const CODEX_JSON = path.resolve('src/data/codex.json');
 const NOVEL_DIR = path.resolve('src/content/novel');
-const NOVEL_FOLDER_SLUGS = ['themes', 'lore'];
+const NOVEL_FOLDER_SLUGS = ['world', 'story-plan'];
 
 /** Read + validate the committed codex.json; missing/invalid → null (never fails the build). */
 function readCodexData(): CodexData | null {

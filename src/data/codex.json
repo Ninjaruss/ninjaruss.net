@@ -1,50 +1,46 @@
 {
-  "generatedAt": "2026-07-10T06:43:46Z",
+  "generatedAt": "2026-07-14T00:00:00.000Z",
   "concepts": [
     {
       "slug": "commitment-over-potential",
       "name": "Killing Potential to Become a Self",
-      "synthesis": "You keep returning to the same conviction from two directions at once: that a self is built only through irreversible commitment, and that staying in the realm of infinite potential is a slow self-erasure. It is no accident that your novel's entire magic system runs on this — memory as the record of the self, artifacts imprinted by decisive acts, Vesper's transgression being the erasure of that record — while your Now entries escalate from 'I have infinite potential' to the binding vow to literally 'kill my potential.' The tension you can't fully resolve is that relief is real: removing pain, keeping options open, can genuinely feel like freedom, and part of you knows that's exactly the trap. What began as an abstract theme has hardened into a personal ultimatum — finish Remember Rain, move to Japan, let every other path die.",
+      "synthesis": "You keep circling one conviction: that a self is built through irreversible commitment, and that living in the comfortable haze of infinite potential is a slow self-erasure. It started as scattered self-talk about \"making any choice and sticking through it,\" hardened into the July vow to literally \"kill your potential\" and commit to the novel and the move to Japan, and became the literal engine of Remember Rain — where the Flare only clings to those who cross a point of no return. What began as motivation has become a metaphysics: you now frame living itself as the single act of choosing, in the here and now, to become something rather than staying possible.",
       "entries": [
+        "notes/i-am-ninjaruss",
+        "notes/infinity",
         "notes/subtle-progress",
         "notes/live-without-regret",
+        "notes/current-objectives",
+        "now/2026-04",
         "now/2026-06",
         "now/2026-07",
-        "novel/themes/central-motif-memory",
-        "novel/themes/character-motifs-overview",
-        "novel/themes/focus-questions",
-        "novel/themes/theme",
-        "novel/lore/magic-system/advanced-actives",
-        "novel/lore/magic-system/artifacts-origins-and-nature",
-        "novel/lore/magic-system/artifacts-permanance",
-        "novel/lore/magic-system/costs-general-rule",
-        "novel/lore/magic-system/magic-overview-reference",
-        "novel/lore/magic-system/memory-exception",
-        "novel/lore/magic-system/passive-vs-active",
-        "novel/lore/magic-system/resonance-and-awakening",
-        "novel/lore/magic-system/the-flare",
-        "novel/lore/plot/plot-ideas"
+        "showcase/kaima",
+        "novel/world/history",
+        "novel/world/locations",
+        "novel/world/magic-system",
+        "novel/story-plan/arcspine",
+        "novel/story-plan/choice-points",
+        "novel/story-plan/themes-and-motifs"
       ],
       "related": [
-        "incremental-progress-invisible-in-the-moment",
         "comfort-as-the-enemy",
-        "avoidance-and-numbness",
-        "the-fighting-spirit"
+        "the-fighting-spirit",
+        "incremental-progress-invisible-in-the-moment",
+        "art-as-self-recognition"
       ]
     },
     {
       "slug": "incremental-progress-invisible-in-the-moment",
       "name": "Progress You Can Only See in Hindsight",
-      "synthesis": "You are certain that almost all real change comes from small incremental steps, yet you're tormented that during the actual journey you feel nothing — no emotional momentum, no sense of having changed, even after driving a motorcycle, flying across the country, planning a move abroad. This is your drill: Gurren Lagann's spinning bit that makes progress bit by bit, the thing that lets you keep going when the feedback is delayed and arrives only in retrospect. The vibe-learning of kanji is your clearest proof of the pattern — in the moment nothing sticks, then repetition plus time quietly cements it — and you keep using it to argue against your own impatience. The unresolved ache is that you crave the instant dopamine of a game and can't yet feel the same reward from the slow work that actually matters.",
+      "synthesis": "You return again and again to a frustrating asymmetry: you change constantly, but neither you nor anyone else can feel it while it's happening — the reward only arrives in hindsight. It's your Gurren Lagann drill spinning bit by bit, your \"vibe learning\" of kanji that seems to retain nothing until suddenly it sticks, your recurring shock at how much the last two or three years actually moved. The tension you can't fully resolve is that this delayed feedback is exactly what makes the process hard to stay addicted to, so you keep hunting for ways to feel momentum you can only trust is real.",
       "entries": [
         "notes/subtle-progress",
-        "notes/addiction",
         "notes/vibe-learning",
-        "notes/graduation",
-        "shelf/gurren-lagann",
-        "shelf/simon",
-        "now/2026-06",
-        "now/2026-01"
+        "notes/loser-behavior",
+        "notes/addiction",
+        "shelf/dark-souls-3",
+        "now/2026-05",
+        "now/2026-06"
       ],
       "related": [
         "commitment-over-potential",
@@ -55,143 +51,143 @@
     {
       "slug": "comfort-as-the-enemy",
       "name": "The Road Less Taken",
-      "synthesis": "You treat comfort not as a reward but as the single greatest threat to who you could become — the 'insulated' American life you could easily keep living reads to you as a guaranteed slide into mediocrity. Japan is less a destination than a deliberate stripping-away of every safety net (family, familiar language, the unconscious pull of the friends you hang out with) so you can 'face the raw extent of your self doubts.' You know this is scary and emotionally hard to act on, and you say so plainly; what convinces you anyway is the belief that becoming someone extraordinary requires overcoming, not avoiding, the deterministic factors of your environment. The move keeps sharpening from 'I want to try living in Japan' into 'a writer who lives in Japan' — comfort narrowed down until only the hard road remains.",
+      "synthesis": "You've cast comfort as the quiet antagonist of your life — the cushy office job, the stable American future, the privileged life you could \"easily\" keep — and moving to Japan as the deliberate refusal of it. You catch yourself dressing up comfort as caution (\"learning Japanese is a waste of time\" was really \"seeking comfort disguised as self doubt\"), and you keep choosing the harder path precisely because the insulated one, you're convinced, leads to mediocrity. This is the road less taken you'd rather be addicted to: to live rather than merely survive, even when the discomfort has no immediate payoff.",
       "entries": [
         "notes/reason-for-japan",
-        "notes/hermit",
+        "notes/addiction",
+        "notes/avoidance",
         "notes/japanese-special",
+        "notes/hermit",
         "notes/current-objectives",
-        "now/2026-01",
         "now/2026-04",
         "now/2026-05",
         "now/2026-07",
-        "showcase/kaima"
+        "novel/story-plan/arcspine"
       ],
       "related": [
         "commitment-over-potential",
         "avoidance-and-numbness",
-        "determinism-vs-agency",
         "japan-as-a-mirror"
       ]
     },
     {
       "slug": "avoidance-and-numbness",
       "name": "Retreat, Numbness, and the Coward Reflex",
-      "synthesis": "You've mapped your own coping loop with unusual honesty: an addictive personality that locks in on a single thing until 3 AM, a habit of retreating into yourself and letting texts go unanswered, and a craving to feel numb through Deadlock, doomscrolling, or 'informational content' that pretends to be growth. You name the paradox precisely — you can summon courage for the big, dramatic acts, but freeze on the mundane small details, deferring problems 'to the point of ruin.' The fix you keep reaching for is to make avoidance harder by force (Unhook, ReVanced, spending money to weight your decisions) because you know feelings override your stated intentions. You even want to become addicted to the one thing worth it — trying, and likely failing, over and over.",
+      "synthesis": "You're unusually honest about your default failure mode: when friction hits, you retreat into yourself, leave texts unanswered, and chase numbness through doomscrolling, Deadlock, and endless YouTube. You name it plainly — a coward reflex, a deferral of problems \"to the point of ruin\" — and note the cruel twist that you can summon courage for the big, dramatic acts but stall on the mundane ones. Your own antagonist grows from this soil: the untended problem that festers into a Dark Souls abomination, the numbness you keep trying to purify by facing things head-on the moment they arise.",
       "entries": [
-        "notes/addiction",
         "notes/avoidance",
+        "notes/addiction",
         "notes/loser-behavior",
+        "notes/live-without-regret",
+        "shelf/dark-souls-3",
         "now/2026-02",
-        "now/2026-03",
-        "now/2026-05",
-        "now/2026-07",
-        "shelf/dark-souls-3"
+        "now/2026-03"
       ],
       "related": [
-        "commitment-over-potential",
-        "incremental-progress-invisible-in-the-moment",
         "comfort-as-the-enemy",
-        "the-fighting-spirit"
+        "commitment-over-potential",
+        "incremental-progress-invisible-in-the-moment"
       ]
     },
     {
       "slug": "the-fighting-spirit",
       "name": "Row Row, Fight the Power",
-      "synthesis": "Your emotional scripture is the human fighting spirit, and Gurren Lagann is its gospel — the drill that pierces the heavens, Simon's rebuke of the Anti-Spiral, spiral energy as the refusal to accept anyone's declared limit. You return to this whenever you catch yourself or others going 'hollow,' liking doomers to the Anti-Spiral and insisting it's arrogant to assume you've hit your ceiling. The music you love runs on the same current: upbeat sound carrying motivating or bittersweet defiance, from Sorairo Days to Set It Off's pop-punk rebellion to veil's high-low dynamics. This is the aura you want to build and pass on — smiling like a madman and climbing the stairs anyway.",
+      "synthesis": "A single emotional frequency runs through your favorite art and your self-image: the upbeat-but-defiant human fighting spirit, the drill that pierces the heavens, Simon telling the Anti-Spiral that despair is a self-imposed limit. It's why your playlist trends toward uplifting-yet-edged anthems — Sorairo Days, Set It Off, Going My Way, veil — and why you keep quoting \"one must imagine Sisyphus happy.\" You've turned this into a persona you're actively building: the aura monster who smiles like a madman and keeps climbing the stairs, hoping the sheer act inspires others to climb too.",
       "entries": [
         "shelf/gurren-lagann",
         "shelf/simon",
-        "notes/infinity",
-        "notes/loser-behavior",
-        "notes/live-without-regret",
+        "shelf/record-of-ragnarok",
         "shelf/set-it-off",
-        "shelf/veil",
         "shelf/going-my-way",
         "shelf/colors-of-the-heart",
         "shelf/sugar-song",
-        "shelf/pull-the-trigger",
-        "now/2026-06",
-        "shelf/persona-4-golden"
+        "shelf/veil",
+        "shelf/yugioh-5ds",
+        "shelf/yusei",
+        "notes/infinity",
+        "notes/i-am-ninjaruss",
+        "notes/loser-behavior",
+        "now/2026-06"
       ],
       "related": [
         "commitment-over-potential",
-        "avoidance-and-numbness",
-        "determinism-vs-agency",
-        "art-as-self-recognition"
+        "art-as-self-recognition",
+        "incremental-progress-invisible-in-the-moment"
       ]
     },
     {
       "slug": "determinism-vs-agency",
       "name": "Determinism and the Individual's Infinite Potential",
-      "synthesis": "You hold two ideas in uneasy balance: that there's a deterministic throughline running through everything — canon events, environment, genetics — and that any individual can still become anything they allow themselves to be. It shows up as a quiet, growing anger at people who act 'like animals,' on autopilot, entitled and unchallenged, tempered by your reminder that they're products of culture and circumstance and shouldn't shoulder all the blame. You even concede some people may be 'made' to be followers, and that they should fulfill that role beautifully — while refusing to accept that anyone is truly doomed. You flag the honest limit of this view yourself: you haven't yet been tested by real trauma or poverty, so you don't know if the belief would survive it.",
+      "synthesis": "You hold two ideas in uneasy balance: that there's a real deterministic through-line to the world — people running on survival instinct and social conditioning like NPCs on autopilot — and that any individual still has near-infinite potential to change if they choose to. You resist the pull toward writing people off (\"maybe their lives were made to be followers\") because it feels arrogant coming from someone who hasn't tasted real hardship, yet you can't shake a quiet contempt for unquestioned autopilot living. It's the exact fault line your novel dramatizes: Vesper insists people must be forced to change, and you insist the choice has to be theirs.",
       "entries": [
         "notes/animals",
         "notes/entitlement",
         "notes/infinity",
-        "notes/loser-behavior",
         "notes/gratitude",
-        "notes/bitcoin",
-        "novel/themes/focus-questions"
+        "notes/loser-behavior",
+        "novel/story-plan/themes-and-motifs"
       ],
       "related": [
-        "the-fighting-spirit",
         "gratitude-and-the-life-lottery",
-        "commitment-over-potential"
+        "commitment-over-potential",
+        "comfort-as-the-enemy"
       ]
     },
     {
       "slug": "gratitude-and-the-life-lottery",
       "name": "The Life Lottery and Quiet Guilt",
-      "synthesis": "You keep circling a discomfort that comes from having won the life lottery — loving parents, a stable home, an education — while having walked through slums in America and the Philippines and seen people without the bare necessities. Gratitude, for you, can't be fully discharged by thanks; the honest response is to pay it forward, to use what you were granted and 'push the envelope,' making something actually worth a thank-you. This is the source of a recurring self-check: it feels arrogant and deaf to preach 'keep fighting on' to people who've suffered what you haven't. The guilt is quiet but it's load-bearing — it's part of why comfort feels unearned to you and why you refuse to squander your circumstances.",
+      "synthesis": "You're acutely aware you won the life lottery — loving parents, stability, education, safety — and carry a quiet guilt that sharpens every time you see entitled customers who've clearly never known real hardship or recall the slums of the Philippines. Your resolution isn't just to say thank you, which you argue can never be \"enough,\" but to pay it forward: to use what you were granted to make something itself worth a thank you. The guilt has a stinger you keep worrying at — how do you tell someone with fewer privileges and real trauma to keep fighting on without sounding arrogant and deaf?",
       "entries": [
         "notes/gratitude",
         "notes/entitlement",
-        "notes/animals"
+        "notes/animals",
+        "notes/graduation",
+        "notes/bitcoin"
       ],
       "related": [
         "determinism-vs-agency",
-        "comfort-as-the-enemy"
+        "commitment-over-potential"
       ]
     },
     {
       "slug": "niche-things-and-community",
       "name": "Making Niche Things That Are Truly Yours",
-      "synthesis": "Every project you actually finish turns out to be a small, niche thing made mostly for yourself — Fuma-shi, weebcloset, the Marie video essay, the L-file Usogui database, this very site — and you've realized this 'hidden fire' for the barely-applicable is a lifelong trend worth leaning into rather than apologizing for. You lean hard on vibe coding and Claude Code to ship despite admitting you're no frontend developer, and you consistently choose 'better to have a site than not make one' over waiting for perfect. Yet you keep circling back to needing a tight-knit community aligned with your inner goals, not just your interests — the hermit who now wants to break the pattern. Live streaming is where the two meet: turning the mess of your mind, plus other people's chaos, into what you call entropic thought.",
+      "synthesis": "Your whole creative history is a chain of small, deeply personal projects — the Fuma-shi ninja roleplay group, weebcloset, the Marie video essay, the L-file Usogui database, this website — and you've realized the \"niche-ness\" is the fuel, not a flaw. You keep noticing the paradox of the hermit: you drift into months of solitude and self-directed work, yet you know you're missing the tight-knit community that would actually carry you toward your goals, so you use live streaming to think out loud and pull people into the process. The through-line is a refusal to build for a mass audience — you'd rather make something that's unmistakably yours, even if the real struggle afterward is getting anyone to notice.",
       "entries": [
         "showcase/fuma-shi",
         "showcase/l-file",
         "showcase/this-website",
         "showcase/marie-video-essay",
         "showcase/kaima",
-        "notes/live-streaming",
-        "notes/hermit",
-        "notes/current-objectives",
         "shelf/usogui",
+        "notes/hermit",
+        "notes/live-streaming",
+        "notes/current-objectives",
+        "notes/bitcoin",
+        "now/2026-01",
         "now/2026-02",
-        "now/2026-03",
-        "now/2026-01"
+        "now/2026-03"
       ],
       "related": [
         "art-as-self-recognition",
-        "comfort-as-the-enemy",
-        "incremental-progress-invisible-in-the-moment"
+        "commitment-over-potential",
+        "japan-as-a-mirror"
       ]
     },
     {
       "slug": "japan-as-a-mirror",
       "name": "Japan and the Real Weeb",
-      "synthesis": "Japan reached you by proxy — Dragon Ball, Yu-Gi-Oh, Pokemon manga, ninjas — and hardened into a genuine draw you now want to experience firsthand rather than solve intellectually, sensing something special in how a collectivist, harmony-under-pressure culture still produces art that filters and rewards true commitment. You've thought hard about what a 'real weeb' even is, landing on a distinction that mirrors your whole worldview: not the gatekeeper hoarding trivia, but the person whose being 'oozes' with what they love and who transforms enjoyment into something of their own. Even your relationship to characters follows this — waifu-as-meme, Reze relatable precisely because she's split between a doomed role and a quiet life, the fictional standing in for a version of yourself. Learning the language is the commitment that makes the affinity real, vibe-learned one absurd mnemonic at a time.",
+      "synthesis": "Japan started as a by-product of the media you loved — Dragon Ball, Yu-Gi-Oh, obscure manga, J-pop and J-rock — and became a mirror you want to step through, convinced there's a \"special aura\" to what its culture produces and a harmony-through-pressure you'd rather experience than solve intellectually. In parallel you keep interrogating what a \"real weeb\" even is, landing on a distinction that mirrors your whole ethos: not the gatekeeper who hoards obscure details to prove enjoyment, but the person whose very being oozes with the stuff they love and who transforms that love into something of their own. The Japanese-learning journal and your vibe-learning method are you literally trying to become that person, one mnemonic kanji at a time.",
       "entries": [
+        "notes/japanese-special",
         "notes/reason-for-japan",
         "notes/real-weeb",
-        "notes/japanese-special",
-        "notes/waifus",
-        "notes/vibe-learning",
         "notes/jp-journal",
-        "shelf/reze",
-        "shelf/reze-movie",
-        "shelf/marie"
+        "notes/vibe-learning",
+        "notes/waifus",
+        "shelf/one-piece",
+        "shelf/bocchi",
+        "now/2026-01"
       ],
       "related": [
         "comfort-as-the-enemy",
@@ -202,35 +198,35 @@
     {
       "slug": "art-as-self-recognition",
       "name": "Stories as Mirrors of the Self",
-      "synthesis": "The media that stays with you does so by recognizing you back — Persona 4 Golden gave you the high-school belonging you never had and characters (Adachi's loneliness, Yukiko's open cage) that named your own struggles, and Journal with the Witch made you cry over Asa's plainness because it was 'a direct call out to myself.' You return again and again to story as the most important element in any work, and to a specific taste for craft-of-commitment: Usogui's beautiful gamblers, the trick-and-reveal precision of The Prestige and Seven, the resolve of Yu-Gi-Oh 5D's and Steel Ball Run, the earned uplift of Maquia and Bocchi. What you love in others' work is exactly what you're trying to build — a lingering feeling that persists through the people it touches, the reason you want to write Remember Rain at all.",
+      "synthesis": "For you, the deepest art isn't consumed, it's recognized — Persona 4 Golden's Marie and Adachi, Reze's split between soldier and quiet country life, Journal with Witch's \"why am I still so plain,\" all hit because they name struggles you're already carrying. You treat \"waifu\" and favorite characters as a diagnostic of your own inner traits rather than mere taste, and you keep chasing the lingering feeling P4G and Gurren Lagann left you with — which is exactly what you're trying to reproduce by writing Remember Rain, a story whose characters are idealized fragments of yourself. The impulse behind every video essay and this whole codex is the same: to see yourself more clearly through the mirror of a story.",
       "entries": [
         "shelf/persona-4-golden",
-        "shelf/journal-with-witch",
-        "shelf/usogui",
         "shelf/marie",
+        "showcase/marie-video-essay",
         "shelf/reze",
         "shelf/reze-movie",
-        "shelf/the-prestige",
-        "shelf/seven",
-        "shelf/yugioh-5ds",
-        "shelf/yusei",
-        "shelf/sbr",
-        "shelf/johnny",
+        "shelf/journal-with-witch",
         "shelf/maquia",
-        "shelf/bocchi",
         "shelf/kaguya-sama",
-        "shelf/one-piece",
         "shelf/arcane",
         "shelf/better-call-saul",
         "shelf/daredevil",
-        "shelf/record-of-ragnarok",
-        "showcase/marie-video-essay",
-        "notes/waifus"
+        "shelf/the-prestige",
+        "shelf/seven",
+        "shelf/sbr",
+        "shelf/johnny",
+        "shelf/pull-the-trigger",
+        "shelf/gurren-lagann",
+        "shelf/usogui",
+        "notes/waifus",
+        "notes/real-weeb",
+        "notes/live-streaming",
+        "novel/story-plan/themes-and-motifs"
       ],
       "related": [
+        "the-fighting-spirit",
         "japan-as-a-mirror",
         "niche-things-and-community",
-        "the-fighting-spirit",
         "commitment-over-potential"
       ]
     }
