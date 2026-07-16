@@ -1,3 +1,5 @@
 ---
-return Astro.redirect('/shelf?fav=1', 301);
+// The `?fav=1` favorites filter no longer exists on /shelf, so redirect to the
+// shelf itself rather than a dead query param.
+return Astro.redirect('/shelf', 301);
 ---

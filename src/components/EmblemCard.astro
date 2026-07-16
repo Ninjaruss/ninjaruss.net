@@ -22,6 +22,7 @@ const cardBack = '/images/ygo-card-backing.png';
   data-size={size}
   data-emblem-src={emblemSrc || defaultEmblem}
   data-disable-lightbox={disableLightbox ? 'true' : 'false'}
+  {...(!disableLightbox ? { role: 'button', tabindex: '0', 'aria-label': 'View emblem full screen' } : {})}
 >
   <div class="emblem-card__flipper">
     <div class="emblem-card__face emblem-card__back">
@@ -406,11 +407,23 @@ const cardBack = '/images/ygo-card-backing.png';
 
       const img = card.querySelector('.emblem-card__front img') as HTMLImageElement;
       if (img) {
-        card.addEventListener('click', (e) => {
-          e.preventDefault();
+        const open = () => {
           const src = img.getAttribute('src');
           if (src && (window as any).openMediaLightbox) {
             (window as any).openMediaLightbox(src, '', 'image');
+          }
+        };
+        card.addEventListener('click', (e) => {
+          e.preventDefault();
+          open();
+        });
+        // Keyboard parity — the card exposes role="button" tabindex="0" when
+        // the lightbox is enabled, so Enter/Space must trigger it too.
+        card.addEventListener('keydown', (e) => {
+          const key = (e as KeyboardEvent).key;
+          if (key === 'Enter' || key === ' ' || key === 'Spacebar') {
+            e.preventDefault();
+            open();
           }
         });
       }

@@ -147,7 +147,7 @@ function colorBg(hex: string, a: number): string {
       <div class="s-tabs" id="tab-list" role="tablist">
         <div class="s-tab-indicator" id="tab-indicator"></div>
         <button class="s-tab active" data-tab="status"  role="tab" aria-selected="true">Status</button>
-        <button class="s-tab"        data-tab="journal" role="tab" aria-selected="false">Journal</button>
+        <button class="s-tab"        data-tab="journal" role="tab" aria-selected="false">Sessions</button>
         <button class="s-tab"        data-tab="bonds"   role="tab" aria-selected="false">Bonds</button>
         <button class="s-tab"        data-tab="mailbox" role="tab" aria-selected="false">Mailbox</button>
       </div>
@@ -183,7 +183,7 @@ function colorBg(hex: string, a: number): string {
                 <div class="s-date-month">{dateMonth}</div>
               </div>
               <div class="s-objective">
-                <div class="s-obj-label">Current Objective</div>
+                <div class="s-obj-label">Active Quest</div>
                 <div class="s-obj-text">{currentObjective ?? 'No active quest'}</div>
               </div>
             </div>
@@ -396,6 +396,11 @@ function colorBg(hex: string, a: number): string {
                     </div>
                   );
                 })}
+                {socialLinks.length === 0 && (
+                  <p class="bonds-empty" style="padding: var(--space-lg); color: var(--color-text-subtle); font-size: var(--text-sm); line-height: 1.5;">
+                    No bonds forged yet — they'll appear here as the stream grows.
+                  </p>
+                )}
               </div>
             </div>
 
@@ -444,6 +449,12 @@ function colorBg(hex: string, a: number): string {
               <div class="mail-sub">Send mail to be read on stream</div>
               {/* Address + href injected client-side so it never sits in the served HTML */}
               <a href="#mailbox" class="mail-address" id="mail-address"></a>
+              {/* JS-free fallback: address in a human-readable, still-obfuscated
+                  form (no `@`/`mailto:` in the served HTML) so a no-JS visitor
+                  who follows the Email tile here isn't left with a dead link. */}
+              <noscript>
+                <p class="mail-address">mailbox [at] ninjaruss [dot] net</p>
+              </noscript>
             </div>
           </div>
 

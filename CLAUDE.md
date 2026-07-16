@@ -71,7 +71,6 @@ Collection-specific extensions:
 | Layout | Purpose |
 |--------|---------|
 | `BaseLayout.astro` | Foundation wrapper with meta, styles, view transitions |
-| `SectionLayout.astro` | Content pages with NavPill and animated P4G header (still unused by routes; the unified section header now lives in `SplitViewLayout`) |
 | `SplitViewLayout.astro` | Three-panel list/detail/emblem interface with client-side navigation and emblem card sidebar. Optional `kicker` prop; renders the unified P4G section header (`p4g-tab` + `p4g-heading` + `p4g-underline`) — the same header pattern is replicated on the Now, Now-archive, and Novel pages; optional `placeholderStats` prop renders a build-time stats `<dl>` in the no-selection placeholder (journal: notes/showcases/newest; codex: concepts/source entries) |
 
 ## Component Inventory
@@ -106,7 +105,6 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 
 ### List/Detail
 - `ListItem.astro` — Left panel items in SplitViewLayout
-- `EntryCard.astro` — Card component for listings
 - `EntryHeader.astro` — Entry title, tags, dates, emblem trigger (`data-page-emblem` attr signals SplitView to flip card)
 - `EntryBody.astro` — Wraps entry prose in `.entry__content.prose`; renders nothing if `hasContent` is false
 
@@ -115,7 +113,6 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 - `DateDisplay.astro` — Published/updated date display with optional size variants
 - `EmblemCard.astro` — 3D flippable card component with mouse-tracking tilt effect (Yu-Gi-Oh card backing style, aspect ratio 63:88)
 - `MediaLightbox.astro` — Fullscreen media popup
-- `ImageGallery.astro` — Thumbnail gallery with sticky positioning on desktop, staggered animations
 - `RelatedContent.astro` — Cross-referenced entries via collections field, relevance-scored card grid (max 6 items)
 
 ## Design System
@@ -166,8 +163,9 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 ### Animation Classes
 - `.p3r-animate` — Standard entrance (translateY + fade)
 - `.p3r-animate-left` — Left entrance
-- `.p3r-animate-scale` — Scale entrance
+- `.p3r-animate-wipe` — Diagonal wipe reveal
 - Use `--stagger-delay` for sequencing
+- (The `p3r-entrance-scale` keyframe is still used directly by `.entry-grid`/`.bento-grid` children)
 
 ## Responsive Breakpoints
 
@@ -189,7 +187,7 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 ### Legacy Routes (301 Redirects)
 - `/notes` → redirects to `/journal?types=note` (list page only; detail routes live)
 - `/showcase` → redirects to `/journal?types=showcase` (list page only; detail routes live)
-- `/favorites` → redirects to `/shelf?fav=1`
+- `/favorites` → redirects to `/shelf` (the `?fav=1` filter no longer exists)
 - `/favorites/[slug]` → redirects to `/shelf/[slug]`
 - `/media` → redirects to `/shelf` (via `astro.config.mjs` redirects)
 - `/media/[...slug]` → redirects to `/shelf/[...slug]`
@@ -211,7 +209,7 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 - Cards are `<a>` tags linking to `/shelf/[slug]` (works without JS) — the standalone detail page itself redirects (`window.location.replace`) back to `/shelf?open=slug` when JS is available, so the quick-view panel is the JS-enabled experience.
 - Entry data pre-rendered as JSON in `data-entries` attribute — no client fetch needed.
 - **Content indicator**: favorites get a gold star badge (`.shelf-card__bar--fav`, `.shelf-card__star`) and gold title (`.shelf-card__title--fav`); entries that are neither a favorite nor have written content dim via `.shelf-card--dim` (`filter: opacity(0.52)`, not `opacity` — see Code Style Notes).
-- No client-side type/favorites filter pills exist on this page (the `★ favorites` filter and `?type=/&fav=` URL params described elsewhere in this doc were removed; `src/utils/mediaGrid/filterEngine.ts` no longer exists). The `/favorites` route still 301-redirects to `/shelf?fav=1`, which is now a no-op query param.
+- No client-side type/favorites filter pills exist on this page (the `★ favorites` filter and `?type=/&fav=` URL params described elsewhere in this doc were removed; `src/utils/mediaGrid/filterEngine.ts` no longer exists). The `/favorites` route 301-redirects to `/shelf` (the old `?fav=1` query param was dropped once the filter was removed).
 
 ## Novel System ("Remember Rain")
 

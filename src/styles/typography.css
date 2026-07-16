@@ -141,6 +141,13 @@ code, .mono {
   max-width: 65ch;
 }
 
+/* The entry title already renders in the header, and most bodies open with a
+   heading — so drop the leading top-margin to avoid a large empty gap above
+   the first line. */
+.prose > :first-child {
+  margin-top: 0;
+}
+
 .prose p {
   margin-bottom: var(--space-lg);
 }
