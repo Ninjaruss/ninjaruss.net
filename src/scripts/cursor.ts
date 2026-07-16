@@ -5,6 +5,14 @@ function init(): void {
   const dot = document.getElementById('cursor');
   if (!dot) return;
 
+  // Only take over the cursor on hover-capable (pointer) devices, and only
+  // once JS is confirmed running. CSS hides the native cursor via
+  // `html.has-custom-cursor`, so until this class lands the native pointer
+  // stays visible — the page is never left with no cursor if this fails.
+  if (typeof matchMedia !== 'function' || matchMedia('(hover: hover)').matches) {
+    document.documentElement.classList.add('has-custom-cursor');
+  }
+
   document.addEventListener('mousemove', (e) => {
     dot.style.left = `${e.clientX}px`;
     dot.style.top = `${e.clientY}px`;

@@ -40,7 +40,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
       <header class="split-view__header">
         <span class="p4g-tab">{kickerText}</span>
         <div class="split-view__header-top">
-          <h1 class="split-view__title"><span class="p4g-heading">{title}</span></h1>
+          <h2 class="split-view__title"><span class="p4g-heading">{title}</span></h2>
           <span class="split-view__count" id="split-count" aria-live="polite"></span>
         </div>
         <span class="p4g-underline" aria-hidden="true"></span>
@@ -64,7 +64,6 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
           <button class="split-view__clear-all-filters" type="button" hidden aria-label="Clear all filters" title="Clear all filters">
             <span class="split-view__clear-all-icon" aria-hidden="true">✕</span>
           </button>
-          <span class="split-view__count" id="split-count" aria-live="polite"></span>
         </div>
         <div class="split-view__types" role="group" aria-label="Filter by type"></div>
         <div class="split-view__tags" role="group" aria-label="Filter by tag"></div>
@@ -74,7 +73,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
         <p class="split-view__no-results-text">No entries found</p>
         <p class="split-view__no-results-hint">Try a different search or clear filters</p>
       </div>
-      <nav class="split-view__nav" role="list">
+      <nav class="split-view__nav" aria-label="Entries">
         <slot name="list" />
       </nav>
     </aside>
@@ -214,16 +213,6 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     display: flex;
     gap: var(--space-xs);
     align-items: center;
-  }
-
-  .split-view__count {
-    flex-shrink: 0;
-    min-width: 3.5em;
-    text-align: right;
-    font-family: var(--font-mono);
-    font-size: var(--text-2xs);
-    color: var(--color-text-subtle);
-    letter-spacing: 0.04em;
   }
 
   .split-view__search-wrapper {
@@ -714,7 +703,8 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     .split-view.has-selection .emblem-badge {
       display: block;
       position: fixed;
-      bottom: 100px; /* Above NavPill */
+      /* Sit above the (possibly two-row) fixed NavPill, tracking its height. */
+      bottom: calc(var(--nav-clearance, 100px) + var(--space-sm));
       right: var(--space-md);
       width: 60px;
       z-index: 50;

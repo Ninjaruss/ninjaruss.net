@@ -151,7 +151,7 @@ const codexTile = await getCodexTileData();
       <div class="title-tile p3r-animate-left">
         <div class="title-tile__inner">
           <div class="title-tile__rule title-tile__rule--top" aria-hidden="true"></div>
-          <span class="title-tile__name"><span class="title-tile__name-inner">Ninjaruss</span></span>
+          <h1 class="title-tile__name"><span class="title-tile__name-inner">Ninjaruss</span></h1>
           <div class="title-tile__rule title-tile__rule--bottom" aria-hidden="true"></div>
         </div>
         <p class="title-tile__description">Live without regret.</p>
@@ -213,6 +213,7 @@ const codexTile = await getCodexTileData();
         label="Now"
         title={latestNow?.data.title ?? 'Current Focus'}
         description="Where am I at right now?"
+        class="home-now-tile"
       >
         <span class="now-date" title={`Local: ${nowMonthYearLocal}`}>
           <span class="now-dot" aria-hidden="true"></span>
@@ -1774,6 +1775,12 @@ const codexTile = await getCodexTileData();
       min-height: 200px;
     }
 
+    /* Now fills the rest of its row so the following span-2 Journal tile
+       doesn't wrap and leave a blank cell beside it. */
+    .home-now-tile {
+      grid-column: span 2;
+    }
+
     .latest-tile__inner {
       flex-direction: column;
     }
@@ -1798,14 +1805,25 @@ const codexTile = await getCodexTileData();
   @media (max-width: 480px) {
     .title-tile {
       grid-column: span 1;
+      order: -1; /* keep the name/h1 first */
     }
 
     .title-tile__name {
       font-size: clamp(1.5rem, 6vw, 2rem);
     }
 
+    /* Single column: float owned content (Journal/Now/Novel/Latest/Codex…)
+       above the external service tiles, and let the YouTube tile read as a
+       signal rather than a full-height hero. Grid honors `order` for
+       auto-placement just like flex. */
     .image-tile--youtube {
       grid-column: span 1;
+      min-height: 150px;
+      order: 2;
+    }
+
+    .logo-tile {
+      order: 2;
     }
   }
 </style>

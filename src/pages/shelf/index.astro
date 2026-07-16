@@ -164,7 +164,8 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
                     src={entry.data.emblem ?? '/images/emblems/default.svg'}
                     alt=""
                     class="shelf-card__img"
-                    loading="lazy"
+                    loading={groupIndex === 0 && i < 6 ? 'eager' : 'lazy'}
+                    decoding="async"
                   />
                   <span class="shelf-card__corner" aria-hidden="true"></span>
                 </div>
@@ -197,7 +198,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   >
     <button class="shelf-panel__close" id="shelf-panel-close" aria-label="Close panel">✕</button>
     <div class="shelf-panel__poster">
-      <img src="" alt="" class="shelf-panel__poster-img" id="shelf-panel-img" />
+      <img alt="" class="shelf-panel__poster-img" id="shelf-panel-img" />
     </div>
     <div class="shelf-panel__content" id="shelf-panel-content"></div>
     <a class="shelf-panel__link" id="shelf-panel-link" href="#">Open full entry →</a>
@@ -211,7 +212,9 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   .shelf-page {
     max-width: 1200px;
     margin: 0 auto;
-    padding: var(--space-xl) var(--space-lg) calc(var(--space-xl) * 3);
+    /* Bottom pad tracks the (possibly two-row) fixed NavPill so it never
+       covers the last row of cards. */
+    padding: var(--space-xl) var(--space-lg) calc(var(--nav-clearance, 96px) + var(--space-xl));
   }
 
   /* ── Header ──────────────────────────────────────── */

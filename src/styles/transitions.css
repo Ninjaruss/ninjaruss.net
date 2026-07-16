@@ -148,11 +148,6 @@
   animation-delay: var(--stagger-delay, 0ms);
 }
 
-.p3r-animate-scale {
-  animation: p3r-entrance-scale var(--animation-slow) var(--animation-easing) backwards;
-  animation-delay: var(--stagger-delay, 0ms);
-}
-
 .p3r-animate-wipe {
   animation: p3r-wipe-reveal var(--animation-slow) var(--animation-easing) backwards;
   animation-delay: var(--stagger-delay, 0ms);
@@ -162,7 +157,6 @@
 @media (prefers-reduced-motion: reduce) {
   .p3r-animate,
   .p3r-animate-left,
-  .p3r-animate-scale,
   .p3r-animate-wipe {
     animation: none;
   }
