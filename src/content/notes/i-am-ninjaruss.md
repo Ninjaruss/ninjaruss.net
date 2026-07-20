@@ -25,7 +25,7 @@ Yes, life is a struggle. Yes, death is inevitable. Yes, no matter how hard you t
 
 I relate this to the idea of Sisyphus, where he must push the boulder up the hill for all eternity as a punishment by the gods. But, as a quote I'm growing more and more attached to based on seeing it expressed within the media I enjoy (i.e. Gurren Lagann, Re: Zero, Record of Ragnarok) puts it: "one must imagine Sisyphus happy" - Albert Camus. 
 
-The struggle itself is enough. To simply be able to climb the stairs is the journey itself. In fear of sounding like a video essayist with no semblance of what nuance means, I must fundamentally commit to something, anything, over and over and over again. In spite of everything that I believe is not within my grasp. 
+The struggle itself is enough. To simply be able to climb the stairs is the journey itself. In fear of sounding like a video essayist with no semblance of what nuance means: I must fundamentally commit to something, anything, over and over and over again. In spite of everything that I believe is not within my grasp. 
 
 - In spite of everything that is actively (or more scarily passively) trying to stop me. 
 - In spite of whether I know it will work out or not. 

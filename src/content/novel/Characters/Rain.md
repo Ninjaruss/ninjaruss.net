@@ -42,7 +42,7 @@
 
 \- Requires goggles (artifact) to activate.
 
-\- Cost: Sensory deprivation scaling with duration. Blurred vision → ringing ears → blindness/deafness → collapse. Short-term memory loss in extreme use. Recovery: 10–30 seconds after dismissal.
+\- Cost: Sensory deprivation scaling with duration. Blurred vision → ringing ears → blindness/deafness → collapse. Short-term memory loss in extreme use? Recovery: 10–30 seconds after dismissal.
 
 \- The Clone can create an illusionary copy of a thrown object as part of its single action. The object appears to fly and strike but causes no physical effect. Intangible, silent, vanishing on contact or shortly after.
 
