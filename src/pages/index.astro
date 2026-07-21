@@ -275,7 +275,7 @@ const codexTile = await getCodexTileData();
           ))}
         </div>
         <div class="bento-tile__header">
-          <span class="bento-tile__label">Novel</span>
+          <span class="bento-tile__label">Visual Novel</span>
           <h3 class="bento-tile__title">Remember Rain</h3>
         </div>
         {novelRecentFolderTitle && novelRecentFileTitle && (
@@ -288,7 +288,7 @@ const codexTile = await getCodexTileData();
         <p class="novel-tile__waits">the rain waits.</p>
         <div class="novel-tile__words">
           <span class="novel-tile__story">{novelStats.storyWords.toLocaleString('en-US')}</span>
-          <span class="novel-tile__story-label">story words</span>
+          <span class="novel-tile__story-label">script words</span>
           <span class="novel-tile__outline">{novelStats.outlineWords.toLocaleString('en-US')} outline</span>
         </div>
         <span class="bento-tile__corner" aria-hidden="true"></span>
@@ -1629,12 +1629,16 @@ const codexTile = await getCodexTileData();
   .novel-rain__drop {
     position: absolute;
     top: -30px;
-    left: calc(3% + var(--i) * 7%);
+    /* --x / --dur / --delay / --drop-op are randomized per drop by
+       initializeNovelRain(); the calc() fallbacks keep an even, deterministic
+       spread when JS hasn't run. */
+    left: var(--x, calc(3% + var(--i) * 7%));
     width: 1px;
     height: var(--len, 22px);
+    opacity: var(--drop-op, 1);
     background: linear-gradient(to bottom, transparent, rgba(157, 184, 204, 0.8));
-    animation: novel-rain-fall 1.5s linear infinite;
-    animation-delay: calc(var(--i) * 0.13s);
+    animation: novel-rain-fall var(--dur, 1.5s) linear infinite;
+    animation-delay: var(--delay, calc(var(--i) * 0.13s));
   }
 
   .novel-tile.is-misting .novel-rain__drop {
@@ -2005,12 +2009,32 @@ const codexTile = await getCodexTileData();
     const sceneDays = daysSince((tile as HTMLElement).dataset.sceneModified);
     const outlineDays = daysSince((tile as HTMLElement).dataset.outlineModified);
 
+    // Give each drop its own position, fall speed, delay, length and opacity so
+    // the rain reads as organic rather than a uniform comb of columns. Re-rolled
+    // on each init (initial load + astro:page-load), so it varies every visit.
+    // A small jitter around an even base keeps drops from clumping or gapping.
+    const randomizeDrops = () => {
+      const drops = tile.querySelectorAll<HTMLElement>('.novel-rain__drop');
+      const n = drops.length || 1;
+      drops.forEach((drop, i) => {
+        const base = (i + 0.5) / n;                          // even slot center 0..1
+        const x = Math.min(0.98, Math.max(0.02, base + (Math.random() - 0.5) * (1.4 / n)));
+        drop.style.setProperty('--x', `${(x * 100).toFixed(2)}%`);
+        drop.style.setProperty('--len', `${(9 + Math.random() * 26).toFixed(1)}px`);
+        drop.style.setProperty('--dur', `${(0.95 + Math.random() * 1.4).toFixed(2)}s`);
+        drop.style.setProperty('--delay', `${(Math.random() * 2).toFixed(2)}s`);
+        drop.style.setProperty('--drop-op', (0.4 + Math.random() * 0.6).toFixed(2));
+      });
+    };
+
     if (sceneDays !== null && sceneDays <= WINDOW) {
       tile.classList.add('is-raining');
       (tile as HTMLElement).style.setProperty('--rain-strength', String(Math.max(0.2, 1 - sceneDays / WINDOW)));
+      randomizeDrops();
     } else if (outlineDays !== null && outlineDays <= WINDOW) {
       tile.classList.add('is-misting');
       (tile as HTMLElement).style.setProperty('--rain-strength', String(Math.max(0.15, 0.5 * (1 - outlineDays / WINDOW))));
+      randomizeDrops();
     } else {
       tile.classList.add('is-waiting');
     }
