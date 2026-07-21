@@ -155,6 +155,7 @@ const codexTile = await getCodexTileData();
           <div class="title-tile__rule title-tile__rule--bottom" aria-hidden="true"></div>
         </div>
         <p class="title-tile__description">Live without regret.</p>
+        <a class="title-tile__who" href="/about">who?</a>
       </div>
 
       <a
@@ -694,6 +695,7 @@ const codexTile = await getCodexTileData();
 
   /* ─── Title Tile ─────────────────────────────────────── */
   .title-tile {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -772,6 +774,35 @@ const codexTile = await getCodexTileData();
   .title-tile__name-inner {
     display: inline-block;
     transform: skewX(var(--skew-display));
+  }
+
+  /* Quiet corner link — the "about page" is the current identity note */
+  .title-tile__who {
+    position: absolute;
+    right: var(--space-2xs);
+    bottom: var(--space-2xs);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: var(--space-2xs);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.1em;
+    color: var(--color-text-subtle);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .title-tile__who:hover,
+  .title-tile__who:focus-visible {
+    color: var(--color-gold);
+  }
+
+  .title-tile__who:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: -2px;
   }
 
   /* Tagline: always subtly visible, sharpens on hover */
