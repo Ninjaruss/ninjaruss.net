@@ -149,7 +149,6 @@ function colorBg(hex: string, a: number): string {
         <button class="s-tab active" data-tab="status"  role="tab" aria-selected="true">Status</button>
         <button class="s-tab"        data-tab="journal" role="tab" aria-selected="false">Sessions</button>
         <button class="s-tab"        data-tab="bonds"   role="tab" aria-selected="false">Bonds</button>
-        <button class="s-tab"        data-tab="mailbox" role="tab" aria-selected="false">Mailbox</button>
       </div>
     </div>
 
@@ -272,6 +271,20 @@ function colorBg(hex: string, a: number): string {
                 })}
                 </g>
               </svg>
+            </div>
+
+            <!-- Mailbox — folded into Status (was its own near-empty tab) -->
+            <div class="s-mail-strip">
+              <div class="s-mail-label">Mailbox</div>
+              <div class="s-mail-sub">Send mail to be read on stream</div>
+              {/* Address + href injected client-side so it never sits in the served HTML */}
+              <a href="#mailbox" class="mail-address" id="mail-address"></a>
+              {/* JS-free fallback: address in a human-readable, still-obfuscated
+                  form (no `@`/`mailto:` in the served HTML) so a no-JS visitor
+                  who follows the Email tile here isn't left with a dead link. */}
+              <noscript>
+                <p class="mail-address">mailbox [at] ninjaruss [dot] net</p>
+              </noscript>
             </div>
           </div>
 
@@ -440,22 +453,6 @@ function colorBg(hex: string, a: number): string {
             </div>
 
             <div id="bonds-data" data-bonds={bondsJson} hidden></div>
-          </div>
-
-          <!-- ── MAILBOX ────────────────────────────────────── -->
-          <div class="s-panel" id="panel-mailbox" role="tabpanel">
-            <div class="mail-inner">
-              <div class="mail-title">Mailbox</div>
-              <div class="mail-sub">Send mail to be read on stream</div>
-              {/* Address + href injected client-side so it never sits in the served HTML */}
-              <a href="#mailbox" class="mail-address" id="mail-address"></a>
-              {/* JS-free fallback: address in a human-readable, still-obfuscated
-                  form (no `@`/`mailto:` in the served HTML) so a no-JS visitor
-                  who follows the Email tile here isn't left with a dead link. */}
-              <noscript>
-                <p class="mail-address">mailbox [at] ninjaruss [dot] net</p>
-              </noscript>
-            </div>
           </div>
 
         </div>{/* s-main */}

@@ -112,15 +112,19 @@ export function initSplitView(): void {
     // must stay visible — detect the applied layout, not the viewport.
     // Retried on a timer: styles can land after init (dev serves them via JS
     // modules), and requestAnimationFrame is throttled or suspended entirely in
-    // background/non-rendering tabs — setTimeout still fires there. Gives up
-    // after ~1.5s (mobile layouts legitimately never reach 3 tracks). A
-    // detached splitView means the page was swapped away — stop.
+    // background/non-rendering tabs — setTimeout still fires there. 20 fast
+    // attempts, then a slower tail (~6.5s total) for pages that load styles
+    // late; window "load" additionally re-kicks it once. Polling only ever
+    // starts on ≥1200px viewports (gate below), where the 3-track layout is
+    // guaranteed to eventually apply — so the poll can't run dry against a
+    // legitimately-mobile layout. A detached splitView means the page was
+    // swapped away — stop.
     const tryAutoOpen = (attempt: number) => {
       if (!splitView.isConnected || state.currentSlug !== null) return;
       const isDesktopLayout =
         getComputedStyle(splitView).gridTemplateColumns.trim().split(/\s+/).length >= 3;
       if (!isDesktopLayout) {
-        if (attempt < 20) setTimeout(() => tryAutoOpen(attempt + 1), 75);
+        if (attempt < 40) setTimeout(() => tryAutoOpen(attempt + 1), attempt < 20 ? 75 : 250);
         return;
       }
       const firstVisible = elements.listItems.find(item => !item.classList.contains('is-filtered'));
@@ -132,9 +136,18 @@ export function initSplitView(): void {
     // Viewports below the 1200px breakpoint (SplitViewLayout.astro's tablet
     // media query drops the 3-column grid to 2 columns, and below 900px it
     // collapses to a single stacked column) can never satisfy the >=3-column
-    // check above — skip the poll entirely rather than running it dry.
-    if (window.matchMedia('(min-width: 1200px)').matches) {
-      tryAutoOpen(0);
+    // check above — skip the poll entirely rather than running it dry. The
+    // query-change listener covers viewports that only become desktop-wide
+    // after init (embedded panes can even report 0×0 at load); tryAutoOpen's
+    // own guards make every extra kick a no-op once content is open.
+    const desktopQuery = window.matchMedia('(min-width: 1200px)');
+    const kickAutoOpen = () => {
+      if (desktopQuery.matches) tryAutoOpen(0);
+    };
+    kickAutoOpen();
+    if (document.readyState !== 'complete') {
+      window.addEventListener('load', kickAutoOpen, { once: true });
     }
+    desktopQuery.addEventListener('change', kickAutoOpen, { once: true });
   }
 }

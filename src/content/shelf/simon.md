@@ -1,7 +1,7 @@
 ---
 title: "Simon the Digger"
 collections: ["gurren lagann"]
-emblem: "/images/media/pts-simon.gif"
+emblem: "/images/media/pts-simon.webp"
 content_type: "character"
 isFavorite: true
 ---

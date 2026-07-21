@@ -219,6 +219,36 @@ export function flattenFolderFiles(folder: NovelFolder): NovelFile[] {
   ];
 }
 
+/** Top-level folder slug that holds planning docs (including the synopsis). */
+export const PLAN_FOLDER_SLUG = 'story-plan';
+
+/**
+ * File slugs (in priority order) that the desk landing treats as the
+ * "what is this visual novel" doc. Authored as a normal Story Plan document —
+ * name a Scrivener doc "Synopsis" (or "What is Remember Rain", "About",
+ * "Overview", "Premise") and the desk picks it up; no doc, no panel.
+ */
+export const SYNOPSIS_SLUGS = ['synopsis', 'what-is-remember-rain', 'about', 'overview', 'premise'];
+
+/** The Story Plan doc that introduces the project, if the author wrote one. */
+export function findSynopsisDoc(tree: NovelTree): NovelFile | null {
+  const plan = tree[PLAN_FOLDER_SLUG];
+  if (!plan) return null;
+  const files = flattenFolderFiles(plan);
+  for (const slug of SYNOPSIS_SLUGS) {
+    const match = files.find((f) => f.slug === slug);
+    if (match) return match;
+  }
+  return null;
+}
+
+/** First story scene in binder order — the "read from the start" entry point. */
+export function findFirstScene(tree: NovelTree): NovelFile | null {
+  const story = tree[STORY_FOLDER_SLUG];
+  if (!story) return null;
+  return flattenFolderFiles(story)[0] ?? null;
+}
+
 /**
  * Story vs outline stats for the homepage rain-gauge tile.
  * Story = top-level `manuscript` folder; outline = every other top-level folder.

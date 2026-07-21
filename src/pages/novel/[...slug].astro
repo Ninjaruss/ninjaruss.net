@@ -8,6 +8,8 @@ import {
   countWords,
   flattenFolderFiles,
   findRecentFiles,
+  findSynopsisDoc,
+  findFirstScene,
   STORY_FOLDER_SLUG,
 } from '../../utils/novel';
 import type { NovelFile, NovelFolder, NovelTree } from '../../utils/novel';
@@ -83,6 +85,10 @@ function folderHasContent(f: NovelFolder): boolean {
 const stats = view === 'desk' ? computeNovelStats(tree) : null;
 const latestScene = view === 'desk' ? (findRecentFiles(tree, { scenes: true, limit: 1 })[0] ?? null) : null;
 const sceneExcerpt = latestScene ? excerptOf(latestScene.body) : '';
+// "What is this?" intro — sourced from a Story Plan doc so the pitch lives in
+// the binder, not hardcoded in the site. No doc → no panel.
+const synopsisDoc = view === 'desk' ? findSynopsisDoc(tree) : null;
+const firstScene = view === 'desk' ? findFirstScene(tree) : null;
 
 // Full file index for the desk — every file one click from landing
 interface IndexSub { title: string; files: NovelFile[]; }
@@ -152,6 +158,17 @@ const pageTitle =
         </p>
       </header>
 
+      {synopsisDoc && (
+        <section class="desk-about p3r-animate" style="--stagger-delay: 30ms" aria-label="About this visual novel">
+          <div class="desk-about__body" set:html={synopsisDoc.body} />
+          {firstScene && (
+            <a class="desk-about__cta" href={fileUrl(firstScene)}>
+              read from the start <span aria-hidden="true">→</span>
+            </a>
+          )}
+        </section>
+      )}
+
       <div class="desk-layout">
         <section class="desk-main p3r-animate" style="--stagger-delay: 60ms">
           {latestScene ? (
@@ -168,6 +185,9 @@ const pageTitle =
             </a>
           ) : (
             <p class="desk-empty">No scenes yet.</p>
+          )}
+          {!synopsisDoc && firstScene && latestScene && firstScene.slug !== latestScene.slug && (
+            <a class="desk-restart" href={fileUrl(firstScene)}>↺ read from the start</a>
           )}
         </section>
 

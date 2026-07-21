@@ -1,7 +1,7 @@
 ---
 title: "Set It Off"
 tags: ["peak"]
-emblem: "/images/media/set-it-off.jpg"
+emblem: "/images/media/set-it-off.webp"
 content_type: "music"
 publishedAt: 2026-04-08
 isFavorite: true

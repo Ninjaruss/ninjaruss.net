@@ -2,7 +2,7 @@
 title: "Marie"
 tags: ["waifu"]
 collections: ["persona"]
-emblem: "/images/media/marie.gif"
+emblem: "/images/media/marie.webp"
 content_type: "character"
 isFavorite: true
 ---
