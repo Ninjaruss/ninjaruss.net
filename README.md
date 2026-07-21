@@ -8,7 +8,7 @@ Top-level sections (the NavPill):
 
 - `/` — Homepage with the P4G-inspired bento grid
 - `/journal` — Notes + showcases merged into one filterable split-view list
-- `/novel` — "Remember Rain", the in-progress novel (writer's-desk UI)
+- `/novel` — "Remember Rain", the in-progress **visual novel** (writer's-desk UI; route keeps the `/novel` path)
 - `/shelf` — Media log: anime, manga, film, series, music, games, characters
 - `/stream` — Stream log as a P4G status screen (session stats, sessions, mailbox)
 - `/now` — Current focus snapshot (history at `/now/archive`)

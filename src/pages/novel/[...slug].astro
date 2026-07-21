@@ -132,7 +132,7 @@ const pageTitle =
 
 <BaseLayout
   title={pageTitle}
-  description="A novel in progress — a writer's desk of manuscript scenes, characters, world, and story plan."
+  description="A visual novel in progress — scenes, characters, world, and story plan."
 >
   <NavPill backLink={view === 'file' && topFolder ? `/novel#${topFolder.slug}` : undefined}
            backLabel={view === 'file' && topFolder ? topFolder.title : undefined} />
@@ -143,12 +143,12 @@ const pageTitle =
     <main class="novel-page novel-desk">
       <header class="novel-header p3r-animate">
         <div class="novel-header__titles">
-          <span class="p4g-tab">novel</span>
+          <span class="p4g-tab">visual novel</span>
           <h1 class="p4g-heading novel-header__title">Remember Rain</h1>
           <span class="p4g-underline"></span>
         </div>
         <p class="novel-header__stats">
-          {stats.storyWords.toLocaleString('en-US')} story words · {stats.outlineWords.toLocaleString('en-US')} outline words
+          {stats.storyWords.toLocaleString('en-US')} script words · {stats.outlineWords.toLocaleString('en-US')} outline words
         </p>
       </header>
 
