@@ -1,4 +1,4 @@
-Context: Vesper catches Rain off guard and attempts the extraction of memories. His 3 fingers (right index, middle, and thumb) press onto Rain’s forehead and then spread out. Rain experiences first hand Vesper’s extraction. However, as his memories are being taken from him, Rain awakens/transforms into a new found presence within himself, which disrupts the extraction.
+Context: Vesper catches Rain off guard and attempts the extraction of memories. His 3 fingers (right index, middle, and thumb) press onto Rain’s forehead and then spread out. Rain experiences first hand Vesper’s extraction. However, once all of his memories are taken away from him, Rain awakens/transforms into a new found presence within himself, which disrupts the extraction. The ui and game slowly are extracted from the screen and the player is left with an empty void, left with only the ability to make small choices.
 
 The environment around me pulsed with a bright glow for a moment. And subsequently began to fade around me.
 
