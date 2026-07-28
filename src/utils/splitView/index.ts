@@ -172,12 +172,15 @@ export function initSplitView(): void {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let drawnSlug: string | null = null;
 
+    // One draw per visit by design: the deck hides once the face is revealed.
+    // The exclusion slug only matters for double-activation during the flip.
     const draw = () => {
       const picked = pickDrawCandidate(drawPool(), Math.random, drawnSlug ?? undefined);
       if (!picked) return;
       drawnSlug = picked.slug;
       faceEmblem.src = picked.emblem;
       faceTitle.textContent = picked.title;
+      faceButton.setAttribute('aria-label', `Open "${picked.title}"`);
       const reveal = () => {
         drawDeck.classList.remove('is-flipping');
         deckButton.hidden = true;
@@ -206,7 +209,15 @@ export function initSplitView(): void {
     // attribute stays in charge (not a media query) because attribute-hidden
     // beats CSS display rules.
     const stackedQuery = window.matchMedia('(max-width: 900px)');
-    const syncDrawMobile = () => { drawMobile.hidden = !stackedQuery.matches; };
+    // Self-removing: the MediaQueryList is window-scoped and would otherwise
+    // retain a detached button across view-transition swaps.
+    const syncDrawMobile = () => {
+      if (!drawMobile.isConnected) {
+        stackedQuery.removeEventListener('change', syncDrawMobile);
+        return;
+      }
+      drawMobile.hidden = !stackedQuery.matches;
+    };
     syncDrawMobile();
     stackedQuery.addEventListener('change', syncDrawMobile);
     drawMobile.addEventListener('click', () => {

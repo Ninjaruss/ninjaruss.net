@@ -79,7 +79,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
             <span class="split-view__clear-all-icon" aria-hidden="true">✕</span>
           </button>
           {showDraw && (
-            <button class="split-view__draw-mobile" type="button" hidden data-draw-mobile>DRAW</button>
+            <button class="split-view__draw-mobile" type="button" hidden data-draw-mobile aria-label="Draw a random note">DRAW</button>
           )}
         </div>
         <div class="split-view__types" role="group" aria-label="Filter by type"></div>
@@ -787,7 +787,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
   }
 
   .split-view__draw-emblem {
-    filter: invert(1) opacity(0.8);
+    filter: opacity(0.85);
   }
 
   .split-view__draw-hint {
