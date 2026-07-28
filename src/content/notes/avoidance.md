@@ -1,6 +1,5 @@
 ---
 title: "Avoidance"
-tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-06-25
 ---

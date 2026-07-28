@@ -1,6 +1,5 @@
 ---
 title: "Current Objectives"
-tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-02-13
 updatedAt: 2026-03-19

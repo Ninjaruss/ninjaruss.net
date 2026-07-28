@@ -1,6 +1,5 @@
 ---
 title: "Ninjaruss.net (This Website)"
-tags: ["web dev"]
 publishedAt: 2026-01-11
 collections: ["web dev"]
 ---

@@ -1,6 +1,5 @@
 ---
 title: "Why One Must Fall"
-tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-07-28
 ---

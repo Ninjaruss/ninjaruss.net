@@ -1,6 +1,5 @@
 ---
 title: "Live Without Regret"
-tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-04-11
 ---

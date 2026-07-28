@@ -1,6 +1,5 @@
 ---
 title: "Waifus"
-tags: ["anime"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-02-07
 ---

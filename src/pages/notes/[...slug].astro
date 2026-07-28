@@ -44,7 +44,7 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
         href={href}
         slug={item.slug}
         title={item.data.title}
-        tags={item.data.tags}
+        emblem={item.data.emblem}
         contentType={type}
         searchableContent={stripMarkdown(item.body).slice(0, 500)}
         hasMinimalContent={hasMinimalContent(item.body)}
@@ -57,7 +57,6 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
       <div class="container">
         <EntryHeader
           title={entry.data.title}
-          tags={entry.data.tags}
           publishedAt={entry.data.publishedAt}
           updatedAt={entry.data.updatedAt}
           emblem={entry.data.emblem}

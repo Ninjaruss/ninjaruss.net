@@ -1,6 +1,5 @@
 ---
 title: "Japanese Journal"
-tags: ["japanese"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-04-26
 ---

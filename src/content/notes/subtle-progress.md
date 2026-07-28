@@ -1,6 +1,5 @@
 ---
 title: "Subtle Progress"
-tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-01-31
 ---

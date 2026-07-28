@@ -5,7 +5,6 @@ export interface JournalItem {
     slug: string;
     data: {
       title: string;
-      tags: string[];
       updatedAt?: Date;
       publishedAt?: Date;
     };

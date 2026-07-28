@@ -1,6 +1,5 @@
 ---
 title: "Vibe Learning"
-tags: ["japanese"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-04-20
 ---

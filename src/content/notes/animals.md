@@ -1,6 +1,5 @@
 ---
 title: "Animals"
-tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-03-06
 ---

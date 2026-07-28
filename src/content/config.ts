@@ -3,7 +3,6 @@ import { defineCollection, z } from 'astro:content';
 // Shared schema fields across all content types
 const sharedSchema = z.object({
   title: z.string(),
-  tags: z.array(z.string()).default([]),
   collections: z.array(z.string()).default([]),
   publishedAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
@@ -19,6 +18,7 @@ const shelf = defineCollection({
   schema: sharedSchema.extend({
     content_type: z.enum(['anime', 'manga', 'film', 'series', 'music', 'book', 'game', 'character', 'other']),
     isFavorite: z.boolean().default(false),
+    tags: z.array(z.string()).default([]),
   }),
 });
 

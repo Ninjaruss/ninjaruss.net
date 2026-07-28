@@ -1,6 +1,5 @@
 ---
 title: "Bitcoin"
-tags: ["finance"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-02-08
 ---
