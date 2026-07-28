@@ -1,6 +1,5 @@
 ---
 title: "Infinity"
-tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-03-14
 ---

@@ -1,6 +1,5 @@
 ---
 title: "KAIMA - JP Learning Live Stream"
-tags: ["video"]
 publishedAt: 2026-04-25
 emblem: "/images/showcase/KAIMA.png"
 ---

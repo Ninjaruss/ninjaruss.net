@@ -1,6 +1,5 @@
 ---
 title: "Loser Behavior"
-tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-04-07
 ---

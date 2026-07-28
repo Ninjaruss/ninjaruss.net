@@ -1,8 +1,8 @@
 ---
 title: "Reason for Japan"
-tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-03-17
+collections: ["japan"]
 ---
 
 I became interested in Japan by proxy from all the media I've enjoyed over the years. Since middle school, I had so many things that I was interested in which originated from Japan. Of course, anime dubbed in English such as Dragon Ball Z Kai was a big thing, but I realized that there were so many other Japanese influences like playing the Yu-Gi-Oh! card game with my friends, reading the Pokemon Adventures manga in the library, and learning about the history of ninjas. This developed into a love for Japanese media in general to where I've watched hundreds of anime, listen to J-pop/J-rock all the time, read obscure manga, and now making an serious effort to learn Japanese. 

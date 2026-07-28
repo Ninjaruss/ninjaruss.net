@@ -1,6 +1,5 @@
 ---
 title: "I am Ninjaruss"
-tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-07-14
 ---

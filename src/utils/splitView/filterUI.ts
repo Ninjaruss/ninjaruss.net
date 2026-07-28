@@ -35,29 +35,3 @@ export function populateTypes(
   ].join('');
   typesList.hidden = false;
 }
-
-/**
- * Populate the tag facet — an inline wrapping pill row with per-tag counts.
- * Multi-select toggles.
- */
-export function populateTags(
-  tagsList: HTMLElement,
-  listItems: HTMLElement[],
-  selectedTags: Set<string>
-): void {
-  const counts = new Map<string, number>();
-  listItems.forEach((item) => {
-    const tags = item.dataset.tags?.split(',').filter(Boolean) || [];
-    tags.forEach((tag) => counts.set(tag, (counts.get(tag) || 0) + 1));
-  });
-
-  const sortedTags = Array.from(counts.keys()).sort();
-  tagsList.innerHTML = sortedTags
-    .map((tag) => {
-      const isSelected = selectedTags.has(tag);
-      return `<button class="split-view__tag-pill ${isSelected ? 'is-selected' : ''}" type="button" data-tag="${tag}" aria-pressed="${isSelected}">${tag}<span class="split-view__pill-count">${counts.get(tag)}</span></button>`;
-    })
-    .join('');
-
-  tagsList.hidden = sortedTags.length === 0;
-}

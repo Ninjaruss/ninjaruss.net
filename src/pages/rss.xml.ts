@@ -24,7 +24,7 @@ export async function GET(context: APIContext) {
       title: entry.data.title,
       link: href,
       description: excerptOf(entry.body),
-      categories: [type, ...entry.data.tags],
+      categories: [type],
       ...(entry.data.publishedAt ? { pubDate: entry.data.publishedAt } : {}),
     })),
   });

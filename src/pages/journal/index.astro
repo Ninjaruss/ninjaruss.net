@@ -22,6 +22,8 @@ const placeholderStats = [
   section="journal"
   ogImage="/social-default.svg"
   placeholderStats={placeholderStats}
+  placeholderCta={{ href: '/codex', label: 'browse by theme — codex' }}
+  showDraw
   rssHref="/rss.xml"
 >
   <Fragment slot="list">
@@ -33,7 +35,7 @@ const placeholderStats = [
           title={entry.data.title}
           subtitle={stripMarkdown(entry.body).split('\n').find(l => l.trim().length > 20)?.trim().slice(0, 90)}
           meta={entry.data.publishedAt ? formatDate(entry.data.publishedAt) : undefined}
-          tags={entry.data.tags}
+          emblem={entry.data.emblem}
           contentType={type}
           searchableContent={stripMarkdown(entry.body).slice(0, 500)}
           hasMinimalContent={hasMinimalContent(entry.body)}

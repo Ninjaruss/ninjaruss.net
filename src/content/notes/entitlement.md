@@ -1,6 +1,5 @@
 ---
 title: "Entitlement"
-tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-04-27
 ---

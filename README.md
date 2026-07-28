@@ -7,7 +7,7 @@ Personal website for fragments, media, and showcase. Built with Astro, styled wi
 Top-level sections (the NavPill):
 
 - `/` — Homepage with the P4G-inspired bento grid
-- `/journal` — Notes + showcases merged into one filterable split-view list
+- `/journal` — Notes + showcases merged into one searchable split-view list (search + type filter)
 - `/novel` — "Remember Rain", the in-progress **visual novel** (writer's-desk UI; route keeps the `/novel` path)
 - `/shelf` — Media log: anime, manga, film, series, music, games, characters
 - `/stream` — Stream log as a P4G status screen (session stats, sessions, mailbox)

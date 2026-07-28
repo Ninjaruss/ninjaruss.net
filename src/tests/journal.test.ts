@@ -6,7 +6,6 @@ const entry = (slug: string, publishedAt: string, updatedAt?: string) => ({
   body: '',
   data: {
     title: slug,
-    tags: [],
     publishedAt: new Date(publishedAt),
     ...(updatedAt ? { updatedAt: new Date(updatedAt) } : {}),
   },

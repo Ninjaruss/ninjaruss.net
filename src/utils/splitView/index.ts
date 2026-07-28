@@ -2,9 +2,10 @@ import type { SplitViewElements, SplitViewState } from './types';
 import { getFiltersFromURL } from './urlState';
 import { applyFilters } from './filterEngine';
 import { loadContent } from './contentLoader';
-import { populateTypes, populateTags } from './filterUI';
+import { populateTypes } from './filterUI';
 import { createIdleManager, initIdleEventListeners, initEmblemHoverListeners } from './idleManager';
 import { bindFilterEvents, bindGlobalEvents, bindListEvents } from './eventBindings';
+import { pickDrawCandidate } from './drawCard';
 
 // Re-export utilities that are needed externally
 export { initMediaLightbox } from './mediaHandlers';
@@ -16,7 +17,6 @@ export { initProseImageTilt } from './proseImageTilt';
 function queryElements(splitView: HTMLElement): SplitViewElements | null {
   const searchInput = splitView.querySelector('.split-view__search') as HTMLInputElement | null;
   const typesList = splitView.querySelector('.split-view__types') as HTMLElement | null;
-  const tagsList = splitView.querySelector('.split-view__tags') as HTMLElement | null;
   const clearAllButton = splitView.querySelector('.split-view__clear-all-filters') as HTMLElement | null;
   const noResults = splitView.querySelector('.split-view__no-results') as HTMLElement | null;
   const contentArea = splitView.querySelector('.split-view__content') as HTMLElement | null;
@@ -25,7 +25,7 @@ function queryElements(splitView: HTMLElement): SplitViewElements | null {
   const listPanel = splitView.querySelector('.split-view__list') as HTMLElement | null;
   const detailPanel = splitView.querySelector('.split-view__detail') as HTMLElement | null;
 
-  if (!searchInput || !typesList || !tagsList || !clearAllButton || !noResults || !contentArea) {
+  if (!searchInput || !typesList || !clearAllButton || !noResults || !contentArea) {
     console.error('Split view: missing required elements');
     return null;
   }
@@ -34,7 +34,6 @@ function queryElements(splitView: HTMLElement): SplitViewElements | null {
     splitView,
     searchInput,
     typesList,
-    tagsList,
     clearAllButton,
     noResults,
     contentArea,
@@ -75,12 +74,11 @@ export function initSplitView(): void {
   const idleManager = createIdleManager(splitView, state);
 
   // Restore filter state from URL
-  const { search: initialSearch, tags: initialTags, types: initialTypes } = getFiltersFromURL();
+  const { search: initialSearch, types: initialTypes } = getFiltersFromURL();
   elements.searchInput.value = initialSearch;
-  populateTags(elements.tagsList, elements.listItems, initialTags);
   populateTypes(elements.typesList, elements.listItems, initialTypes);
   // Reflect restored (non-search) filters on the clear button
-  elements.clearAllButton.hidden = initialTags.size === 0 && initialTypes.size === 0;
+  elements.clearAllButton.hidden = initialTypes.size === 0;
   applyFilters(elements.listItems, elements.noResults);
 
   // Mark initial active item
@@ -101,12 +99,17 @@ export function initSplitView(): void {
   initIdleEventListeners(elements.detailPanel, idleManager.stopFloating);
   initEmblemHoverListeners(state, idleManager.startFloating);
 
+  const hasDrawDeck = !!splitView.querySelector('[data-draw-deck]');
+
   // Start floating if initial content is loaded
   if (initialSlug) {
     idleManager.startFloating();
-  } else {
+  } else if (!hasDrawDeck) {
     // No slug in the URL — auto-open the newest visible entry so visitors
-    // land on content instead of the empty placeholder. URL stays untouched
+    // land on content instead of the empty placeholder. Skipped when the
+    // placeholder carries the draw-a-card deck (journal): there the
+    // placeholder IS the designed landing screen (stats, codex CTA, deck),
+    // and auto-opening would hide it before it's ever seen. URL stays untouched
     // until the user actually selects something. Desktop only: in the
     // single-column layout .has-selection collapses the list panel, which
     // must stay visible — detect the applied layout, not the viewport.
@@ -149,5 +152,82 @@ export function initSplitView(): void {
       window.addEventListener('load', kickAutoOpen, { once: true });
     }
     desktopQuery.addEventListener('change', kickAutoOpen, { once: true });
+  }
+
+  // --- Draw a card (journal serendipity) ---
+  const drawDeck = splitView.querySelector('[data-draw-deck]') as HTMLElement | null;
+  const drawMobile = splitView.querySelector('[data-draw-mobile]') as HTMLElement | null;
+
+  const drawPool = () =>
+    elements.listItems
+      .filter((item) => !item.classList.contains('is-filtered'))
+      .map((item) => ({
+        slug: item.dataset.slug || '',
+        type: item.dataset.contentType || '',
+        href: item.getAttribute('href') || '',
+        title: item.querySelector('.list-item__title')?.textContent || '',
+        emblem: item.dataset.emblem || '/images/emblems/default.svg',
+      }));
+
+  if (drawDeck) {
+    const deckButton = drawDeck.querySelector('.split-view__draw-deck') as HTMLElement;
+    const faceButton = drawDeck.querySelector('.split-view__draw-face') as HTMLButtonElement;
+    const faceEmblem = drawDeck.querySelector('.split-view__draw-emblem') as HTMLImageElement;
+    const faceTitle = drawDeck.querySelector('.split-view__draw-title') as HTMLElement;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let drawnSlug: string | null = null;
+
+    // One draw per visit by design: the deck hides once the face is revealed.
+    // The exclusion slug only matters for double-activation during the flip.
+    const draw = () => {
+      const picked = pickDrawCandidate(drawPool(), Math.random, drawnSlug ?? undefined);
+      if (!picked) return;
+      drawnSlug = picked.slug;
+      faceEmblem.src = picked.emblem;
+      faceTitle.textContent = picked.title;
+      faceButton.setAttribute('aria-label', `Open "${picked.title}"`);
+      const reveal = () => {
+        drawDeck.classList.remove('is-flipping');
+        deckButton.hidden = true;
+        faceButton.hidden = false;
+        faceButton.focus();
+      };
+      if (reduceMotion.matches) {
+        reveal();
+      } else {
+        drawDeck.classList.add('is-flipping');
+        setTimeout(reveal, 200);
+      }
+    };
+
+    deckButton.addEventListener('click', draw);
+    faceButton.addEventListener('click', () => {
+      if (!drawnSlug) return;
+      const item = splitView.querySelector(`[data-slug="${drawnSlug}"]`) as HTMLElement | null;
+      item?.click(); // normal selection path: history push, active state, load
+    });
+  }
+
+  if (drawMobile) {
+    // Only meaningful in the stacked layout, where the placeholder (and its
+    // deck) is hidden — reveal it there and keep desktop to the deck. The
+    // attribute stays in charge (not a media query) because attribute-hidden
+    // beats CSS display rules.
+    const stackedQuery = window.matchMedia('(max-width: 900px)');
+    // Self-removing: the MediaQueryList is window-scoped and would otherwise
+    // retain a detached button across view-transition swaps.
+    const syncDrawMobile = () => {
+      if (!drawMobile.isConnected) {
+        stackedQuery.removeEventListener('change', syncDrawMobile);
+        return;
+      }
+      drawMobile.hidden = !stackedQuery.matches;
+    };
+    syncDrawMobile();
+    stackedQuery.addEventListener('change', syncDrawMobile);
+    drawMobile.addEventListener('click', () => {
+      const picked = pickDrawCandidate(drawPool(), Math.random);
+      if (picked?.href) window.location.href = picked.href;
+    });
   }
 }

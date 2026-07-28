@@ -1,8 +1,8 @@
 ---
 title: "Japan's Special Aura"
-tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-03-09
+collections: ["japan"]
 ---
 
 ## What has fostered the growth and development of art in Japan?

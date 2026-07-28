@@ -5,20 +5,20 @@ interface Props {
   title: string;
   subtitle?: string;
   meta?: string;
-  tags?: string[];
   searchableContent?: string;
   contentType?: string;
   hasMinimalContent?: boolean;
+  emblem?: string;
 }
 
-const { href, slug, title, subtitle, meta, tags = [], searchableContent, contentType, hasMinimalContent = false } = Astro.props;
+const { href, slug, title, subtitle, meta, searchableContent, contentType, hasMinimalContent = false, emblem } = Astro.props;
 ---
 
 <a
   href={href}
   class="list-item"
   data-slug={slug}
-  data-tags={tags.join(',')}
+  data-emblem={emblem}
   data-search-content={searchableContent}
   data-content-type={contentType}
 >

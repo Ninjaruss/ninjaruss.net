@@ -1,6 +1,5 @@
 ---
 title: "Addiction"
-tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-02-20
 ---

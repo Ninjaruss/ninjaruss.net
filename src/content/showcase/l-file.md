@@ -1,6 +1,5 @@
 ---
 title: "L-file - Usogui Database"
-tags: ["web dev"]
 publishedAt: 2026-02-07
 updatedAt: 2026-03-22
 emblem: /images/showcase/Usogui_Volume_2_popout.png

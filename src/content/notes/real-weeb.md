@@ -1,8 +1,8 @@
 ---
 title: "Real Weeb"
-tags: ["anime"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-05-11
+collections: ["japan"]
 ---
 
 ## Where are the real weebs? 

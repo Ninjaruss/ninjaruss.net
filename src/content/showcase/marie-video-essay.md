@@ -1,6 +1,5 @@
 ---
 title: "Marie - Video Essay"
-tags: ["video"]
 publishedAt: 2026-01-11
 collections: ["persona"]
 emblem: "/images/showcase/2024-12-10-Marie-video.png"

@@ -1,6 +1,5 @@
 ---
 title: "Live Streaming"
-tags: ["life"]
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-03-02
 updatedAt: 2026-03-03
