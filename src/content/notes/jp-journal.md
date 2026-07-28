@@ -2,6 +2,7 @@
 title: "Japanese Journal"
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-04-26
+collections: ["japan"]
 ---
 
 ## 2026-04-27

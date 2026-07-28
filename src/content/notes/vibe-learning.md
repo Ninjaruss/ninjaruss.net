@@ -2,6 +2,7 @@
 title: "Vibe Learning"
 emblem: "/images/emblems/lightbulb.svg"
 publishedAt: 2026-04-20
+collections: ["japan"]
 ---
 
 ## You've heard of vibe coding? This is the next step of my vibe evolution...
