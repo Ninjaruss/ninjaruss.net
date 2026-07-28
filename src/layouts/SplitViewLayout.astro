@@ -76,7 +76,6 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
           </button>
         </div>
         <div class="split-view__types" role="group" aria-label="Filter by type"></div>
-        <div class="split-view__tags" role="group" aria-label="Filter by tag"></div>
       </div>
       <div class="split-view__no-results" hidden>
         <span class="split-view__no-results-icon" aria-hidden="true">◈</span>
@@ -342,51 +341,9 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     font-weight: 700;
   }
 
-  /* Tag facet — inline wrapping pill row; one click toggles, no dropdown */
-  .split-view__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2xs);
-  }
-
-  .split-view__tags[hidden] {
-    display: none;
-  }
-
-  .split-view__tag-pill {
-    padding: var(--space-2xs) var(--space-xs);
-    background: var(--color-bg-surface);
-    border: var(--border-thin) solid var(--color-border);
-    border-radius: var(--radius-pill);
-    color: var(--color-text-muted);
-    font-family: var(--font-body);
-    font-size: var(--text-2xs);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-  }
-
-  .split-view__tag-pill:hover,
-  .split-view__tag-pill:focus-visible {
-    border-color: var(--color-gold-dim);
-    color: var(--color-text);
-  }
-
-  .split-view__tag-pill:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: -2px;
-  }
-
-  .split-view__tag-pill.is-selected {
-    background: var(--color-gold);
-    border-color: var(--color-gold);
-    color: var(--color-black);
-    font-weight: 500;
-  }
-
   /* Larger hit areas where there's no mouse */
   @media (pointer: coarse) {
-    .split-view__type-pill,
-    .split-view__tag-pill {
+    .split-view__type-pill {
       padding-top: var(--space-xs);
       padding-bottom: var(--space-xs);
     }
@@ -917,32 +874,6 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
   /* ==========================================
      Component styles for client-side loaded content
      ========================================== */
-
-  /* TagList component */
-  .tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-xs);
-  }
-
-  .tag-list--sm .tag {
-    font-size: var(--text-xs);
-    padding: var(--space-xs) var(--space-sm);
-  }
-
-  .tag-list--md .tag {
-    font-size: var(--text-sm);
-    padding: var(--space-xs) var(--space-md);
-  }
-
-  .tag {
-    font-family: var(--font-body);
-    font-weight: 500;
-    background: var(--color-bg-surface);
-    border: var(--border-thin) solid var(--color-border-strong);
-    border-radius: var(--radius-pill);
-    color: var(--color-text-muted);
-  }
 
   /* DateDisplay component */
   .date-display {

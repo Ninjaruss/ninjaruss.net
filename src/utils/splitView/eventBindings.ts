@@ -12,7 +12,7 @@ export function bindFilterEvents(
   state: SplitViewState,
   idleManager: IdleManager
 ): void {
-  const { searchInput, typesList, tagsList, clearAllButton, listItems, noResults } = elements;
+  const { searchInput, typesList, clearAllButton, listItems, noResults } = elements;
 
   // Reflect a type selection onto the segmented control (single-select)
   const syncTypePills = (types: Set<string>) => {
@@ -23,17 +23,10 @@ export function bindFilterEvents(
     });
   };
 
-  const clearTagPills = () => {
-    tagsList.querySelectorAll<HTMLElement>('.split-view__tag-pill').forEach((p) => {
-      p.classList.remove('is-selected');
-      p.setAttribute('aria-pressed', 'false');
-    });
-  };
-
   // Search input
   searchInput.addEventListener('input', () => {
-    const { tags, types } = getFiltersFromURL();
-    updateURL(searchInput.value, tags, types, clearAllButton);
+    const { types } = getFiltersFromURL();
+    updateURL(searchInput.value, types, clearAllButton);
     applyFilters(listItems, noResults);
     idleManager.stopFloating();
   });
@@ -45,43 +38,18 @@ export function bindFilterEvents(
     if (!pill) return;
 
     const type = pill.dataset.type ?? '';
-    const { search, tags, types } = getFiltersFromURL();
+    const { search, types } = getFiltersFromURL();
     const next = type && !types.has(type) ? new Set([type]) : new Set<string>();
 
     syncTypePills(next);
-    updateURL(search, tags, next, clearAllButton);
+    updateURL(search, next, clearAllButton);
     applyFilters(listItems, noResults);
   });
 
-  // Tag pill clicks — multi-select toggle
-  tagsList.addEventListener('click', (e) => {
-    const pill = (e.target as HTMLElement).closest('.split-view__tag-pill') as HTMLElement | null;
-    if (!pill) return;
-
-    const tag = pill.dataset.tag;
-    if (!tag) return;
-
-    const { search, tags, types } = getFiltersFromURL();
-
-    if (tags.has(tag)) {
-      tags.delete(tag);
-      pill.classList.remove('is-selected');
-      pill.setAttribute('aria-pressed', 'false');
-    } else {
-      tags.add(tag);
-      pill.classList.add('is-selected');
-      pill.setAttribute('aria-pressed', 'true');
-    }
-
-    updateURL(search, tags, types, clearAllButton);
-    applyFilters(listItems, noResults);
-  });
-
-  // Clear all filters (types + tags; search stays)
+  // Clear all filters (types; search stays)
   clearAllButton.addEventListener('click', () => {
     const { search } = getFiltersFromURL();
-    updateURL(search, new Set(), new Set(), clearAllButton);
-    clearTagPills();
+    updateURL(search, new Set(), clearAllButton);
     syncTypePills(new Set());
     applyFilters(listItems, noResults);
   });

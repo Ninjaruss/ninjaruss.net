@@ -3,8 +3,6 @@ export interface SplitViewElements {
   searchInput: HTMLInputElement;
   /** Segmented type control (.split-view__types); hidden when <2 types */
   typesList: HTMLElement;
-  /** Inline tag pill row (.split-view__tags); hidden when no tags */
-  tagsList: HTMLElement;
   clearAllButton: HTMLElement;
   noResults: HTMLElement;
   contentArea: HTMLElement;
@@ -16,7 +14,6 @@ export interface SplitViewElements {
 
 export interface FilterState {
   search: string;
-  tags: Set<string>;
   types: Set<string>;
 }
 

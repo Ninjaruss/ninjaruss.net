@@ -2,7 +2,7 @@ import type { SplitViewElements, SplitViewState } from './types';
 import { getFiltersFromURL } from './urlState';
 import { applyFilters } from './filterEngine';
 import { loadContent } from './contentLoader';
-import { populateTypes, populateTags } from './filterUI';
+import { populateTypes } from './filterUI';
 import { createIdleManager, initIdleEventListeners, initEmblemHoverListeners } from './idleManager';
 import { bindFilterEvents, bindGlobalEvents, bindListEvents } from './eventBindings';
 
@@ -16,7 +16,6 @@ export { initProseImageTilt } from './proseImageTilt';
 function queryElements(splitView: HTMLElement): SplitViewElements | null {
   const searchInput = splitView.querySelector('.split-view__search') as HTMLInputElement | null;
   const typesList = splitView.querySelector('.split-view__types') as HTMLElement | null;
-  const tagsList = splitView.querySelector('.split-view__tags') as HTMLElement | null;
   const clearAllButton = splitView.querySelector('.split-view__clear-all-filters') as HTMLElement | null;
   const noResults = splitView.querySelector('.split-view__no-results') as HTMLElement | null;
   const contentArea = splitView.querySelector('.split-view__content') as HTMLElement | null;
@@ -25,7 +24,7 @@ function queryElements(splitView: HTMLElement): SplitViewElements | null {
   const listPanel = splitView.querySelector('.split-view__list') as HTMLElement | null;
   const detailPanel = splitView.querySelector('.split-view__detail') as HTMLElement | null;
 
-  if (!searchInput || !typesList || !tagsList || !clearAllButton || !noResults || !contentArea) {
+  if (!searchInput || !typesList || !clearAllButton || !noResults || !contentArea) {
     console.error('Split view: missing required elements');
     return null;
   }
@@ -34,7 +33,6 @@ function queryElements(splitView: HTMLElement): SplitViewElements | null {
     splitView,
     searchInput,
     typesList,
-    tagsList,
     clearAllButton,
     noResults,
     contentArea,
@@ -75,12 +73,11 @@ export function initSplitView(): void {
   const idleManager = createIdleManager(splitView, state);
 
   // Restore filter state from URL
-  const { search: initialSearch, tags: initialTags, types: initialTypes } = getFiltersFromURL();
+  const { search: initialSearch, types: initialTypes } = getFiltersFromURL();
   elements.searchInput.value = initialSearch;
-  populateTags(elements.tagsList, elements.listItems, initialTags);
   populateTypes(elements.typesList, elements.listItems, initialTypes);
   // Reflect restored (non-search) filters on the clear button
-  elements.clearAllButton.hidden = initialTags.size === 0 && initialTypes.size === 0;
+  elements.clearAllButton.hidden = initialTypes.size === 0;
   applyFilters(elements.listItems, elements.noResults);
 
   // Mark initial active item
