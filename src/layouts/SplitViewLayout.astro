@@ -17,10 +17,12 @@ interface Props {
   placeholderStats?: { label: string; value: string }[];
   /** Optional link rendered under the placeholder stats (e.g. journal → codex) */
   placeholderCta?: { href: string; label: string };
+  /** Render the draw-a-card control (journal) */
+  showDraw?: boolean;
   rssHref?: string;
 }
 
-const { title, description, section, kicker, initialSlug, initialEmblem, pageTitle, ogImage, ogType, placeholderStats, placeholderCta, rssHref } = Astro.props;
+const { title, description, section, kicker, initialSlug, initialEmblem, pageTitle, ogImage, ogType, placeholderStats, placeholderCta, showDraw, rssHref } = Astro.props;
 const hasInitialContent = Astro.slots.has('detail');
 
 const SECTION_KICKERS: Record<string, string> = {
@@ -76,6 +78,9 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
           <button class="split-view__clear-all-filters" type="button" hidden aria-label="Clear all filters" title="Clear all filters">
             <span class="split-view__clear-all-icon" aria-hidden="true">✕</span>
           </button>
+          {showDraw && (
+            <button class="split-view__draw-mobile" type="button" hidden data-draw-mobile>DRAW</button>
+          )}
         </div>
         <div class="split-view__types" role="group" aria-label="Filter by type"></div>
       </div>
@@ -118,6 +123,18 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
               <a class="split-view__placeholder-cta" href={placeholderCta.href}>
                 {placeholderCta.label} <span aria-hidden="true">→</span>
               </a>
+            )}
+            {showDraw && (
+              <div class="split-view__draw" data-draw-deck>
+                <button class="split-view__draw-deck" type="button" aria-label="Draw a random note">
+                  <img src="/images/ygo-card-backing.png" alt="" width="90" height="126" loading="lazy" />
+                </button>
+                <button class="split-view__draw-face" type="button" hidden>
+                  <img class="split-view__draw-emblem" src="/images/emblems/default.svg" alt="" width="40" height="40" />
+                  <span class="split-view__draw-title"></span>
+                </button>
+                <p class="split-view__draw-hint">draw a card</p>
+              </div>
             )}
             <p class="split-view__placeholder-hint">or press <kbd id="search-kbd">⌘K</kbd> to search</p>
           </div>
@@ -702,6 +719,114 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-gold-dim);
+  }
+
+  /* Draw a card — YGO deck in the desktop placeholder */
+  .split-view__draw {
+    margin-top: var(--space-lg);
+    perspective: 600px;
+  }
+
+  .split-view__draw-deck,
+  .split-view__draw-face {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  .split-view__draw-deck img {
+    display: block;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-hard);
+    transition: transform var(--animation-base) var(--animation-easing);
+  }
+
+  .split-view__draw-deck:hover img,
+  .split-view__draw-deck:focus-visible img {
+    transform: translateY(-4px);
+  }
+
+  .split-view__draw.is-flipping .split-view__draw-deck img {
+    transform: rotateY(90deg);
+  }
+
+  .split-view__draw-face {
+    width: 90px;
+    min-height: 126px;
+    border: var(--border-thick) solid var(--color-gold);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-base);
+    color: var(--color-text);
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm);
+    animation: draw-reveal var(--animation-base) var(--animation-easing);
+  }
+
+  /* Author display values above beat the UA [hidden] rule — restate it */
+  .split-view__draw-deck[hidden],
+  .split-view__draw-face[hidden] {
+    display: none;
+  }
+
+  @keyframes draw-reveal {
+    from { transform: rotateY(-90deg); }
+    to { transform: rotateY(0deg); }
+  }
+
+  .split-view__draw-title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xs);
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .split-view__draw-emblem {
+    filter: invert(1) opacity(0.8);
+  }
+
+  .split-view__draw-hint {
+    margin-top: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .split-view__draw-mobile {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-label);
+    background: var(--color-black);
+    color: var(--color-gold);
+    border: var(--border-hairline) solid var(--color-gold-dim);
+    padding: var(--space-2xs) var(--space-sm);
+    cursor: pointer;
+    clip-path: polygon(var(--cut-sm) 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
+  }
+
+  .split-view__draw-mobile:hover,
+  .split-view__draw-mobile:focus-visible {
+    background: var(--color-gold);
+    color: var(--color-black);
+  }
+
+  .split-view__draw-mobile[hidden] {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .split-view__draw-deck img,
+    .split-view__draw-face {
+      transition: none;
+      animation: none;
+    }
   }
 
 

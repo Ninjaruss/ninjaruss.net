@@ -5,6 +5,7 @@ import { loadContent } from './contentLoader';
 import { populateTypes } from './filterUI';
 import { createIdleManager, initIdleEventListeners, initEmblemHoverListeners } from './idleManager';
 import { bindFilterEvents, bindGlobalEvents, bindListEvents } from './eventBindings';
+import { pickDrawCandidate } from './drawCard';
 
 // Re-export utilities that are needed externally
 export { initMediaLightbox } from './mediaHandlers';
@@ -146,5 +147,71 @@ export function initSplitView(): void {
       window.addEventListener('load', kickAutoOpen, { once: true });
     }
     desktopQuery.addEventListener('change', kickAutoOpen, { once: true });
+  }
+
+  // --- Draw a card (journal serendipity) ---
+  const drawDeck = splitView.querySelector('[data-draw-deck]') as HTMLElement | null;
+  const drawMobile = splitView.querySelector('[data-draw-mobile]') as HTMLElement | null;
+
+  const drawPool = () =>
+    elements.listItems
+      .filter((item) => !item.classList.contains('is-filtered'))
+      .map((item) => ({
+        slug: item.dataset.slug || '',
+        type: item.dataset.contentType || '',
+        href: item.getAttribute('href') || '',
+        title: item.querySelector('.list-item__title')?.textContent || '',
+        emblem: item.dataset.emblem || '/images/emblems/default.svg',
+      }));
+
+  if (drawDeck) {
+    const deckButton = drawDeck.querySelector('.split-view__draw-deck') as HTMLElement;
+    const faceButton = drawDeck.querySelector('.split-view__draw-face') as HTMLButtonElement;
+    const faceEmblem = drawDeck.querySelector('.split-view__draw-emblem') as HTMLImageElement;
+    const faceTitle = drawDeck.querySelector('.split-view__draw-title') as HTMLElement;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let drawnSlug: string | null = null;
+
+    const draw = () => {
+      const picked = pickDrawCandidate(drawPool(), Math.random, drawnSlug ?? undefined);
+      if (!picked) return;
+      drawnSlug = picked.slug;
+      faceEmblem.src = picked.emblem;
+      faceTitle.textContent = picked.title;
+      const reveal = () => {
+        drawDeck.classList.remove('is-flipping');
+        deckButton.hidden = true;
+        faceButton.hidden = false;
+        faceButton.focus();
+      };
+      if (reduceMotion.matches) {
+        reveal();
+      } else {
+        drawDeck.classList.add('is-flipping');
+        setTimeout(reveal, 200);
+      }
+    };
+
+    deckButton.addEventListener('click', draw);
+    faceButton.addEventListener('click', () => {
+      if (!drawnSlug) return;
+      const item = splitView.querySelector(`[data-slug="${drawnSlug}"]`) as HTMLElement | null;
+      item?.click(); // normal selection path: history push, active state, load
+    });
+  }
+
+  if (drawMobile) {
+    // Only meaningful in the stacked layout, where the placeholder (and its
+    // deck) is hidden — reveal it there and keep desktop to the deck. The
+    // attribute stays in charge (not a media query) because attribute-hidden
+    // beats CSS display rules.
+    const stackedQuery = window.matchMedia('(max-width: 900px)');
+    const syncDrawMobile = () => { drawMobile.hidden = !stackedQuery.matches; };
+    syncDrawMobile();
+    stackedQuery.addEventListener('change', syncDrawMobile);
+    drawMobile.addEventListener('click', () => {
+      const picked = pickDrawCandidate(drawPool(), Math.random);
+      if (picked?.href) window.location.href = picked.href;
+    });
   }
 }
