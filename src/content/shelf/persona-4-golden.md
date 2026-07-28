@@ -2,7 +2,7 @@
 title: "Persona 4 Golden"
 tags: ["peak"]
 collections: ["persona"]
-emblem: "/images/media/persona-4-golden.png"
+emblem: "/images/media/persona-4-golden.webp"
 content_type: "game"
 publishedAt: 2026-03-03
 isFavorite: true

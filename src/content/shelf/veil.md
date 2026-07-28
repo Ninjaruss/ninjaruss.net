@@ -2,7 +2,7 @@
 title: "veil by Keina Suda"
 tags: ["peak"]
 collections: ["song"]
-emblem: "/images/media/veil.jpg"
+emblem: "/images/media/veil.webp"
 content_type: "music"
 isFavorite: true
 publishedAt: 2026-02-03

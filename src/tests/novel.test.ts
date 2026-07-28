@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { slugify, parseMetaData, parseOrderPrefix, buildNovelTree, countWords, computeNovelStats, flattenFolderFiles, findRecentFiles, unescapeScrivenerMarkdown, type NovelTree } from '../utils/novel';
+import { slugify, parseMetaData, parseOrderPrefix, buildNovelTree, countWords, computeNovelStats, flattenFolderFiles, findRecentFiles, findSynopsisDoc, findFirstScene, unescapeScrivenerMarkdown, type NovelTree } from '../utils/novel';
 import { join } from 'path';
 
 describe('slugify', () => {
@@ -243,5 +243,53 @@ describe('findRecentFiles', () => {
 
   it('returns empty array on empty tree', () => {
     expect(findRecentFiles({}, { scenes: true, limit: 1 })).toEqual([]);
+  });
+});
+
+describe('findSynopsisDoc', () => {
+  it('finds a synopsis-slugged doc anywhere under Story Plan', () => {
+    const tree: NovelTree = {
+      'story-plan': folder('story-plan', [file({ slug: 'arc-structure' })], {
+        deeper: folder('deeper', [file({ slug: 'what-is-remember-rain' })]),
+      }),
+    };
+    expect(findSynopsisDoc(tree)?.slug).toBe('what-is-remember-rain');
+  });
+
+  it('prefers higher-priority slugs when several candidates exist', () => {
+    const tree: NovelTree = {
+      'story-plan': folder('story-plan', [
+        file({ slug: 'about' }),
+        file({ slug: 'synopsis' }),
+      ]),
+    };
+    expect(findSynopsisDoc(tree)?.slug).toBe('synopsis');
+  });
+
+  it('returns null without a Story Plan folder or matching doc', () => {
+    expect(findSynopsisDoc({})).toBeNull();
+    expect(findSynopsisDoc({ 'story-plan': folder('story-plan', [file({ slug: 'notes' })]) })).toBeNull();
+  });
+
+  it('finds the scaffolded doc in the real content directory', async () => {
+    const tree = await buildNovelTree(join(process.cwd(), 'src/content/novel'));
+    expect(findSynopsisDoc(tree)?.slug).toBe('what-is-remember-rain');
+  });
+});
+
+describe('findFirstScene', () => {
+  it('returns the first manuscript file in binder order', () => {
+    const tree: NovelTree = {
+      manuscript: folder('manuscript', [], {
+        'arc-1': folder('arc-1', [file({ slug: 'rain-intro' }), file({ slug: 'second' })]),
+      }),
+      characters: folder('characters', [file({ slug: 'rain' })]),
+    };
+    expect(findFirstScene(tree)?.slug).toBe('rain-intro');
+  });
+
+  it('returns null without a manuscript folder or scenes', () => {
+    expect(findFirstScene({})).toBeNull();
+    expect(findFirstScene({ manuscript: folder('manuscript', []) })).toBeNull();
   });
 });

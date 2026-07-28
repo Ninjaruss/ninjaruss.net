@@ -14,6 +14,9 @@ Top-level sections (the NavPill):
 - `/now` — Current focus snapshot (history at `/now/archive`)
 - `/codex` — AI-synthesized "second brain" of concepts drawn from the site's writing
 
+Also served: `/rss.xml` (excerpt-only journal feed) and `/about` (301 to the current
+identity note — no static About page by design).
+
 Legacy redirects: `/notes` → `/journal?types=note`, `/showcase` → `/journal?types=showcase`,
 `/media` → `/shelf`, `/favorites` → `/shelf`. Detail routes (`/notes/[slug]`,
 `/showcase/[slug]`, `/shelf/[slug]`) are live.
@@ -24,7 +27,11 @@ Legacy redirects: `/notes` → `/journal?types=note`, `/showcase` → `/journal?
 npm run dev      # Start dev server at localhost:4321
 npm run build    # Build to ./dist/
 npm run preview  # Preview build locally
+npm run test     # Run vitest unit tests
+npm run codex    # AI-condense site content into src/data/codex.json
 ```
+
+Deploys to Vercel via the `@astrojs/vercel` adapter.
 
 ## Content
 

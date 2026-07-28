@@ -1,6 +1,6 @@
 ---
 title: "Journal with Witch"
-emblem: "/images/media/journal-with-witch.jpg"
+emblem: "/images/media/journal-with-witch.webp"
 content_type: "anime"
 isFavorite: false
 ---

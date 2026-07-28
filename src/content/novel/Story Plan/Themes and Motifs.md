@@ -40,6 +40,8 @@
 
 \- Rain: Ghost (inner true want) vs. Clone (deflection, proxy action). The Ghost is honest but hard to interpret. The Clone is a tool he must learn not to rely on.
 
+Rain stares upwards towards a blank ceiling. Since the city is mostly always raining, him looking upwards he sees a fog of clouds rather than the sky. Within the volcano, the sky for the moment clears up and he finally sees the sky. Something about always looking up but never really being sure what it is he yearns for.
+
 \- Vesper: Glass — memory as fragile, extractable, reformable. His archive of shards is a library of frozen moments.
 
 \- Roxana: Small fire/flame — fighting on in spite of her strength being weak. Shines within the darkness. The empty lighter must be filled with her own fire.
