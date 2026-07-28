@@ -15,10 +15,12 @@ interface Props {
   ogImage?: string;
   ogType?: string;
   placeholderStats?: { label: string; value: string }[];
+  /** Optional link rendered under the placeholder stats (e.g. journal → codex) */
+  placeholderCta?: { href: string; label: string };
   rssHref?: string;
 }
 
-const { title, description, section, kicker, initialSlug, initialEmblem, pageTitle, ogImage, ogType, placeholderStats, rssHref } = Astro.props;
+const { title, description, section, kicker, initialSlug, initialEmblem, pageTitle, ogImage, ogType, placeholderStats, placeholderCta, rssHref } = Astro.props;
 const hasInitialContent = Astro.slots.has('detail');
 
 const SECTION_KICKERS: Record<string, string> = {
@@ -111,6 +113,11 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
               </dl>
             ) : (
               <p class="split-view__placeholder-title">Choose an entry</p>
+            )}
+            {placeholderCta && (
+              <a class="split-view__placeholder-cta" href={placeholderCta.href}>
+                {placeholderCta.label} <span aria-hidden="true">→</span>
+              </a>
             )}
             <p class="split-view__placeholder-hint">or press <kbd id="search-kbd">⌘K</kbd> to search</p>
           </div>
@@ -349,7 +356,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     }
   }
 
-  /* Muted count inside type/tag pills */
+  /* Muted count inside type pills */
   .split-view__pill-count {
     margin-left: 0.4em;
     opacity: 0.55;
@@ -636,6 +643,26 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     font-size: var(--text-xs);
     color: var(--color-text-subtle);
     margin: 0;
+  }
+
+  .split-view__placeholder-cta {
+    display: inline-block;
+    margin-top: var(--space-md);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-gold);
+    text-decoration: none;
+    padding: var(--space-2xs) var(--space-sm);
+    border: var(--border-hairline) solid var(--color-gold-dim);
+    clip-path: polygon(var(--cut-sm) 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
+  }
+
+  .split-view__placeholder-cta:hover,
+  .split-view__placeholder-cta:focus-visible {
+    background: var(--color-gold);
+    color: var(--color-black);
   }
 
   .split-view__placeholder-stats {
