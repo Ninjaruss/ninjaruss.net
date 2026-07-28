@@ -51,7 +51,6 @@ src/
 
 All collections share a base schema (defined in `sharedSchema`):
 - `title` (required string)
-- `tags` (string array, defaults to [])
 - `collections` (string array for cross-referencing, defaults to [])
 - `publishedAt` (optional date)
 - `updatedAt` (optional date)
@@ -61,8 +60,8 @@ All collections share a base schema (defined in `sharedSchema`):
 - `image` (optional string, path to social share image)
 
 Collection-specific extensions:
-- **shelf**: adds `content_type: 'anime' | 'manga' | 'film' | 'series' | 'music' | 'book' | 'game' | 'character' | 'other'` and `isFavorite: boolean` (defaults to false)
-- **notes**: uses sharedSchema without extensions
+- **shelf**: adds `content_type: 'anime' | 'manga' | 'film' | 'series' | 'music' | 'book' | 'game' | 'character' | 'other'`, `isFavorite: boolean` (defaults to false), and `tags` (string array, defaults to []) — shelf is the only collection with tags
+- **notes**: uses sharedSchema without extensions (no tags — thematic grouping lives in /codex; relatedness via `collections`)
 - **showcase**: uses sharedSchema without extensions
 - **now**: simplified schema with `title` (defaults to 'Now'), `publishedAt` (required), `updatedAt`, `draft`
 
@@ -71,7 +70,7 @@ Collection-specific extensions:
 | Layout | Purpose |
 |--------|---------|
 | `BaseLayout.astro` | Foundation wrapper with meta, styles, view transitions |
-| `SplitViewLayout.astro` | Three-panel list/detail/emblem interface with client-side navigation and emblem card sidebar. Optional `kicker` prop; renders the unified P4G section header (`p4g-tab` + `p4g-heading` + `p4g-underline`) — the same header pattern is replicated on the Now, Now-archive, and Novel pages; optional `placeholderStats` prop renders a build-time stats `<dl>` in the no-selection placeholder (journal: notes/showcases/newest; codex: concepts/source entries) |
+| `SplitViewLayout.astro` | Three-panel list/detail/emblem interface with client-side navigation and emblem card sidebar. Optional `kicker` prop; renders the unified P4G section header (`p4g-tab` + `p4g-heading` + `p4g-underline`) — the same header pattern is replicated on the Now, Now-archive, and Novel pages; optional `placeholderStats` prop renders a build-time stats `<dl>` in the no-selection placeholder (journal: notes/showcases/newest; codex: concepts/source entries); optional `placeholderCta` prop (`{ href, label }`) renders a link under the stats (journal → /codex); optional `showDraw` prop renders the draw-a-card deck in the placeholder + the mobile DRAW button (journal only) |
 
 ## Component Inventory
 
@@ -105,11 +104,11 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 
 ### List/Detail
 - `ListItem.astro` — Left panel items in SplitViewLayout
-- `EntryHeader.astro` — Entry title, tags, dates, emblem trigger (`data-page-emblem` attr signals SplitView to flip card)
+- `EntryHeader.astro` — Entry title, dates, emblem trigger (`data-page-emblem` attr signals SplitView to flip card); no tag row (notes/showcase have no tags)
 - `EntryBody.astro` — Wraps entry prose in `.entry__content.prose`; renders nothing if `hasContent` is false
 
 ### Content
-- `TagList.astro` — Tag pills display
+- `TagList.astro` — Tag pills display (shelf detail pages only — shelf is the only tagged collection)
 - `DateDisplay.astro` — Published/updated date display with optional size variants
 - `EmblemCard.astro` — 3D flippable card component with mouse-tracking tilt effect (Yu-Gi-Oh card backing style, aspect ratio 63:88)
 - `MediaLightbox.astro` — Fullscreen media popup
@@ -178,7 +177,7 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 ## Pages & Routes
 
 ### Content Collection Pages
-- `/journal` — SplitViewLayout merging the `notes` + `showcase` collections into one date-sorted list ("notes & showcases" kicker). Filters are inline (no dropdowns): a segmented type control (All / note / showcase, single-select with per-type counts, `?types=` URL param) and a wrapping tag pill row (multi-select with per-tag counts, `?tags=`), plus a "visible / total" count and a compact ✕ clear-all beside search. Unknown `?types=` values — including the legacy `fragment`/`inquiry` — are dropped (fall back to All, enforced in `filterUI.populateTypes` + `filterEngine.applyFilters`). (The old featured strip linking `/novel` and `/stream` was removed; those live in the NavPill now.)
+- `/journal` — SplitViewLayout merging the `notes` + `showcase` collections into one date-sorted list ("notes & showcases" kicker). Filters are search + a segmented type control only (All / note / showcase, single-select with per-type counts, `?types=` URL param), plus a "visible / total" count and a compact ✕ clear-all beside search — no tag filtering (legacy `?tags=` params are ignored and scrubbed from the URL on first filter interaction, `urlState.ts`). Unknown `?types=` values — including the legacy `fragment`/`inquiry` — are dropped (fall back to All, enforced in `filterUI.populateTypes` + `filterEngine.applyFilters`). The no-selection placeholder shows build-time stats (`placeholderStats`), a "browse by theme — codex" CTA (`placeholderCta`), and the draw-a-card deck (`showDraw`). Draw-a-card: desktop = deck in the placeholder (one draw per visit; clicking the revealed face opens the entry through the normal selection path), mobile (≤900px) = a DRAW button that navigates to a random note; the pool respects active filters and contains notes only (pure logic in `splitView/drawCard.ts`). (The old featured strip linking `/novel` and `/stream` was removed; those live in the NavPill now.)
 - `/notes/[slug]` — Individual note detail pages (left panel shows the merged journal list, `section="journal"`)
 - `/showcase/[slug]` — Individual project detail pages (same merged list)
 - `/shelf` — Full-width emblem card grid grouped by content type, with a sticky jump bar (section anchor links) and inline quick-view panel. Progressive enhancement: cards link to `/shelf/[slug]` without JS; JS intercepts clicks to push `/shelf/[slug]` into history and open the panel instead (`?open=slug` supported for legacy links only).
@@ -228,7 +227,10 @@ Remember Rain is a **visual novel** in progress (the project committed to a VN-f
 
 ## Codex System (/codex second brain)
 
-`/codex` is an AI-condensed encyclopedia of the site's content. `src/data/codex.json`
+`/codex` is an AI-condensed encyclopedia of the site's content and the site's
+official thematic map — notes/showcase carry no tags, so browsing by theme means
+browsing the codex (the /journal no-selection placeholder links here via its
+"browse by theme — codex" CTA). `src/data/codex.json`
 (committed, reviewed via git diff before commit) holds the interpretation: 6-12
 concepts, each with a second-person synthesis and entry refs like `notes/<slug>` /
 `novel/world/<slug>`. The build resolves all facts (titles, dates, excerpts, links)
@@ -254,9 +256,9 @@ codex-response.json are gitignored. Tests: src/tests/codex.test.ts (pure modules
 | `src/utils/dates.ts` | `formatDate()`, `shouldShowUpdatedDate()` | Date formatting and update-date display logic |
 | `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `countWords()`, `computeNovelStats()`, `flattenFolderFiles()`, `findRecentFiles()`, `findSynopsisDoc()`, `findFirstScene()` | Scrivener-backed novel content loader + rain-gauge stats + desk recency/intro helpers |
 | `src/utils/codexContent.ts` + `src/utils/codex/` | `getCodexPageData()`, `getCodexTileData()`; pure modules: schema, json, stabilize, resolve, corpus, prompt, pipeline | /codex data layer — see Codex System section |
-| `src/utils/splitView/` | (10 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
+| `src/utils/splitView/` | (11 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
 
-The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `eventBindings`, `filterEngine`, `filterUI`, `idleManager`, `mediaHandlers`, `proseImageTilt`, `types`, `urlState`.
+The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-pool logic, tested in `src/tests/drawCard.test.ts`), `emblemAnimation`, `eventBindings`, `filterEngine`, `filterUI`, `idleManager`, `mediaHandlers`, `proseImageTilt`, `types`, `urlState`.
 
 ## Astro Integrations
 
@@ -323,7 +325,7 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 1. Create `.md` file in appropriate `src/content/` subdirectory (shelf, notes, showcase, now)
 2. Include required frontmatter matching collection schema
 3. Add `emblem: '/images/emblems/your-emblem.svg'` for custom emblem (optional)
-4. Use `collections: ['tag1', 'tag2']` field to cross-reference related content (enables RelatedContent component)
+4. Use the `collections` field to cross-reference related content (enables RelatedContent component) — this is the way to relate notes to each other (e.g. the six Japan notes threaded via `collections: ["japan"]`). Notes/showcase have no `tags`; only shelf entries take a `tags` array (displayed on shelf cards/detail)
 5. Set `draft: true` while working, remove for publishing
 6. For shelf entries: Set `isFavorite: true` to mark the entry as a curated highlight — shows a gold star badge and gold title on its `/shelf` card (optional, defaults to false)
 7. Run `npm run build` to validate schema
