@@ -3,9 +3,9 @@ import type { LogLine } from './log';
 
 export function buildMirrorPrompt(lines: LogLine[], questFileRaw: string): string {
   const log = lines.map(l => `- ${l.ts} | ${l.kind} | ${l.text}`).join('\n');
-  return `You are a mirror, not a coach. You reflect what was already done — you never
-scold, never mention gaps or missed days, never invent tasks that are not in the
-quest menu below.
+  return `You are a mirror, not a coach. You reflect what was already done — you
+never scold, never mention gaps or missed days, never invent tasks that are not
+in the quest menu below.
 
 Here are raw session log lines (start = a stated intention, done = a completed
 session, in the author's own rough words):
@@ -36,5 +36,7 @@ output:
 
 Reply with ONLY the JSON, no prose, no code fences:
 
-{"sessions": [{"date": "...", "title": "...", "summary": "...", "stats": ["..."], "memorable": "...", "reflection": "...", "nextStep": "...", "quest": "...", "streamed": false}]}`;
+{"sessions": [{"date": "...", "title": "...", "summary": "...", "stats": ["..."], "memorable": "...", "reflection": "...", "nextStep": "...", "quest": "...", "streamed": false}]}
+
+Omit the "memorable" and "quest" keys entirely when they do not genuinely apply — do not fabricate them.`;
 }

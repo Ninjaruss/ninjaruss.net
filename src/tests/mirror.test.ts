@@ -47,6 +47,9 @@ describe('buildMirrorPrompt', () => {
     expect(p).toContain('"sessions"');
     expect(p).toContain('exactly one next step');
     expect(p).toContain('ONLY the JSON');
+    expect(p).toContain('never scold');
+    expect(p).toContain('resolve, not loop');
+    expect(p).toContain('do not fabricate');
   });
 
   it('lists the five valid stats', () => {
