@@ -167,3 +167,35 @@ prominent surface.
 - No local model / Ollama / API integration (manual paste workflow only).
 - No automatic capture from apps (Anki/Migaku etc.) — out of scope.
 - No changes to the novel, codex, shelf, or journal systems beyond the tile.
+
+## Addendum (2026-07-29): Button-based loop — Mirror strip
+
+Approved extension: the loop must be operable without typing terminal commands.
+Two surfaces, one physics constraint: the live static site cannot write to the
+repo, and localStorage on ninjaruss.net is a different bucket than localhost.
+The bridge is clipboard, not a backend (consistent with the codex trust model;
+no auth, no server state).
+
+**Live ninjaruss.net/status — capture + celebration (works on phone):**
+- Mirror strip with: ▶ Set intention (prompt → localStorage line, exact
+  mirror-log.md format), ★ Session complete (prompt → localStorage line +
+  the flourish: P4G gold sweep + rank-up sound, WebAudio-synthesized — the
+  celebration cue now fires where the user is), ⧉ Copy log (clipboard, then
+  offers clear). Each visitor's localStorage is their own; strangers only ever
+  write to their own browser. No data leaves the device.
+
+**Local dev localhost:4321/status — the file-writing panel:**
+- Same strip, plus dev-only powers via Astro API routes (`prerender = false`,
+  handlers return 404 unless `import.meta.env.DEV`):
+  - logging buttons write directly to `mirror-log.md`
+  - paste box: merge phone-copied log lines (validated by `parseLogLines`,
+    deduped exact-line)
+  - Copy DeepSeek prompt (same export logic + mark file, to clipboard)
+  - Paste DeepSeek reply (same `validateMirrorResponse`, writes session files,
+    shows what was written; git diff review unchanged)
+- `Mirror.command` double-clickable launcher (starts dev server if needed,
+  opens /status) so "go to the site" is one click.
+
+The CLI remains as plumbing; scripts and API routes share the same extracted
+core (single source of truth for export/import/append file operations).
+Component isolation: the strip is one self-contained `MirrorStrip.astro`.
