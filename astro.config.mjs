@@ -12,5 +12,6 @@ export default defineConfig({
   redirects: {
     '/media': '/shelf',
     '/media/[...slug]': '/shelf/[...slug]',
+    '/stream': '/status',
   },
 });

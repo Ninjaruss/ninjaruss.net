@@ -297,7 +297,7 @@ const codexTile = await getCodexTileData();
 
       <a
         id="stream-tile"
-        href="/stream"
+        href="/status"
         class="bento-tile bento-tile--dark bento-tile--interactive stream-tile"
         style={`--st-lead: ${leadingColor.hex};`}
       >
@@ -489,9 +489,9 @@ const codexTile = await getCodexTileData();
       <!-- Row 5 — email (2×1) fills the cols under MAL/Spotify (quote tile removed).
            The mailto: is assembled client-side on first interaction so the address
            never appears in the static HTML (bot-scrape mitigation). The static href
-           is a real no-JS fallback (the /stream Mailbox), not a dead #anchor — with
+           is a real no-JS fallback (the /status Mailbox), not a dead #anchor — with
            JS the click is always intercepted to open the mailto. -->
-      <a href="/stream" id="mail-tile" class="logo-tile logo-tile--mail p4g-sweep bento-tile--span-2x1 p3r-animate" style="--stagger-delay: 200ms;">
+      <a href="/status" id="mail-tile" class="logo-tile logo-tile--mail p4g-sweep bento-tile--span-2x1 p3r-animate" style="--stagger-delay: 200ms;">
         <span class="logo-tile__kicker" aria-hidden="true"><span>Contact</span></span>
         <svg class="logo-tile__img" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
           <rect x="2.5" y="5" width="19" height="14" rx="1.5"/>
