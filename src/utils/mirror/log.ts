@@ -24,3 +24,8 @@ export function parseLogLines(markdown: string): LogLine[] {
   }
   return out;
 }
+
+/** Lines with ts strictly greater than lastTs (lexicographic works for this format). */
+export function linesAfter(markdown: string, lastTs: string): LogLine[] {
+  return parseLogLines(markdown).filter(l => l.ts > lastTs);
+}

@@ -85,10 +85,11 @@ export function parseStreamIdeas(markdown: string): Partial<Record<StatName, str
   let current: StatName | null = null;
 
   for (const line of lines) {
-    const heading = line.match(/^##\s+Ideas\s+—\s+(.+)/);
-    if (heading) {
-      const name = heading[1].trim() as StatName;
-      if ((STAT_ORDER as readonly string[]).includes(name)) {
+    const anyHeading = line.match(/^##\s+(.+)/);
+    if (anyHeading) {
+      const heading = line.match(/^##\s+Ideas\s+—\s+(.+)/);
+      const name = heading ? (heading[1].trim() as StatName) : null;
+      if (name && (STAT_ORDER as readonly string[]).includes(name)) {
         current = name;
         result[current] = [];
       } else {

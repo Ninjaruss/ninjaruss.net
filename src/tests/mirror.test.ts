@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatLogLine, parseLogLines } from '../utils/mirror/log';
+import { formatLogLine, parseLogLines, linesAfter } from '../utils/mirror/log';
 import { buildMirrorPrompt } from '../utils/mirror/prompt';
 import { validateMirrorResponse } from '../utils/mirror/schema';
 
@@ -27,6 +27,18 @@ describe('parseLogLines', () => {
     expect(parseLogLines(md)).toEqual([
       { ts: '2026-07-29 13:00', kind: 'start', text: 'read Wagotabi' },
       { ts: '2026-07-29 13:40', kind: 'done', text: 'finished a chapter' },
+    ]);
+  });
+});
+
+describe('linesAfter', () => {
+  it('keeps only lines newer than the mark', () => {
+    const md = [
+      '- 2026-07-29 13:00 | done | exported already',
+      '- 2026-07-29 15:30 | start | logged after export',
+    ].join('\n');
+    expect(linesAfter(md, '2026-07-29 13:00')).toEqual([
+      { ts: '2026-07-29 15:30', kind: 'start', text: 'logged after export' },
     ]);
   });
 });

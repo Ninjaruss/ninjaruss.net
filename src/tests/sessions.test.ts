@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   tallyStats, buildRadarPoints, buildGuidePoints, parseQuestMenu, STAT_ORDER,
-  applyLogScale, scaleAllTallies, STAT_CEILING, parseQuestFile,
+  applyLogScale, scaleAllTallies, STAT_CEILING, parseQuestFile, parseStreamIdeas,
   type StatName,
 } from '../utils/sessions';
 import { parseTwitchLiveResponse } from '../utils/twitchStatus';
@@ -128,6 +128,17 @@ describe('scaleAllTallies', () => {
     for (const stat of STAT_ORDER) {
       expect(scaled[stat]).toBe(0);
     }
+  });
+});
+
+describe('parseStreamIdeas', () => {
+  it('does not leak bullets from non-Ideas sections that follow', () => {
+    const md = [
+      '## Ideas — Chaos', '- Motorcycle stream',
+      '## Completed', '- 2026-08-01 — [Expression] Some done quest',
+    ].join('\n');
+    const ideas = parseStreamIdeas(md);
+    expect(ideas['Chaos']).toEqual(['Motorcycle stream']);
   });
 });
 

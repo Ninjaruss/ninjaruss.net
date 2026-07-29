@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { parseLogLines } from '../../src/utils/mirror/log';
 import { buildMirrorPrompt } from '../../src/utils/mirror/prompt';
-import { LOG_FILE, PROMPT_FILE, QUESTS_FILE } from './io';
+import { LOG_FILE, PROMPT_FILE, QUESTS_FILE, EXPORTED_MARK_FILE } from './io';
 
 if (!fs.existsSync(LOG_FILE)) {
   console.error('✗ mirror-log.md not found. Log a session first: npm run mirror -- done "..."');
@@ -16,6 +16,9 @@ if (lines.filter(l => l.kind === 'done').length === 0) {
 
 const quests = fs.existsSync(QUESTS_FILE) ? fs.readFileSync(QUESTS_FILE, 'utf-8') : '';
 fs.writeFileSync(PROMPT_FILE, buildMirrorPrompt(lines, quests));
+
+const maxTs = lines.reduce((max, l) => (l.ts > max ? l.ts : max), lines[0].ts);
+fs.writeFileSync(EXPORTED_MARK_FILE, maxTs);
 
 console.log(`Wrote ${PROMPT_FILE} (${lines.length} log lines).`);
 console.log('');
