@@ -3,7 +3,7 @@ import {
   tallyStats, buildRadarPoints, buildGuidePoints, parseQuestMenu, STAT_ORDER,
   applyLogScale, scaleAllTallies, STAT_CEILING,
   type StatName,
-} from '../utils/stream';
+} from '../utils/sessions';
 import { parseTwitchLiveResponse } from '../utils/twitchStatus';
 
 const makeEntry = (publishedAt: string, stats: string[]) => ({
