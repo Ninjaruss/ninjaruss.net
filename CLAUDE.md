@@ -17,6 +17,10 @@ npm run astro     # Direct Astro CLI access
 npm run codex         # AI-condense site content into src/data/codex.json (claude CLI)
 npm run codex:export  # manual mode: write codex-prompt.txt for any chatbot
 npm run codex:import  # manual mode: validate codex-response.json → codex.json
+npm run mirror -- start "..."   # log a session intention (appends to gitignored mirror-log.md)
+npm run mirror -- done "..."    # log a completed session + rank-up flourish
+npm run mirror:export           # manual mode: write mirror-prompt.txt for DeepSeek chat / any chatbot
+npm run mirror:import           # validate mirror-response.json → session entries in src/content/sessions/
 ```
 
 ## Architecture
@@ -36,7 +40,7 @@ src/
 ├── layouts/          # Page layout templates
 ├── pages/            # File-based routing
 ├── styles/           # Global CSS (no frameworks)
-├── tests/            # Vitest unit tests (novel, content, journal, shelf, stream, ...)
+├── tests/            # Vitest unit tests (novel, content, journal, shelf, sessions, streamTile, mirror, ...)
 └── utils/            # Shared utilities (content, collections, journal, dates, novel, splitView/)
 ```
 
@@ -76,7 +80,7 @@ Collection-specific extensions:
 
 ### Structural
 - `BentoGrid.astro` / `BentoTile.astro` — Homepage grid system with visual hierarchy
-- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Journal/VN/Shelf/Stream/Now/Codex with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /stream. (No longer the centered floating Home pill.) ≤768px: items wrap into two rows (4+3, 44px targets, hairlines via gap + gold-tinted inner background); a small script publishes the nav's measured height as `--nav-clearance` on <html> (re-set on astro:page-load/resize), consumed by page bottom paddings (now pages, SplitViewLayout detail panel, novel.css) so the bar never covers content.
+- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Journal/VN/Shelf/Status/Now/Codex with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /status. (No longer the centered floating Home pill.) ≤768px: items wrap into two rows (4+3, 44px targets, hairlines via gap + gold-tinted inner background); a small script publishes the nav's measured height as `--nav-clearance` on <html> (re-set on astro:page-load/resize), consumed by page bottom paddings (now pages, SplitViewLayout detail panel, novel.css) so the bar never covers content.
 
 ### Bento Tile Hierarchy
 The homepage uses a visual hierarchy pattern:
@@ -84,8 +88,8 @@ The homepage uses a visual hierarchy pattern:
 - **Core tiles** (`.bento-tile--core`): Journal and Shelf (Media Log) with elevated gold glow and larger typography. The homepage Shelf tile's 8-cover collage tucks under a diagonal top edge (`.tile-poster-strip` clip) — one cut, no new colors.
 - **Signal tiles**: Current activity indicators (Now, Latest) — Now shows the latest now-entry's title; Latest is 2×2 with a stripped-markdown excerpt and cycles client-side through the latest 2 notes + latest 1 showcase (interleaved note/showcase/note, 7s interval; each swap is a P4G gold sweep — a skewed gold panel (`.latest-tile__sweep`, `skewX(--skew-accent)`, the same move as the journal-entry hover `.list-item::before`) sweeps across via the `latest-sweep` keyframes on `#latest-tile.is-cycling`: in to cover, entry swapped behind it at the midpoint, out to reveal; cycling is skipped entirely under `prefers-reduced-motion`, which also sets the sweep `animation: none`). The emblem sits on a deeper-black angled field (`.latest-tile__emblem-wrap`, `clip-path` + negative-margin bleed) traced by a gold hairline (`::before`, skewX(-4deg) measured against the clip edge); ≤768px the field flattens to the tile's bottom edge and the hairline hides.
 - **Novel tile** (`.novel-tile`, 1×2, rows 2-3): "rain gauge" — script words (Manuscript/ folder, big gold; labelled "script words" in the UI) vs outline words (other folders, small grey) from `computeNovelStats()`. Each rain drop is randomized per-visit (position/speed/delay/length/opacity) by `initializeNovelRain`. Client script (`initializeNovelRain`) reads `data-scene-modified`/`data-outline-modified` and sets `is-raining` (scene work ≤14 days, CSS rain animation scaled by `--rain-strength`), `is-misting` (outline-only work ≤14 days, sparse slow drizzle), or `is-waiting` (static "the rain waits." line); the rain spans the full tile (14 drops with varied lengths via `--len`, spread across the width). Design invariant: never red, never displays a count of absent days — the tile rewards accumulation, it does not shame absence.
-- **Stream tile**: Dark 1×2 tile linking to `/stream`; shows live stat donut chart with leading stat emblem and session count. Pulsing red border (`--color-live`) when live.
-- **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) and an Email tile (2×1, `#mail-tile`) with 48x48px logos/icons and hover effects. The email address (mailbox@ninjaruss.net) is never in the served HTML — `initializeMailTile()` assembles the `mailto:` on first pointerenter/focus/touch/click (bot-scrape mitigation; same pattern fills `#mail-address` in `/stream`'s Status-screen mail strip). Angled gold kicker chips name each tile's role (WATCHLIST / LISTENING / CONTACT), corner-cut clip-path (no hover shadow — clip-path would clip it, same reason there's no focus outline ring — hover/focus feedback is the gold sweep + lift instead), brand-colored hovers replaced by the shared `.p4g-sweep` gold wash with black text.
+- **Stream tile** (`.stream-tile`, `#stream-tile` — name/class unchanged, now links to /status): Dark 1×2 tile linking to `/status`; shows live stat donut chart (session stats from the `sessions` collection) with leading stat emblem and session count. Pulsing red border (`--color-live`) when live (live-streaming state, unrelated to the sessions rename).
+- **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) and an Email tile (2×1, `#mail-tile`) with 48x48px logos/icons and hover effects. The email address (mailbox@ninjaruss.net) is never in the served HTML — `initializeMailTile()` assembles the `mailto:` on first pointerenter/focus/touch/click (bot-scrape mitigation; same pattern fills `#mail-address` in `/status`'s Status-screen mail strip). Angled gold kicker chips name each tile's role (WATCHLIST / LISTENING / CONTACT), corner-cut clip-path (no hover shadow — clip-path would clip it, same reason there's no focus outline ring — hover/focus feedback is the gold sweep + lift instead), brand-colored hovers replaced by the shared `.p4g-sweep` gold wash with black text.
 - **YouTube tile**: Full-bleed channel avatar with an angled gold "YouTube" kicker chip (`.yt-tile__chip`); switches to Twitch live preview when streaming (live overlay covers the chip)
 
 Tile variants: `interactive` (default), `highlight` (gold bg), `dark`, `static`
@@ -177,13 +181,14 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 ## Pages & Routes
 
 ### Content Collection Pages
-- `/journal` — SplitViewLayout merging the `notes` + `showcase` collections into one date-sorted list ("notes & showcases" kicker). Filters are search + a segmented type control only (All / note / showcase, single-select with per-type counts, `?types=` URL param), plus a "visible / total" count and a compact ✕ clear-all beside search — no tag filtering (legacy `?tags=` params are ignored and scrubbed from the URL on first filter interaction, `urlState.ts`). Unknown `?types=` values — including the legacy `fragment`/`inquiry` — are dropped (fall back to All, enforced in `filterUI.populateTypes` + `filterEngine.applyFilters`). The no-selection placeholder shows build-time stats (`placeholderStats`), a "browse by theme — codex" CTA (`placeholderCta`), and the draw-a-card deck (`showDraw`). Draw-a-card: desktop = deck in the placeholder (one draw per visit; clicking the revealed face opens the entry through the normal selection path), mobile (≤900px) = a DRAW button that navigates to a random note; the pool respects active filters and contains notes only (pure logic in `splitView/drawCard.ts`). (The old featured strip linking `/novel` and `/stream` was removed; those live in the NavPill now.)
+- `/journal` — SplitViewLayout merging the `notes` + `showcase` collections into one date-sorted list ("notes & showcases" kicker). Filters are search + a segmented type control only (All / note / showcase, single-select with per-type counts, `?types=` URL param), plus a "visible / total" count and a compact ✕ clear-all beside search — no tag filtering (legacy `?tags=` params are ignored and scrubbed from the URL on first filter interaction, `urlState.ts`). Unknown `?types=` values — including the legacy `fragment`/`inquiry` — are dropped (fall back to All, enforced in `filterUI.populateTypes` + `filterEngine.applyFilters`). The no-selection placeholder shows build-time stats (`placeholderStats`), a "browse by theme — codex" CTA (`placeholderCta`), and the draw-a-card deck (`showDraw`). Draw-a-card: desktop = deck in the placeholder (one draw per visit; clicking the revealed face opens the entry through the normal selection path), mobile (≤900px) = a DRAW button that navigates to a random note; the pool respects active filters and contains notes only (pure logic in `splitView/drawCard.ts`). (The old featured strip linking `/novel` and `/status` (then `/stream`) was removed; those live in the NavPill now.)
 - `/notes/[slug]` — Individual note detail pages (left panel shows the merged journal list, `section="journal"`)
 - `/showcase/[slug]` — Individual project detail pages (same merged list)
 - `/shelf` — Full-width emblem card grid grouped by content type, with a sticky jump bar (section anchor links) and inline quick-view panel. Progressive enhancement: cards link to `/shelf/[slug]` without JS; JS intercepts clicks to push `/shelf/[slug]` into history and open the panel instead (`?open=slug` supported for legacy links only).
 - `/shelf/[slug]` — Individual shelf detail pages
 
 ### Legacy Routes (301 Redirects)
+- `/stream` → redirects to `/status` (the sessions/stat-tracking page was renamed; `astro.config.mjs` `redirects`).
 - `/about` → redirects to the current identity-declaration note (`/notes/i-am-ninjaruss`). Deliberate design: no static About page — "learn about me through the stuff I do." When a newer declaration note is written, repoint this redirect (`src/pages/about.astro`). The homepage title tile carries a quiet "who?" corner link to it.
 - `/notes` → redirects to `/journal?types=note` (list page only; detail routes live)
 - `/showcase` → redirects to `/journal?types=showcase` (list page only; detail routes live)
@@ -245,6 +250,21 @@ has a 2×1 Codex tile cycling synthesis first-sentences with the latest-sweep pa
 Scripts live in scripts/codex/ (tsx); manual mode scratch files codex-prompt.txt /
 codex-response.json are gitignored. Tests: src/tests/codex.test.ts (pure modules only).
 
+## Mirror Loop (sessions + /status)
+
+The sessions collection logs work sessions (Japanese, writing, streams). The loop:
+`npm run mirror -- start/done` appends rough lines to gitignored `mirror-log.md`
+(the `done` flourish is a cue — the celebration itself is physical, per the design
+spec). Every few days: `mirror:export` → paste `mirror-prompt.txt` into DeepSeek
+chat → save reply as `mirror-response.json` → `mirror:import` writes validated
+session entries (git diff review, then commit — same trust model as codex manual
+mode). Design invariants (docs/superpowers/specs/2026-07-29-status-pause-menu-design.md):
+stats never decay, no streaks/shame states, reflections are bounded (≤600 chars,
+must end in exactly one next step), quests only ever come from the user's own
+`src/content/sessions/_quests.md` (sections: The Question / Active / Ideas — <Stat> /
+Completed; parsed by `parseQuestFile`; `parseQuestMenu` is legacy, currently unused
+by pages). Phase 2 (the /status pause-menu UI) is gated on two weeks of real use.
+
 ## Utility Modules
 
 | File | Exports | Purpose |
@@ -255,6 +275,7 @@ codex-response.json are gitignored. Tests: src/tests/codex.test.ts (pure modules
 | `src/utils/journalMerge.ts` | pure merge/sort logic (no astro imports) | Unit-testable core of journal.ts (vitest can't resolve `astro:content`) |
 | `src/utils/dates.ts` | `formatDate()`, `shouldShowUpdatedDate()` | Date formatting and update-date display logic |
 | `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `countWords()`, `computeNovelStats()`, `flattenFolderFiles()`, `findRecentFiles()`, `findSynopsisDoc()`, `findFirstScene()` | Scrivener-backed novel content loader + rain-gauge stats + desk recency/intro helpers |
+| `src/utils/sessions.ts` (formerly `stream.ts`) | `tallyStats()`, `buildRadarPoints()`, `buildGuidePoints()`, `applyLogScale()`, `scaleAllTallies()`, `parseStreamIdeas()`, `parseQuestFile()`, `parseQuestMenu()` (legacy, unused by pages), `buildDonutArcs()`, `STAT_ORDER`, `STAT_CEILING` | `sessions` collection stat aggregation/scaling for the `/status` radar + donut, and `_quests.md` parsing (`parseQuestFile` — sections: The Question / Active / Ideas — \<Stat\> / Completed) |
 | `src/utils/codexContent.ts` + `src/utils/codex/` | `getCodexPageData()`, `getCodexTileData()`; pure modules: schema, json, stabilize, resolve, corpus, prompt, pipeline | /codex data layer — see Codex System section |
 | `src/utils/splitView/` | (11 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
 
@@ -288,7 +309,7 @@ The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-po
 
 6. **Latest Tile**: Homepage 2×2 tile with "X days ago" indicator and excerpt; cycles client-side through the latest 2 notes and latest 1 showcase (interleaved note/showcase/note, 7s interval; each swap is a P4G gold sweep — a skewed gold panel (`.latest-tile__sweep`) sweeps across via the `latest-sweep` keyframes on `#latest-tile.is-cycling`, matching the journal-entry hover, with the entry swapped behind it mid-sweep; cycling skipped under `prefers-reduced-motion`). The emblem sits on a deeper-black angled field (`.latest-tile__emblem-wrap`, `clip-path` + negative-margin bleed) traced by a gold hairline (`::before`, skewX(-4deg) measured against the clip edge); ≤768px the field flattens to the tile's bottom edge and the hairline hides.
 
-6b. **NavPill**: 7 items — Home / Journal / VN / Shelf / Stream / Now / Codex — rendered on every non-home page including `/stream` (whose sidebar "Ninjaruss" logo badge was removed). `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array.
+6b. **NavPill**: 7 items — Home / Journal / VN / Shelf / Status / Now / Codex — rendered on every non-home page including `/status` (whose sidebar "Ninjaruss" logo badge was removed; `/status` is the renamed former `/stream`, which now 301-redirects here). `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array.
 
 7. **Shelf Page Grid**: `/shelf` is a full emblem card grid grouped by content type (not SplitViewLayout), with a sticky jump bar for section navigation. `isFavorite: true` entries get a gold star badge and gold title on their card (no separate favorites filter exists anymore). Quick-view panel opens on card click without navigating away, pushing `/shelf/[slug]` into history. Cards that are neither a favorite nor have written content dim with `.shelf-card--dim` (`filter: opacity(0.52)`, not `opacity` — see Code Style Notes).
 
