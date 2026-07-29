@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { formatLogLine, parseLogLines } from '../utils/mirror/log';
 import { buildMirrorPrompt } from '../utils/mirror/prompt';
+import { validateMirrorResponse } from '../utils/mirror/schema';
 
 describe('formatLogLine', () => {
   it('formats a done line with local timestamp', () => {
@@ -57,5 +58,59 @@ describe('buildMirrorPrompt', () => {
     for (const s of ['Determination', 'Insight', 'Expression', 'Sincerity', 'Chaos']) {
       expect(p).toContain(s);
     }
+  });
+});
+
+const validSession = {
+  date: '2026-07-29',
+  title: 'Wagotabi at the desk',
+  summary: 'Read a chapter of Wagotabi.',
+  stats: ['Insight'],
+  reflection: 'You chose the slow road and walked it anyway. That is the whole method.',
+  nextStep: 'Tomorrow after lunch, open Wagotabi for 20 minutes.',
+  streamed: false,
+};
+
+describe('validateMirrorResponse', () => {
+  it('accepts a valid response', () => {
+    const r = validateMirrorResponse(JSON.stringify({ sessions: [validSession] }));
+    expect(r.errors).toEqual([]);
+    expect(r.data).toHaveLength(1);
+    expect(r.data![0].title).toBe('Wagotabi at the desk');
+  });
+
+  it('strips code fences before parsing', () => {
+    const wrapped = '```json\n' + JSON.stringify({ sessions: [validSession] }) + '\n```';
+    expect(validateMirrorResponse(wrapped).data).toHaveLength(1);
+  });
+
+  it('rejects malformed JSON with nothing written', () => {
+    const r = validateMirrorResponse('not json');
+    expect(r.data).toBeNull();
+    expect(r.errors.length).toBeGreaterThan(0);
+  });
+
+  it('rejects a bad date', () => {
+    const r = validateMirrorResponse(JSON.stringify({ sessions: [{ ...validSession, date: '29/07/2026' }] }));
+    expect(r.data).toBeNull();
+  });
+
+  it('drops unknown stats with a warning, errors if none remain', () => {
+    const one = validateMirrorResponse(JSON.stringify({ sessions: [{ ...validSession, stats: ['Insight', 'Luck'] }] }));
+    expect(one.data![0].stats).toEqual(['Insight']);
+    expect(one.warnings.length).toBeGreaterThan(0);
+
+    const none = validateMirrorResponse(JSON.stringify({ sessions: [{ ...validSession, stats: ['Luck'] }] }));
+    expect(none.data).toBeNull();
+  });
+
+  it('rejects an overlong reflection (rumination guard)', () => {
+    const r = validateMirrorResponse(JSON.stringify({ sessions: [{ ...validSession, reflection: 'x'.repeat(601) }] }));
+    expect(r.data).toBeNull();
+  });
+
+  it('rejects a missing nextStep', () => {
+    const r = validateMirrorResponse(JSON.stringify({ sessions: [{ ...validSession, nextStep: '' }] }));
+    expect(r.data).toBeNull();
   });
 });

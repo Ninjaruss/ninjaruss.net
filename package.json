@@ -13,7 +13,8 @@
     "codex:export": "tsx scripts/codex/export.ts",
     "codex:import": "tsx scripts/codex/import.ts",
     "mirror": "tsx scripts/mirror/cli.ts",
-    "mirror:export": "tsx scripts/mirror/export.ts"
+    "mirror:export": "tsx scripts/mirror/export.ts",
+    "mirror:import": "tsx scripts/mirror/import.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
