@@ -4,6 +4,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NavPill from '../../components/NavPill.astro';
+import MirrorStrip from '../../components/MirrorStrip.astro';
 import {
   tallyStats,
   buildRadarPoints,
@@ -186,6 +187,8 @@ function colorBg(hex: string, a: number): string {
                 <div class="s-obj-text">{currentObjective ?? 'No active quest'}</div>
               </div>
             </div>
+
+            <MirrorStrip />
 
             <!-- Radar -->
             <div class="s-radar-container">
