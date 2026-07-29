@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatLogLine, parseLogLines, linesAfter } from '../utils/mirror/log';
+import { formatLogLine, parseLogLines, linesAfter, mergeLogLines } from '../utils/mirror/log';
 import { buildMirrorPrompt } from '../utils/mirror/prompt';
 import { validateMirrorResponse } from '../utils/mirror/schema';
 
@@ -124,5 +124,24 @@ describe('validateMirrorResponse', () => {
   it('rejects a missing nextStep', () => {
     const r = validateMirrorResponse(JSON.stringify({ sessions: [{ ...validSession, nextStep: '' }] }));
     expect(r.data).toBeNull();
+  });
+});
+
+describe('mergeLogLines', () => {
+  it('appends only lines not already present, preserving order', () => {
+    const existing = '- 2026-07-29 13:00 | done | already here\n';
+    const pasted = [
+      '- 2026-07-29 13:00 | done | already here',
+      '- 2026-07-29 14:00 | start | new from phone',
+      'junk line',
+    ].join('\n');
+    expect(mergeLogLines(existing, pasted)).toBe(
+      '- 2026-07-29 13:00 | done | already here\n- 2026-07-29 14:00 | start | new from phone\n'
+    );
+  });
+
+  it('returns existing unchanged when paste has nothing new', () => {
+    const existing = '- 2026-07-29 13:00 | done | a\n';
+    expect(mergeLogLines(existing, '- 2026-07-29 13:00 | done | a')).toBe(existing);
   });
 });

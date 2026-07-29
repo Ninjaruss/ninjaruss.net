@@ -29,3 +29,17 @@ export function parseLogLines(markdown: string): LogLine[] {
 export function linesAfter(markdown: string, lastTs: string): LogLine[] {
   return parseLogLines(markdown).filter(l => l.ts > lastTs);
 }
+
+/** Merge pasted log text into existing log content. Valid new lines are
+ *  appended in pasted order; exact-duplicate lines and junk are dropped. */
+export function mergeLogLines(existing: string, pasted: string): string {
+  const have = new Set(
+    parseLogLines(existing).map(l => `- ${l.ts} | ${l.kind} | ${l.text}`)
+  );
+  const fresh = parseLogLines(pasted)
+    .map(l => `- ${l.ts} | ${l.kind} | ${l.text}`)
+    .filter(line => !have.has(line));
+  if (fresh.length === 0) return existing;
+  const base = existing.endsWith('\n') || existing === '' ? existing : existing + '\n';
+  return base + fresh.join('\n') + '\n';
+}
