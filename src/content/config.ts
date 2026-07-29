@@ -45,8 +45,8 @@ const now = defineCollection({
   }),
 });
 
-// Stream collection — session logs for the ninjaruss_ Twitch stream
-const stream = defineCollection({
+// Sessions collection — logged work sessions (Japanese, writing, streams, …)
+const sessions = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
@@ -54,6 +54,10 @@ const stream = defineCollection({
     stats: z.array(z.enum(['Determination', 'Insight', 'Expression', 'Sincerity', 'Chaos'])),
     summary: z.string(),
     memorable: z.string().optional(),
+    streamed: z.boolean().default(false),
+    reflection: z.string().optional(), // bounded mirror synthesis (2-3 sentences)
+    nextStep: z.string().optional(),   // the one forward-pointing action
+    quest: z.string().optional(),      // active-quest text this session advanced
     draft: z.boolean().default(false),
   }),
 });
@@ -81,6 +85,6 @@ export const collections = {
   notes,
   showcase,
   now,
-  stream,
+  sessions,
   'social-links': socialLinks,
 };

@@ -90,7 +90,7 @@ for (const folder of Object.values(novelTree)) {
 const novelStats = computeNovelStats(novelTree);
 
 // Stream tile data
-const streamSessions = await getCollection('stream', ({ data }) => !data.draft);
+const streamSessions = await getCollection('sessions', ({ data }) => !data.draft);
 const streamTallies = tallyStats(streamSessions, 'recent');
 const streamSessionCount = streamSessions.length;
 
