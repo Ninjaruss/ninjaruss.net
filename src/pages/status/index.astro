@@ -8,7 +8,7 @@ import {
   tallyStats,
   buildRadarPoints,
   buildGuidePoints,
-  parseQuestMenu,
+  parseQuestFile,
   parseStreamIdeas,
   STAT_ORDER,
   scaleAllTallies,
@@ -100,9 +100,9 @@ const statVertices = STAT_ORDER.map((stat, i) => {
 });
 
 const questRaw = readFileSync(join(process.cwd(), 'src/content/sessions/_quests.md'), 'utf-8');
-const questSections  = parseQuestMenu(questRaw);
 const streamIdeas    = parseStreamIdeas(questRaw);
-const currentObjective = questSections.find(s => s.category === 'Active Quests')?.quests[0] ?? null;
+const questFile      = parseQuestFile(questRaw);
+const currentObjective = questFile.active[0]?.text ?? null;
 
 // Current date for the date strip
 const now = new Date();
