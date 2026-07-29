@@ -125,6 +125,72 @@ export function parseQuestMenu(markdown: string): { category: string; quests: st
   return result;
 }
 
+export interface QuestItem {
+  text: string;
+  stat?: StatName;
+}
+
+export interface CompletedQuest extends QuestItem {
+  date?: string;
+}
+
+export interface QuestFile {
+  question: string;
+  active: QuestItem[];
+  ideas: Partial<Record<StatName, string[]>>;
+  completed: CompletedQuest[];
+}
+
+function parseStatTag(text: string): QuestItem {
+  const m = text.match(/^\[([^\]]+)\]\s*(.+)/);
+  if (m && (STAT_ORDER as readonly string[]).includes(m[1])) {
+    return { text: m[2].trim(), stat: m[1] as StatName };
+  }
+  return { text: text.trim() };
+}
+
+export function parseQuestFile(markdown: string): QuestFile {
+  const result: QuestFile = { question: '', active: [], ideas: {}, completed: [] };
+  let section: 'question' | 'active' | 'ideas' | 'completed' | null = null;
+  let currentStat: StatName | null = null;
+
+  for (const line of markdown.split('\n')) {
+    const heading = line.match(/^##\s+(.+)/);
+    if (heading) {
+      const h = heading[1].trim();
+      const ideas = h.match(/^Ideas\s+—\s+(.+)/);
+      if (h === 'The Question') section = 'question';
+      else if (h === 'Active' || h === 'Active Quests') section = 'active';
+      else if (h === 'Completed') section = 'completed';
+      else if (ideas && (STAT_ORDER as readonly string[]).includes(ideas[1].trim())) {
+        section = 'ideas';
+        currentStat = ideas[1].trim() as StatName;
+        result.ideas[currentStat] = [];
+      } else {
+        section = null;
+      }
+      continue;
+    }
+    if (section === 'question') {
+      const text = line.trim();
+      if (text && !result.question) result.question = text;
+      continue;
+    }
+    const item = line.match(/^[-*]\s+(.+)/);
+    if (!item) continue;
+    if (section === 'active') {
+      result.active.push(parseStatTag(item[1]));
+    } else if (section === 'ideas' && currentStat) {
+      result.ideas[currentStat]!.push(item[1].trim());
+    } else if (section === 'completed') {
+      const dm = item[1].match(/^(\d{4}-\d{2}-\d{2})\s+—\s+(.+)/);
+      if (dm) result.completed.push({ date: dm[1], ...parseStatTag(dm[2]) });
+      else result.completed.push(parseStatTag(item[1]));
+    }
+  }
+  return result;
+}
+
 export function buildDonutArcs(
   tallies: Partial<Record<StatName, number>>,
   r: number,
