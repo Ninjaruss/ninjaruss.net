@@ -25,20 +25,30 @@ export function parseLogLines(markdown: string): LogLine[] {
   return out;
 }
 
-/** Lines with ts strictly greater than lastTs (lexicographic works for this format). */
-export function linesAfter(markdown: string, lastTs: string): LogLine[] {
-  return parseLogLines(markdown).filter(l => l.ts > lastTs);
+/** Lines in `markdown` that are not present in `exported` (exact-line match). */
+export function linesNotIn(markdown: string, exported: string): LogLine[] {
+  const gone = new Set(
+    parseLogLines(exported).map(l => `- ${l.ts} | ${l.kind} | ${l.text}`)
+  );
+  return parseLogLines(markdown).filter(
+    l => !gone.has(`- ${l.ts} | ${l.kind} | ${l.text}`)
+  );
 }
 
 /** Merge pasted log text into existing log content. Valid new lines are
- *  appended in pasted order; exact-duplicate lines and junk are dropped. */
+ *  appended in pasted order; exact-duplicate lines and junk are dropped,
+ *  including duplicates within the pasted batch itself. */
 export function mergeLogLines(existing: string, pasted: string): string {
   const have = new Set(
     parseLogLines(existing).map(l => `- ${l.ts} | ${l.kind} | ${l.text}`)
   );
-  const fresh = parseLogLines(pasted)
-    .map(l => `- ${l.ts} | ${l.kind} | ${l.text}`)
-    .filter(line => !have.has(line));
+  const fresh: string[] = [];
+  for (const l of parseLogLines(pasted)) {
+    const line = `- ${l.ts} | ${l.kind} | ${l.text}`;
+    if (have.has(line)) continue;
+    have.add(line);
+    fresh.push(line);
+  }
   if (fresh.length === 0) return existing;
   const base = existing.endsWith('\n') || existing === '' ? existing : existing + '\n';
   return base + fresh.join('\n') + '\n';

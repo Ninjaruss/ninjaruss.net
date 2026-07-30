@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
-import { formatLogLine, parseLogLines, linesAfter, mergeLogLines, LOG_FILE_NAME, type LogKind } from './log';
+import { formatLogLine, parseLogLines, linesNotIn, mergeLogLines, LOG_FILE_NAME, type LogKind } from './log';
 import { buildMirrorPrompt } from './prompt';
 import { validateMirrorResponse } from './schema';
 import { slugify } from '../novel';
@@ -38,8 +38,8 @@ export function runExport(): { ok: true; prompt: string; lineCount: number } | {
   const quests = fs.existsSync(QUESTS_FILE) ? fs.readFileSync(QUESTS_FILE, 'utf-8') : '';
   const prompt = buildMirrorPrompt(lines, quests);
   fs.writeFileSync(PROMPT_FILE, prompt);
-  const maxTs = lines.reduce((m, l) => (l.ts > m ? l.ts : m), '');
-  fs.writeFileSync(EXPORTED_MARK_FILE, maxTs);
+  const snapshot = lines.map(l => `- ${l.ts} | ${l.kind} | ${l.text}`).join('\n');
+  fs.writeFileSync(EXPORTED_MARK_FILE, snapshot);
   return { ok: true, prompt, lineCount: lines.length };
 }
 
@@ -82,12 +82,12 @@ export function runImport(responseText: string): ImportOutcome {
   return { ok: true, written, warnings: result.warnings, errors: [] };
 }
 
-/** After a successful import: keep only log lines newer than the exported mark. */
+/** After a successful import: keep only log lines not present in the exported snapshot. */
 function consumeLog(): void {
   if (fs.existsSync(EXPORTED_MARK_FILE)) {
-    const mark = fs.readFileSync(EXPORTED_MARK_FILE, 'utf-8').trim();
+    const snapshot = fs.readFileSync(EXPORTED_MARK_FILE, 'utf-8');
     const log = fs.existsSync(LOG_FILE) ? fs.readFileSync(LOG_FILE, 'utf-8') : '';
-    const keep = linesAfter(log, mark)
+    const keep = linesNotIn(log, snapshot)
       .map(l => `- ${l.ts} | ${l.kind} | ${l.text}`)
       .join('\n');
     fs.writeFileSync(LOG_FILE, keep ? keep + '\n' : '');

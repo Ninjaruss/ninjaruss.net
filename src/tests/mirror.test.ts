@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatLogLine, parseLogLines, linesAfter, mergeLogLines } from '../utils/mirror/log';
+import { formatLogLine, parseLogLines, linesNotIn, mergeLogLines } from '../utils/mirror/log';
 import { buildMirrorPrompt } from '../utils/mirror/prompt';
 import { validateMirrorResponse } from '../utils/mirror/schema';
 
@@ -31,14 +31,15 @@ describe('parseLogLines', () => {
   });
 });
 
-describe('linesAfter', () => {
-  it('keeps only lines newer than the mark', () => {
-    const md = [
-      '- 2026-07-29 13:00 | done | exported already',
-      '- 2026-07-29 15:30 | start | logged after export',
+describe('linesNotIn', () => {
+  it('keeps lines absent from the exported snapshot regardless of timestamp order', () => {
+    const log = [
+      '- 2026-07-29 13:00 | done | exported line',
+      '- 2026-07-29 09:00 | done | phone line merged after export (older ts)',
     ].join('\n');
-    expect(linesAfter(md, '2026-07-29 13:00')).toEqual([
-      { ts: '2026-07-29 15:30', kind: 'start', text: 'logged after export' },
+    const snapshot = '- 2026-07-29 13:00 | done | exported line';
+    expect(linesNotIn(log, snapshot)).toEqual([
+      { ts: '2026-07-29 09:00', kind: 'done', text: 'phone line merged after export (older ts)' },
     ]);
   });
 });
@@ -143,5 +144,13 @@ describe('mergeLogLines', () => {
   it('returns existing unchanged when paste has nothing new', () => {
     const existing = '- 2026-07-29 13:00 | done | a\n';
     expect(mergeLogLines(existing, '- 2026-07-29 13:00 | done | a')).toBe(existing);
+  });
+
+  it('dedupes duplicate lines within the pasted batch itself', () => {
+    const pasted = [
+      '- 2026-07-29 14:00 | start | dup in batch',
+      '- 2026-07-29 14:00 | start | dup in batch',
+    ].join('\n');
+    expect(mergeLogLines('', pasted)).toBe('- 2026-07-29 14:00 | start | dup in batch\n');
   });
 });
