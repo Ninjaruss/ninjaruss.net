@@ -199,3 +199,33 @@ no auth, no server state).
 The CLI remains as plumbing; scripts and API routes share the same extracted
 core (single source of truth for export/import/append file operations).
 Component isolation: the strip is one self-contained `MirrorStrip.astro`.
+
+## Addendum 2 (2026-07-29): Private strip + live-site writes (approved)
+
+The strip becomes owner-only and fully operational from the live site:
+
+**Visibility:** hidden by default in production. Unlock: tap the MIRROR kicker
+3 times → prompted for the mirror key → stored in that browser's localStorage →
+strip reveals (per-device, one-time). Dev always shows it. Client-side gate,
+not bank-grade — acceptable for a personal tool; nothing renders for visitors.
+
+**Live writes (straight to main, user's explicit choice):** the import route
+gains a production path: `Authorization: Bearer <MIRROR_TOKEN>` checked against
+a Vercel env var → same `validateMirrorResponse` guardrails server-side → each
+session file committed to `main` via the GitHub Contents API (fine-grained PAT,
+contents-write, this repo only, in env var `MIRROR_GITHUB_TOKEN`) → Vercel
+auto-redeploys. Markdown stays the source of truth; every update is a
+revertable commit ("mirror: add session <slug>"). Missing env vars → route
+stays 404 (feature off). The git-diff-first review step is deliberately traded
+away for live imports (revert remains).
+
+**Whole loop on-device:** capture stays in localStorage (no commit-per-tap);
+"copy DeepSeek prompt" is built client-side (pure `buildMirrorPrompt` +
+quest file embedded at build time + localStorage lines), snapshotting exported
+lines; paste-reply POSTs to the import route; on success the snapshot lines are
+consumed from localStorage (same snapshot semantics as fsOps). The phone→Mac
+copy-paste bridge is thereby obsolete (kept in dev for the CLI flow).
+
+**Secrets handling:** the user creates both tokens and enters them into Vercel
+env settings and their own browsers themselves. Claude never sees or handles
+the secret values.
