@@ -10,7 +10,7 @@ Top-level sections (the NavPill):
 - `/journal` — Notes + showcases merged into one searchable split-view list (search + type filter)
 - `/novel` — "Remember Rain", the in-progress **visual novel** (writer's-desk UI; route keeps the `/novel` path)
 - `/shelf` — Media log: anime, manga, film, series, music, games, characters
-- `/stream` — Stream log as a P4G status screen (session stats, sessions, mailbox)
+- `/status` — Stream log as a P4G status screen (session stats, sessions, mailbox)
 - `/now` — Current focus snapshot (history at `/now/archive`)
 - `/codex` — AI-synthesized "second brain" of concepts drawn from the site's writing
 

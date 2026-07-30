@@ -4,16 +4,17 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NavPill from '../../components/NavPill.astro';
+import MirrorStrip from '../../components/MirrorStrip.astro';
 import {
   tallyStats,
   buildRadarPoints,
   buildGuidePoints,
-  parseQuestMenu,
+  parseQuestFile,
   parseStreamIdeas,
   STAT_ORDER,
   scaleAllTallies,
   STAT_CEILING,
-} from '../../utils/stream';
+} from '../../utils/sessions';
 import '../../styles/stream.css';
 
 const STAT_META: Record<string, { color: string; tagline: string; phrase: string[]; keywords: string; emblem: string; silFilter: string }> = {
@@ -44,7 +45,7 @@ const STAT_META: Record<string, { color: string; tagline: string; phrase: string
   },
 };
 
-const streamEntries = await getCollection('stream', ({ data }) => !data.draft);
+const streamEntries = await getCollection('sessions', ({ data }) => !data.draft);
 const socialLinks   = await getCollection('social-links', ({ data }) => !data.draft);
 
 streamEntries.sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
@@ -99,10 +100,10 @@ const statVertices = STAT_ORDER.map((stat, i) => {
   return { stat, vx, vy, tx, ty, meta, anchor, clipId };
 });
 
-const questRaw = readFileSync(join(process.cwd(), 'src/content/stream/_quests.md'), 'utf-8');
-const questSections  = parseQuestMenu(questRaw);
+const questRaw = readFileSync(join(process.cwd(), 'src/content/sessions/_quests.md'), 'utf-8');
 const streamIdeas    = parseStreamIdeas(questRaw);
-const currentObjective = questSections.find(s => s.category === 'Active Quests')?.quests[0] ?? null;
+const questFile      = parseQuestFile(questRaw);
+const currentObjective = questFile.active[0]?.text ?? null;
 
 // Current date for the date strip
 const now = new Date();
@@ -186,6 +187,8 @@ function colorBg(hex: string, a: number): string {
                 <div class="s-obj-text">{currentObjective ?? 'No active quest'}</div>
               </div>
             </div>
+
+            <MirrorStrip />
 
             <!-- Radar -->
             <div class="s-radar-container">

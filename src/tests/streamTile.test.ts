@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildDonutArcs, STAT_ORDER } from '../utils/stream';
+import { buildDonutArcs, STAT_ORDER } from '../utils/sessions';
 
 describe('buildDonutArcs', () => {
   it('returns one arc per stat in STAT_ORDER', () => {

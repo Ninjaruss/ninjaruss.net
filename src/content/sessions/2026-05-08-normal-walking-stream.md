@@ -5,4 +5,5 @@ stats: ["Determination"]
 summary: "Went outside my house and yapped about the future of the stream."
 memorable: "I will indeed get 100 Girlfriends."
 draft: false
+streamed: true
 ---

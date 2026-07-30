@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
   tallyStats, buildRadarPoints, buildGuidePoints, parseQuestMenu, STAT_ORDER,
-  applyLogScale, scaleAllTallies, STAT_CEILING,
+  applyLogScale, scaleAllTallies, STAT_CEILING, parseQuestFile, parseStreamIdeas,
   type StatName,
-} from '../utils/stream';
+} from '../utils/sessions';
 import { parseTwitchLiveResponse } from '../utils/twitchStatus';
 
 const makeEntry = (publishedAt: string, stats: string[]) => ({
@@ -128,6 +128,55 @@ describe('scaleAllTallies', () => {
     for (const stat of STAT_ORDER) {
       expect(scaled[stat]).toBe(0);
     }
+  });
+});
+
+describe('parseStreamIdeas', () => {
+  it('does not leak bullets from non-Ideas sections that follow', () => {
+    const md = [
+      '## Ideas — Chaos', '- Motorcycle stream',
+      '## Completed', '- 2026-08-01 — [Expression] Some done quest',
+    ].join('\n');
+    const ideas = parseStreamIdeas(md);
+    expect(ideas['Chaos']).toEqual(['Motorcycle stream']);
+  });
+});
+
+describe('parseQuestFile', () => {
+  const md = [
+    '## The Question', '', 'What is the goal?', '',
+    '## Active', '', '- [Insight] Read Wagotabi 20 min', '- Untagged quest', '',
+    '## Ideas — Chaos', '', '- Motorcycle stream', '',
+    '## Completed', '', '- 2026-05-20 — [Sincerity] VRChat quests', '- Old undated quest',
+  ].join('\n');
+
+  it('extracts the epigraph question', () => {
+    expect(parseQuestFile(md).question).toBe('What is the goal?');
+  });
+
+  it('parses active quests with optional stat tags', () => {
+    const { active } = parseQuestFile(md);
+    expect(active).toEqual([
+      { text: 'Read Wagotabi 20 min', stat: 'Insight' },
+      { text: 'Untagged quest' },
+    ]);
+  });
+
+  it('parses ideas per stat', () => {
+    expect(parseQuestFile(md).ideas['Chaos']).toEqual(['Motorcycle stream']);
+  });
+
+  it('parses completed quests with optional dates', () => {
+    const { completed } = parseQuestFile(md);
+    expect(completed[0]).toEqual({ date: '2026-05-20', text: 'VRChat quests', stat: 'Sincerity' });
+    expect(completed[1]).toEqual({ text: 'Old undated quest' });
+  });
+
+  it('tolerates missing sections', () => {
+    const empty = parseQuestFile('## Active\n- Solo quest');
+    expect(empty.question).toBe('');
+    expect(empty.completed).toEqual([]);
+    expect(empty.active).toEqual([{ text: 'Solo quest' }]);
   });
 });
 

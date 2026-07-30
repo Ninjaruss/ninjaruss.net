@@ -1,10 +1,12 @@
-## Active Quests
+## The Question
 
-- Truly identify the overarching singular goal for my life.
+Truly identify the overarching singular goal for my life.
+
+## Active
+
+- [Expression] Posting live shut up and yaps
 
 ## Ideas — Determination
-
-- Posting live shut up and yaps
 
 ## Ideas — Insight
 
@@ -23,3 +25,5 @@
 ## Ideas — Chaos
 
 - Motorcycle scuffed stream
+
+## Completed

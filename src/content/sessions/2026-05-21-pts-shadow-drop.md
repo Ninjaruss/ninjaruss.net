@@ -5,4 +5,5 @@ stats: ["Chaos"]
 summary: "(weebcloset) Another banger from the great weeb himself."
 memorable: "I ain't gonna lie: Loli Controversy might actually be top 3 PTS songs."
 draft: false
+streamed: true
 ---

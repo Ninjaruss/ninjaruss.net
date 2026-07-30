@@ -5,4 +5,5 @@ stats: ["Sincerity", "Chaos"]
 summary: "Took what felt like an eternity to read a bit more Kanon... then spent the night yapping about climbing stairs."
 memorable: "Surely we'll leave the house at some point?"
 draft: false
+streamed: true
 ---

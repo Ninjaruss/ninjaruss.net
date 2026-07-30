@@ -5,4 +5,5 @@ stats: ["Expression"]
 summary: "Tried streaming in a car within the garage to limit noise. I might need a voice monitor to actually improve my singing."
 memorable: "Jibun woooooo!"
 draft: false
+streamed: true
 ---
