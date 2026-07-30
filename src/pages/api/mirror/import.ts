@@ -14,8 +14,8 @@ export const POST: APIRoute = async ({ request }) => {
     return json(outcome, outcome.ok ? 200 : 400);
   }
 
-  const mirrorToken = import.meta.env.MIRROR_TOKEN as string | undefined;
-  const githubToken = import.meta.env.MIRROR_GITHUB_TOKEN as string | undefined;
+  const mirrorToken = process.env.MIRROR_TOKEN as string | undefined;
+  const githubToken = process.env.MIRROR_GITHUB_TOKEN as string | undefined;
   if (!mirrorToken || !githubToken) return json({ error: 'Not found' }, 404);
 
   const auth = request.headers.get('authorization') ?? '';
