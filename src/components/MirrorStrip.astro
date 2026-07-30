@@ -1,14 +1,32 @@
 ---
 /* MirrorStrip — button-based mirror loop on /status.
-   Live site: start/done lines append to localStorage ('mirror-log', exact
-   mirror-log.md line format) and ⧉ copy log hands them off. Dev server:
-   lines POST straight to /api/mirror/log (mirror-log.md), and a dev-only
-   panel drives merge-paste / copy-prompt / import-reply. The dev panel is
-   conditionally rendered server-side, so production HTML never contains it. */
+   Live site: owner-only. The strip is hidden by default; a standalone MIRROR
+   kicker (just a label unless you know) unlocks it — 3 taps within 2s →
+   mirror-key prompt → stored in localStorage → strip reveals (per-device,
+   one-time). start/done lines append to localStorage ('mirror-log', exact
+   mirror-log.md line format); the owner drawer builds the DeepSeek prompt
+   client-side (pure utils + quest file embedded at build time) and imports
+   the reply against /api/mirror/import (Bearer mirror-key → GitHub commits).
+   Dev server: always visible, no key; lines POST straight to /api/mirror/log
+   (mirror-log.md) and the dev drawer drives merge-paste / copy-prompt /
+   import-reply. Each drawer is conditionally rendered server-side, so
+   production HTML never contains the dev one and vice versa. */
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
 const dev = import.meta.env.DEV;
+const questRaw = readFileSync(join(process.cwd(), 'src/content/sessions/_quests.md'), 'utf-8');
+/* <-escape so no quest text can ever close the JSON script block early. */
+const questJson = JSON.stringify(questRaw).replace(/</g, '\\u003c');
 ---
 
-<section class="mirror-strip" id="mirror-strip" aria-label="Mirror session log">
+{!dev && (
+  <span class="mirror-unlock" id="mirror-unlock">
+    <span class="p4g-tab">Mirror</span>
+  </span>
+)}
+
+<section class="mirror-strip" id="mirror-strip" aria-label="Mirror session log" hidden={!dev}>
   <div class="mirror-strip__head">
     <span class="p4g-tab">Mirror</span>
     <p class="mirror-strip__msg" id="mirror-msg" aria-live="polite"></p>
@@ -45,25 +63,61 @@ const dev = import.meta.env.DEV;
     </details>
   )}
 
+  {!dev && (
+    <details class="mirror-dev">
+      <summary>mirror (owner)</summary>
+      <div class="mirror-dev__body">
+        <div class="mirror-dev__actions">
+          <button class="mirror-btn" id="mirror-prompt-live" type="button">⧉ copy DeepSeek prompt</button>
+        </div>
+        <label class="mirror-dev__field">
+          <span>model reply</span>
+          <textarea id="mirror-reply-live" rows="4" placeholder='{"sessions": [...]}'></textarea>
+        </label>
+        <div class="mirror-dev__actions">
+          <button class="mirror-btn" id="mirror-import-live" type="button">import reply</button>
+        </div>
+        <ul class="mirror-dev__results" id="mirror-results-live"></ul>
+      </div>
+    </details>
+  )}
+
+  <script type="application/json" id="mirror-quests" is:inline set:html={questJson}></script>
+
   <div class="mirror-strip__sweep" id="mirror-sweep" aria-hidden="true"></div>
 </section>
 
 <script>
-  import { formatLogLine, type LogKind } from '../utils/mirror/log';
+  import { formatLogLine, parseLogLines, linesNotIn, type LogKind, type LogLine } from '../utils/mirror/log';
+  import { buildMirrorPrompt } from '../utils/mirror/prompt';
 
   const IS_DEV = import.meta.env.DEV;
   const STORAGE_KEY = 'mirror-log';
+  const KEY_STORAGE = 'mirror-key';
+  const EXPORT_STORAGE = 'mirror-exported';
 
   /* localStorage wrapped in try/catch — Safari private mode throws. */
-  function readLog(): string {
-    try { return localStorage.getItem(STORAGE_KEY) ?? ''; } catch { return ''; }
+  function readItem(key: string): string {
+    try { return localStorage.getItem(key) ?? ''; } catch { return ''; }
   }
-  function writeLog(value: string): boolean {
-    try { localStorage.setItem(STORAGE_KEY, value); return true; } catch { return false; }
+  function writeItem(key: string, value: string): boolean {
+    try { localStorage.setItem(key, value); return true; } catch { return false; }
   }
-  function clearLog(): boolean {
-    try { localStorage.removeItem(STORAGE_KEY); return true; } catch { return false; }
+  function removeItem(key: string): boolean {
+    try { localStorage.removeItem(key); return true; } catch { return false; }
   }
+  const readLog = (): string => readItem(STORAGE_KEY);
+  const writeLog = (value: string): boolean => writeItem(STORAGE_KEY, value);
+  const clearLog = (): boolean => removeItem(STORAGE_KEY);
+
+  /** Quest file text embedded at build time — the only source of quests. */
+  function readQuests(): string {
+    try {
+      return JSON.parse(document.getElementById('mirror-quests')?.textContent ?? '""');
+    } catch { return ''; }
+  }
+
+  const rawLine = (l: LogLine): string => `- ${l.ts} | ${l.kind} | ${l.text}`;
 
   /* WebAudio rank-up flourish — created lazily on user gesture, no asset. */
   let audioCtx: AudioContext | null = null;
@@ -100,6 +154,16 @@ const dev = import.meta.env.DEV;
     const setMsg = (text: string, isError = false): void => {
       msgEl.textContent = text;
       msgEl.classList.toggle('is-error', isError);
+    };
+    const renderList = (el: HTMLElement | null, items: string[], isError = false): void => {
+      if (!el) return;
+      el.textContent = '';
+      for (const item of items) {
+        const li = document.createElement('li');
+        li.textContent = item;
+        if (isError) li.classList.add('is-error');
+        el.appendChild(li);
+      }
     };
 
     function fireSweep(): void {
@@ -176,16 +240,8 @@ const dev = import.meta.env.DEV;
       const replyEl = document.getElementById('mirror-reply') as HTMLTextAreaElement | null;
       const resultsEl = document.getElementById('mirror-results');
 
-      function renderResults(items: string[], isError = false): void {
-        if (!resultsEl) return;
-        resultsEl.textContent = '';
-        for (const item of items) {
-          const li = document.createElement('li');
-          li.textContent = item;
-          if (isError) li.classList.add('is-error');
-          resultsEl.appendChild(li);
-        }
-      }
+      const renderResults = (items: string[], isError = false): void =>
+        renderList(resultsEl, items, isError);
 
       document.getElementById('mirror-merge')?.addEventListener('click', async () => {
         const paste = pasteEl?.value ?? '';
@@ -236,6 +292,110 @@ const dev = import.meta.env.DEV;
         }
       });
     }
+
+    /* Prod-only: unlock gate + owner drawer. Compiled out of the dev bundle;
+       the matching elements exist only when !import.meta.env.DEV. */
+    if (!IS_DEV) {
+      const unlockEl = document.getElementById('mirror-unlock');
+      const reveal = (): void => {
+        strip.hidden = false;
+        if (unlockEl) unlockEl.hidden = true;
+      };
+      if (readItem(KEY_STORAGE)) reveal();
+
+      /* 3 taps on a MIRROR kicker within 2s → key prompt. Bound to both the
+         standalone label (locked state) and the strip's own kicker (re-enter
+         after a wrong key) — a plain label to anyone who doesn't know. */
+      let taps: number[] = [];
+      const onKickerTap = (): void => {
+        const now = Date.now();
+        taps = taps.filter(t => now - t < 2000);
+        taps.push(now);
+        if (taps.length < 3) return;
+        taps = [];
+        const entered = window.prompt('mirror key')?.trim();
+        if (!entered) return;
+        if (!writeItem(KEY_STORAGE, entered)) {
+          setMsg('could not store the key — localStorage unavailable.', true);
+          return;
+        }
+        reveal();
+      };
+      unlockEl?.addEventListener('click', onKickerTap);
+      strip.querySelector('.mirror-strip__head .p4g-tab')?.addEventListener('click', onKickerTap);
+
+      const replyEl = document.getElementById('mirror-reply-live') as HTMLTextAreaElement | null;
+      const resultsEl = document.getElementById('mirror-results-live');
+
+      document.getElementById('mirror-prompt-live')?.addEventListener('click', async () => {
+        const lines = parseLogLines(readLog());
+        if (!lines.some(l => l.kind === 'done')) {
+          setMsg('no completed sessions in the log yet — nothing to reflect.');
+          return;
+        }
+        // Snapshot BEFORE the clipboard: the import step consumes exactly
+        // these lines, so the handoff must be recorded even if copy fails.
+        const snapshot = lines.map(rawLine).join('\n') + '\n';
+        if (!writeItem(EXPORT_STORAGE, snapshot)) {
+          setMsg('could not snapshot the export — localStorage unavailable.', true);
+          return;
+        }
+        const prompt = buildMirrorPrompt(lines, readQuests());
+        try {
+          await navigator.clipboard.writeText(prompt);
+          setMsg(`prompt on clipboard (${lines.length} line${lines.length === 1 ? '' : 's'}) — paste into DeepSeek.`);
+        } catch {
+          setMsg('clipboard blocked — lines snapshotted; try copying again.', true);
+        }
+      });
+
+      document.getElementById('mirror-import-live')?.addEventListener('click', async () => {
+        const text = replyEl?.value ?? '';
+        if (!text.trim()) { setMsg('paste the model reply first.'); return; }
+        try {
+          const res = await fetch('/api/mirror/import', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${readItem(KEY_STORAGE)}` },
+            body: text,
+          });
+          if (res.status === 401) {
+            removeItem(KEY_STORAGE);
+            setMsg('wrong key — tap MIRROR ×3 to re-enter', true);
+            return;
+          }
+          const outcome = await res.json().catch(() => ({}));
+          if (res.ok && outcome.ok) {
+            // Consume exactly the exported snapshot — lines logged since the
+            // copy survive in the local log, same semantics as fsOps.
+            const remaining = linesNotIn(readLog(), readItem(EXPORT_STORAGE)).map(rawLine);
+            if (remaining.length > 0) writeLog(remaining.join('\n') + '\n');
+            else clearLog();
+            removeItem(EXPORT_STORAGE);
+            if (replyEl) replyEl.value = '';
+            renderList(resultsEl, outcome.written.map((f: string) => `src/content/sessions/${f}`));
+            setMsg('committed — site rebuilds in ~a minute.');
+            return;
+          }
+          const problems = [
+            ...(outcome.warnings ?? []),
+            ...(outcome.errors ?? []),
+            ...(outcome.error ? [String(outcome.error)] : []),
+          ];
+          if (res.status === 400) {
+            setMsg('import rejected — nothing committed.', true);
+          } else if (res.status === 502) {
+            // Each session is its own commit, so earlier files may already be
+            // committed — the raw error below says which write failed.
+            setMsg('import failed mid-write — some sessions may have committed. error below.', true);
+          } else {
+            setMsg(`import failed (HTTP ${res.status}).`, true);
+          }
+          renderList(resultsEl, problems.length > 0 ? problems : [`HTTP ${res.status}`], true);
+        } catch (e) {
+          setMsg(`import failed: ${e instanceof Error ? e.message : 'unknown error'}`, true);
+        }
+      });
+    }
   }
 
   initMirrorStrip();
@@ -243,6 +403,25 @@ const dev = import.meta.env.DEV;
 </script>
 
 <style>
+  /* Standalone MIRROR kicker — the locked state's only trace. Reads as a
+     plain section label: no cursor change, no focus ring, no hint. The
+     transparent padding quietly gives the 3-tap gesture a 44px target
+     (the hit area lives on this wrapper because .p4g-tab's clip-path
+     would clip an expanded pseudo-element). */
+  /* display declarations beat the UA [hidden] style — restate it, or the
+     locked strip (and the spent unlock label) would render anyway. */
+  .mirror-unlock[hidden],
+  .mirror-strip[hidden] { display: none; }
+
+  .mirror-unlock {
+    display: inline-block;
+    padding: 12px;
+    margin: 2px 16px 0;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   /* Quiet tool row in the mail-strip family — dark panel, gold hairline,
      left gold spine, corner-cut buttons. Sits under the objective strip. */
   .mirror-strip {
