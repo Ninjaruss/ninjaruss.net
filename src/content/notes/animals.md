@@ -1,6 +1,6 @@
 ---
 title: "Animals"
-emblem: "/images/emblems/lightbulb.svg"
+emblem: "/images/emblems/scroll.svg"
 publishedAt: 2026-03-06
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: "Live Streaming"
-emblem: "/images/emblems/lightbulb.svg"
+emblem: "/images/emblems/shuriken.svg"
 publishedAt: 2026-03-02
 updatedAt: 2026-03-03
 ---

@@ -1,6 +1,6 @@
 ---
 title: "Addiction"
-emblem: "/images/emblems/lightbulb.svg"
+emblem: "/images/emblems/scroll.svg"
 publishedAt: 2026-02-20
 ---
 

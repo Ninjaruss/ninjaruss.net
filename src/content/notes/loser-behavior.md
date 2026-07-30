@@ -1,6 +1,6 @@
 ---
 title: "Loser Behavior"
-emblem: "/images/emblems/lightbulb.svg"
+emblem: "/images/emblems/scroll.svg"
 publishedAt: 2026-04-07
 ---
 

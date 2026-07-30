@@ -1,6 +1,6 @@
 ---
 title: "Real Weeb"
-emblem: "/images/emblems/lightbulb.svg"
+emblem: "/images/emblems/torii.svg"
 publishedAt: 2026-05-11
 collections: ["japan"]
 ---

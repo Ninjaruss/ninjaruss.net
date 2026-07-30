@@ -1,6 +1,6 @@
 ---
 title: "Japan's Special Aura"
-emblem: "/images/emblems/lightbulb.svg"
+emblem: "/images/emblems/torii.svg"
 publishedAt: 2026-03-09
 collections: ["japan"]
 ---

@@ -1,6 +1,6 @@
 ---
 title: "I am Ninjaruss"
-emblem: "/images/emblems/lightbulb.svg"
+emblem: "/images/emblems/shuriken.svg"
 publishedAt: 2026-07-14
 ---
 

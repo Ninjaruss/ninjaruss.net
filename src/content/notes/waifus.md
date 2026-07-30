@@ -1,6 +1,6 @@
 ---
 title: "Waifus"
-emblem: "/images/emblems/lightbulb.svg"
+emblem: "/images/emblems/torii.svg"
 publishedAt: 2026-02-07
 collections: ["japan"]
 ---

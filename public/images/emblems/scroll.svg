@@ -26,16 +26,18 @@
   <!-- Center emblem area -->
   <rect x="12" y="24" width="39" height="40" rx="4" fill="#181818"/>
 
-  <!-- Eye icon -->
+  <!-- Scroll icon -->
   <g filter="url(#glow)" transform="translate(31.5, 44)">
-    <!-- Eye outline -->
-    <ellipse cx="0" cy="0" rx="14" ry="9" fill="none" stroke="url(#goldGradient)" stroke-width="2"/>
-    <!-- Iris -->
-    <circle cx="0" cy="0" r="6" fill="none" stroke="url(#goldGradient)" stroke-width="2"/>
-    <!-- Pupil -->
-    <circle cx="0" cy="0" r="2.5" fill="url(#goldGradient)"/>
-    <!-- Highlight -->
-    <circle cx="2" cy="-2" r="1" fill="#fff" opacity="0.8"/>
+    <!-- Paper -->
+    <path d="M -7,-8 L 7,-8 L 7,8 L -7,8 Z" fill="none" stroke="url(#goldGradient)" stroke-width="1.8"/>
+    <!-- Writing -->
+    <rect x="-3.5" y="-4" width="7" height="1.5" rx="0.75" fill="#ffe52c" opacity="0.7"/>
+    <rect x="-3.5" y="-0.75" width="7" height="1.5" rx="0.75" fill="#ffe52c" opacity="0.7"/>
+    <rect x="-3.5" y="2.5" width="4.5" height="1.5" rx="0.75" fill="#ffe52c" opacity="0.7"/>
+    <!-- Top roll -->
+    <rect x="-9" y="-12.7" width="18" height="4.4" rx="2.2" fill="#181818" stroke="url(#goldGradient)" stroke-width="1.8"/>
+    <!-- Bottom roll -->
+    <rect x="-9" y="8.3" width="18" height="4.4" rx="2.2" fill="#181818" stroke="url(#goldGradient)" stroke-width="1.8"/>
   </g>
 
   <!-- Top decorative line -->

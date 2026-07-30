@@ -1,6 +1,6 @@
 ---
 title: "Japanese Journal"
-emblem: "/images/emblems/lightbulb.svg"
+emblem: "/images/emblems/torii.svg"
 publishedAt: 2026-04-26
 collections: ["japan"]
 ---

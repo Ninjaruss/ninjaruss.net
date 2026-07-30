@@ -1,6 +1,6 @@
 ---
 title: "Reason for Japan"
-emblem: "/images/emblems/lightbulb.svg"
+emblem: "/images/emblems/torii.svg"
 publishedAt: 2026-03-17
 collections: ["japan"]
 ---

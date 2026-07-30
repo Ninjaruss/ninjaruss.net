@@ -26,20 +26,13 @@
   <!-- Center emblem area -->
   <rect x="12" y="24" width="39" height="40" rx="4" fill="#181818"/>
 
-  <!-- Lightbulb icon -->
-  <g filter="url(#glow)" transform="translate(31.5, 42)">
-    <!-- Bulb -->
-    <path d="M0,-12 C-8,-12 -10,-4 -10,2 C-10,6 -6,10 -4,12 L4,12 C6,10 10,6 10,2 C10,-4 8,-12 0,-12 Z"
-          fill="none" stroke="url(#goldGradient)" stroke-width="2"/>
-    <!-- Filament -->
-    <path d="M-3,0 Q0,-4 3,0" fill="none" stroke="url(#goldGradient)" stroke-width="1.5"/>
-    <!-- Base lines -->
-    <line x1="-4" y1="14" x2="4" y2="14" stroke="url(#goldGradient)" stroke-width="2"/>
-    <line x1="-3" y1="17" x2="3" y2="17" stroke="url(#goldGradient)" stroke-width="2"/>
-    <!-- Rays -->
-    <line x1="0" y1="-16" x2="0" y2="-19" stroke="#ffe52c" stroke-width="1.5" opacity="0.7"/>
-    <line x1="-10" y1="-8" x2="-13" y2="-10" stroke="#ffe52c" stroke-width="1.5" opacity="0.7"/>
-    <line x1="10" y1="-8" x2="13" y2="-10" stroke="#ffe52c" stroke-width="1.5" opacity="0.7"/>
+  <!-- Shuriken icon -->
+  <g filter="url(#glow)" transform="translate(31.5, 44)">
+    <!-- Four-point star -->
+    <path d="M 0,-12.5 L 3,-3 L 12.5,0 L 3,3 L 0,12.5 L -3,3 L -12.5,0 L -3,-3 Z"
+          fill="none" stroke="url(#goldGradient)" stroke-width="2" stroke-linejoin="round"/>
+    <!-- Center hole -->
+    <circle cx="0" cy="0" r="2.2" fill="none" stroke="url(#goldGradient)" stroke-width="1.5"/>
   </g>
 
   <!-- Top decorative line -->

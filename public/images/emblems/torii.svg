@@ -26,26 +26,17 @@
   <!-- Center emblem area -->
   <rect x="12" y="24" width="39" height="40" rx="4" fill="#181818"/>
 
-  <!-- Coin icon -->
+  <!-- Torii icon -->
   <g filter="url(#glow)" transform="translate(31.5, 44)">
-    <!-- Outer coin circle -->
-    <circle cx="0" cy="0" r="13" fill="none" stroke="url(#goldGradient)" stroke-width="2"/>
-    <!-- Inner coin circle -->
-    <circle cx="0" cy="0" r="9" fill="none" stroke="url(#goldGradient)" stroke-width="1.5"/>
-    <!-- Dollar/currency symbol -->
-    <text
-      x="0"
-      y="4"
-      font-family="Arial, sans-serif"
-      font-size="14"
-      font-weight="bold"
-      text-anchor="middle"
-      fill="url(#goldGradient)"
-    >$</text>
-    <!-- Top notch -->
-    <rect x="-1" y="-13" width="2" height="3" fill="#181818"/>
-    <!-- Bottom notch -->
-    <rect x="-1" y="10" width="2" height="3" fill="#181818"/>
+    <!-- Kasagi (curved top lintel) -->
+    <path d="M -14,-8.5 Q 0,-12.5 14,-8.5" fill="none" stroke="url(#goldGradient)" stroke-width="3" stroke-linecap="round"/>
+    <!-- Gakuzuka (center strut) -->
+    <rect x="-1.1" y="-9.5" width="2.2" height="5.5" fill="url(#goldGradient)"/>
+    <!-- Nuki (lower beam) -->
+    <rect x="-11" y="-4" width="22" height="2.4" rx="1.2" fill="url(#goldGradient)"/>
+    <!-- Pillars (slightly splayed) -->
+    <path d="M -9.4,-9.6 L -11,13" fill="none" stroke="url(#goldGradient)" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M 9.4,-9.6 L 11,13" fill="none" stroke="url(#goldGradient)" stroke-width="2.4" stroke-linecap="round"/>
   </g>
 
   <!-- Top decorative line -->

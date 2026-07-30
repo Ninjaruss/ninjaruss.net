@@ -1,6 +1,6 @@
 ---
 title: "Current Objectives"
-emblem: "/images/emblems/lightbulb.svg"
+emblem: "/images/emblems/flame.svg"
 publishedAt: 2026-02-13
 updatedAt: 2026-03-19
 ---

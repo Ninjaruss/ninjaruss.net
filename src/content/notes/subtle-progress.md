@@ -1,6 +1,6 @@
 ---
 title: "Subtle Progress"
-emblem: "/images/emblems/lightbulb.svg"
+emblem: "/images/emblems/flame.svg"
 publishedAt: 2026-01-31
 ---
 

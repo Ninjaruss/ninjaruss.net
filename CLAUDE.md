@@ -361,11 +361,13 @@ The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-po
 - `spotify.svg` — Spotify logo for external link tile
 
 ### Emblems (`/public/images/emblems/`)
-- `default.svg` — Fallback emblem
-- `eye.svg` — Vision/perception themed
-- `lightbulb.svg` — Ideas/insight themed
-- `coin.svg` — Value/exchange themed
-- Content-specific emblems stored per entry
+All placeholder emblems share the same card template (dark card, gold gradient frame, icon in the center emblem area). The set is deliberately small — four ninja-themed types plus the fallback; don't grow it per-note, pick the closest theme. Renderer gotcha baked into the set: never stroke an axis-aligned `<line>` with the gold gradient — a zero-area bbox makes `objectBoundingBox` gradients unpaintable in strict renderers; use gradient-filled `<rect>`s or non-axis-aligned paths instead.
+- `default.svg` — "N" card (fallback; also the identity note)
+- `scroll.svg` — Inner-work reflections (the default for most notes)
+- `torii.svg` — Japan / weeb life
+- `flame.svg` — Drive, goals, growth ("clear mind, burning soul")
+- `shuriken.svg` — Ninjaruss identity / online presence
+- Content-specific emblems stored per entry (PNGs)
 
 ### Card Assets
 - `/public/images/ygo-card-backing.png` — Yu-Gi-Oh style card backing texture for EmblemCard reverse

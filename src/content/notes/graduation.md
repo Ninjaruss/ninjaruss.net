@@ -1,6 +1,6 @@
 ---
 title: "Graduation"
-emblem: "/images/emblems/lightbulb.svg"
+emblem: "/images/emblems/flame.svg"
 publishedAt: 2026-05-28
 ---
 ## Ay congratulations, it's a celebration! Party all day, I knew you've been waiting!
