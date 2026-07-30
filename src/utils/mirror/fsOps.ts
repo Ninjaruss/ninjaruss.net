@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import matter from 'gray-matter';
 import { formatLogLine, parseLogLines, linesNotIn, mergeLogLines, LOG_FILE_NAME, type LogKind } from './log';
 import { buildMirrorPrompt } from './prompt';
 import { validateMirrorResponse } from './schema';
+import { sessionFrontmatter } from './github';
 import { slugify } from '../novel';
 
 export const LOG_FILE = path.resolve(LOG_FILE_NAME);
@@ -63,19 +63,7 @@ export function runImport(responseText: string): ImportOutcome {
     while (fs.existsSync(file)) {
       file = path.join(SESSIONS_DIR, `${s.date}-${slugify(s.title)}-${n++}.md`);
     }
-    const frontmatter: Record<string, unknown> = {
-      title: s.title,
-      publishedAt: s.date,
-      stats: s.stats,
-      summary: s.summary,
-      ...(s.memorable ? { memorable: s.memorable } : {}),
-      ...(s.quest ? { quest: s.quest } : {}),
-      nextStep: s.nextStep,
-      reflection: s.reflection,
-      streamed: s.streamed,
-      draft: false,
-    };
-    fs.writeFileSync(file, matter.stringify('', frontmatter));
+    fs.writeFileSync(file, sessionFrontmatter(s));
     written.push(path.basename(file));
   }
   consumeLog();

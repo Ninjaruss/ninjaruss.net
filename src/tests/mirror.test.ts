@@ -154,3 +154,63 @@ describe('mergeLogLines', () => {
     expect(mergeLogLines('', pasted)).toBe('- 2026-07-29 14:00 | start | dup in batch\n');
   });
 });
+
+import { commitSessionFiles, type GithubConfig } from '../utils/mirror/github';
+
+describe('commitSessionFiles', () => {
+  const cfg: GithubConfig = {
+    token: 'test-token',
+    repo: 'Ninjaruss/ninjaruss.net',
+    branch: 'main',
+  };
+  const session = {
+    date: '2026-07-29',
+    title: 'Live Test',
+    summary: 'A live import.',
+    stats: ['Chaos'],
+    reflection: 'It reaches the repo now.',
+    nextStep: 'Log the next one.',
+    streamed: false,
+  };
+
+  it('PUTs a new file when the path is free', async () => {
+    const calls: { url: string; init: RequestInit }[] = [];
+    const fetchStub: typeof fetch = async (url, init) => {
+      calls.push({ url: String(url), init: init! });
+      if (init?.method === undefined || init.method === 'GET') {
+        return new Response('Not Found', { status: 404 });
+      }
+      return new Response(JSON.stringify({ content: { path: 'x' } }), { status: 201 });
+    };
+    const written = await commitSessionFiles([session], cfg, fetchStub);
+    expect(written).toEqual(['2026-07-29-live-test.md']);
+    const put = calls.find(c => c.init.method === 'PUT')!;
+    expect(put.url).toContain('/repos/Ninjaruss/ninjaruss.net/contents/src/content/sessions/2026-07-29-live-test.md');
+    const body = JSON.parse(String(put.init.body));
+    expect(body.branch).toBe('main');
+    expect(body.message).toBe('mirror: add session 2026-07-29-live-test');
+    const decoded = Buffer.from(body.content, 'base64').toString('utf-8');
+    expect(decoded).toContain('title: Live Test');
+    expect(decoded).toContain('streamed: false');
+  });
+
+  it('suffixes the filename when the path already exists', async () => {
+    const fetchStub: typeof fetch = async (url, init) => {
+      if (init?.method === undefined || init.method === 'GET') {
+        const taken = String(url).endsWith('2026-07-29-live-test.md?ref=main');
+        return new Response(taken ? '{}' : 'Not Found', { status: taken ? 200 : 404 });
+      }
+      return new Response('{}', { status: 201 });
+    };
+    const written = await commitSessionFiles([session], cfg, fetchStub);
+    expect(written).toEqual(['2026-07-29-live-test-2.md']);
+  });
+
+  it('throws with a readable error on a failed PUT', async () => {
+    const fetchStub: typeof fetch = async (_url, init) =>
+      init?.method === 'PUT'
+        ? new Response('{"message":"boom"}', { status: 422 })
+        : new Response('Not Found', { status: 404 });
+    await expect(commitSessionFiles([session], cfg, fetchStub)).rejects.toThrow(/422/);
+  });
+});
