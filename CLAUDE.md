@@ -284,9 +284,11 @@ production import route (`/api/mirror/import`) is authenticated by the
 `MIRROR_TOKEN` env var (Bearer header, checked against the stored key) and, once
 authorized, commits sessions straight to `main` via `src/utils/mirror/github.ts`
 using `MIRROR_GITHUB_TOKEN` (a fine-grained GitHub PAT scoped to Contents:
-read/write on this repo only). Both secrets are read via `process.env`
-(`import.meta.env`) at request time, never bundled; if either is absent the route
-404s — the feature is simply off. The whole loop then runs entirely on-device
+read/write on this repo only). Both secrets are read via `process.env` at
+request time — NOT `import.meta.env`, which Vite constant-folds at build time
+and would freeze the route into a permanent 404 if the vars were missing during
+a build; if either is absent at request time the route 404s — the feature is
+simply off. The whole loop then runs entirely on-device
 from the live site: localStorage capture → client-built DeepSeek prompt → paste
 the reply back in → import commits the session files → Vercel auto-redeploys.
 One-time setup steps (PAT, env vars, per-device unlock) are in
