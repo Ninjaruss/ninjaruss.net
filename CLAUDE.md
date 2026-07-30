@@ -265,6 +265,18 @@ must end in exactly one next step), quests only ever come from the user's own
 Completed; parsed by `parseQuestFile`; `parseQuestMenu` is legacy, currently unused
 by pages). Phase 2 (the /status pause-menu UI) is gated on two weeks of real use.
 
+Button mode: /status carries a MirrorStrip (self-contained `MirrorStrip.astro`) —
+on the live site it logs start/done lines to localStorage (exact mirror-log.md
+format; ⧉ copy log hands them off) and fires the flourish (WebAudio, no asset);
+on `npm run dev` the strip writes straight to mirror-log.md and a dev-only panel
+does merge-paste / copy-prompt / import-reply via `src/pages/api/mirror/*`
+(prerender=false, 404 unless import.meta.env.DEV; shared core in
+`src/utils/mirror/fsOps.ts` — scripts are thin wrappers over the same functions).
+`scripts/mirror/Mirror.command` (copy on Desktop) starts dev + opens /status.
+Known dev quirk: a successful dev-panel import triggers Astro's content-collection
+HMR full reload (the success flash then reload is expected — git diff on
+`src/content/sessions/` remains the review surface, not the transient UI state).
+
 ## Utility Modules
 
 | File | Exports | Purpose |
