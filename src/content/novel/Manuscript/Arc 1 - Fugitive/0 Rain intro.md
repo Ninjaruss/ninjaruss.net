@@ -28,4 +28,17 @@ Just a dreamer stuck in the waiting room of his own life.
 
 \- My name is Rain. I dreamed and dreamed, yearning for the ceiling to collapse. The rain poured, yet I did not fall.
 
-**My name is Rain. I dreamed and dreamed, yearning for the ceiling to collapse, while outside the rain poured and poured. Yet I could not fall.**
+\- My name is Rain. I dreamed and dreamed, yearning for the ceiling to collapse, while outside the rain poured and poured. Yet I could not fall.
+
+\- **I am Rain. I dreamed and dreamed, yearning for the ceiling to collapse, while outside the rain poured and poured. Yet I could not fall.**
+
+
+\[ending callback\]
+
+\- **I dreamed and dreamed. Now I fall.**
+
+**In spite of it all, I am Rain.**
+
+\- I dreamed and dreamed. Now I fall.
+
+In spite of the fall, I am Rain.

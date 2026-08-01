@@ -2,6 +2,7 @@
 title: "Why One Must Fall"
 emblem: "/images/emblems/flame.svg"
 publishedAt: 2026-07-28
+updatedAt: 2026-07-30
 ---
 
 ## What does it mean to fall?
@@ -35,3 +36,22 @@ Now, I am at the precipice of the same decision making, but at such a larger sca
 I’m now doing things that my past self would think mean I’ve given up or have degraded/debased myself to: like working in retail or seriously considering being financially unsure to focus on writing/art. This is part of the metaphorical fall I’m talking about. The question is if I can apply this idea to my entire life in a new environment, a new world, to see if I myself can become someone that can overcome it all.
 
 Because I know that I can’t guarantee I won’t fall in the future. Even if I could, I would be stagnant and be stuck in a life I couldn’t accept if it meant I couldn’t at least have tried to fulfill the yearning within my heart. Tragedy and suffering will inevitably happen, so ideally I must try to cultivate myself to become someone who can meet these things head on. To fully feel the extend of these things, but then to orient these feelings towards building myself anew.
+
+## Falling
+I've am back getting sudden realizations of things I already know about, but sort of now have some inner feeling I "get" it now. While this is another cope as it was pointed out in some coaching sessions I paid for last year, having epiphanies are not that useful if I don't actually utilize the momentum.
+
+The thing that sort of "fell" into place in my brain is the metaphor I'm trying to convey in Remember Rain. While I did say that one must let go and fall to grow, I haven't really figured out the fundamental requirement or really application of this idea. But it has hit me after letting myself drift for like two days doing nothing (I would not recommend letting this happen as it may promote sabotaging your day/life for the comeback to feel earned): to fall is to continuously commit or make a bet on a small attempt to change.
+
+Or in other words, pull the trigger on what you want to try to become or experiment with, then let the consequences unfold, whatever it may be. This is the most effective on a micro scale where it depends on what you do in the here and now, the moments where you have a choice even if it feels like everything is trying to prevent you from choosing.
+
+Easier said than done... though I might be able to give some evidence through my previous experiences. 
+
+As mentioned, I went to several anime conventions in the past, the most notable being Otakon 2024. The decision making of going to these conventions was to try to find stuff I was interested in and to at least observe other people who have similar interests to me. While I started to become more weary of wasting my time at these conventions as it really makes the following true: you get what you expect out of it. If you're there to simply buy stuff, then that's the experience that you'll get. If you're there to hang out with cosplayers, then that's the experience that you'll get. Basically, you have to direct your own intention and really make efforts towards it.
+
+What made Otakon so unique for me was that it was a bundle of intentional but sort of made on a whim decisions. For one, it was in Washington D.C., a place I really had no reason for being there except that it was an opportunity to hang out with the other weebcloset hosts at the time. Another thing, we really didn't have much of a plan besides maybe doing a few segments, primarily just us streaming in different locations. But the core of it all in my perspective, was this feeling of letting myself make a committed decision without much thinking and seeing it through. My joke of being a little unhinged was something I embodied during the convention; going with whatever idea we come up with and just did it. While there was some questionable decision points (i.e. we kind of broke into a hotel gym with a random key card we found in the convention floor), ultimately it was done to have fun and let our whims guide us.
+
+What I'm ultimately trying to say in this long winded yap is that I need to embody more of what I did here and from similar things I've done in the past. To simply decide I want to do X thing, and to tie it into a small commitment I'm somewhat forced to see the outcome of. In context to what I feel I must do, I need to just start posting whatever comes to my mind. I am so worried about what if scenarios that could put me in a dire situation, I never consider that more than likely I will be able to recover and overcome it. While this isn't a excuse to just do really stupid stuff that could seriously harm me in all sorts of ways, I do think that with some mindfullness that follows the committed decision, I will be okay.
+
+No guarantees of course, but that's life isn't? It's why I love Usogui so much in one of its overall messages in the story, that one should simply gamble not in hopes of that you'll win, but that the decision to gamble on life is inherently what makes one truly shine. While you will invitably have no control on the final outcome despite having perfect preparations, within each moment of the gamble, you will constantly have to reassess your own idea of reality and make adjustments to your planning accordingly. 
+
+So I must make committed bets towards who I want to become and the reality I want to change around me. I want to become someone who can consistently fall, or really be intentional towards exploring and experiencing an unknown, and be able to overcome any of the difficulties that come through. I need to fall, not simply because it's what's required, but really that it is an aspect of life that reveals such a realm of endless possibilties that I will become far from the stagnant self I fear I could become. I want to truly shine and live.
