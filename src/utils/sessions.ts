@@ -192,6 +192,25 @@ export function parseQuestFile(markdown: string): QuestFile {
   return result;
 }
 
+export interface LevelInfo {
+  level: number;     // current protagonist level (min 1, never decays)
+  intoLevel: number; // sessions logged since reaching this level
+  needed: number;    // sessions until the next level ("next: N sessions")
+}
+
+// RPG curve: level = floor(sqrt(4n)), min 1. Threshold to reach level L is ceil(L²/4).
+export function computeLevel(totalSessions: number): LevelInfo {
+  const n = Math.max(0, Math.floor(totalSessions));
+  const level = Math.max(1, Math.floor(Math.sqrt(4 * n)));
+  const thresholdCurrent = Math.ceil((level * level) / 4);
+  const thresholdNext = Math.ceil(((level + 1) * (level + 1)) / 4);
+  return {
+    level,
+    intoLevel: Math.max(0, n - thresholdCurrent),
+    needed: Math.max(1, thresholdNext - n),
+  };
+}
+
 export function buildDonutArcs(
   tallies: Partial<Record<StatName, number>>,
   r: number,

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   tallyStats, buildRadarPoints, buildGuidePoints, parseQuestMenu, STAT_ORDER,
   applyLogScale, scaleAllTallies, STAT_CEILING, parseQuestFile, parseStreamIdeas,
+  computeLevel,
   type StatName,
 } from '../utils/sessions';
 import { parseTwitchLiveResponse } from '../utils/twitchStatus';
@@ -177,6 +178,45 @@ describe('parseQuestFile', () => {
     expect(empty.question).toBe('');
     expect(empty.completed).toEqual([]);
     expect(empty.active).toEqual([{ text: 'Solo quest' }]);
+  });
+});
+
+describe('computeLevel', () => {
+  it('starts at level 1 with zero sessions', () => {
+    expect(computeLevel(0)).toEqual({ level: 1, intoLevel: 0, needed: 1 });
+  });
+
+  it('gives early levels fast', () => {
+    expect(computeLevel(1).level).toBe(2);
+    expect(computeLevel(4).level).toBe(4);
+  });
+
+  it('slows later — ~30 sessions is around level 10', () => {
+    expect(computeLevel(30).level).toBe(10);
+    expect(computeLevel(100).level).toBe(20);
+  });
+
+  it('is monotonic and never decays', () => {
+    let prev = 0;
+    for (let n = 0; n <= 500; n++) {
+      const { level } = computeLevel(n);
+      expect(level).toBeGreaterThanOrEqual(prev);
+      prev = level;
+    }
+  });
+
+  it('needed is always at least 1 and reaching it levels up', () => {
+    for (const n of [0, 1, 5, 29, 30, 99, 250]) {
+      const { level, needed } = computeLevel(n);
+      expect(needed).toBeGreaterThanOrEqual(1);
+      expect(computeLevel(n + needed).level).toBe(level + 1);
+    }
+  });
+
+  it('intoLevel counts sessions since the current level threshold', () => {
+    const { level, intoLevel } = computeLevel(30);
+    expect(intoLevel).toBe(30 - Math.ceil((level * level) / 4));
+    expect(intoLevel).toBeGreaterThanOrEqual(0);
   });
 });
 
