@@ -1,7 +1,7 @@
 ---
 title: "Utasync - Learn Japanese through Music"
 publishedAt: 2026-08-01
-emblem: /images/showcase/Usogui_Volume_2_popout.png
+emblem: /images/showcase/utasync.svg
 collections: ["web dev"]
 ---
 
