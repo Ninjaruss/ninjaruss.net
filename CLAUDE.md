@@ -17,10 +17,6 @@ npm run astro     # Direct Astro CLI access
 npm run codex         # AI-condense site content into src/data/codex.json (claude CLI)
 npm run codex:export  # manual mode: write codex-prompt.txt for any chatbot
 npm run codex:import  # manual mode: validate codex-response.json → codex.json
-npm run mirror -- start "..."   # log a session intention (appends to gitignored mirror-log.md)
-npm run mirror -- done "..."    # log a completed session + rank-up flourish
-npm run mirror:export           # manual mode: write mirror-prompt.txt for DeepSeek chat / any chatbot
-npm run mirror:import           # validate mirror-response.json → session entries in src/content/sessions/
 ```
 
 ## Architecture
@@ -40,7 +36,7 @@ src/
 ├── layouts/          # Page layout templates
 ├── pages/            # File-based routing
 ├── styles/           # Global CSS (no frameworks)
-├── tests/            # Vitest unit tests (novel, content, journal, shelf, sessions, streamTile, mirror, ...)
+├── tests/            # Vitest unit tests (novel, content, journal, shelf, sessions, streamTile, ...)
 └── utils/            # Shared utilities (content, collections, journal, dates, novel, splitView/)
 ```
 
@@ -126,6 +122,7 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 - `bento.css` — Grid system and tile variants
 - `transitions.css` — P4G-style animations and view transitions
 - `novel.css` — Novel writer's-desk UI (gold/black/brown; desk landing, folder pages, paper/ink reading pages, sepia rain canvas)
+- `status.css` — `/status` P4G pause-menu hub styles (character sheet, stat radar, session log, quest board, bonds panel)
 
 ### Key CSS Variables
 ```css
@@ -250,49 +247,45 @@ has a 2×1 Codex tile cycling synthesis first-sentences with the latest-sweep pa
 Scripts live in scripts/codex/ (tsx); manual mode scratch files codex-prompt.txt /
 codex-response.json are gitignored. Tests: src/tests/codex.test.ts (pure modules only).
 
-## Mirror Loop (sessions + /status)
+## Sessions & /status (protagonist pause menu)
 
-The sessions collection logs work sessions (Japanese, writing, streams). The loop:
-`npm run mirror -- start/done` appends rough lines to gitignored `mirror-log.md`
-(the `done` flourish is a cue — the celebration itself is physical, per the design
-spec). Every few days: `mirror:export` → paste `mirror-prompt.txt` into DeepSeek
-chat → save reply as `mirror-response.json` → `mirror:import` writes validated
-session entries (git diff review, then commit — same trust model as codex manual
-mode). Design invariants (docs/superpowers/specs/2026-07-29-status-pause-menu-design.md):
-stats never decay, no streaks/shame states, reflections are bounded (≤600 chars,
-must end in exactly one next step), quests only ever come from the user's own
-`src/content/sessions/_quests.md` (sections: The Question / Active / Ideas — <Stat> /
-Completed; parsed by `parseQuestFile`; `parseQuestMenu` is legacy, currently unused
-by pages). Phase 2 (the /status pause-menu UI) is gated on two weeks of real use.
+The `sessions` collection logs work sessions (Japanese, writing, streams) as
+hand-written markdown — create a `.md` in `src/content/sessions/` (VS Code
+snippet: type `session` + Tab for the frontmatter skeleton in
+`.vscode/ninjaruss.code-snippets`), commit, done. No capture loop, no AI step
+(the former mirror loop was deleted 2026-08; spec:
+docs/superpowers/specs/2026-08-03-status-protagonist-redesign-design.md).
 
-Button mode: /status carries a MirrorStrip (self-contained `MirrorStrip.astro`) —
-on the live site it logs start/done lines to localStorage (exact mirror-log.md
-format; ⧉ copy log hands them off) and fires the flourish (WebAudio, no asset);
-on `npm run dev` the strip writes straight to mirror-log.md and a dev-only panel
-does merge-paste / copy-prompt / import-reply via `src/pages/api/mirror/*`
-(prerender=false, 404 unless import.meta.env.DEV; shared core in
-`src/utils/mirror/fsOps.ts` — scripts are thin wrappers over the same functions).
-`scripts/mirror/Mirror.command` (copy on Desktop) starts dev + opens /status.
-Known dev quirk: a successful dev-panel import triggers Astro's content-collection
-HMR full reload (the success flash then reload is expected — git diff on
-`src/content/sessions/` remains the review surface, not the transient UI state).
+`/status` is a P4G pause-menu hub — skewed menu (Status / Log / Quests / Bonds),
+one screen at a time via URL hash (`/status#quests`); no-JS falls back to all
+sections stacked (an inline blocking script plus an `astro:after-swap` listener
+add the `js` class on `<html>`, which hides inactive screens; the after-swap
+hook exists because Astro's view-transition swap strips html attributes and
+skips re-running inline scripts). Menu clicks are handled by explicit click
+handlers + popstate — NOT hashchange, which Astro's ClientRouter bypasses via
+pushState. Styles in `src/styles/status.css`.
 
-**Live mode**: on production the strip is hidden by default — the MIRROR kicker
-takes a triple-tap (3 taps within 2s) to unlock, which stores a key in
-localStorage (`mirror-key`) so the device stays unlocked afterward. The
-production import route (`/api/mirror/import`) is authenticated by the
-`MIRROR_TOKEN` env var (Bearer header, checked against the stored key) and, once
-authorized, commits sessions straight to `main` via `src/utils/mirror/github.ts`
-using `MIRROR_GITHUB_TOKEN` (a fine-grained GitHub PAT scoped to Contents:
-read/write on this repo only). Both secrets are read via `process.env` at
-request time — NOT `import.meta.env`, which Vite constant-folds at build time
-and would freeze the route into a permanent 404 if the vars were missing during
-a build; if either is absent at request time the route 404s — the feature is
-simply off. The whole loop then runs entirely on-device
-from the live site: localStorage capture → client-built DeepSeek prompt → paste
-the reply back in → import commits the session files → Vercel auto-redeploys.
-One-time setup steps (PAT, env vars, per-device unlock) are in
-`docs/mirror-setup.md`.
+- **Status**: character sheet — portrait/name/epithet from
+  `src/content/sessions/_protagonist.md` (underscore = not a collection entry;
+  parsed by `src/utils/protagonist.ts`, missing file/fields degrade to
+  defaults), level + XP bar from `computeLevel(totalSessions)` in
+  `src/utils/sessions.ts` (`level = max(1, floor(sqrt(4n)))` — monotonic, never
+  decays; label is always forward-looking "next: N sessions"; XP bar is
+  role="progressbar"), current objective = first Active quest in `_quests.md`,
+  stat radar (recent/all-time), date strip (today only — deliberately NO day
+  counter), mail strip.
+- **Log**: sessions newest-first with stat chips, summary, `memorable`
+  pull-quote, optional `reflection`/`nextStep`/`quest`, and a red LIVE marker
+  for `streamed: true`.
+- **Quests**: rendered from `src/content/sessions/_quests.md` via
+  `parseQuestFile` (sections: The Question / Active / Ideas — <Stat> /
+  Completed). Quests only ever come from this file. The Ideas stat strips
+  double as log filters (click → `#log` filtered).
+- **Bonds**: `social-links` collection as an S.Link screen with slide-in
+  detail panel (keyboard-operable rows: tabindex + Enter/Space).
+
+Design invariants (unchanged): stats never decay, no streaks/shame states, no
+absence counters anywhere on the page.
 
 ## Utility Modules
 
@@ -304,7 +297,8 @@ One-time setup steps (PAT, env vars, per-device unlock) are in
 | `src/utils/journalMerge.ts` | pure merge/sort logic (no astro imports) | Unit-testable core of journal.ts (vitest can't resolve `astro:content`) |
 | `src/utils/dates.ts` | `formatDate()`, `shouldShowUpdatedDate()` | Date formatting and update-date display logic |
 | `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `countWords()`, `computeNovelStats()`, `flattenFolderFiles()`, `findRecentFiles()`, `findSynopsisDoc()`, `findFirstScene()` | Scrivener-backed novel content loader + rain-gauge stats + desk recency/intro helpers |
-| `src/utils/sessions.ts` (formerly `stream.ts`) | `tallyStats()`, `buildRadarPoints()`, `buildGuidePoints()`, `applyLogScale()`, `scaleAllTallies()`, `parseStreamIdeas()`, `parseQuestFile()`, `parseQuestMenu()` (legacy, unused by pages), `buildDonutArcs()`, `STAT_ORDER`, `STAT_CEILING` | `sessions` collection stat aggregation/scaling for the `/status` radar + donut, and `_quests.md` parsing (`parseQuestFile` — sections: The Question / Active / Ideas — \<Stat\> / Completed) |
+| `src/utils/sessions.ts` (formerly `stream.ts`) | `tallyStats()`, `buildRadarPoints()`, `buildGuidePoints()`, `applyLogScale()`, `scaleAllTallies()`, `parseStreamIdeas()`, `parseQuestFile()`, `parseQuestMenu()` (legacy, unused by pages), `buildDonutArcs()`, `computeLevel()`, `STAT_ORDER`, `STAT_CEILING` | `sessions` collection stat aggregation/scaling for the `/status` radar + donut, level/XP math, and `_quests.md` parsing (`parseQuestFile` — sections: The Question / Active / Ideas — \<Stat\> / Completed) |
+| `src/utils/protagonist.ts` | `parseProtagonist()`, `DEFAULT_PROTAGONIST` | Minimal frontmatter reader for `_protagonist.md` (name/epithet/portrait); missing file/fields degrade to defaults |
 | `src/utils/codexContent.ts` + `src/utils/codex/` | `getCodexPageData()`, `getCodexTileData()`; pure modules: schema, json, stabilize, resolve, corpus, prompt, pipeline | /codex data layer — see Codex System section |
 | `src/utils/splitView/` | (11 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
 
