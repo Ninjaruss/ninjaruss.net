@@ -32,9 +32,3 @@ pnpm-debug.log*
 # /codex manual-mode scratch files (workflow artifacts, never content)
 codex-prompt.txt
 codex-response.json
-
-# mirror loop scratch files (like codex-prompt.txt / codex-response.json)
-mirror-log.md
-mirror-prompt.txt
-mirror-response.json
-mirror-exported.txt

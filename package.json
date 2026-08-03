@@ -11,10 +11,7 @@
     "add-image": "node scripts/add-image.js",
     "codex": "tsx scripts/codex/condense.ts",
     "codex:export": "tsx scripts/codex/export.ts",
-    "codex:import": "tsx scripts/codex/import.ts",
-    "mirror": "tsx scripts/mirror/cli.ts",
-    "mirror:export": "tsx scripts/mirror/export.ts",
-    "mirror:import": "tsx scripts/mirror/import.ts"
+    "codex:import": "tsx scripts/codex/import.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
