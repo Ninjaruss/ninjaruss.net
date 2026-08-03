@@ -149,6 +149,9 @@ function colorBg(hex: string, a: number): string {
 ---
 
 <BaseLayout title="Status" description="Protagonist status — sessions, quests, and bonds for ninjaruss.">
+  {/* Blocking classic script: lands the `js` class before first paint, so the
+      no-JS stacked fallback never flashes while the module script loads. */}
+  <script is:inline>document.documentElement.classList.add('js');</script>
   <NavPill />
   <div id="slash"><div class="slash-blade" id="blade"></div></div>
 
@@ -499,8 +502,53 @@ function colorBg(hex: string, a: number): string {
   document.addEventListener('astro:page-load', initMailAddress);
 
   /* Signals to CSS that one-screen-at-a-time is available; without JS every
-     screen stays visible, stacked. */
+     screen stays visible, stacked. (Also set by an is:inline script in the body
+     so the class lands before first paint — this line covers module re-runs.) */
   document.documentElement.classList.add('js');
+
+  /* ── Screen routing (URL hash) ──────────────────────────
+     Declared at module scope so the window-level listeners below are registered
+     exactly once, instead of once per astro:page-load return to this page. */
+  const SCREENS = ['status', 'log', 'quests', 'bonds'] as const;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function screenFromHash(): string {
+    const h = location.hash.replace('#', '');
+    return (SCREENS as readonly string[]).includes(h) ? h : 'status';
+  }
+
+  function showScreen(name: string): void {
+    // Window-level listeners outlive a view transition; no-op on other pages.
+    if (!document.querySelector('.st-menu')) return;
+    document.querySelectorAll<HTMLElement>('.st-screen').forEach(s => {
+      s.classList.toggle('is-active', s.dataset.screen === name);
+    });
+    document.querySelectorAll<HTMLAnchorElement>('.st-menu-item').forEach(a => {
+      const active = a.dataset.screen === name;
+      a.classList.toggle('is-active', active);
+      if (active) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    });
+    if (!reduceMotion.matches) {
+      const blade = document.getElementById('blade');
+      if (blade) {
+        blade.classList.remove('slash-go');
+        void blade.offsetWidth;
+        blade.classList.add('slash-go');
+        blade.addEventListener('animationend', () => blade.classList.remove('slash-go'), { once: true });
+      }
+      const stage = document.querySelector<HTMLElement>(`.st-screen[data-screen="${name}"]`);
+      if (stage) {
+        stage.style.animation = 'none';
+        void stage.offsetWidth;
+        stage.style.animation = 'panelWipe 0.4s cubic-bezier(0.16,1,0.3,1) both';
+        stage.addEventListener('animationend', () => { stage.style.animation = ''; }, { once: true });
+      }
+    }
+  }
+
+  window.addEventListener('hashchange', () => showScreen(screenFromHash()));
+  window.addEventListener('popstate', () => showScreen(screenFromHash()));
 
   /* ── DOM init ─────────────────────────────────────────── */
   document.addEventListener('astro:page-load', () => {
@@ -508,51 +556,10 @@ function colorBg(hex: string, a: number): string {
 
     let activeStrip: HTMLElement | null = null;
 
-    /* ── Screen routing (URL hash) ────────────────────── */
-    const SCREENS = ['status', 'log', 'quests', 'bonds'] as const;
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-    function screenFromHash(): string {
-      const h = location.hash.replace('#', '');
-      return (SCREENS as readonly string[]).includes(h) ? h : 'status';
-    }
-
-    function showScreen(name: string): void {
-      // Window-level listeners outlive a view transition; bail once this page is gone.
-      if (!document.querySelector('.st-menu')) return;
-      document.querySelectorAll<HTMLElement>('.st-screen').forEach(s => {
-        s.classList.toggle('is-active', s.dataset.screen === name);
-      });
-      document.querySelectorAll<HTMLAnchorElement>('.st-menu-item').forEach(a => {
-        const active = a.dataset.screen === name;
-        a.classList.toggle('is-active', active);
-        if (active) a.setAttribute('aria-current', 'true');
-        else a.removeAttribute('aria-current');
-      });
-      if (!reduceMotion.matches) {
-        const blade = document.getElementById('blade');
-        if (blade) {
-          blade.classList.remove('slash-go');
-          void blade.offsetWidth;
-          blade.classList.add('slash-go');
-          blade.addEventListener('animationend', () => blade.classList.remove('slash-go'), { once: true });
-        }
-        const stage = document.querySelector<HTMLElement>(`.st-screen[data-screen="${name}"]`);
-        if (stage) {
-          stage.style.animation = 'none';
-          void stage.offsetWidth;
-          stage.style.animation = 'panelWipe 0.4s cubic-bezier(0.16,1,0.3,1) both';
-          stage.addEventListener('animationend', () => { stage.style.animation = ''; }, { once: true });
-        }
-      }
-    }
-
     showScreen(screenFromHash());
-    window.addEventListener('hashchange', () => showScreen(screenFromHash()));
     // Astro's ClientRouter intercepts same-page hash links and updates the URL
     // with history.pushState, which fires popstate on back/forward but never
     // hashchange on the click itself — so switch off the clicked item directly.
-    window.addEventListener('popstate', () => showScreen(screenFromHash()));
     document.querySelectorAll<HTMLAnchorElement>('.st-menu-item').forEach(a => {
       a.addEventListener('click', () => showScreen(a.dataset.screen!));
     });

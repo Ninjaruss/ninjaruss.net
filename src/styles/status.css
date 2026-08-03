@@ -759,6 +759,10 @@
 /* ── Mobile ─────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .s-radar-container { padding: 24px 0 10px; }
+  /* Label + rule + hint no longer fit on one line — let the hint drop below
+     instead of forcing the page wider than the viewport. */
+  .j-section-header { flex-wrap: wrap; }
+  .j-section-sub { flex-shrink: 1; }
   .j-stream-strip { flex-wrap: wrap; }
   .j-strip-label { min-width: 100px; }
   .j-stream-strip::before { left: -16px; }
@@ -877,6 +881,10 @@ html.js #bonds.is-active { display: flex; flex-direction: row; align-items: stre
   .st-hub { flex-direction: column; }
   .st-menu { flex-direction: row; flex-wrap: wrap; position: static; min-width: 0; width: 100%; }
   .st-menu-item { flex: 1 1 auto; text-align: center; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+  /* Column flex + align-items:flex-start would size the stage to its min-content
+     width (the widest nowrap idea pill), pushing the page into horizontal scroll. */
+  .st-stage { width: 100%; }
+  .j-idea-pill { white-space: normal; }
   .sheet { flex-direction: column; }
   .sheet-portrait { flex-basis: auto; }
   html.js #bonds.is-active { flex-direction: column; }
