@@ -1,0 +1,34 @@
+{
+  "Session entry": {
+    "scope": "markdown",
+    "prefix": "session",
+    "body": [
+      "---",
+      "title: \"${1:What happened}\"",
+      "publishedAt: ${2:$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE}",
+      "stats: [\"${3|Determination,Insight,Expression,Sincerity,Chaos|}\"]",
+      "summary: \"${4:One or two sentences on what this session was.}\"",
+      "memorable: \"${5:The line worth keeping.}\"",
+      "streamed: ${6|false,true|}",
+      "draft: false",
+      "---",
+      "$0"
+    ],
+    "description": "Frontmatter for a /status session entry"
+  },
+  "Note entry": {
+    "scope": "markdown",
+    "prefix": "note",
+    "body": [
+      "---",
+      "title: \"${1:Title}\"",
+      "publishedAt: ${2:$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE}",
+      "emblem: '/images/emblems/${3|scroll,torii,flame,shuriken,default|}.svg'",
+      "draft: ${4|true,false|}",
+      "---",
+      "",
+      "$0"
+    ],
+    "description": "Frontmatter for a journal note"
+  }
+}
