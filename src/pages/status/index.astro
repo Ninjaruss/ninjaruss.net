@@ -176,7 +176,7 @@ function colorBg(hex: string, a: number): string {
         <a href="#bonds"  class="st-menu-item" data-screen="bonds">Bonds</a>
       </nav>
 
-      <main class="st-stage">
+      <div class="st-stage">
         <section class="st-screen is-active" id="status" data-screen="status">
           <div class="sheet">
             <div class="sheet-portrait">
@@ -189,7 +189,8 @@ function colorBg(hex: string, a: number): string {
               {protagonist.epithet && <p class="sheet-epithet">{protagonist.epithet}</p>}
               <div class="sheet-level-row">
                 <span class="sheet-level p4g-cut">LV {levelInfo.level}</span>
-                <div class="sheet-xp" role="img" aria-label={`${xpPercent}% to next level`}>
+                <div class="sheet-xp" role="progressbar" aria-valuenow={xpPercent} aria-valuemin="0" aria-valuemax="100"
+                     aria-label="Progress to next level">
                   <div class="sheet-xp-fill" style={`width:${xpPercent}%`}></div>
                 </div>
                 <span class="sheet-xp-label">next: {levelInfo.needed} {levelInfo.needed === 1 ? 'session' : 'sessions'}</span>
@@ -377,7 +378,7 @@ function colorBg(hex: string, a: number): string {
         </section>
 
         <section class="st-screen" id="quests" data-screen="quests">
-          <!-- Built in a later task -->
+          <p class="q-empty">Quest board under construction.</p>
         </section>
 
         <section class="st-screen" id="bonds" data-screen="bonds">
@@ -470,7 +471,7 @@ function colorBg(hex: string, a: number): string {
 
           <div id="bonds-data" data-bonds={bondsJson} hidden></div>
         </section>
-      </main>
+      </div>
     </div>
   </div>
 </BaseLayout>
@@ -550,6 +551,14 @@ function colorBg(hex: string, a: number): string {
   window.addEventListener('hashchange', () => showScreen(screenFromHash()));
   window.addEventListener('popstate', () => showScreen(screenFromHash()));
 
+  /* Astro's swapRootAttributes replaces <html>'s class list on a view-transition
+     navigation, and the is:inline script above does not re-run (data-astro-exec).
+     astro:after-swap fires before paint, so re-adding the class here keeps a
+     soft-nav into /status from flashing all four screens stacked. */
+  document.addEventListener('astro:after-swap', () => {
+    document.documentElement.classList.add('js');
+  });
+
   /* ── DOM init ─────────────────────────────────────────── */
   document.addEventListener('astro:page-load', () => {
     document.documentElement.classList.add('js');
@@ -565,7 +574,7 @@ function colorBg(hex: string, a: number): string {
     });
 
     /* ── Stat mode toggle ─────────────────────────────── */
-    const dataEl     = document.getElementById('stream-tally-data')!;
+    const dataEl     = document.getElementById('stream-tally-data');
     const recentData = JSON.parse(dataEl?.dataset.recent ?? '{}') as Record<string, number>;
     const allData    = JSON.parse(dataEl?.dataset.all    ?? '{}') as Record<string, number>;
 

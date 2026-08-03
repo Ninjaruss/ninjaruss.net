@@ -766,10 +766,9 @@
   .j-stream-strip { flex-wrap: wrap; }
   .j-strip-label { min-width: 100px; }
   .j-stream-strip::before { left: -16px; }
-  .j-log-list { overflow-y: visible; max-height: none; }
+  .j-log-list { overflow-y: visible; max-height: none; padding-left: 16px; padding-right: 16px; }
   .j-streams { padding-left: 16px; padding-right: 16px; }
   .j-log-top { padding-left: 16px; padding-right: 16px; }
-  .j-log-list { padding-left: 16px; padding-right: 16px; }
   .bonds-header { padding-left: 16px; padding-right: 16px; }
   #bonds.detail-open .bond-detail-panel {
     width: 100%;
@@ -784,7 +783,7 @@
 .status-page {
   max-width: 1100px;
   margin: 0 auto;
-  padding: var(--space-xl) var(--space-lg) calc(var(--nav-clearance, 96px) + var(--space-lg));
+  padding: var(--space-xl) var(--space-lg) calc(var(--nav-clearance, 120px) + var(--space-lg));
 }
 .st-topbar {
   display: flex;
@@ -798,7 +797,7 @@
   display: flex;
   align-items: baseline;
   gap: 0.4em;
-  font-family: var(--font-mono, monospace);
+  font-family: var(--font-mono);
   color: var(--color-text);
 }
 .st-date-num { color: var(--color-gold); font-size: 1.5em; font-weight: 700; }
@@ -810,7 +809,7 @@
   display: block;
   padding: 10px 18px;
   transform: skewX(var(--skew-accent));
-  border: 1px solid rgba(255, 229, 44, 0.25);
+  border: 1px solid rgba(var(--color-gold-rgb), 0.25);
   color: var(--color-text);
   text-decoration: none;
   font-weight: 700;
@@ -820,8 +819,8 @@
   transition: background var(--animation-base) var(--animation-easing), color var(--animation-base) var(--animation-easing);
 }
 .st-menu-item:hover,
-.st-menu-item:focus-visible { background: rgba(255, 229, 44, 0.12); }
-.st-menu-item.is-active { background: var(--color-gold); color: #131313; border-color: var(--color-gold); box-shadow: var(--shadow-hard); }
+.st-menu-item:focus-visible { background: rgba(var(--color-gold-rgb), 0.12); }
+.st-menu-item.is-active { background: var(--color-gold); color: var(--color-black); border-color: var(--color-gold); box-shadow: var(--shadow-hard); }
 .st-stage { flex: 1; min-width: 0; }
 
 /* JS upgrades sections to one-at-a-time; no-JS shows all, stacked */
@@ -833,11 +832,13 @@ html.js .st-screen.is-active { display: block; }
 #bonds { position: relative; }
 html.js #bonds.is-active { display: flex; flex-direction: row; align-items: stretch; }
 
+.q-empty { color: var(--color-text-subtle); font-size: 0.9rem; }
+
 /* ── Character sheet ──────────────────────────────────── */
 .sheet {
   display: flex;
   gap: var(--space-lg);
-  border: 1px solid rgba(255, 229, 44, 0.2);
+  border: 1px solid rgba(var(--color-gold-rgb), 0.2);
   padding: var(--space-lg);
   margin-bottom: var(--space-xl);
   background: rgba(255, 255, 255, 0.02);
@@ -854,11 +855,11 @@ html.js #bonds.is-active { display: flex; flex-direction: row; align-items: stre
 }
 .sheet-id { flex: 1; min-width: 0; }
 .sheet-name { font-size: 1.6rem; margin: 0; color: var(--color-text); }
-.sheet-epithet { margin: 2px 0 0; font-style: italic; color: var(--color-text-subtle, #999); font-size: 0.9rem; }
+.sheet-epithet { margin: 2px 0 0; font-style: italic; color: var(--color-text-subtle); font-size: 0.9rem; }
 .sheet-level-row { display: flex; align-items: center; gap: 12px; margin-top: var(--space-md); }
 .sheet-level {
   background: var(--color-gold);
-  color: #131313;
+  color: var(--color-black);
   font-weight: 900;
   padding: 2px 14px;
   transform: skewX(var(--skew-accent));
@@ -867,11 +868,11 @@ html.js #bonds.is-active { display: flex; flex-direction: row; align-items: stre
 }
 .sheet-xp { flex: 1; height: 6px; background: #2a2a2a; transform: skewX(var(--skew-accent)); overflow: hidden; }
 .sheet-xp-fill { height: 100%; background: var(--color-gold); }
-.sheet-xp-label { font-family: var(--font-mono, monospace); font-size: 0.75rem; color: var(--color-text-subtle, #999); white-space: nowrap; }
+.sheet-xp-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-subtle); white-space: nowrap; }
 .sheet-objective {
   margin-top: var(--space-md);
   border-left: 3px solid var(--color-gold);
-  background: rgba(255, 229, 44, 0.06);
+  background: rgba(var(--color-gold-rgb), 0.06);
   padding: 8px 12px;
 }
 .sheet-obj-label { display: block; color: var(--color-gold); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
