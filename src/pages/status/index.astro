@@ -64,7 +64,9 @@ const bondsJson = JSON.stringify(
     lore:            link.data.lore ?? null,
     lastSession:     link.data.lastSession ?? null,
     lastInteraction: link.data.lastInteraction ?? null,
-    img:             link.data.img ?? null,
+    // Same fallback the list row uses — without it a bond with a stat but no
+    // custom image shows its emblem in the row and an empty ring in the detail.
+    img:             link.data.img ?? (link.data.stat ? STAT_META[link.data.stat]?.emblem ?? null : null),
   }))
 );
 
