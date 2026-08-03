@@ -354,7 +354,7 @@ function colorBg(hex: string, a: number): string {
                       <div class="j-entry-month">{mon}</div>
                     </div>
                     <div class="j-entry-body">
-                      <div class="j-entry-title">{entry.data.title}</div>
+                      <div class="j-entry-title">{entry.data.title}{entry.data.streamed && <span class="j-entry-live" title="streamed live">LIVE</span>}</div>
                       <div class="j-entry-summary">{entry.data.summary}</div>
                       <div class="j-entry-chips">
                         {entry.data.stats.map(stat => {
@@ -369,6 +369,13 @@ function colorBg(hex: string, a: number): string {
                       {entry.data.memorable && (
                         <div class="j-entry-memo">{entry.data.memorable}</div>
                       )}
+                      {entry.data.reflection && <div class="j-entry-reflection">{entry.data.reflection}</div>}
+                      {entry.data.nextStep && (
+                        <div class="j-entry-next">
+                          <span class="j-next-label">Next</span> {entry.data.nextStep}
+                        </div>
+                      )}
+                      {entry.data.quest && <div class="j-entry-quest">⚑ {entry.data.quest}</div>}
                     </div>
                   </div>
                 );
