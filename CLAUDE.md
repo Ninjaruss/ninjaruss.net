@@ -261,9 +261,12 @@ one screen at a time via URL hash (`/status#quests`); no-JS falls back to all
 sections stacked (an inline blocking script plus an `astro:after-swap` listener
 add the `js` class on `<html>`, which hides inactive screens; the after-swap
 hook exists because Astro's view-transition swap strips html attributes and
-skips re-running inline scripts). Menu clicks are handled by explicit click
-handlers + popstate — NOT hashchange, which Astro's ClientRouter bypasses via
-pushState. Styles in `src/styles/status.css`.
+skips re-running inline scripts). Routing needs all three listeners: explicit
+click handlers cover the menu anchors (Astro's ClientRouter intercepts them via
+pushState, so hashchange never fires for those), the `hashchange` listener
+covers programmatic `location.hash = 'log'` jumps (radar-vertex and quest-strip
+clicks depend on it — do not delete it as "unused"), and `popstate` covers
+back/forward. Styles in `src/styles/status.css`.
 
 - **Status**: character sheet — portrait/name/epithet from
   `src/content/sessions/_protagonist.md` (underscore = not a collection entry;
