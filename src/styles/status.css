@@ -393,7 +393,6 @@
   flex-direction: column;
   flex: 1;
   min-width: 0;
-  overflow: hidden;
 }
 
 .bonds-header {
@@ -410,8 +409,6 @@
 }
 
 .bonds-list {
-  flex: 1;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
@@ -424,7 +421,8 @@
   transition: background 0.12s, box-shadow 0.12s;
   will-change: transform, opacity;
 }
-.bond-row:hover { background: rgba(255, 255, 255, 0.02); }
+.bond-row:hover,
+.bond-row:focus-visible { background: rgba(255, 255, 255, 0.02); }
 .bond-row.bd-active {
   background: rgba(255, 255, 255, 0.03);
   box-shadow: inset 3px 0 0 var(--bd-row-color, #888);
@@ -520,12 +518,13 @@
   width: 0;
   overflow: hidden;
   flex-shrink: 0;
-  border-left: 1px solid #1a1a1e;
+  background: var(--color-bg-deep, #0a0a0a);
+  border-left: 0 solid #1a1a1e;
   transition: width 0.38s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
 }
-#bonds.detail-open .bond-detail-panel { width: 300px; }
+#bonds.detail-open .bond-detail-panel { width: 300px; border-left-width: 1px; }
 
 .bd-inner {
   width: 300px;
@@ -784,7 +783,14 @@
   #bonds.detail-open .bond-detail-panel {
     width: 100%;
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    /* No `bottom` — an explicit inset would clamp height to #bonds's own
+       box, which is only as tall as the (often short) row list and clips
+       taller detail content. min-height guarantees full coverage of the
+       list; auto height lets it grow past that for longer lore/memory text. */
+    min-height: 100%;
     z-index: 2;
   }
   .bd-inner { width: 100%; }
@@ -900,6 +906,13 @@ html.js #bonds.is-active { display: flex; flex-direction: row; align-items: stre
   .sheet { flex-direction: column; }
   .sheet-portrait { flex-basis: auto; }
   html.js #bonds.is-active { flex-direction: column; }
+  /* Column flex's main axis is height, not width — the closed panel's
+     width:0 no longer collapses it; its content still claims natural
+     height and shows as a dead gap below the list. Pin it to 0 and let
+     the open state (position:absolute below, or this explicit auto)
+     reclaim height. */
+  .bond-detail-panel { height: 0; }
+  #bonds.detail-open .bond-detail-panel { height: auto; }
 }
 @media (prefers-reduced-motion: reduce) {
   .st-menu-item { transition: none; }

@@ -441,6 +441,7 @@ function colorBg(hex: string, a: number): string {
                 const rankLabel   = link.data.rank > 0 ? `RANK ${numerals[link.data.rank - 1] ?? link.data.rank}` : 'RANK —';
                 return (
                   <div class="bond-row" data-bond={link.data.name}
+                       tabindex="0" role="button"
                        style={statColor ? `--bd-row-color:${statColor}` : ''}>
                     <div class="bond-emblem-col">
                       <div class="bond-emblem-wrap"
@@ -768,6 +769,12 @@ function colorBg(hex: string, a: number): string {
 
       document.querySelectorAll<HTMLElement>('.bond-row').forEach(row => {
         row.addEventListener('click', () => {
+          if (row === activeBondRow) closeBondDetail();
+          else openBondDetail(row);
+        });
+        row.addEventListener('keydown', (e: KeyboardEvent) => {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          e.preventDefault();
           if (row === activeBondRow) closeBondDetail();
           else openBondDetail(row);
         });
