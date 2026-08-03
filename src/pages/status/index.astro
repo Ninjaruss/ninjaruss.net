@@ -306,36 +306,6 @@ function colorBg(hex: string, a: number): string {
         </section>
 
         <section class="st-screen" id="log" data-screen="log">
-          <div class="j-streams">
-            <div class="j-section-header">
-              <div class="j-section-label">Potential Streams</div>
-              <div class="j-section-rule"></div>
-              <div class="j-section-sub">click a stat to filter the log</div>
-            </div>
-
-            {STAT_ORDER.map(stat => {
-              const meta  = STAT_META[stat];
-              const ideas = streamIdeas[stat] ?? [];
-              const glow  = colorBg(meta.color, 0.4);
-              return (
-                <div class="j-stream-strip" data-stat={stat} style={`--strip-color:${meta.color}`}>
-                  <div class="j-strip-label">
-                    <div class="j-stat-dot" style={`background:${meta.color};box-shadow:0 0 5px ${glow}`}></div>
-                    <div class="j-stat-name-sm" style={`color:${meta.color}`}>{stat}</div>
-                  </div>
-                  <div class="j-strip-ideas">
-                    {ideas.map(idea => (
-                      <span class="j-idea-pill" style={`color:${meta.color};border-color:${colorBg(meta.color, 0.25)}`}>
-                        {idea}
-                      </span>
-                    ))}
-                  </div>
-                  <span class="j-strip-clear">× clear</span>
-                </div>
-              );
-            })}
-          </div>
-
           <div class="j-log">
             <div class="j-log-top">
               <div class="j-section-label" id="log-label">Session Log</div>
@@ -385,7 +355,75 @@ function colorBg(hex: string, a: number): string {
         </section>
 
         <section class="st-screen" id="quests" data-screen="quests">
-          <p class="q-empty">Quest board under construction.</p>
+          {questFile.question && (
+            <blockquote class="q-question">
+              <span class="q-question-label">The question</span>
+              <p>{questFile.question}</p>
+            </blockquote>
+          )}
+
+          <div class="q-section-label">Active</div>
+          {questFile.active.length > 0 ? (
+            <div class="q-active-list">
+              {questFile.active.map(q => {
+                const color = q.stat ? STAT_META[q.stat]?.color : null;
+                return (
+                  <div class="q-card" style={color ? `--q-color:${color}` : ''}>
+                    {q.stat && <span class="q-card-stat">{q.stat}</span>}
+                    <p class="q-card-text">{q.text}</p>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p class="q-empty">No active quests.</p>
+          )}
+
+          <div class="q-section-label">Ideas</div>
+          <div class="j-streams">
+            <div class="j-section-header">
+              <div class="j-section-label">Potential Streams</div>
+              <div class="j-section-rule"></div>
+              <div class="j-section-sub">click a stat to filter the log</div>
+            </div>
+
+            {STAT_ORDER.map(stat => {
+              const meta  = STAT_META[stat];
+              const ideas = streamIdeas[stat] ?? [];
+              const glow  = colorBg(meta.color, 0.4);
+              return (
+                <div class="j-stream-strip" data-stat={stat} style={`--strip-color:${meta.color}`}>
+                  <div class="j-strip-label">
+                    <div class="j-stat-dot" style={`background:${meta.color};box-shadow:0 0 5px ${glow}`}></div>
+                    <div class="j-stat-name-sm" style={`color:${meta.color}`}>{stat}</div>
+                  </div>
+                  <div class="j-strip-ideas">
+                    {ideas.map(idea => (
+                      <span class="j-idea-pill" style={`color:${meta.color};border-color:${colorBg(meta.color, 0.25)}`}>
+                        {idea}
+                      </span>
+                    ))}
+                  </div>
+                  <span class="j-strip-clear">× clear</span>
+                </div>
+              );
+            })}
+          </div>
+
+          {questFile.completed.length > 0 && (
+            <>
+              <div class="q-section-label">Completed</div>
+              <ul class="q-completed">
+                {questFile.completed.map(q => (
+                  <li>
+                    {q.date && <span class="q-completed-date">{q.date}</span>}
+                    {q.stat && <span class="q-completed-stat">[{q.stat}]</span>}
+                    {q.text}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </section>
 
         <section class="st-screen" id="bonds" data-screen="bonds">
@@ -630,6 +668,7 @@ function colorBg(hex: string, a: number): string {
     document.querySelectorAll<HTMLElement>('.j-stream-strip').forEach(strip => {
       strip.addEventListener('click', () => {
         setLogFilter(activeStrip === strip ? 'all' : strip.dataset.stat!);
+        location.hash = 'log';
       });
     });
 

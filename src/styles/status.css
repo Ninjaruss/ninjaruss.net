@@ -904,3 +904,29 @@ html.js #bonds.is-active { display: flex; flex-direction: row; align-items: stre
 @media (prefers-reduced-motion: reduce) {
   .st-menu-item { transition: none; }
 }
+
+.q-question { margin: 0 0 var(--space-xl); border-left: 3px solid var(--color-gold); padding: 8px 16px; }
+.q-question-label { color: var(--color-gold); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.q-question p { margin: 4px 0 0; font-style: italic; color: var(--color-text); font-size: 1.05rem; }
+.q-section-label {
+  color: var(--color-gold);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  margin: var(--space-xl) 0 var(--space-md);
+  transform: skewX(var(--skew-display));
+}
+.q-active-list { display: flex; flex-direction: column; gap: 10px; }
+.q-card {
+  border: 1px solid rgba(var(--color-gold-rgb), 0.35);
+  border-left: 4px solid var(--q-color, var(--color-gold));
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.02);
+}
+.q-card-stat { color: var(--q-color, var(--color-gold)); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.q-card-text { margin: 2px 0 0; color: var(--color-text); }
+.q-completed { list-style: none; padding: 0; margin: 0; opacity: 0.55; }
+.q-completed li { padding: 4px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); font-size: 0.85rem; }
+.q-completed-date { font-family: var(--font-mono); margin-right: 8px; color: var(--color-text-subtle); }
+.q-completed-stat { margin-right: 6px; color: var(--color-gold); }
