@@ -125,7 +125,8 @@ const getSectionLabel = (entry: typeof relatedEntries[0]) => {
     color: inherit;
   }
 
-  .related-card:hover {
+  .related-card:hover,
+  .related-card:focus-visible {
     transform: translate(-2px, -2px) rotate(0.5deg) scale(1.02);
     box-shadow: var(--shadow-hard);
     border-color: var(--color-gold);
@@ -176,7 +177,8 @@ const getSectionLabel = (entry: typeof relatedEntries[0]) => {
     transition: filter var(--transition-base);
   }
 
-  .related-card:hover .related-emblem-img {
+  .related-card:hover .related-emblem-img,
+  .related-card:focus-visible .related-emblem-img {
     filter: drop-shadow(0 0 8px rgba(var(--color-gold-rgb), 0.7));
   }
 
@@ -213,7 +215,8 @@ const getSectionLabel = (entry: typeof relatedEntries[0]) => {
     overflow: hidden;
   }
 
-  .related-card:hover .related-card__title {
+  .related-card:hover .related-card__title,
+  .related-card:focus-visible .related-card__title {
     color: var(--color-gold);
   }
 
@@ -231,7 +234,8 @@ const getSectionLabel = (entry: typeof relatedEntries[0]) => {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .related-card:hover {
+    .related-card:hover,
+    .related-card:focus-visible {
       transform: translate(-2px, -2px);
     }
   }

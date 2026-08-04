@@ -527,17 +527,33 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
   }
 
   .split-view__content .prose img:hover,
-  .split-view__content .prose video:hover {
+  .split-view__content .prose video:hover,
+  .split-view__content .prose img:focus-visible,
+  .split-view__content .prose video:focus-visible {
     border-color: var(--color-gold-dim);
     box-shadow:
       var(--shadow-hard-sm),
       0 0 20px rgba(var(--color-gold-rgb), 0.15);
+  }
+
+  .split-view__content .prose img:hover,
+  .split-view__content .prose video:hover {
     transform: perspective(800px) rotateY(2deg) rotateX(-1deg) scale(1.02);
+  }
+
+  /* Reduced focus treatment: keyboard focus gets the gold border + glow but
+     not the 3D tilt — the tilt is a pointer affordance (mouse-tracked in
+     proseImageTilt) and reads as jitter when tabbing through prose. */
+  .split-view__content .prose img:focus-visible,
+  .split-view__content .prose video:focus-visible {
+    transform: scale(1.02);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .split-view__content .prose img:hover,
-    .split-view__content .prose video:hover {
+    .split-view__content .prose video:hover,
+    .split-view__content .prose img:focus-visible,
+    .split-view__content .prose video:focus-visible {
       transform: scale(1.01);
     }
   }
@@ -1048,7 +1064,8 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     transition: color var(--transition-fast);
   }
 
-  .split-view__content .track__link:hover {
+  .split-view__content .track__link:hover,
+  .split-view__content .track__link:focus-visible {
     color: var(--color-gold);
   }
 
@@ -1123,7 +1140,8 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     color: inherit;
   }
 
-  .related-card:hover {
+  .related-card:hover,
+  .related-card:focus-visible {
     transform: translate(-2px, -2px) rotate(0.5deg) scale(1.02);
     box-shadow: var(--shadow-hard);
     border-color: var(--color-gold);
@@ -1147,7 +1165,8 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     transition: opacity var(--transition-base);
   }
 
-  .related-card:hover .related-card__emblem img {
+  .related-card:hover .related-card__emblem img,
+  .related-card:focus-visible .related-card__emblem img {
     opacity: 1;
   }
 
@@ -1184,7 +1203,8 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     overflow: hidden;
   }
 
-  .related-card:hover .related-card__title {
+  .related-card:hover .related-card__title,
+  .related-card:focus-visible .related-card__title {
     color: var(--color-gold);
   }
 
@@ -1202,7 +1222,8 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .related-card:hover {
+    .related-card:hover,
+    .related-card:focus-visible {
       transform: translate(-2px, -2px);
     }
   }
@@ -1220,7 +1241,8 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
   }
 
   /* Reduce hover effect on non-active items when content is selected */
-  .split-view.has-selection .list-item:not(.is-active):hover {
+  .split-view.has-selection .list-item:not(.is-active):hover,
+  .split-view.has-selection .list-item:not(.is-active):focus-visible {
     opacity: 0.85;
     box-shadow:
       inset 4px 0 0 var(--color-gold),

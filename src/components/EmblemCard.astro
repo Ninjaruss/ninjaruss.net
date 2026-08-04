@@ -162,7 +162,10 @@ const cardBack = '/images/ygo-card-backing.png';
     animation: emblem-shimmer-periodic 4s ease-in-out infinite 1.5s;
   }
 
-  .emblem-card__front:hover .emblem-shimmer {
+  /* Focus parity: the focusable is the card root (role=button tabindex=0),
+     not the front face — so the keyboard variant hangs off .emblem-card. */
+  .emblem-card__front:hover .emblem-shimmer,
+  .emblem-card:focus-visible .emblem-shimmer {
     animation: emblem-shimmer-once 0.6s ease forwards;
   }
 
@@ -182,18 +185,21 @@ const cardBack = '/images/ygo-card-backing.png';
     z-index: 2;
   }
 
-  /* ── Hover effects ─────────────────────────────────────────────── */
-  .emblem-card:hover .emblem-card__face {
+  /* ── Hover / focus effects ─────────────────────────────────────── */
+  .emblem-card:hover .emblem-card__face,
+  .emblem-card:focus-visible .emblem-card__face {
     border-color: var(--color-gold-dim);
   }
 
-  .emblem-card:hover .emblem-card__front {
+  .emblem-card:hover .emblem-card__front,
+  .emblem-card:focus-visible .emblem-card__front {
     box-shadow:
       0 0 40px rgba(var(--color-gold-rgb), 0.3),
       6px 6px 0 rgba(var(--color-gold-rgb), 0.2);
   }
 
-  .emblem-card:hover .emblem-card__back {
+  .emblem-card:hover .emblem-card__back,
+  .emblem-card:focus-visible .emblem-card__back {
     box-shadow: var(--shadow-hard);
   }
 
@@ -217,12 +223,16 @@ const cardBack = '/images/ygo-card-backing.png';
     transition: none;
   }
 
-  /* ── CSS hover tilt fallback (overridden by JS tilt on hover:hover) */
-  .emblem-card:hover .emblem-card__flipper {
+  /* ── CSS hover tilt fallback (overridden by JS tilt on hover:hover).
+     Keyboard focus gets the flat 1.02 lift only — the mouse-tracked 15°
+     tilt stays pointer-only by design. */
+  .emblem-card:hover .emblem-card__flipper,
+  .emblem-card:focus-visible .emblem-card__flipper {
     transform: rotateY(180deg) scale(1.02);
   }
 
-  .emblem-card:not(.is-flipped):hover .emblem-card__flipper {
+  .emblem-card:not(.is-flipped):hover .emblem-card__flipper,
+  .emblem-card:not(.is-flipped):focus-visible .emblem-card__flipper {
     transform: rotateY(0deg) scale(1.02);
   }
 
@@ -261,7 +271,8 @@ const cardBack = '/images/ygo-card-backing.png';
       animation: none;
     }
 
-    .emblem-card__front:hover .emblem-shimmer {
+    .emblem-card__front:hover .emblem-shimmer,
+    .emblem-card:focus-visible .emblem-shimmer {
       animation: none;
     }
 
