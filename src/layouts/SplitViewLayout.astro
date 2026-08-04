@@ -345,7 +345,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     border: var(--border-thin) solid var(--color-border);
     color: var(--color-text-muted);
     font-family: var(--font-display);
-    font-size: var(--text-2xs);
+    font-size: var(--text-xs);
     text-transform: uppercase;
     letter-spacing: var(--tracking-label);
     cursor: pointer;
@@ -379,12 +379,13 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     }
   }
 
-  /* Muted count inside type pills */
+  /* Muted count inside type pills — a step down from the label, but still on
+     the functional text floor (0.9em of the old 10px label was 9px). */
   .split-view__pill-count {
     margin-left: 0.4em;
     opacity: 0.55;
     font-family: var(--font-mono);
-    font-size: 0.9em;
+    font-size: var(--text-floor);
   }
 
   /* Clear All Filters Button — compact ✕ beside search */
@@ -689,7 +690,9 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
   }
 
   .split-view__placeholder-cta {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     margin-top: var(--space-md);
     font-family: var(--font-display);
     font-size: var(--text-xs);
