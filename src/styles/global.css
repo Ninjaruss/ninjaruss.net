@@ -88,6 +88,13 @@
   /* Standardized letter-spacing for labels */
   --tracking-label: 0.05em;
 
+  /* Two-tier heading scale — every surface picks one of these two, nothing
+     in between. Page title: the one h1 naming the surface (/shelf, /now,
+     /novel desk, /status, the SplitView list header). Panel title: a heading
+     inside a panel (the fetched entry title in a split view). */
+  --text-page-title: clamp(2.5rem, 6vw, 3.5rem);
+  --text-panel-title: 1.5rem;
+
   /* Transitions */
   --transition-fast: 100ms ease-out;
   --transition-base: 150ms ease-out;

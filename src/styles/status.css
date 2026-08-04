@@ -871,7 +871,7 @@
   gap: var(--space-lg);
   margin-bottom: var(--space-xl);
 }
-.st-title { font-size: clamp(2rem, 5vw, 3rem); color: var(--color-text); margin: 0; }
+.st-title { font-size: var(--text-page-title); color: var(--color-text); margin: 0; }
 .st-date {
   margin-left: auto;
   display: flex;
