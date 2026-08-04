@@ -145,6 +145,20 @@ const latestSlug = sortedPosts[0]?.slug;
     transform: translateX(4px);
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .now-archive__back-arrow,
+    .now-archive__item {
+      transition: none;
+    }
+
+    .now-archive__back:hover .now-archive__back-arrow,
+    .now-archive__back:focus-visible .now-archive__back-arrow,
+    .now-archive__item:hover,
+    .now-archive__item:focus-visible {
+      transform: none;
+    }
+  }
+
   .now-archive__item--current {
     border-color: var(--color-gold-dim);
   }

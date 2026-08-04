@@ -121,6 +121,24 @@
       transform: scale(1);
     }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* The scale-in entrance goes; the opacity/visibility transition stays so
+       the dialog still fades in rather than snapping, and `visibility` keeps
+       animating (killing it would leave the lightbox unreachable). */
+    .media-lightbox.is-active .media-lightbox__content {
+      animation: none;
+    }
+
+    .media-lightbox__close {
+      transition: background-color var(--transition-fast);
+    }
+
+    .media-lightbox__close:hover,
+    .media-lightbox__close:focus-visible {
+      transform: none;
+    }
+  }
 </style>
 
 <script>

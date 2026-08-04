@@ -138,6 +138,19 @@ const formatDate = (date: Date) => {
     transform: translateX(4px);
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .now__nav-arrow {
+      transition: none;
+    }
+
+    .now__nav-link:first-child:hover .now__nav-arrow,
+    .now__nav-link:first-child:focus-visible .now__nav-arrow,
+    .now__nav-link:last-child:hover .now__nav-arrow,
+    .now__nav-link:last-child:focus-visible .now__nav-arrow {
+      transform: none;
+    }
+  }
+
   .now__content {
     font-size: var(--text-lg);
     line-height: var(--leading-relaxed);

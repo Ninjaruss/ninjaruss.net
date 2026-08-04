@@ -98,4 +98,11 @@ const ogImageUrl = new URL(resolvedOgImage, Astro.site || 'https://ninjaruss.net
     outline: 2px solid var(--color-gold);
     outline-offset: 2px;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* The slide-down goes; the link still moves into view on focus. */
+    .skip-link {
+      transition: none;
+    }
+  }
 </style>

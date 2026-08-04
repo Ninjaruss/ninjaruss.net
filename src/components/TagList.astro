@@ -50,4 +50,11 @@ const { tags, size = 'sm' } = Astro.props;
     border-color: var(--color-gold);
     color: var(--color-gold);
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Colour-only, but the hover state still lands — just without the fade. */
+    .tag {
+      transition: none;
+    }
+  }
 </style>
