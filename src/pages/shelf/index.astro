@@ -618,113 +618,13 @@ const entryData = allShelf.map(e => ({
     return pubStr;
   }
 
-  type CharData = {
-    slug: string;
-    title: string;
-    emblem: string;
-    tags: string[];
-    excerpt: string;
-    publishedAt: string | null;
-  };
+  function initFilter() {
+    const jumpbar = document.querySelector<HTMLElement>('.shelf-jumpbar');
+    const wall = document.querySelector<HTMLElement>('.shelf-wall');
+    if (!jumpbar || !wall) return;
 
-  function initCharacterHero() {
-    const hero = document.querySelector<HTMLElement>('.shelf-hero');
-    if (!hero) return;
-
-    let chars: CharData[] = [];
-    try { chars = JSON.parse(hero.dataset.characters || '[]'); } catch {}
-    if (chars.length <= 1) return;
-
-    let current = 0;
-    let timer: ReturnType<typeof setInterval> | null = null;
-
-    const img       = hero.querySelector<HTMLImageElement>('.shelf-hero__portrait-img');
-    const nameEl    = hero.querySelector<HTMLElement>('.shelf-hero__name');
-    const eyebrow   = hero.querySelector<HTMLElement>('.shelf-hero__eyebrow');
-    const excerptEl = hero.querySelector<HTMLElement>('.shelf-hero__excerpt');
-    const tagsEl    = hero.querySelector<HTMLElement>('.shelf-hero__tags');
-    const readLink  = hero.querySelector<HTMLAnchorElement>('.shelf-hero__link');
-    const portLink  = hero.querySelector<HTMLAnchorElement>('.shelf-hero__portrait-link');
-    const prevBtn   = hero.querySelector<HTMLButtonElement>('.shelf-hero__prev');
-    const nextBtn   = hero.querySelector<HTMLButtonElement>('.shelf-hero__next');
-
-    function show(index: number) {
-      const c = chars[index];
-      if (!c || !img || !nameEl || !eyebrow || !excerptEl || !tagsEl || !readLink || !portLink) return;
-
-      img.style.opacity = '0';
-      setTimeout(() => {
-        img.src = c.emblem;
-        img.alt = c.title;
-        img.style.opacity = '1';
-      }, 200);
-
-      nameEl.style.transform = 'translateX(-8px)';
-      nameEl.style.opacity = '0';
-      setTimeout(() => {
-        nameEl.textContent = c.title;
-        nameEl.style.transform = '';
-        nameEl.style.opacity = '1';
-      }, 200);
-
-      excerptEl.textContent = c.excerpt || '';
-      tagsEl.innerHTML = c.tags
-        .map(t => `<span class="shelf-hero__tag">${esc(t)}</span>`)
-        .join('');
-      eyebrow.textContent = `character · ${index + 1} / ${chars.length}`;
-      readLink.href = `/shelf/${encodeURIComponent(c.slug)}`;
-      portLink.href = `/shelf/${encodeURIComponent(c.slug)}`;
-    }
-
-    function advance(dir: 1 | -1) {
-      current = (current + dir + chars.length) % chars.length;
-      show(current);
-    }
-
-    function startTimer() {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      timer = setInterval(() => advance(1), 5000);
-    }
-
-    function stopTimer() {
-      if (timer !== null) { clearInterval(timer); timer = null; }
-    }
-
-    prevBtn?.addEventListener('click', e => {
-      e.preventDefault();
-      e.stopPropagation();
-      stopTimer();
-      advance(-1);
-      startTimer();
-    }, { signal: pageCleanup!.signal });
-
-    nextBtn?.addEventListener('click', e => {
-      e.preventDefault();
-      e.stopPropagation();
-      stopTimer();
-      advance(1);
-      startTimer();
-    }, { signal: pageCleanup!.signal });
-
-    hero.addEventListener('mouseenter', stopTimer, { signal: pageCleanup!.signal });
-    hero.addEventListener('mouseleave', startTimer, { signal: pageCleanup!.signal });
-
-    pageCleanup!.signal.addEventListener('abort', stopTimer);
-
-    startTimer();
-  }
-
-  function initJumpbar() {
-    const jumpbar  = document.querySelector<HTMLElement>('.shelf-jumpbar');
-    if (!jumpbar) return;
-
-    const sections = Array.from(document.querySelectorAll<HTMLElement>('.shelf-section[id]'));
-    const links    = Array.from(jumpbar.querySelectorAll<HTMLAnchorElement>('a.shelf-jumpbar__link'));
-
-    if (sections.length === 0 || links.length === 0) return;
-
-    // Right-edge fade: on while there is more bar to scroll to. The fade is
-    // painted by the wrapper, which doesn't scroll with the links.
+    // Right-edge fade: on while there is more bar to scroll to (kept from the
+    // old jump bar — the fade is painted by the non-scrolling wrapper).
     const jumpbarWrap = jumpbar.parentElement;
     const updateEdgeFade = () => {
       const atEnd = jumpbar.scrollLeft + jumpbar.clientWidth >= jumpbar.scrollWidth - 1;
@@ -734,37 +634,54 @@ const entryData = allShelf.map(e => ({
     jumpbar.addEventListener('scroll', updateEdgeFade, { passive: true, signal: pageCleanup!.signal });
     window.addEventListener('resize', updateEdgeFade, { signal: pageCleanup!.signal });
 
-    function setActive(id: string) {
+    const links = Array.from(jumpbar.querySelectorAll<HTMLAnchorElement>('.shelf-jumpbar__link'));
+    const items = Array.from(wall.querySelectorAll<HTMLAnchorElement>('.shelf-card'));
+    const presentTypes = new Set(items.map(i => i.dataset.type ?? ''));
+
+    function applyFilter(type: string) {
       links.forEach(link => {
-        const active = link.getAttribute('href') === `#${id}`;
+        const active = (link.dataset.type ?? '') === type;
         link.classList.toggle('is-active', active);
         // "page", or absent — never aria-current="false"
         if (active) link.setAttribute('aria-current', 'page');
         else link.removeAttribute('aria-current');
       });
+
+      let visIndex = 0;
+      items.forEach(item => {
+        const show = !type || item.dataset.type === type;
+        item.toggleAttribute('hidden', !show);
+        if (show) {
+          // Re-stagger visible items and restart the entrance animation
+          // (site convention: filtering resets stagger animations).
+          item.style.setProperty('--card-index', String(visIndex++));
+          item.style.animation = 'none';
+          void item.offsetWidth;
+          item.style.animation = '';
+        }
+      });
     }
 
-    // Activate the first section on load
-    setActive(sections[0].id);
+    jumpbar.addEventListener('click', e => {
+      const link = (e.target as HTMLElement).closest<HTMLAnchorElement>('.shelf-jumpbar__link');
+      if (!link) return;
+      e.preventDefault();
+      const type = link.dataset.type ?? '';
+      applyFilter(type);
+      history.replaceState(null, '', type ? `/shelf?type=${type}` : '/shelf');
+    }, { signal: pageCleanup!.signal });
 
-    // Track the full set of sections inside the observation band and always
-    // highlight the topmost one in document order — reacting only to the
-    // first changed entry goes stale when callback order differs from visual
-    // order or when no section intersects the band for a moment.
-    const inBand = new Set<string>();
-    const observer = new IntersectionObserver(
-      entries => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) inBand.add(entry.target.id);
-          else inBand.delete(entry.target.id);
-        }
-        const topmost = sections.find(s => inBand.has(s.id));
-        if (topmost) setActive(topmost.id);
-      },
-      { rootMargin: '-10% 0px -60% 0px' }
-    );
-
-    sections.forEach(s => observer.observe(s));
+    // Initial state: ?type= param, or a legacy #section-<type> deep link.
+    // Unknown values (absent from the wall) fall back to All.
+    const params = new URLSearchParams(location.search);
+    let initial = params.get('type') ?? '';
+    const legacy = location.hash.match(/^#section-([a-z]+)$/);
+    if (!initial && legacy) initial = legacy[1];
+    if (initial && !presentTypes.has(initial)) initial = '';
+    if (initial || legacy) {
+      applyFilter(initial);
+      history.replaceState(null, '', initial ? `/shelf?type=${initial}` : '/shelf');
+    }
   }
 
   function initShelfPage() {
@@ -896,8 +813,7 @@ const entryData = allShelf.map(e => ({
       openPanel(initialOpen);
     }
 
-    initCharacterHero();
-    initJumpbar();
+    initFilter();
   }
 
   document.addEventListener('astro:page-load', initShelfPage);
