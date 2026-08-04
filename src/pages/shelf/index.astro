@@ -260,292 +260,125 @@ const entryData = allShelf.map(e => ({
     border-color: var(--color-gold);
   }
 
-  /* ── Section ─────────────────────────────────────── */
-  .shelf-section {
-    margin-bottom: var(--space-2xl);
-    scroll-margin-top: 72px;
-  }
-
-  .shelf-section__header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: var(--space-lg);
-  }
-
-  /* Deliberate per-surface variant: shelf section headers are display-type
-     dividers for a full-width grid, not the small gold kicker labels used on
-     /status. Kept distinct on purpose — see fixlist B1. */
-  .shelf-section__header h2 {
-    font-family: var(--font-display);
-    font-size: clamp(1.05rem, 2.5vw, 1.35rem);
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-    color: var(--color-gold);
-    transform: skewX(var(--skew-display));
-  }
-
-  .shelf-section__line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      rgba(var(--color-gold-rgb), 0.3) 0%,
-      transparent 100%
-    );
-  }
-
-  .shelf-section__count {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    letter-spacing: 0.08em;
-    color: var(--color-text-subtle);
-  }
-
-  /* ── Card Grid ───────────────────────────────────── */
-  .shelf-grid {
+  /* ── The Wall ────────────────────────────────────── */
+  /* Dense-packed collage: fine-grained rows so integer spans approximate each
+     shape (posters 2:3, music 1:1) at minimum track width; object-fit: cover
+     absorbs fluid-track drift. Height of an R-row span = 20R − 10 (10px rows,
+     10px gap). */
+  .shelf-wall {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: var(--space-md);
-    align-content: start;
+    grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+    grid-auto-rows: 10px;
+    grid-auto-flow: dense;
+    gap: 10px;
   }
 
-  /* ── Individual Card ─────────────────────────────── */
   .shelf-card {
     position: relative;
     display: block;
-    text-decoration: none;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
     color: var(--color-text);
     cursor: pointer;
-    animation: card-in 400ms var(--animation-easing, ease) both;
-    animation-delay: min(calc(var(--card-index, 0) * 40ms), 1200ms);
-  }
-
-  @keyframes card-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .shelf-card--dim { filter: opacity(0.52); }
-
-  .shelf-card__poster {
-    position: relative;
-    aspect-ratio: 2/3;
-    overflow: hidden;
-    border-radius: 4px;
-    /* Diamond watermark shows through while a poster loads (or never arrives),
-       so an imageless card reads as intentional rather than broken */
+    /* Pinned-by-hand: deterministic per-item rotation set inline as --rot */
+    transform: rotate(var(--rot, 0deg));
+    /* Diamond watermark shows through while a poster loads (or never arrives) */
     background:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23d4b82a' stroke-opacity='0.28'%3E%3Crect x='14' y='14' width='20' height='20' transform='rotate(45 24 24)'/%3E%3Crect x='19' y='19' width='10' height='10' transform='rotate(45 24 24)'/%3E%3C/g%3E%3C/svg%3E")
         center / 48px 48px no-repeat,
-      var(--color-bg-elevated, #1a1a1a);
-    border: 1px solid transparent;
-    transition: box-shadow 200ms;
+      var(--color-surface-2);
+    animation: card-in 400ms var(--animation-easing) both;
+    animation-delay: min(calc(var(--card-index, 0) * 40ms), 1200ms);
+    transition: transform var(--animation-fast) var(--animation-easing);
   }
 
-  .shelf-card:hover .shelf-card__poster,
-  .shelf-card:focus-visible .shelf-card__poster {
-    box-shadow: 0 0 14px rgba(var(--color-gold-rgb), 0.15);
+  /* display:block above beats the hidden attribute — restore it for filtering */
+  .shelf-card[hidden] { display: none; }
+
+  @keyframes card-in {
+    from { opacity: 0; transform: translateY(10px) rotate(var(--rot, 0deg)); }
+    to   { opacity: 1; transform: translateY(0) rotate(var(--rot, 0deg)); }
   }
 
-  /* P4G corner-cut reveal — same hover signature as the homepage tiles */
+  /* Span table — single source of truth for shapes is wallClass() in
+     src/utils/shelfWall.ts; the numbers live here so media queries can
+     override them. */
+  .shelf-card--poster-small  { grid-column: span 1; grid-row: span 7; }
+  .shelf-card--poster-medium { grid-column: span 2; grid-row: span 14; }
+  .shelf-card--poster-large  { grid-column: span 3; grid-row: span 21; }
+  .shelf-card--square-small  { grid-column: span 1; grid-row: span 5; }
+  .shelf-card--square-medium { grid-column: span 2; grid-row: span 9; }
+  .shelf-card--square-large  { grid-column: span 3; grid-row: span 14; }
+
+  /* Favorites: gold edge + the hard gold shadow. box-shadow (not outline) so
+     the site's gold :focus-visible ring stays distinct. */
+  .shelf-card--fav {
+    box-shadow:
+      0 0 0 2px var(--color-gold),
+      var(--shadow-hard);
+  }
+
+  .shelf-card__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* P4G corner-cut reveal — site-wide hover signature */
   .shelf-card__corner {
     position: absolute;
     top: 0;
     right: 0;
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
     background: var(--color-gold);
     clip-path: polygon(100% 0, 0 0, 100% 100%);
-    transform: translate(32px, -32px);
+    transform: translate(28px, -28px);
     transition: transform var(--animation-fast) var(--animation-easing);
     pointer-events: none;
     z-index: 2;
   }
 
+  /* Title plate — hidden at rest (the wall is pure art), slides in on
+     hover/focus. Touch users get titles in the quick-view panel instead. */
+  .shelf-card__plate {
+    position: absolute;
+    left: 0;
+    bottom: 8px;
+    max-width: calc(100% - 12px);
+    padding: 5px 10px;
+    background: #0d0d0d;
+    border-left: 3px solid var(--color-gold);
+    font-family: var(--font-mono);
+    font-size: var(--text-floor);
+    line-height: 1.3;
+    word-break: break-word;
+    transform: skewX(var(--skew-display)) translateY(6px);
+    opacity: 0;
+    transition:
+      opacity var(--animation-fast) var(--animation-easing),
+      transform var(--animation-fast) var(--animation-easing);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .shelf-card--fav .shelf-card__plate { color: var(--color-gold); }
+
+  .shelf-card:hover,
+  .shelf-card:focus-visible {
+    transform: rotate(0deg) translateY(-3px);
+    z-index: 3;
+  }
   .shelf-card:hover .shelf-card__corner,
   .shelf-card:focus-visible .shelf-card__corner {
     transform: translate(0, 0);
   }
-
-  .shelf-card__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: filter 200ms;
+  .shelf-card:hover .shelf-card__plate,
+  .shelf-card:focus-visible .shelf-card__plate {
+    opacity: 1;
+    transform: skewX(var(--skew-display)) translateY(0);
   }
-  .shelf-card:hover .shelf-card__img,
-  .shelf-card:focus-visible .shelf-card__img { filter: brightness(1.08); }
-
-  .shelf-card__bar {
-    display: flex;
-    align-items: flex-start;
-    gap: 4px;
-    padding: 7px 8px;
-    background: #0d0d0d;
-    border-top: 1px solid #252525;
-    border-radius: 0 0 4px 4px;
-  }
-  .shelf-card__bar--fav {
-    border-top-color: rgba(var(--color-gold-rgb), 0.35);
-  }
-
-  .shelf-card__title {
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    color: var(--color-text);
-    line-height: 1.4;
-    word-break: break-word;
-    flex: 1;
-    min-width: 0;
-  }
-  .shelf-card__title--fav { color: var(--color-gold); }
-
-  /* Decorative favourite marker — sits on the 10px hard floor, not the
-     functional one. */
-  .shelf-card__star {
-    font-size: var(--text-2xs);
-    color: var(--color-gold);
-    flex-shrink: 0;
-    line-height: 1;
-  }
-
-  /* ── Character Hero ──────────────────────────────── */
-  .shelf-hero {
-    display: grid;
-    grid-template-columns: auto 200px 1fr auto;
-    align-items: center;
-    gap: var(--space-lg);
-    margin-bottom: var(--space-xl);
-    padding: var(--space-lg);
-    background: var(--color-bg-elevated);
-    border-left: 4px solid var(--color-gold);
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-    background-image: repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 18px,
-      rgba(var(--color-gold-rgb), 0.02) 18px,
-      rgba(var(--color-gold-rgb), 0.02) 19px
-    );
-    position: relative;
-  }
-
-  .shelf-hero__prev,
-  .shelf-hero__next {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 50%;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    color: var(--color-muted);
-    flex-shrink: 0;
-    cursor: pointer;
-    transition: color 150ms, background 150ms, border-color 150ms;
-  }
-  .shelf-hero__prev:hover,
-  .shelf-hero__next:hover,
-  .shelf-hero__prev:focus-visible,
-  .shelf-hero__next:focus-visible {
-    color: var(--color-gold);
-    background: rgba(var(--color-gold-rgb), 0.08);
-    border-color: rgba(var(--color-gold-rgb), 0.3);
-  }
-
-  .shelf-hero__portrait-link { display: block; }
-
-  .shelf-hero__portrait {
-    width: 200px;
-    aspect-ratio: 2/3;
-    overflow: hidden;
-    border-radius: var(--radius-sm);
-    background: var(--color-bg-surface);
-    box-shadow: var(--shadow-hard);
-    flex-shrink: 0;
-  }
-
-  .shelf-hero__portrait-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: opacity 300ms ease;
-  }
-
-  .shelf-hero__info {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-    min-width: 0;
-  }
-
-  .shelf-hero__eyebrow {
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-muted);
-  }
-
-  .shelf-hero__name {
-    font-size: clamp(1.2rem, 3vw, 2rem);
-    font-weight: 900;
-    color: var(--color-gold);
-    line-height: 1.1;
-    transition: opacity 300ms ease, transform 300ms ease;
-  }
-
-  .shelf-hero__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .shelf-hero__tag {
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 2px 8px;
-    border: 1px solid rgba(var(--color-gold-rgb), 0.25);
-    border-radius: 12px;
-    color: rgba(var(--color-gold-rgb), 0.6);
-    background: rgba(var(--color-gold-rgb), 0.05);
-  }
-
-  .shelf-hero__excerpt {
-    font-size: 0.875rem;
-    color: var(--color-muted);
-    line-height: 1.6;
-    margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .shelf-hero__link {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-gold-dim);
-    text-decoration: none;
-    align-self: flex-start;
-    transition: color 150ms;
-  }
-  .shelf-hero__link:hover,
-  .shelf-hero__link:focus-visible { color: var(--color-gold); }
 
   /* ── Slide-In Panel ──────────────────────────────── */
   .shelf-backdrop {
@@ -715,37 +548,28 @@ const entryData = allShelf.map(e => ({
   }
 
   @media (max-width: 768px) {
-    .shelf-hero {
-      grid-template-columns: auto 1fr auto;
-      grid-template-rows: auto auto;
+    .shelf-wall {
+      grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+      gap: 8px;
     }
-    .shelf-hero__portrait-link {
-      grid-column: 1 / -1;
-      grid-row: 1;
-    }
-    .shelf-hero__portrait { width: 100%; max-width: 180px; margin: 0 auto; }
-    .shelf-hero__prev { grid-column: 1; grid-row: 2; }
-    .shelf-hero__info { grid-column: 2; grid-row: 2; }
-    .shelf-hero__next { grid-column: 3; grid-row: 2; }
+    /* Row height at this gap = 18R − 8; spans re-tuned to the 72px track */
+    .shelf-card--poster-small  { grid-row: span 6; }
+    .shelf-card--poster-medium { grid-row: span 13; }
+    .shelf-card--poster-large  { grid-row: span 20; }
+    .shelf-card--square-small  { grid-row: span 4; }
+    .shelf-card--square-medium { grid-row: span 9; }
+    .shelf-card--square-large  { grid-row: span 13; }
 
-    .shelf-grid {
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: var(--space-sm);
-    }
     .shelf-header__count { margin-left: 0; width: 100%; }
-
-    /* A lone digit sitting exactly on the content edge reads as clipped at
-       phone widths — give it a little air off the right margin. */
-    .shelf-section__count { padding-right: var(--space-sm); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .shelf-card { animation: none; }
-    .shelf-card__img,
-    .shelf-card__poster,
-    .shelf-card__corner { transition: none; }
-    .shelf-hero__portrait-img,
-    .shelf-hero__name { transition: none; }
+    .shelf-card { animation: none; transition: none; }
+    /* Rotation is a static pose, not motion — it stays. Hover pop doesn't. */
+    .shelf-card:hover,
+    .shelf-card:focus-visible { transform: rotate(var(--rot, 0deg)); }
+    .shelf-card__corner,
+    .shelf-card__plate { transition: none; }
     .shelf-panel { transition: none; }
   }
 </style>
