@@ -264,10 +264,21 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     margin-bottom: var(--space-xl);
     overflow-x: auto;
     scrollbar-width: none;
+    scroll-snap-type: x proximity;
+    /* The scrollbar is suppressed, so the faded right edge is the only sign
+       that more sections exist off-screen. `is-scroll-end` drops it once the
+       bar is scrolled through (or when everything already fits). */
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
+  }
+  .shelf-jumpbar.is-scroll-end {
+    -webkit-mask-image: none;
+    mask-image: none;
   }
   .shelf-jumpbar::-webkit-scrollbar { display: none; }
 
   .shelf-jumpbar__link {
+    scroll-snap-align: start;
     padding: 10px 16px;
     background: transparent;
     border: 1px solid transparent;
@@ -718,6 +729,27 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   }
 
   /* ── Responsive ──────────────────────────────────── */
+  /* Quick view becomes a bottom sheet once the side panel would crowd the
+     grid. Full height (a 90vh sheet left a dead strip of page behind it),
+     poster capped so the text and the CTA are both above the fold, and the
+     CTA held clear of the fixed NavPill. */
+  @media (max-width: 900px) {
+    .shelf-panel {
+      width: 100%;
+      top: 0;
+      border-left: none;
+      border-top: 1px solid rgba(var(--color-gold-rgb), 0.15);
+      transform: translateY(100%);
+    }
+    .shelf-panel.is-open { transform: translateY(0); }
+
+    .shelf-panel__poster-img { max-height: 40vh; }
+
+    .shelf-panel__link {
+      margin-bottom: calc(var(--nav-clearance, 96px) + var(--space-md));
+    }
+  }
+
   @media (max-width: 768px) {
     .shelf-hero {
       grid-template-columns: auto 1fr auto;
@@ -731,17 +763,6 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     .shelf-hero__prev { grid-column: 1; grid-row: 2; }
     .shelf-hero__info { grid-column: 2; grid-row: 2; }
     .shelf-hero__next { grid-column: 3; grid-row: 2; }
-
-    .shelf-panel {
-      width: 100vw;
-      top: auto;
-      height: 90vh;
-      border-left: none;
-      border-top: 1px solid rgba(255, 229, 44, 0.15);
-      border-radius: var(--radius-md) var(--radius-md) 0 0;
-      transform: translateY(100%);
-    }
-    .shelf-panel.is-open { transform: translateY(0); }
 
     .shelf-grid {
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -901,6 +922,15 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     const links    = Array.from(jumpbar.querySelectorAll<HTMLAnchorElement>('a.shelf-jumpbar__link'));
 
     if (sections.length === 0 || links.length === 0) return;
+
+    // Right-edge fade: on while there is more bar to scroll to.
+    const updateEdgeFade = () => {
+      const atEnd = jumpbar.scrollLeft + jumpbar.clientWidth >= jumpbar.scrollWidth - 1;
+      jumpbar.classList.toggle('is-scroll-end', atEnd);
+    };
+    updateEdgeFade();
+    jumpbar.addEventListener('scroll', updateEdgeFade, { passive: true, signal: pageCleanup!.signal });
+    window.addEventListener('resize', updateEdgeFade, { signal: pageCleanup!.signal });
 
     function setActive(id: string) {
       links.forEach(link => {
