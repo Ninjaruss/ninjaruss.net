@@ -109,8 +109,10 @@ function initCanvas(): void {
 
 function resizeCanvas(): void {
   if (!canvas) return;
-  W = canvas.width = window.innerWidth;
-  H = canvas.height = window.innerHeight;
+  // clientWidth excludes the classic scrollbar; innerWidth does not, and the
+  // extra pixels showed up as horizontal page overflow.
+  W = canvas.width = document.documentElement.clientWidth;
+  H = canvas.height = document.documentElement.clientHeight;
 }
 
 // ── Drawing helpers ───────────────────────────────────────────────────────────

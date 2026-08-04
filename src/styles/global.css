@@ -339,6 +339,12 @@ ul, ol {
 #transition-canvas {
   position: fixed;
   inset: 0;
+  /* Sized from documentElement.clientWidth in transition.ts — a percentage
+     here would resolve against the scrollbar-inclusive viewport and push the
+     page 3px wide (the canvas is a replaced element, so its attribute size is
+     its intrinsic size). max-width keeps it honest before that script runs. */
+  max-width: 100%;
+  max-height: 100%;
   pointer-events: none;
   z-index: 1000;
 }
