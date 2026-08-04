@@ -1,7 +1,13 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
-import { hasMinimalContent, stripMarkdown } from '../../utils/content';
-import { sortShelfSection, type SortableEntry } from '../../utils/shelf';
+import { getCollection } from 'astro:content';
+import { hasMinimalContent } from '../../utils/content';
+import {
+  wallTier,
+  wallShape,
+  wallClass,
+  wallRotation,
+  sortWall,
+} from '../../utils/shelfWall';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NavPill from '../../components/NavPill.astro';
 
@@ -20,30 +26,29 @@ const TYPE_LABELS: Record<ContentType, string> = {
   other: 'Other',
 };
 
-type ShelfEntry = CollectionEntry<'shelf'> & SortableEntry;
-
 const allShelf = await getCollection('shelf', ({ data }) => !data.draft);
 
-// Group by content_type in TYPE_ORDER, sort each group three-tier
-const grouped: Array<{ type: ContentType; entries: ShelfEntry[] }> = [];
-
-for (const type of TYPE_ORDER) {
-  const typeEntries = allShelf.filter(e => e.data.content_type === type);
-  if (typeEntries.length === 0) continue;
-
-  const annotated: ShelfEntry[] = typeEntries.map(e => ({
-    ...e,
+// One flat wall, newest first; size tiers come from wallTier at render time.
+const wallItems = sortWall(
+  allShelf.map(e => ({
+    slug: e.slug,
+    title: e.data.title,
+    type: e.data.content_type as ContentType,
     isFavorite: e.data.isFavorite ?? false,
     hasContent: !hasMinimalContent(e.body ?? ''),
     date: e.data.updatedAt ?? e.data.publishedAt ?? null,
-  }));
+    emblem: e.data.emblem ?? '/images/emblems/default.svg',
+  })),
+);
 
-  grouped.push({ type, entries: sortShelfSection(annotated) });
-}
+const totalCount = wallItems.length;
 
-const totalCount = allShelf.length;
+// Filter tabs: only types that exist, in TYPE_ORDER, with counts.
+const typeCounts = TYPE_ORDER
+  .map(type => ({ type, count: wallItems.filter(i => i.type === type).length }))
+  .filter(({ count }) => count > 0);
 
-// Serialize all entries for panel JS
+// Serialize all entries for panel JS (unchanged shape from the old page).
 const entryData = allShelf.map(e => ({
   slug: e.slug,
   title: e.data.title,
@@ -53,17 +58,6 @@ const entryData = allShelf.map(e => ({
   tags: e.data.tags ?? [],
   publishedAt: e.data.publishedAt?.toISOString() ?? null,
   updatedAt: e.data.updatedAt?.toISOString() ?? null,
-}));
-
-// Serialize character entries for hero carousel
-const characterGroup = grouped.find(g => g.type === 'character');
-const characterData = (characterGroup?.entries ?? []).map(e => ({
-  slug: e.slug,
-  title: e.data.title,
-  emblem: e.data.emblem ?? '/images/emblems/default.svg',
-  tags: e.data.tags ?? [],
-  excerpt: stripMarkdown(e.body ?? '').slice(0, 120),
-  publishedAt: e.data.publishedAt?.toISOString() ?? null,
 }));
 ---
 
@@ -80,113 +74,50 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
       <p class="shelf-header__count">{totalCount} entries</p>
     </header>
 
-    {/* Sticky positioning and the bar's background live on the wrapper so the
-        right-edge fade can sit over the bar without scrolling with its links
-        (and without masking the background itself — cards showed through). */}
+    {/* Sticky filter bar — the old jump bar's silhouette, now filtering the
+        wall client-side. The hrefs are honest no-JS fallbacks (they reload the
+        unfiltered page); JS intercepts and filters in place. */}
     <div class="shelf-jumpbar-wrap">
-      <nav class="shelf-jumpbar" aria-label="Jump to section">
-        {grouped.map(({ type }) => (
-          <a
-            href={`#section-${type}`}
-            class="shelf-jumpbar__link"
-            data-type={type}
-          >
-            <span class="shelf-jumpbar__label">{TYPE_LABELS[type]}</span>
+      <nav class="shelf-jumpbar" aria-label="Filter by type">
+        <a href="/shelf" class="shelf-jumpbar__link is-active" aria-current="page" data-type="">
+          <span class="shelf-jumpbar__label">All · {totalCount}</span>
+        </a>
+        {typeCounts.map(({ type, count }) => (
+          <a href={`/shelf?type=${type}`} class="shelf-jumpbar__link" data-type={type}>
+            <span class="shelf-jumpbar__label">{TYPE_LABELS[type]} · {count}</span>
           </a>
         ))}
       </nav>
     </div>
 
-    {grouped.map(({ type, entries }, groupIndex) => (
-      <>
-        {groupIndex > 0 && (
-          <div
-            class:list={['shelf-divider', { 'shelf-divider--flip': groupIndex % 2 === 1 }]}
-            aria-hidden="true"
+    <div class="shelf-wall">
+      {wallItems.map((item, i) => (
+        <a
+          href={`/shelf/${item.slug}`}
+          class:list={[
+            'shelf-card',
+            wallClass(wallTier(item), wallShape(item.type)),
+            { 'shelf-card--fav': item.isFavorite },
+          ]}
+          data-slug={item.slug}
+          data-type={item.type}
+          style={`--rot: ${wallRotation(item.slug)}deg; --card-index: ${i}`}
+          aria-label={item.title}
+        >
+          <img
+            src={item.emblem}
+            alt=""
+            class="shelf-card__img"
+            loading={i < 8 ? 'eager' : 'lazy'}
+            decoding="async"
           />
-        )}
-
-        <section id={`section-${type}`} class="shelf-section">
-          <header class="shelf-section__header">
-            <h2>{TYPE_LABELS[type]}</h2>
-            <div class="shelf-section__line" aria-hidden="true"></div>
-            <span class="shelf-section__count">{entries.length}</span>
-          </header>
-
-          {type === 'character' && characterData.length > 0 && (
-            <div class="shelf-hero" data-characters={JSON.stringify(characterData)}>
-              <button class="shelf-hero__prev" aria-label="Previous character" type="button">‹</button>
-              <a
-                class="shelf-hero__portrait-link"
-                href={`/shelf/${characterData[0]?.slug}`}
-                tabindex="-1"
-                aria-hidden="true"
-              >
-                <div class="shelf-hero__portrait">
-                  <img
-                    class="shelf-hero__portrait-img"
-                    src={characterData[0]?.emblem ?? '/images/emblems/default.svg'}
-                    alt={characterData[0]?.title ?? ''}
-                  />
-                </div>
-              </a>
-              <div class="shelf-hero__info">
-                <p class="shelf-hero__eyebrow">
-                  character · 1 / {characterData.length}
-                </p>
-                <h3 class="shelf-hero__name">{characterData[0]?.title ?? ''}</h3>
-                <div class="shelf-hero__tags">
-                  {(characterData[0]?.tags ?? []).map(tag => (
-                    <span class="shelf-hero__tag">{tag}</span>
-                  ))}
-                </div>
-                {characterData[0]?.excerpt && (
-                  <p class="shelf-hero__excerpt">{characterData[0].excerpt}</p>
-                )}
-                <a class="shelf-hero__link" href={`/shelf/${characterData[0]?.slug}`}>
-                  Read more →
-                </a>
-              </div>
-              <button class="shelf-hero__next" aria-label="Next character" type="button">›</button>
-            </div>
-          )}
-
-          <div class="shelf-grid">
-            {entries.map((entry, i) => (
-              <a
-                href={`/shelf/${entry.slug}`}
-                class:list={[
-                  'shelf-card',
-                  { 'shelf-card--dim': !entry.isFavorite && !entry.hasContent },
-                ]}
-                data-slug={entry.slug}
-                style={`--card-index: ${i}`}
-                aria-label={entry.data.title}
-              >
-                <div class="shelf-card__poster">
-                  <img
-                    src={entry.data.emblem ?? '/images/emblems/default.svg'}
-                    alt=""
-                    class="shelf-card__img"
-                    loading={groupIndex === 0 && i < 6 ? 'eager' : 'lazy'}
-                    decoding="async"
-                  />
-                  <span class="shelf-card__corner" aria-hidden="true"></span>
-                </div>
-                <div class:list={['shelf-card__bar', { 'shelf-card__bar--fav': entry.isFavorite }]}>
-                  <span class:list={['shelf-card__title', { 'shelf-card__title--fav': entry.isFavorite }]}>
-                    {entry.data.title}
-                  </span>
-                  {entry.isFavorite && (
-                    <span class="shelf-card__star" aria-hidden="true">★</span>
-                  )}
-                </div>
-              </a>
-            ))}
-          </div>
-        </section>
-      </>
-    ))}
+          <span class="shelf-card__corner" aria-hidden="true"></span>
+          <span class="shelf-card__plate">
+            {item.isFavorite && <span aria-hidden="true">★ </span>}{item.title}
+          </span>
+        </a>
+      ))}
+    </div>
   </div>
 
   <!-- Slide-in panel (activated in Task 5) -->
