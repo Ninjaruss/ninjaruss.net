@@ -31,6 +31,19 @@
   filter: brightness(0.75);
 }
 
+/* Keyboard parity for the dimming matrix. `:has()` cannot be nested inside
+   `:has()`, so this can't mirror the hover matrix tile-by-tile — instead the
+   grid asks "is anything keyboard-focused?" and each tile excludes itself
+   (focused itself, or holding a focused inner link, as on the journal/title
+   tiles whose focusables are children). */
+.bento-grid:has(:focus-visible) .bento-tile:not(:focus-visible):not(:has(:focus-visible)),
+.bento-grid:has(:focus-visible) .logo-tile:not(:focus-visible):not(:has(:focus-visible)),
+.bento-grid:has(:focus-visible) .title-tile:not(:focus-visible):not(:has(:focus-visible)),
+.bento-grid:has(:focus-visible) .image-tile:not(:focus-visible):not(:has(:focus-visible)) {
+  opacity: 0.45;
+  filter: brightness(0.75);
+}
+
 /* Dense asymmetric layout spans */
 .bento-tile--span-3x2 {
   grid-column: span 3;
@@ -98,7 +111,8 @@
   pointer-events: none;
 }
 
-.bento-tile--interactive:hover {
+.bento-tile--interactive:hover,
+.bento-tile--interactive:focus-visible {
   transform: translate(-4px, -4px) rotate(-0.8deg) scale(1.015);
   box-shadow:
     var(--shadow-hard-hover),
@@ -107,11 +121,13 @@
   filter: brightness(1.05);
 }
 
-.bento-tile--interactive:hover::before {
+.bento-tile--interactive:hover::before,
+.bento-tile--interactive:focus-visible::before {
   opacity: 0.15;
 }
 
-.bento-tile--interactive:hover .bento-tile__title {
+.bento-tile--interactive:hover .bento-tile__title,
+.bento-tile--interactive:focus-visible .bento-tile__title {
   color: var(--color-gold);
 }
 
@@ -121,7 +137,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bento-tile--interactive:hover {
+  .bento-tile--interactive:hover,
+  .bento-tile--interactive:focus-visible {
     transform: translate(-2px, -2px);
     filter: none;
   }
@@ -147,7 +164,11 @@
   .bento-grid:has(.image-tile:hover) .bento-tile:not(:hover),
   .bento-grid:has(.image-tile:hover) .logo-tile:not(:hover),
   .bento-grid:has(.image-tile:hover) .title-tile:not(:hover),
-  .bento-grid:has(.image-tile:hover) .image-tile:not(:hover) {
+  .bento-grid:has(.image-tile:hover) .image-tile:not(:hover),
+  .bento-grid:has(:focus-visible) .bento-tile:not(:focus-visible):not(:has(:focus-visible)),
+  .bento-grid:has(:focus-visible) .logo-tile:not(:focus-visible):not(:has(:focus-visible)),
+  .bento-grid:has(:focus-visible) .title-tile:not(:focus-visible):not(:has(:focus-visible)),
+  .bento-grid:has(:focus-visible) .image-tile:not(:focus-visible):not(:has(:focus-visible)) {
     opacity: 1;
     filter: none;
   }
@@ -157,7 +178,9 @@
     transition: opacity 100ms ease-out 0ms;
   }
 
-  .bento-tile:hover .bento-tile__description {
+  .bento-tile:hover .bento-tile__description,
+  .bento-tile:focus-visible .bento-tile__description,
+  .bento-tile:has(:focus-visible) .bento-tile__description {
     transition-delay: 0ms;
   }
 }
@@ -182,11 +205,18 @@
   opacity: 0; /* Override - start hidden */
 }
 
-.bento-tile--highlight:hover .bento-tile__description {
+/* `:has(:focus-visible)` throughout the variant blocks below: the highlight/core
+   tiles include the journal tile, which is a container whose focusables are
+   inner links, so the tile itself never matches `:focus-visible`. */
+.bento-tile--highlight:hover .bento-tile__description,
+.bento-tile--highlight:focus-visible .bento-tile__description,
+.bento-tile--highlight:has(:focus-visible) .bento-tile__description {
   opacity: 0.85; /* Restore variant opacity on hover */
 }
 
-.bento-tile--highlight:hover {
+.bento-tile--highlight:hover,
+.bento-tile--highlight:focus-visible,
+.bento-tile--highlight:has(:focus-visible) {
   transform: translate(-4px, -4px);
   box-shadow: var(--shadow-hard-hover);
   border-color: var(--color-black);
@@ -197,7 +227,9 @@
   box-shadow: var(--shadow-hard-sm);
 }
 
-.bento-tile--highlight:hover .bento-tile__title {
+.bento-tile--highlight:hover .bento-tile__title,
+.bento-tile--highlight:focus-visible .bento-tile__title,
+.bento-tile--highlight:has(:focus-visible) .bento-tile__title {
   color: var(--color-dark);
 }
 
@@ -221,7 +253,9 @@
   color: var(--color-text-muted);
 }
 
-.bento-tile--dark:hover {
+.bento-tile--dark:hover,
+.bento-tile--dark:focus-visible,
+.bento-tile--dark:has(:focus-visible) {
   transform: translate(-4px, -4px);
   box-shadow: var(--shadow-hard-hover),
     0 0 30px rgba(var(--color-gold-rgb), 0.2);
@@ -233,7 +267,9 @@
   box-shadow: var(--shadow-hard-sm);
 }
 
-.bento-tile--dark:hover .bento-tile__title {
+.bento-tile--dark:hover .bento-tile__title,
+.bento-tile--dark:focus-visible .bento-tile__title,
+.bento-tile--dark:has(:focus-visible) .bento-tile__title {
   color: var(--color-gold);
 }
 
@@ -283,7 +319,9 @@
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.bento-tile--core:hover {
+.bento-tile--core:hover,
+.bento-tile--core:focus-visible,
+.bento-tile--core:has(:focus-visible) {
   box-shadow:
     var(--shadow-hard-hover),
     0 8px 32px rgba(var(--color-gold-rgb), 0.25);
@@ -317,7 +355,8 @@
 }
 
 .bento-tile:hover .bento-tile__corner,
-.bento-tile:focus-visible .bento-tile__corner {
+.bento-tile:focus-visible .bento-tile__corner,
+.bento-tile:has(:focus-visible) .bento-tile__corner {
   transform: translate(0, 0);
 }
 
@@ -395,13 +434,15 @@
     max-height 300ms ease-out 0ms;
 }
 
-.bento-tile:hover .bento-tile__description {
+.bento-tile:hover .bento-tile__description,
+.bento-tile:focus-visible .bento-tile__description,
+.bento-tile:has(:focus-visible) .bento-tile__description {
   opacity: 1;
   max-height: 200px;
 }
 
-/* Instant hide on mouse out (remove delay) */
-.bento-tile:not(:hover) .bento-tile__description {
+/* Instant hide on mouse out / blur (remove delay) */
+.bento-tile:not(:hover):not(:focus-visible):not(:has(:focus-visible)) .bento-tile__description {
   transition-delay: 0ms;
 }
 

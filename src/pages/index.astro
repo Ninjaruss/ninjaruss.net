@@ -693,7 +693,8 @@ const codexTile = await getCodexTileData();
     transition: opacity 200ms ease-out;
   }
 
-  .logo-tile:hover .logo-tile__description {
+  .logo-tile:hover .logo-tile__description,
+  .logo-tile:focus-visible .logo-tile__description {
     opacity: 1;
   }
 
@@ -823,7 +824,9 @@ const codexTile = await getCodexTileData();
     transition: opacity 300ms ease-out;
   }
 
-  .title-tile:hover .title-tile__description {
+  /* Container tile: the only focusable is the "who?" link inside it. */
+  .title-tile:hover .title-tile__description,
+  .title-tile:has(:focus-visible) .title-tile__description {
     opacity: 1;
   }
 
@@ -847,7 +850,10 @@ const codexTile = await getCodexTileData();
     pointer-events: none;
   }
 
-  .journal-tile:hover::before {
+  /* The tile is a div — keyboard focus lands on its inner links, so the seam
+     shift keys off `:has(:focus-visible)` rather than `:focus-visible`. */
+  .journal-tile:hover::before,
+  .journal-tile:has(:focus-visible)::before {
     clip-path: polygon(64% 0, 100% 0, 100% 100%, 56% 100%);
   }
 
@@ -855,7 +861,8 @@ const codexTile = await getCodexTileData();
     .journal-tile::before {
       transition: none;
     }
-    .journal-tile:hover::before {
+    .journal-tile:hover::before,
+    .journal-tile:has(:focus-visible)::before {
       clip-path: polygon(66% 0, 100% 0, 100% 100%, 58% 100%);
     }
   }
@@ -954,7 +961,8 @@ const codexTile = await getCodexTileData();
     /* The tile-relative diagonal can't track stacked content heights —
        paint the black field on the showcases block itself instead. */
     .journal-tile::before,
-    .journal-tile:hover::before {
+    .journal-tile:hover::before,
+    .journal-tile:has(:focus-visible)::before {
       display: none;
     }
 
@@ -1063,7 +1071,8 @@ const codexTile = await getCodexTileData();
     transition: opacity 200ms;
   }
 
-  .media-tile:hover .tile-poster__img {
+  .media-tile:hover .tile-poster__img,
+  .media-tile:focus-visible .tile-poster__img {
     opacity: 0.9;
   }
 
@@ -1142,7 +1151,8 @@ const codexTile = await getCodexTileData();
       transform var(--transition-fast);
   }
 
-  .stream-tile:hover {
+  .stream-tile:hover,
+  .stream-tile:focus-visible {
     border-color: var(--color-gold);
     box-shadow: var(--shadow-hard);
     transform: translate(-4px, -4px);
@@ -1172,7 +1182,8 @@ const codexTile = await getCodexTileData();
     transition: box-shadow 300ms;
   }
 
-  .stream-tile:hover::after {
+  .stream-tile:hover::after,
+  .stream-tile:focus-visible::after {
     box-shadow: inset 0 0 28px rgba(var(--color-gold-rgb), 0.08);
   }
 
@@ -1192,7 +1203,8 @@ const codexTile = await getCodexTileData();
 
   .st-donut { display: block; }
 
-  .stream-tile:hover .st-donut image {
+  .stream-tile:hover .st-donut image,
+  .stream-tile:focus-visible .st-donut image {
     filter: drop-shadow(0 0 8px var(--st-lead));
   }
 
@@ -1222,7 +1234,8 @@ const codexTile = await getCodexTileData();
     font-family: var(--font-mono);
   }
 
-  .stream-tile:hover .st-phrase {
+  .stream-tile:hover .st-phrase,
+  .stream-tile:focus-visible .st-phrase {
     text-shadow: 0 0 14px currentColor, 0 0 28px rgba(255,255,255,.08);
     letter-spacing: .11em;
   }
@@ -1273,7 +1286,8 @@ const codexTile = await getCodexTileData();
     transition: color var(--transition-fast);
   }
 
-  .stream-tile:hover .st-cta {
+  .stream-tile:hover .st-cta,
+  .stream-tile:focus-visible .st-cta {
     color: rgba(var(--color-gold-rgb), .75);
   }
 
@@ -1336,7 +1350,8 @@ const codexTile = await getCodexTileData();
     box-shadow: var(--shadow-hard);
   }
 
-  .image-tile--youtube:hover {
+  .image-tile--youtube:hover,
+  .image-tile--youtube:focus-visible {
     transform: translate(-4px, -4px);
     box-shadow: var(--shadow-hard-hover);
     border-color: #ff0000;
@@ -1382,7 +1397,8 @@ const codexTile = await getCodexTileData();
     pointer-events: none;
     z-index: 1;
   }
-  .image-tile--youtube:hover .yt-tile__tint {
+  .image-tile--youtube:hover .yt-tile__tint,
+  .image-tile--youtube:focus-visible .yt-tile__tint {
     opacity: 1;
   }
 
@@ -1401,7 +1417,8 @@ const codexTile = await getCodexTileData();
     transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 2;
   }
-  .image-tile--youtube:hover .yt-tile__strip {
+  .image-tile--youtube:hover .yt-tile__strip,
+  .image-tile--youtube:focus-visible .yt-tile__strip {
     transform: translateY(0);
   }
   .image-tile--youtube.is-twitch-live .yt-tile__strip:not(.yt-tile__strip--live) {
@@ -1765,7 +1782,8 @@ const codexTile = await getCodexTileData();
   }
 
   /* Tile border + corner triangle carry the hover highlight; emblem only brightens */
-  #latest-tile:hover .latest-tile__emblem {
+  #latest-tile:hover .latest-tile__emblem,
+  #latest-tile:focus-visible .latest-tile__emblem {
     opacity: 1;
   }
 
@@ -1775,7 +1793,8 @@ const codexTile = await getCodexTileData();
       transition: opacity 100ms ease-out 0ms;
     }
 
-    .logo-tile:hover .logo-tile__description {
+    .logo-tile:hover .logo-tile__description,
+    .logo-tile:focus-visible .logo-tile__description {
       transition-delay: 0ms;
     }
 
