@@ -276,11 +276,16 @@ click handlers cover the menu anchors (Astro's ClientRouter intercepts them via
 pushState, so hashchange never fires for those), the `hashchange` listener
 covers programmatic `location.hash = 'log'` jumps (radar-vertex and quest-strip
 clicks depend on it — do not delete it as "unused"), and `popstate` covers
-back/forward. Styles in `src/styles/status.css`; every screen label on the page
-uses the one shared `.st-label` class (0.75rem / 0.14em / gold / uppercase /
-`--skew-display`) — the old `.j-section-label` / `.s-panel-label` /
-`.q-section-label` trio is gone, so don't reintroduce a per-screen label style;
-quest-screen spacing is a positional rule (`#quests > .st-label`). Radar vertices and quest stat
+back/forward. Styles in `src/styles/status.css`; every **section** label on the
+page uses the one shared `.st-label` class (0.75rem / 0.14em / gold / uppercase
+/ `--skew-display`), with `.st-label--sub` (0.7rem, gold @55%, no skew) for a
+sub-header inside a section (Ideas → Potential Streams) — the old
+`.j-section-label` / `.s-panel-label` / `.q-section-label` trio is gone, so
+don't reintroduce a per-screen label style; quest-screen spacing is a
+positional rule (`#quests > .st-label`). Smaller per-item labels that annotate
+a single field — `.sheet-obj-label` (current objective), `.q-question-label`,
+`.j-next-label`, `.bd-section-label` (bond detail), `.s-mail-label` — are a
+different job and stay separate on purpose. Radar vertices and quest stat
 strips are `tabindex="0" role="button"`, and they share one Enter/Space handler
 with the bond rows (`onActivateKey`, Space preventDefault'd — don't re-add a
 per-element copy), so the log filter is reachable without a mouse; when a filter

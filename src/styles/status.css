@@ -1,9 +1,12 @@
 /* ── Status Page ─────────────────────────────────────────── */
 
-/* ── Section label — the one label vocabulary on /status ──
+/* ── Section label — the one section-label vocabulary on /status ──
    Replaces the old .j-section-label / .s-panel-label / .q-section-label trio
-   (three sizes, three trackings, one skew between them). Every screen label
-   on this page uses this class; per-screen spacing is set where it's used. */
+   (three sizes, three trackings, one skew between them). Every *section*
+   label on this page uses this class; per-screen spacing is set where it's
+   used. Smaller per-item labels (.sheet-obj-label, .q-question-label,
+   .j-next-label, .bd-section-label, .s-mail-label) are a different job —
+   they annotate one field, not a screen region — and stay separate. */
 .st-label {
   /* inline-block, not inline: transform is ignored on non-replaced inline
      boxes, and the bonds label is a <span>. */
@@ -16,6 +19,17 @@
   color: var(--color-gold);
   transform: skewX(var(--skew-display));
   flex-shrink: 0;
+}
+
+/* Sub-section header inside a section (Ideas → Potential Streams). Same
+   family, one step down: smaller, dimmer, and flat — the skew is what marks
+   a full section, so dropping it is the tier signal. */
+.st-label--sub {
+  /* 0.7rem = 11.2px, not 0.68 — stays above the 11px functional-text floor
+     (fixlist D1) while still reading a step below the section tier. */
+  font-size: 0.7rem;
+  color: rgba(var(--color-gold-rgb), 0.55);
+  transform: none;
 }
 
 /* LIVE pill — hidden until JS confirms stream is live */

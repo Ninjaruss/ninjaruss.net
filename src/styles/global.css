@@ -97,8 +97,9 @@
 
   /* Two-tier heading scale — every surface picks one of these two, nothing
      in between. Page title: the one h1 naming the surface (/shelf, /now,
-     /novel desk, /status, the SplitView list header). Panel title: a heading
-     inside a panel (the fetched entry title in a split view). */
+     /now/archive, /novel desk, /status). Panel title: a heading inside a
+     panel — the SplitView list header and the entry title in its detail
+     pane both sit at this tier. */
   --text-page-title: clamp(2.5rem, 6vw, 3.5rem);
   --text-panel-title: 1.5rem;
 
