@@ -414,7 +414,8 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     transition: box-shadow 200ms;
   }
 
-  .shelf-card:hover .shelf-card__poster {
+  .shelf-card:hover .shelf-card__poster,
+  .shelf-card:focus-visible .shelf-card__poster {
     box-shadow: 0 0 14px rgba(var(--color-gold-rgb), 0.15);
   }
 
@@ -445,7 +446,8 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     display: block;
     transition: filter 200ms;
   }
-  .shelf-card:hover .shelf-card__img { filter: brightness(1.08); }
+  .shelf-card:hover .shelf-card__img,
+  .shelf-card:focus-visible .shelf-card__img { filter: brightness(1.08); }
 
   .shelf-card__bar {
     display: flex;
@@ -516,7 +518,9 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     transition: color 150ms, background 150ms, border-color 150ms;
   }
   .shelf-hero__prev:hover,
-  .shelf-hero__next:hover {
+  .shelf-hero__next:hover,
+  .shelf-hero__prev:focus-visible,
+  .shelf-hero__next:focus-visible {
     color: var(--color-gold);
     background: rgba(var(--color-gold-rgb), 0.08);
     border-color: rgba(var(--color-gold-rgb), 0.3);
@@ -604,7 +608,8 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     align-self: flex-start;
     transition: color 150ms;
   }
-  .shelf-hero__link:hover { color: var(--color-gold); }
+  .shelf-hero__link:hover,
+  .shelf-hero__link:focus-visible { color: var(--color-gold); }
 
   /* ── Slide-In Panel ──────────────────────────────── */
   .shelf-backdrop {
@@ -653,7 +658,8 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     border-radius: 50%;
     transition: color 150ms, background 150ms;
   }
-  .shelf-panel__close:hover {
+  .shelf-panel__close:hover,
+  .shelf-panel__close:focus-visible {
     color: var(--color-text);
     background: rgba(255, 255, 255, 0.06);
   }
@@ -740,7 +746,8 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     text-align: center;
     transition: color 150ms, border-color 150ms, background 150ms;
   }
-  .shelf-panel__link:hover {
+  .shelf-panel__link:hover,
+  .shelf-panel__link:focus-visible {
     color: var(--color-gold);
     border-color: rgba(var(--color-gold-rgb), 0.5);
     background: rgba(var(--color-gold-rgb), 0.05);

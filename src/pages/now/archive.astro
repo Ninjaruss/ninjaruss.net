@@ -104,7 +104,8 @@ const latestSlug = sortedPosts[0]?.slug;
     transition: color var(--transition-fast);
   }
 
-  .now-archive__back:hover {
+  .now-archive__back:hover,
+  .now-archive__back:focus-visible {
     color: var(--color-gold-orange);
   }
 
@@ -112,7 +113,8 @@ const latestSlug = sortedPosts[0]?.slug;
     transition: transform var(--transition-fast);
   }
 
-  .now-archive__back:hover .now-archive__back-arrow {
+  .now-archive__back:hover .now-archive__back-arrow,
+  .now-archive__back:focus-visible .now-archive__back-arrow {
     transform: translateX(-4px);
   }
 
@@ -136,7 +138,8 @@ const latestSlug = sortedPosts[0]?.slug;
       transform var(--transition-fast);
   }
 
-  .now-archive__item:hover {
+  .now-archive__item:hover,
+  .now-archive__item:focus-visible {
     border-color: var(--color-gold-dim);
     background: var(--color-bg-surface);
     transform: translateX(4px);

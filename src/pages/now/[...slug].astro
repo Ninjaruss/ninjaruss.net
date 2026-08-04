@@ -113,7 +113,8 @@ const formatDate = (date: Date) => {
     transition: color var(--transition-fast);
   }
 
-  .now__nav-link:hover {
+  .now__nav-link:hover,
+  .now__nav-link:focus-visible {
     color: var(--color-gold-orange);
   }
 
@@ -127,11 +128,13 @@ const formatDate = (date: Date) => {
     transition: transform var(--transition-fast);
   }
 
-  .now__nav-link:first-child:hover .now__nav-arrow {
+  .now__nav-link:first-child:hover .now__nav-arrow,
+  .now__nav-link:first-child:focus-visible .now__nav-arrow {
     transform: translateX(-4px);
   }
 
-  .now__nav-link:last-child:hover .now__nav-arrow {
+  .now__nav-link:last-child:hover .now__nav-arrow,
+  .now__nav-link:last-child:focus-visible .now__nav-arrow {
     transform: translateX(4px);
   }
 

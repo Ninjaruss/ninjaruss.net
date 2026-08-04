@@ -186,7 +186,8 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
       box-shadow var(--transition-fast);
   }
 
-  .now__archive-link:hover {
+  .now__archive-link:hover,
+  .now__archive-link:focus-visible {
     background: var(--color-gold);
     color: var(--color-black);
     border-color: var(--color-gold);
@@ -198,7 +199,8 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
     transition: transform var(--transition-fast);
   }
 
-  .now__archive-link:hover .now__archive-arrow {
+  .now__archive-link:hover .now__archive-arrow,
+  .now__archive-link:focus-visible .now__archive-arrow {
     transform: translateX(3px);
   }
 

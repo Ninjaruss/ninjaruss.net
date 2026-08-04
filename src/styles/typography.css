@@ -199,7 +199,8 @@ code, .mono {
   transition: color var(--transition-fast);
 }
 
-.prose a:hover {
+.prose a:hover,
+.prose a:focus-visible {
   color: var(--color-gold-orange);
   text-decoration-color: var(--color-gold);
 }
