@@ -179,6 +179,12 @@ const isActive = (section: (typeof SECTIONS)[number]) =>
     .nav-bar__item--active {
       background: var(--color-gold);
     }
+
+    /* The back link carries a folder title, which never fits a quarter-width
+       cell (it was clipped mid-word); give it a row of its own. */
+    .nav-bar__back {
+      flex: 1 0 100%;
+    }
   }
 </style>
 
