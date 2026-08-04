@@ -142,6 +142,12 @@
 </style>
 
 <script>
+  // The ClientRouter swaps the body on every navigation, so a fresh lightbox
+  // element (and a fresh init) arrives each time. The document-level keydown
+  // listener would outlive its element and accumulate — one AbortController
+  // per init, aborted before the next swap, keeps exactly one alive.
+  let keyAbort: AbortController | null = null;
+
   function initLightbox() {
     const lightbox = document.getElementById('media-lightbox');
     if (!lightbox) return;
@@ -212,6 +218,8 @@
     backdrop?.addEventListener('click', closeLightbox);
 
     // Close on escape; keep Tab inside the dialog while it is open
+    keyAbort?.abort();
+    keyAbort = new AbortController();
     document.addEventListener('keydown', (e) => {
       if (!lightbox.classList.contains('is-active')) return;
 
@@ -235,7 +243,7 @@
           first.focus();
         }
       }
-    });
+    }, { signal: keyAbort.signal });
   }
 
   // Declare global type
@@ -245,7 +253,12 @@
     }
   }
 
-  // Initialize on page load and Astro navigation
+  // Initialize on page load and Astro navigation; drop the keydown listener
+  // before the outgoing document is swapped away.
+  document.addEventListener('astro:before-swap', () => {
+    keyAbort?.abort();
+    keyAbort = null;
+  });
   document.addEventListener('astro:page-load', initLightbox);
   initLightbox();
 </script>

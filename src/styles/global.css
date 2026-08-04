@@ -203,8 +203,21 @@ a {
   text-decoration: none;
 }
 
-a:hover,
-a:focus-visible {
+a:hover {
+  color: var(--color-gold-orange);
+}
+
+/* The keyboard-focus colour is scoped to prose/content bodies. A blanket
+   `a:focus-visible` outranks component rules that set black text on gold
+   backgrounds (the skip link, the active status menu item, highlight-tile
+   rows) — gold-orange on gold is unreadable. Per-component :focus-visible
+   parity covers those surfaces now, and the global gold ring below is what
+   makes every focused link visible regardless of colour. */
+.prose a:focus-visible,
+.entry__content a:focus-visible,
+.reading__body a:focus-visible,
+.desk-about__body a:focus-visible,
+.concept__synthesis-body a:focus-visible {
   color: var(--color-gold-orange);
 }
 

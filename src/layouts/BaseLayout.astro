@@ -99,6 +99,13 @@ const ogImageUrl = new URL(resolvedOgImage, Astro.site || 'https://ninjaruss.net
     outline-offset: 2px;
   }
 
+  /* Hold the black text through the link's only visible state — focus. Any
+     generic link-colour rule would otherwise leave gold-orange on gold. */
+  .skip-link:focus,
+  .skip-link:focus-visible {
+    color: var(--color-black);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     /* The slide-down goes; the link still moves into view on focus. */
     .skip-link {
