@@ -926,8 +926,13 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     }
 
     /* The emblem badge is fixed in the bottom-right corner (60px + its own
-       16px offset); inset the prose so no line ever runs underneath it. */
-    .split-view__content .prose {
+       16px offset); inset the detail body so no line ever runs underneath it.
+       The codex concept detail is not .prose — its synthesis, source cards and
+       related chips are their own blocks, so they are named here too. */
+    .split-view__content .prose,
+    .split-view__content .concept__synthesis,
+    .split-view__content .concept__sources,
+    .split-view__content .concept__related {
       padding-right: calc(60px + var(--space-sm));
     }
   }

@@ -574,6 +574,9 @@ const codexTile = await getCodexTileData();
   .latest-date {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
+    /* Tile-internal dates are lowercase across the grid (the journal tile's
+       "aug 1" rows set the pattern); formatDate's own output is untouched. */
+    text-transform: lowercase;
     color: var(--color-gold-dim);
     letter-spacing: 0.06em;
     white-space: nowrap;
