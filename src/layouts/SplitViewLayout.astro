@@ -906,6 +906,19 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
       display: block;
       min-height: 100vh;
     }
+
+    /* Narrower gutters here buy back the width the badge inset costs below,
+       so the measure stays where it was. */
+    .split-view__detail {
+      padding-left: var(--space-md);
+      padding-right: var(--space-md);
+    }
+
+    /* The emblem badge is fixed in the bottom-right corner (60px + its own
+       16px offset); inset the prose so no line ever runs underneath it. */
+    .split-view__content .prose {
+      padding-right: calc(60px + var(--space-sm));
+    }
   }
 
   /* ==========================================
