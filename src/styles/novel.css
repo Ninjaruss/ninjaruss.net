@@ -98,6 +98,15 @@
   text-decoration: none;
   transition: color 150ms ease;
 }
+@media (max-width: 768px) {
+  /* Touch target: pad the hit area to 44px without shifting the crumb row
+     (negative margins cancel the padding visually). */
+  .novel-crumb a {
+    display: inline-block;
+    padding: 13px 6px;
+    margin: -13px -6px;
+  }
+}
 .novel-crumb a:hover,
 .novel-crumb a:focus-visible { color: var(--color-gold); }
 .novel-crumb [aria-current="page"] { color: var(--novel-warm-dim); }
