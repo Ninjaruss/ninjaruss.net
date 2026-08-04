@@ -175,7 +175,7 @@ function colorBg(hex: string, a: number): string {
 
     <div class="st-hub">
       <nav class="st-menu" aria-label="Status screens">
-        <a href="#status" class="st-menu-item is-active" data-screen="status" aria-current="true">Status</a>
+        <a href="#status" class="st-menu-item is-active" data-screen="status" aria-current="page">Status</a>
         <a href="#log"    class="st-menu-item" data-screen="log">Log</a>
         <a href="#quests" class="st-menu-item" data-screen="quests">Quests</a>
         <a href="#bonds"  class="st-menu-item" data-screen="bonds">Bonds</a>
@@ -608,7 +608,8 @@ function colorBg(hex: string, a: number): string {
     document.querySelectorAll<HTMLAnchorElement>('.st-menu-item').forEach(a => {
       const active = a.dataset.screen === name;
       a.classList.toggle('is-active', active);
-      if (active) a.setAttribute('aria-current', 'true');
+      // "page", or absent — never aria-current="false"
+      if (active) a.setAttribute('aria-current', 'page');
       else a.removeAttribute('aria-current');
     });
     if (!reduceMotion.matches) {

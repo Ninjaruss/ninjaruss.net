@@ -90,7 +90,6 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
             href={`#section-${type}`}
             class="shelf-jumpbar__link"
             data-type={type}
-            aria-current="false"
           >
             <span class="shelf-jumpbar__label">{TYPE_LABELS[type]}</span>
           </a>
@@ -324,7 +323,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   }
 
   .shelf-jumpbar__link.is-active,
-  .shelf-jumpbar__link[aria-current="true"] {
+  .shelf-jumpbar__link[aria-current="page"] {
     background: var(--color-gold);
     color: var(--color-black);
     border-color: var(--color-gold);
@@ -957,7 +956,9 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
       links.forEach(link => {
         const active = link.getAttribute('href') === `#${id}`;
         link.classList.toggle('is-active', active);
-        link.setAttribute('aria-current', active ? 'true' : 'false');
+        // "page", or absent — never aria-current="false"
+        if (active) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
       });
     }
 
