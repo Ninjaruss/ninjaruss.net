@@ -300,6 +300,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
 
   .split-view__search {
     width: 100%;
+    min-height: 44px;
     padding: var(--space-xs) var(--space-sm) var(--space-xs) 28px;
     background: var(--color-bg-elevated);
     border: var(--border-thin) solid var(--color-border-strong);
@@ -334,6 +335,8 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
 
   .split-view__type-pill {
     flex: 1;
+    /* 44px touch floor — the pills are the primary filter control */
+    min-height: 44px;
     padding: var(--space-2xs) var(--space-sm);
     background: var(--color-bg-base);
     border: var(--border-thin) solid var(--color-border);
@@ -387,9 +390,9 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 26px;
-    height: 26px;
-    background: rgba(255, 229, 44, 0.1);
+    width: 44px;
+    height: 44px;
+    background: rgba(var(--color-gold-rgb), 0.1);
     border: var(--border-thin) solid var(--color-gold-dim);
     border-radius: var(--radius-sm);
     color: var(--color-gold);
@@ -400,7 +403,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
 
   .split-view__clear-all-filters:hover,
   .split-view__clear-all-filters:focus-visible {
-    background: rgba(255, 229, 44, 0.2);
+    background: rgba(var(--color-gold-rgb), 0.2);
     border-color: var(--color-gold);
   }
 
@@ -806,7 +809,8 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     background: var(--color-black);
     color: var(--color-gold);
     border: var(--border-hairline) solid var(--color-gold-dim);
-    padding: var(--space-2xs) var(--space-sm);
+    min-height: 44px;
+    padding: var(--space-2xs) var(--space-md);
     cursor: pointer;
     clip-path: polygon(var(--cut-sm) 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
   }
