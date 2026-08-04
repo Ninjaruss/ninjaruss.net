@@ -118,11 +118,14 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
   }
 
   .media-detail__title {
-    font-size: clamp(1.8rem, 5vw, 3rem);
+    font-size: var(--text-page-title);
     font-weight: 900;
     color: var(--color-gold);
     line-height: 1.1;
     margin: 0;
+    /* At the page-title tier a long unbroken title word gets close to the
+       375px content width — break rather than push the page sideways. */
+    overflow-wrap: break-word;
   }
 
   .media-detail__tags { margin: 0; }

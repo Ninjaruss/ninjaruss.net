@@ -452,7 +452,9 @@ function colorBg(hex: string, a: number): string {
                 const colorGlow   = statColor ? colorBg(statColor, 0.1)  : 'transparent';
                 const numerals    = ['I','II','III','IV','V'];
                 const rankLabel   = link.data.rank > 0 ? `RANK ${numerals[link.data.rank - 1] ?? link.data.rank}` : 'RANK —';
+                const hasFallback = Boolean(link.data.lore || link.data.reachedDate || link.data.lastSession);
                 return (
+                  <>
                   <div class="bond-row" data-bond={link.data.name}
                        tabindex="0" role="button"
                        style={statColor ? `--bd-row-color:${statColor}` : ''}>
@@ -483,6 +485,18 @@ function colorBg(hex: string, a: number): string {
                       </div>
                     </div>
                   </div>
+                  {/* No-JS reader: the slide-in detail panel needs JS, so the
+                      same lore / reached date / memory render inline as a
+                      disclosure. `html.js` hides it before first paint. */}
+                  {hasFallback && (
+                    <details class="bond-fallback">
+                      <summary>{link.data.name} — details</summary>
+                      {link.data.reachedDate && <p class="bond-fallback__meta">Reached · {link.data.reachedDate}</p>}
+                      {link.data.lore && <p>{link.data.lore}</p>}
+                      {link.data.lastSession && <p class="bond-fallback__memory">{link.data.lastSession}</p>}
+                    </details>
+                  )}
+                  </>
                 );
               })}
               {socialLinks.length === 0 && (

@@ -329,7 +329,13 @@
 
 /* P4G corner-cut reveal — gold triangle slides into top-right on hover.
    The single hover signature for every interactive bento tile (replaces the
-   old corner brackets and accent dot). */
+   old corner brackets and accent dot).
+
+   The resting transform parks the triangle 46px outside the tile's top-right,
+   which is what a geometry audit sees as an "overhang". It is never painted
+   there: .bento-tile sets overflow: hidden, and the element is
+   pointer-events: none. Containing the box would mean giving up the slide-in
+   (any slide has to start off-stage), so this stays deliberate — fixlist D6d. */
 .bento-tile__corner {
   display: block;
   position: absolute;

@@ -918,6 +918,33 @@
 .st-stage { flex: 1; min-width: 0; }
 
 /* JS upgrades sections to one-at-a-time; no-JS shows all, stacked */
+/* No-JS bond detail: the slide-in panel is JS-only, so each bond's lore,
+   reached date and last session render inline as a disclosure underneath its
+   row. The blocking `js` class hides them before first paint. */
+html.js .bond-fallback { display: none; }
+
+.bond-fallback {
+  padding: 0 24px 14px;
+  border-bottom: 1px solid var(--color-bg-base);
+  font-size: var(--text-sm);
+  color: var(--color-text-subtle);
+  line-height: 1.55;
+}
+
+.bond-fallback summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  color: var(--color-gold);
+  font-size: var(--text-floor);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.bond-fallback p { margin-top: 6px; }
+.bond-fallback__memory { font-style: italic; }
+
 html.js .st-screen { display: none; }
 html.js .st-screen.is-active { display: block; }
 .st-screen { margin-bottom: var(--space-xl); }
