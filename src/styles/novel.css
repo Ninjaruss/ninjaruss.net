@@ -239,6 +239,9 @@
   break-inside: avoid;
   margin-bottom: 1.5rem;
 }
+/* Deliberate per-surface variant: the desk index reads as a typed binder
+   listing (mono, warm palette), not as the site's gold label vocabulary.
+   Not a candidate for the shared label class — see fixlist B1. */
 .desk-index__header {
   display: flex;
   justify-content: space-between;

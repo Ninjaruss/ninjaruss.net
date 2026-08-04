@@ -343,6 +343,9 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     margin-bottom: var(--space-lg);
   }
 
+  /* Deliberate per-surface variant: shelf section headers are display-type
+     dividers for a full-width grid, not the small gold kicker labels used on
+     /status. Kept distinct on purpose — see fixlist B1. */
   .shelf-section__header h2 {
     font-family: var(--font-display);
     font-size: clamp(1.05rem, 2.5vw, 1.35rem);

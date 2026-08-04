@@ -317,7 +317,7 @@ function colorBg(hex: string, a: number): string {
             <div class="j-log-top">
               {/* tabindex="-1": focus lands here after the clear button hides
                   itself, so the keyboard user is not dropped onto <body>. */}
-              <div class="j-section-label" id="log-label" tabindex="-1">Session Log</div>
+              <div class="st-label" id="log-label" tabindex="-1">Session Log</div>
               {/* Only rendered as visible once a stat filter is on — the log
                   is otherwise unfiltered and there is nothing to clear. */}
               <button class="j-log-clear" id="log-clear" type="button" hidden>
@@ -377,7 +377,7 @@ function colorBg(hex: string, a: number): string {
             </blockquote>
           )}
 
-          <div class="q-section-label">Active</div>
+          <div class="st-label">Active</div>
           {questFile.active.length > 0 ? (
             <div class="q-active-list">
               {questFile.active.map(q => {
@@ -394,10 +394,10 @@ function colorBg(hex: string, a: number): string {
             <p class="q-empty">No active quests.</p>
           )}
 
-          <div class="q-section-label">Ideas</div>
+          <div class="st-label">Ideas</div>
           <div class="j-streams">
             <div class="j-section-header">
-              <div class="j-section-label">Potential Streams</div>
+              <div class="st-label">Potential Streams</div>
               <div class="j-section-rule"></div>
               <div class="j-section-sub">click a stat to filter the log</div>
             </div>
@@ -429,7 +429,7 @@ function colorBg(hex: string, a: number): string {
 
           {questFile.completed.length > 0 && (
             <>
-              <div class="q-section-label">Completed</div>
+              <div class="st-label">Completed</div>
               <ul class="q-completed">
                 {questFile.completed.map(q => (
                   <li>
@@ -446,7 +446,7 @@ function colorBg(hex: string, a: number): string {
         <section class="st-screen" id="bonds" data-screen="bonds">
           <div class="bonds-list-col">
             <div class="bonds-header">
-              <span class="s-panel-label">Bonds · {socialLinks.length}</span>
+              <span class="st-label">Bonds · {socialLinks.length}</span>
             </div>
             <div class="bonds-list">
               {socialLinks.map(link => {
