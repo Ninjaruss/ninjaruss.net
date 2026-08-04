@@ -322,7 +322,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
   .split-view__search:focus {
     outline: none;
     border-color: var(--color-gold);
-    box-shadow: 0 0 0 1px var(--color-gold), 0 0 12px rgba(255, 229, 44, 0.15);
+    box-shadow: 0 0 0 1px var(--color-gold), 0 0 12px rgba(var(--color-gold-rgb), 0.15);
   }
 
   /* Type facet — always-visible segmented control (All / note / showcase),
@@ -531,7 +531,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     border-color: var(--color-gold-dim);
     box-shadow:
       var(--shadow-hard-sm),
-      0 0 20px rgba(255, 229, 44, 0.15);
+      0 0 20px rgba(var(--color-gold-rgb), 0.15);
     transform: perspective(800px) rotateY(2deg) rotateX(-1deg) scale(1.02);
   }
 
@@ -1219,7 +1219,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     opacity: 0.85;
     box-shadow:
       inset 4px 0 0 var(--color-gold),
-      0 0 10px rgba(255, 229, 44, 0.08);
+      0 0 10px rgba(var(--color-gold-rgb), 0.08);
   }
 
   /* Ensure active item stays prominent */

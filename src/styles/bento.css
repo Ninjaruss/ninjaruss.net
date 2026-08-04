@@ -102,7 +102,7 @@
   transform: translate(-4px, -4px) rotate(-0.8deg) scale(1.015);
   box-shadow:
     var(--shadow-hard-hover),
-    0 0 40px rgba(255, 229, 44, 0.3);
+    0 0 40px rgba(var(--color-gold-rgb), 0.3);
   border-color: var(--color-gold);
   filter: brightness(1.05);
 }
@@ -224,7 +224,7 @@
 .bento-tile--dark:hover {
   transform: translate(-4px, -4px);
   box-shadow: var(--shadow-hard-hover),
-    0 0 30px rgba(255, 229, 44, 0.2);
+    0 0 30px rgba(var(--color-gold-rgb), 0.2);
   border-color: var(--color-gold);
 }
 
@@ -274,7 +274,7 @@
 .bento-tile--core {
   box-shadow:
     var(--shadow-hard),
-    0 4px 24px rgba(255, 229, 44, 0.15);
+    0 4px 24px rgba(var(--color-gold-rgb), 0.15);
 }
 
 .bento-tile--core .bento-tile__title {
@@ -286,7 +286,7 @@
 .bento-tile--core:hover {
   box-shadow:
     var(--shadow-hard-hover),
-    0 8px 32px rgba(255, 229, 44, 0.25);
+    0 8px 32px rgba(var(--color-gold-rgb), 0.25);
 }
 
 /* P4G corner-cut reveal — gold triangle slides into top-right on hover.

@@ -175,7 +175,7 @@
 }
 .desk-sheet-wrap:hover,
 .desk-sheet-wrap:focus-visible {
-  filter: drop-shadow(5px 5px 0 rgba(255, 229, 44, 0.35));
+  filter: drop-shadow(5px 5px 0 rgba(var(--color-gold-rgb), 0.35));
   transform: translate(-2px, -2px);
 }
 .desk-sheet {

@@ -57,7 +57,7 @@ const isActive = (section: (typeof SECTIONS)[number]) =>
 
   /* clip-path clips box-shadow — hard gold shadow lives on a drop-shadow wrapper */
   .nav-bar__shadow {
-    filter: drop-shadow(4px 4px 0 rgba(255, 229, 44, 0.3));
+    filter: drop-shadow(4px 4px 0 rgba(var(--color-gold-rgb), 0.3));
   }
 
   .nav-bar__inner {
@@ -93,7 +93,7 @@ const isActive = (section: (typeof SECTIONS)[number]) =>
   }
 
   .nav-bar__item + .nav-bar__item {
-    border-left: 1px solid rgba(255, 229, 44, 0.18);
+    border-left: 1px solid rgba(var(--color-gold-rgb), 0.18);
   }
 
   .nav-bar__text {
@@ -161,7 +161,7 @@ const isActive = (section: (typeof SECTIONS)[number]) =>
     .nav-bar__inner {
       flex-wrap: wrap;
       gap: 1px;
-      background: rgba(255, 229, 44, 0.18);
+      background: rgba(var(--color-gold-rgb), 0.18);
     }
 
     .nav-bar__item {

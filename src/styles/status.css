@@ -43,7 +43,7 @@
   position: absolute;
   inset: -5px;
   border-radius: 100px;
-  border: 1px solid rgba(255, 64, 64, 0.5);
+  border: 1px solid rgba(var(--color-live-rgb), 0.5);
   animation: liveRing 2.2s cubic-bezier(0.2, 0, 0.4, 1) infinite;
   pointer-events: none;
 }
@@ -52,7 +52,7 @@
   position: absolute;
   inset: -5px;
   border-radius: 100px;
-  border: 1px solid rgba(255, 64, 64, 0.25);
+  border: 1px solid rgba(var(--color-live-rgb), 0.25);
   animation: liveRing 2.2s cubic-bezier(0.2, 0, 0.4, 1) 0.9s infinite;
   pointer-events: none;
 }
@@ -117,9 +117,9 @@
 .s-toggle-btn:hover,
 .s-toggle-btn:focus-visible { color: #ccc; border-color: #444; }
 .s-toggle-btn.active {
-  background: rgba(255, 229, 44, 0.08);
+  background: rgba(var(--color-gold-rgb), 0.08);
   color: var(--color-gold);
-  border-color: rgba(255, 229, 44, 0.3);
+  border-color: rgba(var(--color-gold-rgb), 0.3);
 }
 
 /* ── Radar SVG internals ─────────────────────────────────── */
@@ -139,12 +139,12 @@
   stroke-dasharray: 5 4;
 }
 .s-radar-poly-recent {
-  fill: rgba(255, 229, 44, 0.07);
+  fill: rgba(var(--color-gold-rgb), 0.07);
   stroke: var(--color-gold);
   stroke-width: 2.5;
 }
 .s-radar-poly-all.is-primary {
-  fill: rgba(255, 229, 44, 0.07);
+  fill: rgba(var(--color-gold-rgb), 0.07);
   stroke: var(--color-gold);
   stroke-width: 2.5;
   stroke-dasharray: none;
@@ -574,7 +574,7 @@
   width: 0;
   overflow: hidden;
   flex-shrink: 0;
-  background: var(--color-bg-deep, #0a0a0a);
+  background: var(--color-bg-deep);
   border-left: 0 solid #1a1a1e;
   transition: width 0.38s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
@@ -722,7 +722,7 @@
   font-size: 0.62rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(255, 229, 44, 0.6);
+  color: rgba(var(--color-gold-rgb), 0.6);
   margin-bottom: 10px;
 }
 .bd-lore {
@@ -754,16 +754,16 @@
   gap: 8px 20px;
   margin: 20px 0 0;
   padding: 14px 18px;
-  border: 1px solid rgba(255, 229, 44, 0.14);
-  border-left: 3px solid var(--color-gold, #ffe52c);
-  background: rgba(255, 229, 44, 0.03);
+  border: 1px solid rgba(var(--color-gold-rgb), 0.14);
+  border-left: 3px solid var(--color-gold);
+  background: rgba(var(--color-gold-rgb), 0.03);
 }
 .s-mail-label {
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-gold, #ffe52c);
+  color: var(--color-gold);
   font-family: var(--font-display, system-ui, sans-serif);
 }
 .s-mail-sub {
@@ -774,18 +774,18 @@
 }
 .mail-address {
   margin-left: auto;
-  color: var(--color-gold-dim, #d4b82a);
+  color: var(--color-gold-dim);
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
   font-size: 0.85rem;
   letter-spacing: 0.06em;
   text-decoration: none;
-  border-bottom: 1px solid rgba(255, 229, 44, 0.25);
+  border-bottom: 1px solid rgba(var(--color-gold-rgb), 0.25);
   transition: border-color 0.15s, color 0.15s;
 }
 .mail-address:hover,
 .mail-address:focus-visible {
-  border-color: var(--color-gold, #ffe52c);
-  color: var(--color-gold, #ffe52c);
+  border-color: var(--color-gold);
+  color: var(--color-gold);
 }
 
 /* ── Slash transition ───────────────────────────────────── */
@@ -800,7 +800,7 @@
   position: absolute;
   top: -20%; left: -70%;
   width: 35%; height: 140%;
-  background: linear-gradient(to right, transparent 0%, rgba(255, 229, 44, 0.28) 30%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 229, 44, 0.28) 70%, transparent 100%);
+  background: linear-gradient(to right, transparent 0%, rgba(var(--color-gold-rgb), 0.28) 30%, rgba(255, 255, 255, 0.5) 50%, rgba(var(--color-gold-rgb), 0.28) 70%, transparent 100%);
   transform: skewX(-18deg);
   opacity: 0;
 }

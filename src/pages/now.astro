@@ -87,8 +87,8 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
     font-size: var(--text-page-title);
     color: var(--color-gold);
     text-shadow:
-      0 0 30px rgba(255, 229, 44, 0.4),
-      0 0 60px rgba(255, 229, 44, 0.2);
+      0 0 30px rgba(var(--color-gold-rgb), 0.4),
+      0 0 60px rgba(var(--color-gold-rgb), 0.2);
     animation: p3r-animate-left 500ms var(--animation-easing) 100ms backwards;
   }
 

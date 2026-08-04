@@ -703,7 +703,7 @@ const codexTile = await getCodexTileData();
     justify-content: center;
     background-color: var(--color-black);
     /* Dot grid atmosphere */
-    background-image: radial-gradient(circle, rgba(255, 229, 44, 0.07) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(var(--color-gold-rgb), 0.07) 1px, transparent 1px);
     background-size: 22px 22px;
     border: var(--border-thick) solid var(--color-gold);
     border-radius: var(--radius-lg);
@@ -712,7 +712,7 @@ const codexTile = await getCodexTileData();
     grid-row: span 1;
     box-shadow:
       var(--shadow-glow),
-      inset 0 0 60px rgba(255, 229, 44, 0.04);
+      inset 0 0 60px rgba(var(--color-gold-rgb), 0.04);
     overflow: hidden;
     opacity: 1;
     transition: opacity var(--transition-base);
@@ -767,8 +767,8 @@ const codexTile = await getCodexTileData();
     color: var(--color-gold);
     letter-spacing: 0.02em;
     text-shadow:
-      0 0 30px rgba(255, 229, 44, 0.6),
-      0 0 60px rgba(255, 229, 44, 0.3);
+      0 0 30px rgba(var(--color-gold-rgb), 0.6),
+      0 0 60px rgba(var(--color-gold-rgb), 0.3);
     animation: p3r-animate-left 500ms var(--animation-easing) 100ms backwards;
   }
 
@@ -1022,8 +1022,8 @@ const codexTile = await getCodexTileData();
       0deg,
       transparent,
       transparent 3px,
-      rgba(255, 229, 44, 0.025) 3px,
-      rgba(255, 229, 44, 0.025) 4px
+      rgba(var(--color-gold-rgb), 0.025) 3px,
+      rgba(var(--color-gold-rgb), 0.025) 4px
     );
   }
 
@@ -1162,7 +1162,7 @@ const codexTile = await getCodexTileData();
     content: '';
     position: absolute;
     inset: 0;
-    box-shadow: inset 0 0 22px rgba(255, 229, 44, 0.04);
+    box-shadow: inset 0 0 22px rgba(var(--color-gold-rgb), 0.04);
     pointer-events: none;
     z-index: 2;
     border-radius: inherit;
@@ -1170,7 +1170,7 @@ const codexTile = await getCodexTileData();
   }
 
   .stream-tile:hover::after {
-    box-shadow: inset 0 0 28px rgba(255, 229, 44, 0.08);
+    box-shadow: inset 0 0 28px rgba(var(--color-gold-rgb), 0.08);
   }
 
   .stream-tile.is-live::after {
@@ -1262,13 +1262,13 @@ const codexTile = await getCodexTileData();
     font-size: .58rem;
     letter-spacing: .16em;
     text-transform: uppercase;
-    color: rgba(255,229,44,.4);
+    color: rgba(var(--color-gold-rgb), .4);
     font-family: var(--font-mono);
     transition: color var(--transition-fast);
   }
 
   .stream-tile:hover .st-cta {
-    color: rgba(255,229,44,.75);
+    color: rgba(var(--color-gold-rgb), .75);
   }
 
   .st-live-badge {

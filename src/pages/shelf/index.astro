@@ -319,7 +319,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   .shelf-jumpbar__link:hover,
   .shelf-jumpbar__link:focus-visible {
     color: var(--color-gold);
-    border-color: rgba(255, 229, 44, 0.35);
+    border-color: rgba(var(--color-gold-rgb), 0.35);
   }
 
   .shelf-jumpbar__link.is-active,
@@ -361,7 +361,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     height: 1px;
     background: linear-gradient(
       90deg,
-      rgba(255, 229, 44, 0.3) 0%,
+      rgba(var(--color-gold-rgb), 0.3) 0%,
       transparent 100%
     );
   }
@@ -415,7 +415,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   }
 
   .shelf-card:hover .shelf-card__poster {
-    box-shadow: 0 0 14px rgba(255, 229, 44, 0.15);
+    box-shadow: 0 0 14px rgba(var(--color-gold-rgb), 0.15);
   }
 
   /* P4G corner-cut reveal — same hover signature as the homepage tiles */
@@ -457,7 +457,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     border-radius: 0 0 4px 4px;
   }
   .shelf-card__bar--fav {
-    border-top-color: rgba(255, 229, 44, 0.35);
+    border-top-color: rgba(var(--color-gold-rgb), 0.35);
   }
 
   .shelf-card__title {
@@ -493,8 +493,8 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
       -45deg,
       transparent,
       transparent 18px,
-      rgba(255, 229, 44, 0.02) 18px,
-      rgba(255, 229, 44, 0.02) 19px
+      rgba(var(--color-gold-rgb), 0.02) 18px,
+      rgba(var(--color-gold-rgb), 0.02) 19px
     );
     position: relative;
   }
@@ -518,8 +518,8 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   .shelf-hero__prev:hover,
   .shelf-hero__next:hover {
     color: var(--color-gold);
-    background: rgba(255, 229, 44, 0.08);
-    border-color: rgba(255, 229, 44, 0.3);
+    background: rgba(var(--color-gold-rgb), 0.08);
+    border-color: rgba(var(--color-gold-rgb), 0.3);
   }
 
   .shelf-hero__portrait-link { display: block; }
@@ -577,10 +577,10 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     letter-spacing: 0.06em;
     text-transform: uppercase;
     padding: 2px 8px;
-    border: 1px solid rgba(255, 229, 44, 0.25);
+    border: 1px solid rgba(var(--color-gold-rgb), 0.25);
     border-radius: 12px;
-    color: rgba(255, 229, 44, 0.6);
-    background: rgba(255, 229, 44, 0.05);
+    color: rgba(var(--color-gold-rgb), 0.6);
+    background: rgba(var(--color-gold-rgb), 0.05);
   }
 
   .shelf-hero__excerpt {
@@ -623,7 +623,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     width: min(520px, 42vw);
     z-index: 100;
     background: var(--color-bg-deep, #0a0a0a);
-    border-left: 1px solid rgba(255, 229, 44, 0.15);
+    border-left: 1px solid rgba(var(--color-gold-rgb), 0.15);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -708,10 +708,10 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     letter-spacing: 0.06em;
     text-transform: uppercase;
     padding: 2px 8px;
-    border: 1px solid rgba(255, 229, 44, 0.25);
+    border: 1px solid rgba(var(--color-gold-rgb), 0.25);
     border-radius: 12px;
-    color: rgba(255, 229, 44, 0.6);
-    background: rgba(255, 229, 44, 0.05);
+    color: rgba(var(--color-gold-rgb), 0.6);
+    background: rgba(var(--color-gold-rgb), 0.05);
   }
   :global(.sp-date) {
     font-family: var(--font-mono);
@@ -729,7 +729,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     display: block;
     margin: 0 var(--space-lg) var(--space-xl);
     padding: 10px 16px;
-    border: 1px solid rgba(255, 229, 44, 0.25);
+    border: 1px solid rgba(var(--color-gold-rgb), 0.25);
     border-radius: var(--radius-sm);
     font-family: var(--font-mono);
     font-size: 11px;
@@ -742,8 +742,8 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   }
   .shelf-panel__link:hover {
     color: var(--color-gold);
-    border-color: rgba(255, 229, 44, 0.5);
-    background: rgba(255, 229, 44, 0.05);
+    border-color: rgba(var(--color-gold-rgb), 0.5);
+    background: rgba(var(--color-gold-rgb), 0.05);
   }
 
   /* ── Responsive ──────────────────────────────────── */

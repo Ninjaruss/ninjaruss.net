@@ -14,7 +14,7 @@
   margin-bottom: var(--space-xl);
   padding: var(--space-md) var(--space-lg);
   border-left: 3px solid var(--color-gold);
-  background: rgba(255, 229, 44, 0.04);
+  background: rgba(var(--color-gold-rgb), 0.04);
 }
 
 .concept__stamp {
@@ -83,7 +83,7 @@
 .concept__card:hover,
 .concept__card:focus-visible {
   border-color: var(--color-gold);
-  background: rgba(255, 229, 44, 0.06);
+  background: rgba(var(--color-gold-rgb), 0.06);
   transform: translateX(3px);
   outline: none;
 }

@@ -148,7 +148,7 @@ const getSectionLabel = (entry: typeof relatedEntries[0]) => {
     content: '';
     position: absolute;
     inset: 4px;
-    border: 1px solid rgba(255, 229, 44, 0.18);
+    border: 1px solid rgba(var(--color-gold-rgb), 0.18);
     border-radius: calc(var(--radius-md) - 4px);
     pointer-events: none;
     z-index: 2;
@@ -159,7 +159,7 @@ const getSectionLabel = (entry: typeof relatedEntries[0]) => {
     position: absolute;
     width: 55%;
     height: 55%;
-    background: radial-gradient(circle, rgba(255, 229, 44, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(var(--color-gold-rgb), 0.1) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
     z-index: 1;
@@ -172,12 +172,12 @@ const getSectionLabel = (entry: typeof relatedEntries[0]) => {
     object-fit: contain;
     position: relative;
     z-index: 2;
-    filter: drop-shadow(0 0 5px rgba(255, 229, 44, 0.45));
+    filter: drop-shadow(0 0 5px rgba(var(--color-gold-rgb), 0.45));
     transition: filter var(--transition-base);
   }
 
   .related-card:hover .related-emblem-img {
-    filter: drop-shadow(0 0 8px rgba(255, 229, 44, 0.7));
+    filter: drop-shadow(0 0 8px rgba(var(--color-gold-rgb), 0.7));
   }
 
   .related-card__content {
