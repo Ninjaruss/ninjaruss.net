@@ -84,6 +84,8 @@
   gap: 5px;
 }
 .s-toggle-btn {
+  /* 44px touch floor via padding — the label stays 0.68rem */
+  min-height: 44px;
   padding: 4px 14px;
   border-radius: 100px;
   font-size: 0.68rem;
@@ -97,7 +99,8 @@
   transition: all 0.15s;
   backdrop-filter: blur(4px);
 }
-.s-toggle-btn:hover { color: #ccc; border-color: #444; }
+.s-toggle-btn:hover,
+.s-toggle-btn:focus-visible { color: #ccc; border-color: #444; }
 .s-toggle-btn.active {
   background: rgba(255, 229, 44, 0.08);
   color: var(--color-gold);
@@ -141,19 +144,27 @@
 /* Vertex layer — always above fill polygons */
 #radar-layer-vertices { isolation: isolate; }
 
-/* Vertex hover */
+/* Vertex hover / keyboard focus (the group is a role="button", tabindex 0) */
 .radar-vertex { cursor: pointer; }
+.radar-vertex:focus { outline: none; }
+.radar-vertex:focus-visible {
+  outline: var(--border-thin) solid var(--color-gold);
+  outline-offset: 2px;
+}
 .radar-vertex .v-phrase { opacity: 0; transition: opacity 0.2s; }
-.radar-vertex:hover .v-phrase { opacity: 1; }
+.radar-vertex:hover .v-phrase,
+.radar-vertex:focus-visible .v-phrase { opacity: 1; }
 /* Keywords extend past the SVG viewport — hide in favour of the hover phrase */
 .v-keywords { display: none; }
 .v-dot-small {
   filter: drop-shadow(0 0 6px var(--stat-color));
   transition: opacity 0.18s 0.05s;
 }
-.radar-vertex:hover .v-dot-small { opacity: 0; }
+.radar-vertex:hover .v-dot-small,
+.radar-vertex:focus-visible .v-dot-small { opacity: 0; }
 .v-emblem-large { opacity: 0; transition: opacity 0.28s; pointer-events: none; }
-.radar-vertex:hover .v-emblem-large { opacity: 1; }
+.radar-vertex:hover .v-emblem-large,
+.radar-vertex:focus-visible .v-emblem-large { opacity: 1; }
 .v-emblem-ring { filter: drop-shadow(0 0 8px var(--stat-color)); }
 
 /* ── LOG screen ─────────────────────────────────────────── */
@@ -202,7 +213,8 @@
   will-change: transform, opacity;
 }
 .j-stream-strip:last-child { border-bottom: none; }
-.j-stream-strip:hover { background: rgba(255, 255, 255, 0.02); }
+.j-stream-strip:hover,
+.j-stream-strip:focus-visible { background: rgba(255, 255, 255, 0.02); }
 .j-stream-strip::before {
   content: '';
   position: absolute;
@@ -213,7 +225,8 @@
   opacity: 0;
   transition: opacity 0.2s;
 }
-.j-stream-strip:hover::before { opacity: 0.35; }
+.j-stream-strip:hover::before,
+.j-stream-strip:focus-visible::before { opacity: 0.35; }
 .j-stream-strip.active::before { opacity: 1; }
 .j-stream-strip.active { background: rgba(255, 255, 255, 0.025); }
 
@@ -277,6 +290,34 @@
   flex-shrink: 0;
   border-bottom: 1px solid #0e0e10;
 }
+
+/* Clear-filter control — appears in the log header only while filtered */
+.j-log-clear {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 var(--space-sm);
+  background: rgba(var(--color-gold-rgb), 0.08);
+  border: var(--border-hairline) solid rgba(var(--color-gold-rgb), 0.35);
+  border-radius: var(--radius-sm);
+  color: rgba(var(--color-gold-rgb), 0.75);
+  font-family: inherit;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+.j-log-clear[hidden] { display: none; }
+.j-log-clear:hover,
+.j-log-clear:focus-visible {
+  background: rgba(var(--color-gold-rgb), 0.16);
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+.j-log-clear-x { font-size: 0.9rem; line-height: 1; }
 
 .j-log-list {
   padding: 16px 32px;
@@ -549,12 +590,19 @@
   color: #8f8f8f;
   cursor: pointer;
   font-size: 1rem;
+  /* 44px touch floor — pad the button out, don't grow the glyph */
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 6px 8px;
   border-radius: 4px;
   transition: color 0.15s;
   line-height: 1;
 }
-.bd-close:hover { color: #aaa; }
+.bd-close:hover,
+.bd-close:focus-visible { color: #aaa; }
 
 .bd-emblem {
   width: 90px;
@@ -897,8 +945,16 @@ html.js #bonds.is-active { display: flex; flex-direction: row; align-items: stre
 
 @media (max-width: 900px) {
   .st-hub { flex-direction: column; }
-  .st-menu { flex-direction: row; flex-wrap: wrap; position: static; min-width: 0; width: 100%; }
-  .st-menu-item { flex: 1 1 auto; text-align: center; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+  /* 2x2 grid: four equal cells beat flex-wrap's 3+1 ragged row. */
+  .st-menu {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    position: static;
+    min-width: 0;
+    width: 100%;
+  }
+  .st-menu-item { text-align: center; min-height: 44px; display: flex; align-items: center; justify-content: center; }
   /* Column flex + align-items:flex-start would size the stage to its min-content
      width (the widest nowrap idea pill), pushing the page into horizontal scroll. */
   .st-stage { width: 100%; }

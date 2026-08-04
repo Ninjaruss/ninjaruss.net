@@ -160,10 +160,12 @@ function colorBg(hex: string, a: number): string {
   <div class="status-page">
     <header class="st-topbar">
       <h1 class="st-title p4g-heading">Status</h1>
+      {/* Server values are the build-day fallback; the script below refreshes
+          them from the visitor's own clock so the strip is never stale. */}
       <div class="st-date" aria-label="Today's date">
-        <span class="st-date-dow">{dateDow}</span>
-        <span class="st-date-num">{dateDay}</span>
-        <span class="st-date-month">{dateMonth}</span>
+        <span class="st-date-dow" id="st-date-dow">{dateDow}</span>
+        <span class="st-date-num" id="st-date-num">{dateDay}</span>
+        <span class="st-date-month" id="st-date-month">{dateMonth}</span>
       </div>
       <a class="s-live" href="https://www.twitch.tv/ninjaruss_" target="_blank" rel="noopener">
         <div class="s-live-dot"></div>Live
@@ -250,7 +252,9 @@ function colorBg(hex: string, a: number): string {
                 const numY = ty - 30;
                 const phraseY = ty + 20;
                 return (
-                  <g class="radar-vertex" data-stat={stat} style={`--stat-color: ${meta.color}`}>
+                  <g class="radar-vertex" data-stat={stat} style={`--stat-color: ${meta.color}`}
+                     tabindex="0" role="button"
+                     aria-label={`${stat} — filter the session log`}>
                     <rect
                       x={anchor === 'end'   ? tx - 160 : anchor === 'start' ? tx : tx - 80}
                       y={ty - 60} width="160" height="80"
@@ -311,6 +315,12 @@ function colorBg(hex: string, a: number): string {
           <div class="j-log">
             <div class="j-log-top">
               <div class="j-section-label" id="log-label">Session Log</div>
+              {/* Only rendered as visible once a stat filter is on — the log
+                  is otherwise unfiltered and there is nothing to clear. */}
+              <button class="j-log-clear" id="log-clear" type="button" hidden>
+                <span class="j-log-clear-x" aria-hidden="true">×</span>
+                <span>clear filter</span>
+              </button>
             </div>
             <div class="j-log-list" id="log-list">
               {streamEntries.map(entry => {
@@ -394,7 +404,9 @@ function colorBg(hex: string, a: number): string {
               const ideas = streamIdeas[stat] ?? [];
               const glow  = colorBg(meta.color, 0.4);
               return (
-                <div class="j-stream-strip" data-stat={stat} style={`--strip-color:${meta.color}`}>
+                <div class="j-stream-strip" data-stat={stat} style={`--strip-color:${meta.color}`}
+                     tabindex="0" role="button"
+                     aria-label={`${stat} — filter the session log`}>
                   <div class="j-strip-label">
                     <div class="j-stat-dot" style={`background:${meta.color};box-shadow:0 0 5px ${glow}`}></div>
                     <div class="j-stat-name-sm" style={`color:${meta.color}`}>{stat}</div>
@@ -550,6 +562,24 @@ function colorBg(hex: string, a: number): string {
   initMailAddress();
   document.addEventListener('astro:page-load', initMailAddress);
 
+  /* ── Date strip — the page is prerendered, so the server value is only the
+     build day. Restate it from the visitor's clock (their local today, the
+     one they'd read off a wall). Same short names as the frontmatter. */
+  function initDateStrip(): void {
+    const dowEl   = document.getElementById('st-date-dow');
+    const numEl   = document.getElementById('st-date-num');
+    const monthEl = document.getElementById('st-date-month');
+    if (!dowEl || !numEl || !monthEl) return;
+    const days   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const now = new Date();
+    dowEl.textContent   = days[now.getDay()];
+    numEl.textContent   = String(now.getDate());
+    monthEl.textContent = `${months[now.getMonth()]} ${now.getFullYear()}`;
+  }
+  initDateStrip();
+  document.addEventListener('astro:page-load', initDateStrip);
+
   /* Signals to CSS that one-screen-at-a-time is available; without JS every
      screen stays visible, stacked. (Also set by an is:inline script in the body
      so the class lands before first paint — this line covers module re-runs.) */
@@ -661,6 +691,14 @@ function colorBg(hex: string, a: number): string {
       const label = document.getElementById('log-label');
       if (label) label.textContent = stat === 'all' ? 'Session Log' : `Session Log · ${stat}`;
 
+      const clearBtn = document.getElementById('log-clear');
+      if (clearBtn) {
+        clearBtn.hidden = stat === 'all';
+        if (stat !== 'all') {
+          clearBtn.setAttribute('aria-label', `Clear the ${stat} filter and show every session`);
+        }
+      }
+
       document.querySelectorAll<HTMLElement>('.j-entry').forEach(entry => {
         if (stat === 'all') { entry.hidden = false; return; }
         const stats: string[] = JSON.parse(entry.dataset.stats ?? '[]');
@@ -668,16 +706,31 @@ function colorBg(hex: string, a: number): string {
       });
     }
 
+    /* Enter/Space activate for the role="button" elements below — same
+       pattern as .bond-row (Space is prevented so it doesn't scroll). */
+    function onActivateKey(el: Element, run: () => void): void {
+      el.addEventListener('keydown', (e: Event) => {
+        const key = (e as KeyboardEvent).key;
+        if (key !== 'Enter' && key !== ' ') return;
+        e.preventDefault();
+        run();
+      });
+    }
+
+    document.getElementById('log-clear')?.addEventListener('click', () => setLogFilter('all'));
+
     document.querySelectorAll<HTMLElement>('.j-stream-strip').forEach(strip => {
-      strip.addEventListener('click', () => {
+      const activate = () => {
         setLogFilter(activeStrip === strip ? 'all' : strip.dataset.stat!);
         location.hash = 'log';
-      });
+      };
+      strip.addEventListener('click', activate);
+      onActivateKey(strip, activate);
     });
 
     /* ── Radar vertex click → log screen + filter ─────── */
     document.querySelectorAll<SVGGElement>('.radar-vertex').forEach(g => {
-      g.addEventListener('click', () => {
+      const activate = () => {
         const stat = g.dataset.stat!;
         if (screenFromHash() === 'log') {
           setLogFilter(activeStrip?.dataset.stat === stat ? 'all' : stat);
@@ -685,7 +738,9 @@ function colorBg(hex: string, a: number): string {
           location.hash = 'log';
           setLogFilter(stat);
         }
-      });
+      };
+      g.addEventListener('click', activate);
+      onActivateKey(g, activate);
     });
 
     /* ── Bond detail ──────────────────────────────────── */
