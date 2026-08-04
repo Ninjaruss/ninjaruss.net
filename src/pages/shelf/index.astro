@@ -800,6 +800,10 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
       gap: var(--space-sm);
     }
     .shelf-header__count { margin-left: 0; width: 100%; }
+
+    /* A lone digit sitting exactly on the content edge reads as clipped at
+       phone widths — give it a little air off the right margin. */
+    .shelf-section__count { padding-right: var(--space-sm); }
   }
 
   @media (prefers-reduced-motion: reduce) {

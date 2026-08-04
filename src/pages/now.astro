@@ -218,8 +218,12 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
   }
 
   @media (max-width: 480px) {
+    /* The date chip sat right against the 56px NOW heading with no room to
+       breathe — give it its own line under the title. */
     .now__header-top {
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-sm);
     }
   }
 </style>

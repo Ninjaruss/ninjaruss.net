@@ -79,8 +79,19 @@
   text-transform: uppercase;
   color: var(--novel-warm-dim);
   display: flex;
+  /* Wrap at the separators, never mid-word: each crumb is atomic, the row
+     is allowed to run onto a second line. */
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 1.25rem;
+}
+.novel-crumb > * {
+  white-space: nowrap;
+  /* A single crumb longer than the line ellipsises rather than pushing the
+     page sideways. */
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .novel-crumb a {
   color: var(--novel-warm-muted);

@@ -45,7 +45,9 @@ const { href, slug, title, subtitle, meta, searchableContent, contentType, hasMi
 <style>
   .list-item {
     display: flex;
-    align-items: center;
+    /* The meta column (date / entry count) sits on the title's first
+       baseline — centring it against a wrapped title floated it mid-block. */
+    align-items: baseline;
     gap: var(--space-md);
     padding: var(--space-md) var(--space-lg);
     border-bottom: var(--border-hairline) solid var(--color-border);
@@ -271,6 +273,23 @@ const { href, slug, title, subtitle, meta, searchableContent, contentType, hasMi
   @media (prefers-reduced-motion: reduce) {
     .list-item {
       animation: none;
+    }
+  }
+
+  /* Stacked layout: the panel is narrow, so a side-by-side date column costs
+     the title real estate. Drop the meta onto its own line underneath. */
+  @media (max-width: 900px) {
+    .list-item {
+      flex-wrap: wrap;
+      row-gap: var(--space-2xs);
+    }
+
+    .list-item__content {
+      flex: 1 1 100%;
+    }
+
+    .list-item__meta {
+      margin-left: 0;
     }
   }
 </style>

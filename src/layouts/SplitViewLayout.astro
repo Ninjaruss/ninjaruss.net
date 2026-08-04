@@ -36,7 +36,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
 <BaseLayout title={pageTitle ?? title} description={description} ogImage={ogImage} ogType={ogType}>
   <NavPill />
   <div
-    class:list={['split-view', { 'has-selection': hasInitialContent }]}
+    class:list={['split-view', { 'has-selection': hasInitialContent, 'has-draw': showDraw }]}
     data-section={section}
     data-initial-slug={initialSlug}
   >
@@ -868,6 +868,13 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
 
   .split-view.has-selection .split-view__placeholder {
     display: none;
+  }
+
+  /* One card back at a time. While the draw deck is on screen the emblem
+     sidebar would show a second, identical resting card back — hide it and
+     let it reappear (flipped to the entry's emblem) once an entry is picked. */
+  .split-view.has-draw:not(.has-selection) .split-view__emblem .emblem-card {
+    visibility: hidden;
   }
 
   /* Tablet: Hide emblem sidebar, 2-column layout */
