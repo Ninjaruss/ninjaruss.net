@@ -128,14 +128,30 @@
     const lightbox = document.getElementById('media-lightbox');
     if (!lightbox) return;
 
+    // initLightbox runs immediately AND on every astro:page-load. Re-running it
+    // on the same element would double-bind the handlers (a doubled Tab handler
+    // double-moves focus) and orphan the focus-restore closure, so bail out.
+    if (lightbox.dataset.lightboxBound === 'true') return;
+    lightbox.dataset.lightboxBound = 'true';
+
     const img = lightbox.querySelector('.media-lightbox__img') as HTMLImageElement;
     const video = lightbox.querySelector('.media-lightbox__video') as HTMLVideoElement;
     const caption = lightbox.querySelector('.media-lightbox__caption') as HTMLElement;
     const closeBtn = lightbox.querySelector('.media-lightbox__close') as HTMLButtonElement;
     const backdrop = lightbox.querySelector('.media-lightbox__backdrop') as HTMLElement;
 
+    // The element that opened the lightbox — focus goes back to it on close so
+    // keyboard users land where they left off instead of at the top of the page.
+    let lastFocused: HTMLElement | null = null;
+
+    const focusables = (): HTMLElement[] =>
+      Array.from(
+        lightbox.querySelectorAll<HTMLElement>('button, video[controls]')
+      ).filter((el) => el.offsetParent !== null || el === closeBtn);
+
     // Open lightbox
     window.openMediaLightbox = (src: string, alt: string, type: 'image' | 'video' = 'image') => {
+      lastFocused = document.activeElement as HTMLElement | null;
       if (type === 'video') {
         img.style.display = 'none';
         video.style.display = 'block';
@@ -152,6 +168,9 @@
       lightbox.classList.add('is-active');
       lightbox.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+      // Move focus into the dialog — it is aria-modal, so focus must not be
+      // left behind the overlay.
+      closeBtn?.focus();
     };
 
     // Close lightbox
@@ -161,15 +180,36 @@
       document.body.style.overflow = '';
       video.pause();
       video.src = '';
+      lastFocused?.focus();
+      lastFocused = null;
     };
 
     closeBtn?.addEventListener('click', closeLightbox);
     backdrop?.addEventListener('click', closeLightbox);
 
-    // Close on escape
+    // Close on escape; keep Tab inside the dialog while it is open
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && lightbox.classList.contains('is-active')) {
+      if (!lightbox.classList.contains('is-active')) return;
+
+      if (e.key === 'Escape') {
         closeLightbox();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const items = focusables();
+        if (items.length === 0) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        const active = document.activeElement as HTMLElement | null;
+
+        if (e.shiftKey && (active === first || !lightbox.contains(active))) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && (active === last || !lightbox.contains(active))) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     });
   }
