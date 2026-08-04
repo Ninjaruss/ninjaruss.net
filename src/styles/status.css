@@ -116,11 +116,11 @@
   gap: 5px;
 }
 .s-toggle-btn {
-  /* 44px touch floor via padding — the label stays 0.68rem */
+  /* 44px touch floor via padding — the label sits on the functional floor */
   min-height: 44px;
   padding: 4px 14px;
   border-radius: 100px;
-  font-size: 0.68rem;
+  font-size: var(--text-floor);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   font-family: inherit;
@@ -218,7 +218,7 @@
   background: var(--color-surface-2);
 }
 .j-section-sub {
-  font-size: 0.58rem;
+  font-size: var(--text-floor);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-text-subtle);
@@ -295,7 +295,7 @@
   margin-left: auto;
   flex-shrink: 0;
   padding-left: 12px;
-  font-size: 0.58rem;
+  font-size: var(--text-floor);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--strip-color, var(--color-text-subtle));
@@ -389,7 +389,7 @@
   border-radius: 5px 0 0 5px;
 }
 .j-entry-dow {
-  font-size: 0.6rem;
+  font-size: var(--text-floor);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-gold);
@@ -403,7 +403,7 @@
   color: var(--color-text);
 }
 .j-entry-month {
-  font-size: 0.58rem;
+  font-size: var(--text-floor);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-text-subtle);
@@ -436,7 +436,7 @@
 .j-chip {
   padding: 3px 11px;
   border-radius: 100px;
-  font-size: 0.65rem;
+  font-size: var(--text-floor);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-family: inherit;
@@ -455,7 +455,7 @@
 .j-entry-live {
   color: var(--color-live);
   border: 1px solid rgba(var(--color-live-rgb), 0.4);
-  font-size: 0.6rem;
+  font-size: var(--text-floor);
   font-weight: 700;
   letter-spacing: 0.1em;
   padding: 1px 6px;
@@ -654,7 +654,7 @@
   display: block;
 }
 .bd-arcana {
-  font-size: 0.62rem;
+  font-size: var(--text-floor);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-text-subtle);
@@ -724,7 +724,7 @@
   box-shadow: 0 0 6px var(--bd-glow, transparent);
 }
 .bd-rank-date {
-  font-size: 0.62rem;
+  font-size: var(--text-floor);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-text-subtle);
@@ -736,7 +736,7 @@
   flex-shrink: 0;
 }
 .bd-section-label {
-  font-size: 0.62rem;
+  font-size: var(--text-floor);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: rgba(var(--color-gold-rgb), 0.6);

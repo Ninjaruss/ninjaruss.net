@@ -21,6 +21,12 @@
   --text-4xl: 2.5rem;
   --text-5xl: 3.5rem;
 
+  /* Functional-text floor — 11px. Anything the reader acts on or reads as
+     information (labels, CTAs, dates, counts, breadcrumbs, badges) renders at
+     this size or larger. Purely decorative flourishes may sit as low as
+     --text-2xs (10px), which is the hard floor for any text on screen. */
+  --text-floor: 0.6875rem;
+
   /* Line Heights */
   --leading-tight: 1.0;
   --leading-snug: 1.2;
