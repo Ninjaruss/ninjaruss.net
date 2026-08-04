@@ -441,13 +441,13 @@ All placeholder emblems share the same card template (dark card, gold gradient f
 3. Add `emblem: '/images/emblems/your-emblem.svg'` for custom emblem (optional)
 4. Use the `collections` field to cross-reference related content (enables RelatedContent component) — this is the way to relate notes to each other (e.g. the six Japan notes threaded via `collections: ["japan"]`). Notes/showcase have no `tags`; only shelf entries take a `tags` array (displayed on shelf cards/detail)
 5. Set `draft: true` while working, remove for publishing
-6. For shelf entries: Set `isFavorite: true` to mark the entry as a curated highlight — shows a gold star badge and gold title on its `/shelf` card (optional, defaults to false)
+6. For shelf entries: Set `isFavorite: true` to mark the entry as a curated highlight — on `/shelf` it renders at the large wall tier with a gold ring + hard gold shadow and a `★` prefix in its title plate (see Shelf Page Features; optional, defaults to false)
 7. Run `npm run build` to validate schema
 
 ### Content Type Guidelines
 - **Shelf**: All reviews, consumption logs, and inspirational content (anime, manga, film, series, music, book, game, character, other)
   - Set `isFavorite: false` (or omit) for reviews/notes that appear only in /shelf
-  - Set `isFavorite: true` for curated highlights; shown with a gold star badge on its `/shelf` card
+  - Set `isFavorite: true` for curated highlights — large wall tier with a gold ring + hard gold shadow on `/shelf` (see Shelf Page Features)
 - **Notes**: Philosophical fragments and thoughts
 - **Showcase**: Project inquiries and experiments
 - **Now**: Current focus snapshots (time-based)
