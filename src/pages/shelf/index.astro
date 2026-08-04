@@ -555,18 +555,16 @@ const entryData = allShelf.map(e => ({
     }
   }
 
+  /* The row spans above are deliberately NOT overridden here. Tracks are `1fr`,
+     so they stretch past their minimum (~76px in practice at these widths, not
+     72px), and the narrower gap shortens each row span by the same proportion —
+     the two cancel, leaving the desktop spans correct. An earlier override tuned
+     to a literal 72px track made squares read 0.87 and posters 1.34. */
   @media (max-width: 768px) {
     .shelf-wall {
       grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
       gap: 8px;
     }
-    /* Row height at this gap = 18R − 8; spans re-tuned to the 72px track */
-    .shelf-card--poster-small  { grid-row: span 6; }
-    .shelf-card--poster-medium { grid-row: span 13; }
-    .shelf-card--poster-large  { grid-row: span 20; }
-    .shelf-card--square-small  { grid-row: span 4; }
-    .shelf-card--square-medium { grid-row: span 9; }
-    .shelf-card--square-large  { grid-row: span 13; }
 
     .shelf-header__count { margin-left: 0; width: 100%; }
   }
