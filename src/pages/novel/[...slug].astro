@@ -90,11 +90,38 @@ const sceneExcerpt = latestScene ? excerptOf(latestScene.body) : '';
 const synopsisDoc = view === 'desk' ? findSynopsisDoc(tree) : null;
 const firstScene = view === 'desk' ? findFirstScene(tree) : null;
 
-// Full file index for the desk — every file one click from landing
+// Script — chapter-select data (manuscript only). Scene numbers run
+// continuously in reading order (same order as the prev/next page-turn).
+interface SceneRow { file: NovelFile; num: string; words: number; isLatest: boolean; }
+interface ArcGroup { title: string | null; words: number; rows: SceneRow[]; }
+const manuscriptFolder = view === 'desk' ? (tree[STORY_FOLDER_SLUG] ?? null) : null;
+const latestScenePath = latestScene ? latestScene.path.join('/') : '';
+let sceneCounter = 0;
+const scriptArcs: ArcGroup[] = manuscriptFolder
+  ? [
+      ...(manuscriptFolder.files.length > 0
+        ? [{ title: null as string | null, files: manuscriptFolder.files }]
+        : []),
+      ...Object.values(manuscriptFolder.subfolders)
+        .filter(folderHasContent)
+        .map((sub) => ({ title: sub.title as string | null, files: flattenFolderFiles(sub) })),
+    ].map(({ title, files }) => {
+      const rows = files.map((f) => ({
+        file: f,
+        num: String(++sceneCounter).padStart(2, '0'),
+        words: countWords(f.body),
+        isLatest: f.path.join('/') === latestScenePath,
+      }));
+      return { title, words: rows.reduce((sum, r) => sum + r.words, 0), rows };
+    })
+  : [];
+
+// Binder — the outline folders (everything but the manuscript)
 interface IndexSub { title: string; files: NovelFile[]; }
 interface IndexGroup { slug: string; title: string; count: number; rootFiles: NovelFile[]; subs: IndexSub[]; }
-const indexGroups: IndexGroup[] = view === 'desk'
+const binderGroups: IndexGroup[] = view === 'desk'
   ? Object.values(tree)
+      .filter((f) => f.slug !== STORY_FOLDER_SLUG)
       .filter(folderHasContent)
       .map((f) => ({
         slug: f.slug,
@@ -158,67 +185,96 @@ const pageTitle =
         </p>
       </header>
 
-      {synopsisDoc && (
-        <section class="desk-about p3r-animate" style="--stagger-delay: 30ms" aria-label="About this visual novel">
-          <div class="desk-about__body" set:html={synopsisDoc.body} />
-          {firstScene && (
-            <a class="desk-about__cta" href={fileUrl(firstScene)}>
-              read from the start <span aria-hidden="true">→</span>
-            </a>
+      {(synopsisDoc || latestScene) && (
+        <div class:list={['desk-top', { 'desk-top--solo': !(synopsisDoc && latestScene) }]}>
+          {synopsisDoc && (
+            <section class="desk-about p3r-animate" style="--stagger-delay: 30ms" aria-label="About this visual novel">
+              <div class="desk-about__body" set:html={synopsisDoc.body} />
+              {firstScene && (
+                <a class="desk-about__cta" href={fileUrl(firstScene)}>
+                  read from the start <span aria-hidden="true">→</span>
+                </a>
+              )}
+            </section>
           )}
-        </section>
+          {latestScene && (
+            <div class="desk-top__scene p3r-animate" style="--stagger-delay: 60ms">
+              <a class="desk-sheet-wrap" href={fileUrl(latestScene)}>
+                <article class="desk-sheet">
+                  <div class="desk-sheet__meta">
+                    <span class="desk-sheet__kicker">latest scene</span>
+                    <span class="desk-sheet__count">{countWords(latestScene.body).toLocaleString('en-US')} words</span>
+                  </div>
+                  <h2 class="desk-sheet__title">{latestScene.title}</h2>
+                  <p class="desk-sheet__excerpt">{sceneExcerpt}</p>
+                  <span class="desk-sheet__cta">keep reading</span>
+                </article>
+              </a>
+              {!synopsisDoc && firstScene && firstScene.slug !== latestScene.slug && (
+                <a class="desk-restart" href={fileUrl(firstScene)}>↺ read from the start</a>
+              )}
+            </div>
+          )}
+        </div>
       )}
 
-      <div class="desk-layout">
-        <section class="desk-main p3r-animate" style="--stagger-delay: 60ms">
-          {latestScene ? (
-            <a class="desk-sheet-wrap" href={fileUrl(latestScene)}>
-              <article class="desk-sheet">
-                <div class="desk-sheet__meta">
-                  <span class="desk-sheet__kicker">latest scene</span>
-                  <span class="desk-sheet__count">{countWords(latestScene.body).toLocaleString('en-US')} words</span>
-                </div>
-                <h2 class="desk-sheet__title">{latestScene.title}</h2>
-                <p class="desk-sheet__excerpt">{sceneExcerpt}</p>
-                <span class="desk-sheet__cta">keep reading</span>
-              </article>
-            </a>
-          ) : (
-            <p class="desk-empty">No scenes yet.</p>
-          )}
-          {!synopsisDoc && firstScene && latestScene && firstScene.slug !== latestScene.slug && (
-            <a class="desk-restart" href={fileUrl(firstScene)}>↺ read from the start</a>
-          )}
-        </section>
+      <section class="desk-script p3r-animate" id="manuscript" style="--stagger-delay: 90ms" aria-label="Script">
+        <header class="desk-script__header">
+          <h2 class="desk-script__heading">Script</h2>
+          <span class="desk-script__count">{stats.storyWords.toLocaleString('en-US')} words</span>
+        </header>
+        {scriptArcs.length === 0 && <p class="desk-empty">No scenes yet.</p>}
+        {scriptArcs.map((arc) => (
+          <section class="desk-arc">
+            {arc.title && (
+              <h3 class="desk-arc__header">
+                <span>{arc.title}</span>
+                <span class="desk-arc__count">{arc.words.toLocaleString('en-US')} words</span>
+              </h3>
+            )}
+            <ol class="desk-arc__list">
+              {arc.rows.map((row) => (
+                <li>
+                  <a class="scene-row p4g-sweep" href={fileUrl(row.file)}>
+                    <span class="scene-row__num" aria-hidden="true">{row.num}</span>
+                    <span class="scene-row__title">{row.file.title}</span>
+                    {row.isLatest && <span class="scene-row__latest">latest</span>}
+                    <span class="scene-row__words">{row.words.toLocaleString('en-US')} words</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))}
+      </section>
 
-        <nav class="desk-index p3r-animate" style="--stagger-delay: 120ms" aria-label="All files">
-          {indexGroups.map((group) => (
-            <section class="desk-index__group" id={group.slug}>
-              <h2 class:list={['desk-index__header', { 'desk-index__header--scenes': group.slug === STORY_FOLDER_SLUG }]}>
-                {group.title}
-                <span class="desk-index__count">{group.count}</span>
-              </h2>
-              {group.rootFiles.length > 0 && (
-                <ul class="desk-index__list">
-                  {group.rootFiles.map((f) => (
+      <nav class="desk-binder p3r-animate" style="--stagger-delay: 150ms" aria-label="Outline documents">
+        {binderGroups.map((group) => (
+          <section class="binder-panel" id={group.slug}>
+            <h2 class="binder-panel__header">
+              {group.title}
+              <span class="binder-panel__count">{group.count}</span>
+            </h2>
+            {group.rootFiles.length > 0 && (
+              <ul class="binder-panel__list">
+                {group.rootFiles.map((f) => (
+                  <li><a href={fileUrl(f)}>{f.title}</a></li>
+                ))}
+              </ul>
+            )}
+            {group.subs.map((sub) => (
+              <div class="binder-panel__sub">
+                <h3 class="binder-panel__sublabel">{sub.title}</h3>
+                <ul class="binder-panel__list">
+                  {sub.files.map((f) => (
                     <li><a href={fileUrl(f)}>{f.title}</a></li>
                   ))}
                 </ul>
-              )}
-              {group.subs.map((sub) => (
-                <div class="desk-index__sub">
-                  <h3 class="desk-index__sublabel">{sub.title}</h3>
-                  <ul class="desk-index__list">
-                    {sub.files.map((f) => (
-                      <li><a href={fileUrl(f)}>{f.title}</a></li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </section>
-          ))}
-        </nav>
-      </div>
+              </div>
+            ))}
+          </section>
+        ))}
+      </nav>
     </main>
   )}
 

@@ -111,10 +111,24 @@
 .novel-crumb a:focus-visible { color: var(--color-gold); }
 .novel-crumb [aria-current="page"] { color: var(--novel-warm-dim); }
 
-/* ══ Desk layout ══ */
+/* ══ Desk top row — intro panel + latest-scene bookmark ══ */
+.desk-top {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
+  gap: 2rem;
+  /* Stretch so the dark intro panel and the paper sheet read as one band */
+  align-items: stretch;
+  margin-bottom: 2.5rem;
+}
+/* Only one of the two present → single comfortable column */
+.desk-top--solo {
+  grid-template-columns: minmax(0, 640px);
+}
+
 /* ══ "What is this?" intro — sourced from the Story Plan synopsis doc ══ */
 .desk-about {
-  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
   padding: 1.1rem 1.4rem;
   max-width: 70ch;
   background: var(--novel-panel-deep);
@@ -125,6 +139,8 @@
   color: var(--novel-parchment);
   font-size: 0.95rem;
   line-height: 1.65;
+  /* Keeps a floor of space above the bottom-pinned CTA */
+  margin-bottom: 0.9rem;
 }
 .desk-about__body :is(h1, h2, h3) {
   font-family: var(--font-mono);
@@ -140,7 +156,9 @@
 .desk-about__cta {
   display: inline-flex;
   align-items: center;
-  margin-top: 0.9rem;
+  align-self: flex-start;
+  /* Pin to the panel's bottom when the sheet stretches the row taller */
+  margin-top: auto;
   padding: 8px 14px;
   min-height: 44px;
   font-family: var(--font-mono);
@@ -177,13 +195,6 @@
 .desk-restart:focus-visible {
   color: var(--color-gold);
   border-color: var(--color-gold);
-}
-
-.desk-layout {
-  display: grid;
-  grid-template-columns: 2fr 3fr;
-  gap: 2rem;
-  align-items: start;
 }
 
 /* The open sheet — paper panel, corner cut, hard brown shadow.
@@ -251,19 +262,44 @@
   color: var(--novel-warm-dim);
 }
 
-/* ══ Desk index — the full archive, one click from landing ══ */
-.desk-index {
-  columns: 2;
-  column-gap: 2rem;
+/* ══ Script — VN chapter-select, the hero of the desk ══ */
+.desk-script {
+  margin-bottom: 2.5rem;
 }
-.desk-index__group {
-  break-inside: avoid;
-  margin-bottom: 1.5rem;
+.desk-script__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  border-bottom: 2px solid var(--novel-border-strong);
+  padding-bottom: 6px;
+  margin-bottom: 1.1rem;
 }
-/* Deliberate per-surface variant: the desk index reads as a typed binder
-   listing (mono, warm palette), not as the site's gold label vocabulary.
-   Not a candidate for the shared label class — see fixlist B1. */
-.desk-index__header {
+.desk-script__heading {
+  font-family: var(--font-display);
+  font-size: var(--text-panel-title);
+  text-transform: uppercase;
+  transform: skewX(var(--skew-display));
+  color: var(--color-gold);
+  margin: 0;
+}
+.desk-script__count {
+  font-family: var(--font-mono);
+  font-size: var(--text-floor);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--novel-warm-muted);
+}
+
+.desk-arc {
+  margin-bottom: 1.4rem;
+}
+.desk-arc:last-child {
+  margin-bottom: 0;
+}
+/* Deliberate per-surface variant: arc/binder headers read as a typed binder
+   listing (mono, warm palette), not the site's gold label vocabulary. */
+.desk-arc__header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -273,20 +309,125 @@
   font-weight: 400;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--novel-warm-dim);
-  border-bottom: 1px solid var(--novel-border);
-  padding-bottom: 4px;
-  margin: 0 0 6px;
+  color: var(--novel-warm-muted);
+  margin: 0 0 8px;
 }
-.desk-index__header--scenes {
-  color: var(--color-gold);
-  border-bottom-color: var(--novel-border-strong);
-}
-.desk-index__count {
+.desk-arc__count {
   font-size: var(--text-floor);
   color: var(--novel-warm-dim);
 }
-.desk-index__sublabel {
+.desk-arc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Scene rows — .p4g-sweep supplies the gold hover wash + reduced-motion rule */
+.scene-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 48px;
+  padding: 8px 16px;
+  box-sizing: border-box;
+  background: var(--novel-panel-deep);
+  border: 1px solid var(--novel-border);
+  color: var(--novel-parchment);
+  text-decoration: none;
+  transition: border-color 150ms ease;
+}
+.scene-row:hover,
+.scene-row:focus-visible {
+  border-color: var(--color-gold);
+}
+.scene-row__num {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--novel-warm-muted);
+  border: 1px solid var(--novel-border-strong);
+  padding: 2px 8px;
+  transform: skewX(var(--skew-accent));
+  transition: color 150ms ease, border-color 150ms ease;
+}
+.scene-row__title {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+.scene-row__latest {
+  font-family: var(--font-mono);
+  font-size: var(--text-floor);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--color-gold);
+  color: var(--color-black);
+  padding: 2px 8px;
+  transform: skewX(var(--skew-accent));
+  transition: background 150ms ease, color 150ms ease;
+}
+.scene-row__words {
+  font-family: var(--font-mono);
+  font-size: var(--text-floor);
+  letter-spacing: 0.1em;
+  color: var(--novel-warm-dim);
+  white-space: nowrap;
+  transition: color 150ms ease;
+}
+/* Sweep is gold-on-black → flip the row's inks for contrast */
+.scene-row:hover .scene-row__num,
+.scene-row:focus-visible .scene-row__num {
+  color: var(--color-black);
+  border-color: rgba(0, 0, 0, 0.45);
+}
+.scene-row:hover .scene-row__words,
+.scene-row:focus-visible .scene-row__words {
+  color: rgba(0, 0, 0, 0.65);
+}
+.scene-row:hover .scene-row__latest,
+.scene-row:focus-visible .scene-row__latest {
+  background: var(--color-black);
+  color: var(--color-gold);
+}
+
+/* ══ Binder — outline folders, subordinate to the script ══ */
+.desk-binder {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  align-items: start;
+}
+.binder-panel {
+  background: rgba(26, 22, 16, 0.82);
+  border: 1px solid var(--novel-border);
+  border-top: 2px solid var(--novel-border-strong);
+  padding: 1rem 1.15rem;
+}
+.binder-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--novel-warm-muted);
+  border-bottom: 1px solid var(--novel-border);
+  padding-bottom: 5px;
+  margin: 0 0 6px;
+}
+.binder-panel__count {
+  font-size: var(--text-floor);
+  color: var(--novel-warm-dim);
+}
+.binder-panel__sublabel {
   font-family: var(--font-mono);
   font-size: var(--text-floor);
   font-weight: 400;
@@ -295,12 +436,12 @@
   color: var(--novel-warm-dim);
   margin: 10px 0 2px;
 }
-.desk-index__list {
+.binder-panel__list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.desk-index__list a {
+.binder-panel__list a {
   display: block;
   padding: 5px 0;
   font-family: var(--font-body);
@@ -309,8 +450,8 @@
   text-decoration: none;
   transition: color 120ms ease;
 }
-.desk-index__list a:hover,
-.desk-index__list a:focus-visible {
+.binder-panel__list a:hover,
+.binder-panel__list a:focus-visible {
   color: var(--color-gold);
 }
 
@@ -502,7 +643,11 @@
 /* ══ Reduced motion ══ */
 @media (prefers-reduced-motion: reduce) {
   .desk-sheet-wrap,
-  .desk-index__list a,
+  .scene-row,
+  .scene-row__num,
+  .scene-row__latest,
+  .scene-row__words,
+  .binder-panel__list a,
   .page-turn__link,
   .novel-crumb a { transition: none; }
   .desk-sheet-wrap:hover,
@@ -513,10 +658,13 @@
 @media (max-width: 768px) {
   .novel-page { padding: 1.5rem 1.25rem; padding-bottom: calc(var(--nav-clearance, 120px) + var(--space-lg)); }
 
-  .desk-layout { grid-template-columns: 1fr; }
-  .desk-index { columns: 1; }
-  /* Comfortable touch targets for the dense index */
-  .desk-index__list a { padding: 11px 0; }
+  .desk-top,
+  .desk-top--solo { grid-template-columns: 1fr; }
+  .desk-binder { grid-template-columns: 1fr; }
+  /* Comfortable touch targets for the dense lists */
+  .binder-panel__list a { padding: 11px 0; }
+  .scene-row { padding: 10px 12px; gap: 10px; }
+  .scene-row__words { display: none; } /* keep rows to number + title on narrow screens */
 
   .novel-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
 
