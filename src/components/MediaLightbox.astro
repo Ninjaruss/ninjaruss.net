@@ -187,8 +187,14 @@
       lightbox.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
       // Move focus into the dialog — it is aria-modal, so focus must not be
-      // left behind the overlay.
-      closeBtn?.focus();
+      // left behind the overlay. `visibility` is transitioned, so the close
+      // button is still unfocusable in the tick the class lands: defer to the
+      // next frame, with a timeout fallback for tabs where rAF is suspended.
+      const focusClose = () => {
+        if (closeBtn && document.activeElement !== closeBtn) closeBtn.focus();
+      };
+      requestAnimationFrame(focusClose);
+      setTimeout(focusClose, 60);
     };
 
     // Close lightbox
