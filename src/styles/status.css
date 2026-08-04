@@ -235,7 +235,6 @@
   position: relative;
   border-radius: 4px;
   transition: background 0.18s;
-  will-change: transform, opacity;
 }
 .j-stream-strip:last-child { border-bottom: none; }
 .j-stream-strip:hover,
@@ -371,7 +370,6 @@
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.015);
   transition: border-color 0.15s;
-  will-change: transform, opacity;
 }
 .j-entry:hover { border-color: var(--color-surface-3); }
 .j-entry[hidden] { display: none; }
@@ -492,7 +490,6 @@
   border-bottom: 1px solid var(--color-bg-base);
   cursor: pointer;
   transition: background 0.12s, box-shadow 0.12s;
-  will-change: transform, opacity;
 }
 .bond-row:hover,
 .bond-row:focus-visible { background: rgba(255, 255, 255, 0.02); }
@@ -954,12 +951,13 @@ html.js #bonds.is-active { display: flex; flex-direction: row; align-items: stre
 .sheet-name { font-size: 1.6rem; margin: 0; color: var(--color-text); }
 .sheet-epithet { margin: 2px 0 0; font-style: italic; color: var(--color-text-subtle); font-size: 0.9rem; }
 .sheet-level-row { display: flex; align-items: center; gap: 12px; margin-top: var(--space-md); }
+/* The parallelogram comes from .p4g-cut in the markup — a transform skew on
+   top of it double-skewed the badge against the .sheet-xp bar beside it. */
 .sheet-level {
   background: var(--color-gold);
   color: var(--color-black);
   font-weight: 900;
   padding: 2px 14px;
-  transform: skewX(var(--skew-accent));
   font-size: 0.95rem;
   white-space: nowrap;
 }

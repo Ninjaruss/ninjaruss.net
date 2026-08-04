@@ -219,10 +219,6 @@ function colorBg(hex: string, a: number): string {
 
             <svg viewBox="-140 -108 665 548" aria-label="Stat radar chart" id="radar-svg">
               <defs>
-                <filter id="vglow">
-                  <feGaussianBlur stdDeviation="4" result="b"/>
-                  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-                </filter>
                 {Object.entries(SIL_FILTERS).map(([, f]) => (
                   <filter id={f.id} color-interpolation-filters="sRGB" x="-10%" y="-10%" width="120%" height="120%">
                     <feColorMatrix type="saturate" values="0" result="g"/>
