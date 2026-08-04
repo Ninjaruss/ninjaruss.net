@@ -540,8 +540,10 @@ const codexTile = await getCodexTileData();
   .container::before {
     content: '';
     position: absolute;
-    inset: -3px;
-    border-radius: calc(var(--radius-lg) + 3px);
+    /* Drawn inside the container's own box: a negative inset hung the ring
+       3px past the right edge and that was the page's horizontal overflow. */
+    inset: 0;
+    border-radius: var(--radius-lg);
     padding: 3px;
     background: linear-gradient(90deg, var(--color-live) 0%, #ff6a1a 35%, var(--color-gold) 65%, var(--color-live) 100%);
     background-size: 300% 100%;
