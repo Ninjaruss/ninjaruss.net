@@ -633,7 +633,15 @@ In the `<script>` block:
   }
 ```
 
-Note: `initShelfPage()`'s existing `?open=` handling stays after `initFilter()` in source order, exactly as the old hero/jumpbar calls were — if both `?type=` and `?open=` are present, the panel's `replaceState` to `/shelf/[slug]` wins the URL, which matches the old behavior of `?open=` owning the address bar.
+Note (corrected 2026-08-04 during execution — an earlier draft of this note had
+the order backwards): `initFilter()` goes exactly where the two deleted calls
+were, i.e. **after** `initShelfPage()`'s existing `?open=` block, which stays
+put. That order is load-bearing, not cosmetic: `initFilter`'s `replaceState`
+rewrites the URL to `/shelf?type=<type>`, so running it first would strip the
+`open` param out of `location.search` before the `?open=` block parses it and
+`/shelf?type=anime&open=marie` would never open the panel. With the correct
+order, `?open=` still owns the address bar when both params are present —
+matching the old behavior.
 
 - [ ] **Step 2: Verify in the browser**
 
