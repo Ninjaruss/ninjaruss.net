@@ -7,6 +7,7 @@ import BentoTile from '../components/BentoTile.astro';
 import { buildNovelTree, computeNovelStats, flattenFolderFiles } from '../utils/novel';
 import { tallyStats, buildDonutArcs, STAT_ORDER } from '../utils/sessions';
 import { stripMarkdown } from '../utils/content';
+import { formatDate } from '../utils/dates';
 import { getCodexTileData } from '../utils/codexContent';
 
 // Query all content collections for items with publishedAt dates
@@ -131,12 +132,12 @@ const singleIcon = leadingStats.length === 1 ? leadingStats[0] : null;
 
 const donutArcs = buildDonutArcs(streamTallies, 32);
 
-// Prepare data for client-side cycling
+// Prepare data for client-side cycling. The date is formatted at build time —
+// absolute only, never time-since (no-shame invariant).
 const latestEntries = latestPool.map(entry => ({
   title: entry.data.title,
   href: `/${entry.collection}/${entry.slug}`,
-  publishedAt: entry.data.publishedAt!.toISOString(),
-  updatedAt: entry.data.updatedAt?.toISOString(),
+  date: formatDate(entry.data.updatedAt ?? entry.data.publishedAt!),
   emblem: entry.data.emblem ?? DEFAULT_EMBLEM,
   excerpt: stripMarkdown(entry.body ?? '').slice(0, 140),
 }));
@@ -434,7 +435,7 @@ const codexTile = await getCodexTileData();
               </div>
               <p class="latest-tile__excerpt" id="latest-excerpt"></p>
               <div class="bento-tile__footer">
-                <span class="days-ago" id="latest-days-ago"></span>
+                <span class="latest-date" id="latest-date">{latestEntries[0].date}</span>
               </div>
             </div>
             <div class="latest-tile__emblem-wrap">
@@ -569,12 +570,11 @@ const codexTile = await getCodexTileData();
     100% { background-position: 300% 0%; }
   }
 
-  /* Days ago indicator for Latest tile */
-  .days-ago {
+  /* Absolute entry date for the Latest tile (never time-since) */
+  .latest-date {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-gold-dim);
-    text-transform: lowercase;
     letter-spacing: 0.06em;
     white-space: nowrap;
     border-left: 2px solid var(--color-gold-dim);
@@ -582,7 +582,8 @@ const codexTile = await getCodexTileData();
     transition: color var(--transition-fast), border-color var(--transition-fast);
   }
 
-  #latest-tile:hover .days-ago {
+  #latest-tile:hover .latest-date,
+  #latest-tile:focus-visible .latest-date {
     color: var(--color-gold);
     border-color: var(--color-gold);
   }
@@ -1923,7 +1924,7 @@ const codexTile = await getCodexTileData();
     const entries = JSON.parse(latestTile.dataset.entries || '[]');
     if (entries.length === 0) return;
 
-    const render = (entry: { href: string; title: string; excerpt?: string; emblem?: string; publishedAt: string; updatedAt?: string }) => {
+    const render = (entry: { href: string; title: string; excerpt?: string; emblem?: string; date?: string }) => {
       latestTile.href = entry.href;
       const titleEl = document.getElementById('latest-title');
       if (titleEl) titleEl.textContent = entry.title;
@@ -1934,19 +1935,9 @@ const codexTile = await getCodexTileData();
       const emblemEl = document.getElementById('latest-emblem') as HTMLImageElement | null;
       if (emblemEl && entry.emblem) emblemEl.src = entry.emblem;
 
-      // Calculate "X days ago"
-      const daysAgoEl = document.getElementById('latest-days-ago');
-      if (daysAgoEl) {
-        const today = new Date();
-        const publishedDate = new Date(entry.updatedAt || entry.publishedAt);
-        const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
-        const publishedUTC = Date.UTC(publishedDate.getUTCFullYear(), publishedDate.getUTCMonth(), publishedDate.getUTCDate());
-        const diffDays = Math.floor((todayUTC - publishedUTC) / (1000 * 60 * 60 * 24));
-
-        if (diffDays === 0) daysAgoEl.textContent = 'today';
-        else if (diffDays === 1) daysAgoEl.textContent = 'yesterday';
-        else daysAgoEl.textContent = `${diffDays} days ago`;
-      }
+      // Absolute date, formatted at build time — the tile never counts elapsed days.
+      const dateEl = document.getElementById('latest-date');
+      if (dateEl) dateEl.textContent = entry.date || '';
     };
 
     render(entries[0]);
