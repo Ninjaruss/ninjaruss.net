@@ -286,6 +286,7 @@
 .j-log-top {
   display: flex;
   align-items: center;
+  gap: var(--space-md);
   padding: 10px 32px;
   flex-shrink: 0;
   border-bottom: 1px solid #0e0e10;
@@ -304,9 +305,10 @@
   border-radius: var(--radius-sm);
   color: rgba(var(--color-gold-rgb), 0.75);
   font-family: inherit;
-  font-size: 0.62rem;
+  font-size: 0.7rem; /* 11.2px — functional-text floor */
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  white-space: nowrap;
   cursor: pointer;
   transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
@@ -318,6 +320,18 @@
   color: var(--color-gold);
 }
 .j-log-clear-x { font-size: 0.9rem; line-height: 1; }
+
+/* Narrow screens: the glyph carries it alone — the button keeps its dynamic
+   aria-label ("Clear the <Stat> filter…"), so the name survives. */
+@media (max-width: 480px) {
+  .j-log-clear {
+    gap: 0;
+    min-width: 44px;
+    justify-content: center;
+    padding: 0 var(--space-2xs);
+  }
+  .j-log-clear-label { display: none; }
+}
 
 .j-log-list {
   padding: 16px 32px;

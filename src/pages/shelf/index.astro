@@ -80,18 +80,23 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
       <p class="shelf-header__count">{totalCount} entries</p>
     </header>
 
-    <nav class="shelf-jumpbar" aria-label="Jump to section">
-      {grouped.map(({ type }) => (
-        <a
-          href={`#section-${type}`}
-          class="shelf-jumpbar__link"
-          data-type={type}
-          aria-current="false"
-        >
-          <span class="shelf-jumpbar__label">{TYPE_LABELS[type]}</span>
-        </a>
-      ))}
-    </nav>
+    {/* Sticky positioning and the bar's background live on the wrapper so the
+        right-edge fade can sit over the bar without scrolling with its links
+        (and without masking the background itself — cards showed through). */}
+    <div class="shelf-jumpbar-wrap">
+      <nav class="shelf-jumpbar" aria-label="Jump to section">
+        {grouped.map(({ type }) => (
+          <a
+            href={`#section-${type}`}
+            class="shelf-jumpbar__link"
+            data-type={type}
+            aria-current="false"
+          >
+            <span class="shelf-jumpbar__label">{TYPE_LABELS[type]}</span>
+          </a>
+        ))}
+      </nav>
+    </div>
 
     {grouped.map(({ type, entries }, groupIndex) => (
       <>
@@ -251,29 +256,40 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   }
 
   /* ── Sticky Jump-Bar ─────────────────────────────── */
-  .shelf-jumpbar {
+  .shelf-jumpbar-wrap {
     position: sticky;
     top: 0;
     z-index: 50;
+    background: var(--color-bg-base);
+    border-bottom: 1px solid var(--color-border, #2a2a2a);
+    margin-bottom: var(--space-xl);
+  }
+
+  /* The scrollbar is suppressed, so the faded right edge is the only sign that
+     more sections exist off-screen. It is opaque page background fading in —
+     not a mask on the bar, which made the bar's own background transparent and
+     let the posters scrolling underneath show through. */
+  .shelf-jumpbar-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 40px;
+    background: linear-gradient(to right, transparent, var(--color-bg-base));
+    pointer-events: none;
+  }
+  /* Dropped once the bar is scrolled through (or when everything already fits) */
+  .shelf-jumpbar-wrap.is-scroll-end::after { display: none; }
+
+  .shelf-jumpbar {
     display: flex;
     align-items: stretch;
     gap: 3px;
     padding: 8px 4px;
-    background: var(--color-bg-base);
-    border-bottom: 1px solid var(--color-border, #2a2a2a);
-    margin-bottom: var(--space-xl);
     overflow-x: auto;
     scrollbar-width: none;
     scroll-snap-type: x proximity;
-    /* The scrollbar is suppressed, so the faded right edge is the only sign
-       that more sections exist off-screen. `is-scroll-end` drops it once the
-       bar is scrolled through (or when everything already fits). */
-    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
-    mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
-  }
-  .shelf-jumpbar.is-scroll-end {
-    -webkit-mask-image: none;
-    mask-image: none;
   }
   .shelf-jumpbar::-webkit-scrollbar { display: none; }
 
@@ -923,10 +939,12 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
 
     if (sections.length === 0 || links.length === 0) return;
 
-    // Right-edge fade: on while there is more bar to scroll to.
+    // Right-edge fade: on while there is more bar to scroll to. The fade is
+    // painted by the wrapper, which doesn't scroll with the links.
+    const jumpbarWrap = jumpbar.parentElement;
     const updateEdgeFade = () => {
       const atEnd = jumpbar.scrollLeft + jumpbar.clientWidth >= jumpbar.scrollWidth - 1;
-      jumpbar.classList.toggle('is-scroll-end', atEnd);
+      jumpbarWrap?.classList.toggle('is-scroll-end', atEnd);
     };
     updateEdgeFade();
     jumpbar.addEventListener('scroll', updateEdgeFade, { passive: true, signal: pageCleanup!.signal });

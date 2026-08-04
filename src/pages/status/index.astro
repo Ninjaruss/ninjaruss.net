@@ -314,12 +314,14 @@ function colorBg(hex: string, a: number): string {
         <section class="st-screen" id="log" data-screen="log">
           <div class="j-log">
             <div class="j-log-top">
-              <div class="j-section-label" id="log-label">Session Log</div>
+              {/* tabindex="-1": focus lands here after the clear button hides
+                  itself, so the keyboard user is not dropped onto <body>. */}
+              <div class="j-section-label" id="log-label" tabindex="-1">Session Log</div>
               {/* Only rendered as visible once a stat filter is on — the log
                   is otherwise unfiltered and there is nothing to clear. */}
               <button class="j-log-clear" id="log-clear" type="button" hidden>
                 <span class="j-log-clear-x" aria-hidden="true">×</span>
-                <span>clear filter</span>
+                <span class="j-log-clear-label">clear filter</span>
               </button>
             </div>
             <div class="j-log-list" id="log-list">
@@ -706,8 +708,9 @@ function colorBg(hex: string, a: number): string {
       });
     }
 
-    /* Enter/Space activate for the role="button" elements below — same
-       pattern as .bond-row (Space is prevented so it doesn't scroll). */
+    /* Enter/Space activate for every role="button" element on this page —
+       radar vertices, quest stat strips, bond rows. Space is prevented so it
+       doesn't scroll the page. */
     function onActivateKey(el: Element, run: () => void): void {
       el.addEventListener('keydown', (e: Event) => {
         const key = (e as KeyboardEvent).key;
@@ -717,7 +720,13 @@ function colorBg(hex: string, a: number): string {
       });
     }
 
-    document.getElementById('log-clear')?.addEventListener('click', () => setLogFilter('all'));
+    /* Clearing hides the button, so hand focus to the log label rather than
+       letting it fall back to <body> (click and keyboard both route here —
+       a <button> fires click for Enter/Space too). */
+    document.getElementById('log-clear')?.addEventListener('click', () => {
+      setLogFilter('all');
+      document.getElementById('log-label')?.focus();
+    });
 
     document.querySelectorAll<HTMLElement>('.j-stream-strip').forEach(strip => {
       const activate = () => {
@@ -825,16 +834,12 @@ function colorBg(hex: string, a: number): string {
       }
 
       document.querySelectorAll<HTMLElement>('.bond-row').forEach(row => {
-        row.addEventListener('click', () => {
+        const activate = () => {
           if (row === activeBondRow) closeBondDetail();
           else openBondDetail(row);
-        });
-        row.addEventListener('keydown', (e: KeyboardEvent) => {
-          if (e.key !== 'Enter' && e.key !== ' ') return;
-          e.preventDefault();
-          if (row === activeBondRow) closeBondDetail();
-          else openBondDetail(row);
-        });
+        };
+        row.addEventListener('click', activate);
+        onActivateKey(row, activate);
       });
 
       document.getElementById('bond-detail-close')?.addEventListener('click', closeBondDetail);

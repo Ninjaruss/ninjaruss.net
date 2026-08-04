@@ -267,9 +267,12 @@ pushState, so hashchange never fires for those), the `hashchange` listener
 covers programmatic `location.hash = 'log'` jumps (radar-vertex and quest-strip
 clicks depend on it — do not delete it as "unused"), and `popstate` covers
 back/forward. Styles in `src/styles/status.css`. Radar vertices and quest stat
-strips are `tabindex="0" role="button"` with the `.bond-row` Enter/Space handler
-(Space preventDefault'd), so the log filter is reachable without a mouse; when a
-filter is on, the Log screen's header shows a clear-filter button (`#log-clear`).
+strips are `tabindex="0" role="button"`, and they share one Enter/Space handler
+with the bond rows (`onActivateKey`, Space preventDefault'd — don't re-add a
+per-element copy), so the log filter is reachable without a mouse; when a filter
+is on, the Log screen's header shows a clear-filter button (`#log-clear`, ✕-only
+below 480px, keeping its dynamic aria-label) that hands focus back to
+`#log-label` (`tabindex="-1"`) as it hides itself.
 The date strip in the topbar is restated client-side from the visitor's clock on
 load and `astro:page-load` (the page is prerendered — the server value is only
 the build day, kept as the no-JS fallback). ≤900px the menu is a 2×2 grid.
@@ -329,9 +332,9 @@ The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-po
 
 1. **SplitViewLayout JavaScript**: Three-panel layout (list/detail/emblem) with client-side fetch for detail content, History API for navigation, search/tag/type filtering (Cmd/Ctrl+K to focus search), emblem card flipping on content selection, falls back gracefully without JS. `contentLoader.loadContent` fetches by each list item's own `href` (not the page section), so mixed-collection lists like `/journal` work. On load with no slug in the URL, auto-opens the newest visible entry — desktop layout only (detected via the applied grid columns, not viewport width) and without pushing history or moving focus; detection retries on a setTimeout loop (20 × 75ms then 20 × 250ms, ~6.5s total) because styles can land after init and rAF is suspended in background tabs, and is re-kicked once on window `load` and once when the `(min-width: 1200px)` media query flips true (embedded panes can report 0×0 at init), with a `splitView.isConnected` guard stopping stale timers after view-transition swaps (`src/utils/splitView/index.ts`; `loadContent` accepts `{ pushHistory, focusHeading }` options). Auto-open is skipped entirely when `showDraw` renders the draw deck — the journal lands on the placeholder (stats + codex CTA + draw) instead of auto-opening an entry.
 
-1b. **SplitView mobile (≤900px) stacked layout**: the list panel flows at natural height (`.split-view__nav` has `max-height: none` — the page scrolls; an inner scroller left a dead band above the bottom nav) with `--nav-clearance` bottom padding, and the empty detail pane is `display: none` until a selection exists (`has-selection` is server-set on detail routes like `/notes/[slug]` and client-set on tap, so both flows show the detail). Auto-open remains desktop-only.
+1b. **SplitView mobile (≤900px) stacked layout**: the list panel flows at natural height (`.split-view__nav` has `max-height: none` — the page scrolls; an inner scroller left a dead band above the bottom nav) with `--nav-clearance` bottom padding, and the empty detail pane is `display: none` until a selection exists (`has-selection` is server-set on detail routes like `/notes/[slug]` and client-set on tap, so both flows show the detail). Auto-open remains desktop-only. The `.split-view__content .prose` right inset in that breakpoint exists to clear the fixed `.emblem-badge` (60px + its offset) — removing it puts the badge back on top of the text.
 
-2. **View Transitions**: Uses Astro's ClientRouter with custom P4G-style slide animations
+2. **View Transitions**: Uses Astro's ClientRouter with custom P4G-style slide animations. `#transition-canvas` is a replaced element sized by its `width`/`height` attributes (`resizeCanvas()` in `src/scripts/transition.ts`) — a percentage in CSS can't size it, and measuring from `window.innerWidth` (scrollbar-inclusive) reintroduces horizontal page overflow; use `documentElement.clientWidth`.
 
 3. **Draft Filtering**: All collection queries should filter `draft !== true`
 
