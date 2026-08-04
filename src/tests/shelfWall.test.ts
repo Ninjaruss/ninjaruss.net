@@ -144,4 +144,10 @@ describe('resolveInitialFilter', () => {
       rewrite: false,
     });
   });
+
+  it('scrubs an invalid ?type= even when a legacy hash is present', () => {
+    expect(
+      resolveInitialFilter('?type=bogus', '#section-anime', new Set(['anime'])),
+    ).toEqual({ type: '', rewrite: true });
+  });
 });

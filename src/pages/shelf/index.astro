@@ -33,7 +33,7 @@ const wallItems = sortWall(
   allShelf.map(e => ({
     slug: e.slug,
     title: e.data.title,
-    type: e.data.content_type as ContentType,
+    type: e.data.content_type,
     isFavorite: e.data.isFavorite ?? false,
     hasContent: !hasMinimalContent(e.body ?? ''),
     date: e.data.updatedAt ?? e.data.publishedAt ?? null,

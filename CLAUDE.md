@@ -191,7 +191,7 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 - `/journal` — SplitViewLayout merging the `notes` + `showcase` collections into one date-sorted list ("notes & showcases" kicker). Filters are search + a segmented type control only (All / note / showcase, single-select with per-type counts, `?types=` URL param), plus a "visible / total" count and a compact ✕ clear-all beside search — no tag filtering (legacy `?tags=` params are ignored and scrubbed from the URL on first filter interaction, `urlState.ts`). Unknown `?types=` values — including the legacy `fragment`/`inquiry` — are dropped (fall back to All, enforced in `filterUI.populateTypes` + `filterEngine.applyFilters`). The no-selection placeholder shows build-time stats (`placeholderStats`), a "browse by theme — codex" CTA (`placeholderCta`), and the draw-a-card deck (`showDraw`). Draw-a-card: desktop = deck in the placeholder (one draw per visit; clicking the revealed face opens the entry through the normal selection path), mobile (≤900px) = a DRAW button that navigates to a random note; the pool respects active filters and contains notes only (pure logic in `splitView/drawCard.ts`). (The old featured strip linking `/novel` and `/status` (then `/stream`) was removed; those live in the NavPill now.)
 - `/notes/[slug]` — Individual note detail pages (left panel shows the merged journal list, `section="journal"`)
 - `/showcase/[slug]` — Individual project detail pages (same merged list)
-- `/shelf` — Full-width emblem card grid grouped by content type, with a sticky jump bar (section anchor links) and inline quick-view panel. Progressive enhancement: cards link to `/shelf/[slug]` without JS; JS intercepts clicks to push `/shelf/[slug]` into history and open the panel instead (`?open=slug` supported for legacy links only).
+- `/shelf` — Flat 'wall' collage of every entry (size = favorite/written/logged tier) with a sticky type-filter bar and inline quick-view panel. Progressive enhancement: cards link to `/shelf/[slug]` without JS; JS intercepts clicks to push `/shelf/[slug]` into history and open the panel instead (`?open=slug` supported for legacy links only).
 - `/shelf/[slug]` — Individual shelf detail pages
 
 ### Legacy Routes (301 Redirects)
@@ -215,14 +215,50 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 - `/rss.xml` — Journal RSS feed (`src/pages/rss.xml.ts`, `@astrojs/rss`): merged notes + showcases, **excerpt-only by design** (~300 chars + link — the feed is a doorbell, the site is the room). Autodiscovery `<link rel="alternate">` in BaseLayout head.
 
 ### Shelf Page Features (`/shelf`)
-- Entries are grouped by `content_type` into sections (anime, manga, film, series, music, book, game, character, other), each rendered server-side with a `shelf-section` header and `shelf-grid` of cards.
-- **Jump bar** (`.shelf-jumpbar`): sticky (`position: sticky; top: 0`) row of section anchor links (`#section-[type]`) below the page header. Active section gets a solid gold angled tab (`.is-active` / `[aria-current="page"]` — skewed parallelogram, black text; section headers are flat gold skewed display type, shimmer gradient removed; `.shelf-section` has `scroll-margin-top: 72px`), tracked via an IntersectionObserver in client JS that keeps a set of sections inside the observation band and always highlights the topmost in document order (reacting to single changed entries goes stale). Its scrollbar is suppressed, so a right-edge mask fade (dropped by `is-scroll-end` at the end of the scroll, or when everything fits) is the only cue that more sections exist; links scroll-snap.
-- **Character section**: renders an additional `shelf-hero` carousel (prev/next through character entries) above the character `shelf-grid`.
-- **Quick-view panel**: clicking a `.shelf-card` intercepts navigation, pushes `/shelf/[slug]` into history, and slides in a panel from the right. Panel shows emblem, type, title, tags, excerpt, and link to full entry. ESC/✕/backdrop-click closes. `?open=[slug]` query param still opens the panel on load for legacy links, but is not written by current interactions. ≤900px it becomes a full-height bottom sheet (poster capped at 40vh, the "Open full entry" CTA held above `--nav-clearance`).
-- Cards are `<a>` tags linking to `/shelf/[slug]` (works without JS) — the standalone detail page itself redirects (`window.location.replace`) back to `/shelf?open=slug` when JS is available, so the quick-view panel is the JS-enabled experience.
-- Entry data pre-rendered as JSON in `data-entries` attribute — no client fetch needed.
-- **Content indicator**: favorites get a gold star badge (`.shelf-card__bar--fav`, `.shelf-card__star`) and gold title (`.shelf-card__title--fav`); entries that are neither a favorite nor have written content dim via `.shelf-card--dim` (`filter: opacity(0.52)`, not `opacity` — see Code Style Notes).
-- No client-side type/favorites filter pills exist on this page (the `★ favorites` filter and `?type=/&fav=` URL params described elsewhere in this doc were removed; `src/utils/mediaGrid/filterEngine.ts` no longer exists). The `/favorites` route 301-redirects to `/shelf` (the old `?fav=1` query param was dropped once the filter was removed).
+- **The Wall**: one flat dense-packed collage of every non-draft entry (no per-type
+  sections). CSS grid, `grid-auto-flow: dense`, fine-grained rows + integer spans;
+  size = affection tier from existing frontmatter (`wallTier` in
+  `src/utils/shelfWall.ts`): favorite → large (gold ring + hard gold shadow),
+  written-about → medium, bare log → small. **No dimming anywhere** — small is the
+  quiet tier (no-shame invariant). Posters render ~2:3, music ~1:1 (`wallShape`);
+  span numbers live in the page CSS (`.shelf-card--<shape>-<tier>`), overridden at
+  ≤768px. Order: newest first, undated last (`sortWall`).
+- **Pinned look**: every item carries a deterministic ±1.5° rotation seeded from its
+  slug (`wallRotation`, inline `--rot`). Titles are hidden at rest; a skewed title
+  plate (clamped to 3 lines) + the corner-cut gold triangle appear on hover/focus
+  (rotation eases to 0). The entrance animation uses `animation-fill-mode: backwards`,
+  NOT `both` — a filling animation outranks `:hover`/`:focus-visible` forever and
+  would silently kill the straighten-and-lift (same trap as `.media-card`, see Code
+  Style Notes). Under reduced motion the rotation stays (static pose) but
+  entrance/hover motion is disabled.
+- **Filter bar** (`.shelf-jumpbar`, same angled-tab silhouette as the old jump bar):
+  tabs are client-side type filters with counts (All + present types, single-select,
+  solid gold active tab, `aria-current="page"`). Filtering toggles the `hidden`
+  attribute on cards — `.shelf-card[hidden] { display: none }` is required because the
+  base rule is `display: block`. URL state via `?type=` + `replaceState`; legacy
+  `#section-<type>` links map onto the filter and the hash is stripped; unknown types
+  fall back to All (`resolveInitialFilter` in `shelfWall.ts` owns this resolution, and
+  an invalid `?type=` is left in the URL rather than scrubbed unless a hash was also
+  present). Modified clicks (Cmd/Ctrl/Shift/Alt/middle) are passed through to the
+  browser so the tabs still open in a new tab. Filtering re-staggers the entrance
+  animation. No-JS: the bar's links just reload the unfiltered page (every entry is
+  still a plain `<a>` to its detail route).
+- **Quick-view panel**: unchanged — clicking a `.shelf-card` intercepts navigation,
+  pushes `/shelf/[slug]` into history, and slides in a panel from the right showing
+  emblem, type, title, tags, excerpt, and a link to the full entry. ESC/✕/backdrop
+  closes. `?open=[slug]` still opens it on load for legacy links. ≤900px it becomes a
+  full-height bottom sheet (poster capped at 40vh, CTA held above `--nav-clearance`).
+  Its init runs BEFORE `initFilter()` on purpose: `initFilter`'s `replaceState` would
+  otherwise strip the `open` param out of `location.search` before it is read.
+- Cards are `<a>` tags linking to `/shelf/[slug]` (works without JS) — the standalone
+  detail page redirects (`window.location.replace`) back to `/shelf?open=slug` when JS
+  is available, so the quick-view panel is the JS-enabled experience.
+- Entry data pre-rendered as JSON in the `data-entries` attribute — no client fetch.
+- The character hero carousel, section headers/dividers, jump-bar scrollspy, and
+  `.shelf-card--dim` were all removed in the 2026-08 wall redesign, and
+  `src/utils/shelf.ts`/`sortShelfSection` retired with them. Wall logic lives in
+  `src/utils/shelfWall.ts`, tested in `src/tests/shelfWall.test.ts`.
+- The `/favorites` route 301-redirects to `/shelf` (the old `?fav=1` filter is long gone).
 
 ## Visual Novel System ("Remember Rain")
 
@@ -331,6 +367,7 @@ absence counters anywhere on the page.
 | `src/utils/sessions.ts` (formerly `stream.ts`) | `tallyStats()`, `buildRadarPoints()`, `buildGuidePoints()`, `applyLogScale()`, `scaleAllTallies()`, `parseStreamIdeas()`, `parseQuestFile()`, `parseQuestMenu()` (legacy, unused by pages), `buildDonutArcs()`, `computeLevel()`, `hexToRgbTriplet()`, `STAT_COLORS`, `STAT_ORDER`, `STAT_CEILING` | `sessions` collection stat aggregation/scaling for the `/status` radar + donut, the single stat-colour table (`STAT_COLORS` — the only place the five stat hexes are written; index.astro, status/index.astro and scripts/transition.ts all read it), level/XP math, and `_quests.md` parsing (`parseQuestFile` — sections: The Question / Active / Ideas — \<Stat\> / Completed) |
 | `src/utils/protagonist.ts` | `parseProtagonist()`, `DEFAULT_PROTAGONIST` | Minimal frontmatter reader for `_protagonist.md` (name/epithet/portrait); missing file/fields degrade to defaults |
 | `src/utils/codexContent.ts` + `src/utils/codex/` | `getCodexPageData()`, `getCodexTileData()`; pure modules: schema, json, stabilize, resolve, corpus, prompt, pipeline | /codex data layer — see Codex System section |
+| `src/utils/shelfWall.ts` | `wallTier()`, `wallShape()`, `wallClass()`, `wallRotation()`, `sortWall()`, `resolveInitialFilter()` | /shelf wall logic — affection tiers, shape/span classes, slug-seeded rotation, ordering, filter-URL resolution |
 | `src/utils/splitView/` | (11 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
 
 The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-pool logic, tested in `src/tests/drawCard.test.ts`), `emblemAnimation`, `eventBindings`, `filterEngine`, `filterUI`, `idleManager`, `mediaHandlers`, `proseImageTilt`, `types`, `urlState`.
@@ -365,7 +402,7 @@ The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-po
 
 6b. **NavPill**: 7 items — Home / Journal / VN / Shelf / Status / Now / Codex — rendered on every non-home page including `/status` (whose sidebar "Ninjaruss" logo badge was removed; `/status` is the renamed former `/stream`, which now 301-redirects here). `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array.
 
-7. **Shelf Page Grid**: `/shelf` is a full emblem card grid grouped by content type (not SplitViewLayout), with a sticky jump bar for section navigation. `isFavorite: true` entries get a gold star badge and gold title on their card (no separate favorites filter exists anymore). Quick-view panel opens on card click without navigating away, pushing `/shelf/[slug]` into history. Cards that are neither a favorite nor have written content dim with `.shelf-card--dim` (`filter: opacity(0.52)`, not `opacity` — see Code Style Notes).
+7. **Shelf Wall**: `/shelf` is one flat dense-packed collage (not SplitViewLayout, no per-type sections) where an entry's size expresses affection — favorites large with a gold ring, written-about medium, bare logs small, nothing dimmed. See the Shelf Page Features section above for the full model.
 
 8. **Related Content System**: Uses `collections` field in frontmatter for cross-referencing. Calculates relevance scores based on matching collections, displays up to 6 related entries in card grid at bottom of detail pages. Shows emblem thumbnail, section badge, and title.
 
@@ -379,7 +416,7 @@ The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-po
 
 ### Shelf posters (`/public/images/media/`)
 - All `.webp`, max 640px wide, quality 80 (animated WebP for the former GIFs — sharp with `{ animated: true }` preserves frames). Keep new posters in this format/budget; the directory went 15MB → 4.3MB in the 2026-07 optimization pass and page weight is the shelf's main perf lever.
-- `.shelf-card__poster` carries a diamond-watermark background (inline SVG data URI) so a card whose poster is still loading — or missing — reads as intentional, not broken.
+- `.shelf-card` carries a diamond-watermark background (inline SVG data URI) so a card whose poster is still loading — or missing — reads as intentional, not broken.
 
 ### Logos (`/public/images/logos/`)
 - `myanimelist.svg` — MyAnimeList logo for external link tile
@@ -436,5 +473,5 @@ All placeholder emblems share the same card template (dark card, gold gradient f
 - Respect `prefers-reduced-motion` in all animations
 - Use `requestAnimationFrame` for smooth JavaScript-driven animations
 - Client-side filtering should reset stagger animations on filter change
-- `.media-card` has `animation: card-in ... fill-mode: both`; use `filter: opacity(N)` not `opacity: N` to dim cards — plain `opacity` is overridden by the animation after it completes
+- `.media-card` has `animation: card-in ... fill-mode: both`; use `filter: opacity(N)` not `opacity: N` to dim cards — plain `opacity` is overridden by the animation after it completes. Sharper version of the same trap: `both`/`forwards` keeps outranking `:hover`/`:focus-visible` forever, not just at the moment it completes — when a fill only exists to hide an element through its stagger delay, use `backwards` instead (`.shelf-card`'s entrance)
 - `border-color` on `.media-card` is dead CSS — the actual card border lives on `.media-card__poster`; target that child for border effects
