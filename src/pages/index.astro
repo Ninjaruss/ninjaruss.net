@@ -1251,10 +1251,13 @@ const codexTile = await getCodexTileData();
   }
 
   .st-sessions {
-    font-size: .58rem;
+    /* Was #555 at 9.28px — 2.66:1, under the AA floor twice over.
+       Functional text: 11.2px minimum, on a token that clears AA. */
+    font-size: .7rem;
     letter-spacing: .1em;
-    color: #555;
+    color: var(--color-text-subtle);
     font-family: var(--font-mono);
+    white-space: nowrap;
   }
 
   .st-cta {
