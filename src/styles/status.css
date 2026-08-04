@@ -228,6 +228,8 @@
 .j-stream-strip {
   display: flex;
   align-items: center;
+  /* Keyboard/pointer target since Batch A gave these strips role+tabindex. */
+  min-height: 44px;
   gap: 18px;
   padding: 8px 8px 8px 0;
   border-bottom: 1px solid var(--color-bg-base);
@@ -540,7 +542,7 @@
   min-width: 0;
 }
 .bond-arcana-label {
-  font-size: 0.65rem;
+  font-size: var(--text-floor);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-text-subtle);
@@ -566,7 +568,7 @@
   flex-shrink: 0;
 }
 .bond-rank-numeral {
-  font-size: 0.68rem;
+  font-size: var(--text-floor);
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -679,7 +681,7 @@
   margin-bottom: 18px;
   border: 1px solid var(--color-surface-2);
   background: rgba(255, 255, 255, 0.025);
-  font-size: 0.65rem;
+  font-size: var(--text-floor);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-text-subtle);
@@ -698,7 +700,7 @@
   margin-bottom: 8px;
 }
 .bd-rank-label {
-  font-size: 0.68rem;
+  font-size: var(--text-floor);
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -754,7 +756,7 @@
 .bd-memory::before { content: '"'; }
 .bd-memory::after  { content: '"'; }
 .bd-memory-when {
-  font-size: 0.65rem;
+  font-size: var(--text-floor);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-text-subtle);
@@ -937,6 +939,7 @@ html.js .bond-fallback { display: none; }
 .bond-fallback summary {
   display: flex;
   align-items: center;
+  gap: 8px;
   min-height: 44px;
   cursor: pointer;
   color: var(--color-gold);
@@ -944,6 +947,21 @@ html.js .bond-fallback { display: none; }
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
+
+/* display: flex drops the native disclosure triangle, so draw our own. */
+.bond-fallback summary::marker,
+.bond-fallback summary::-webkit-details-marker { content: ''; display: none; }
+
+/* No transition on purpose: Chrome does not run a pseudo-element transform
+   transition driven by the <details> [open] attribute — it pins the pseudo at
+   the start value and the triangle never turns. Flipping instantly is both
+   correct and reduced-motion-safe with no extra guard. */
+.bond-fallback summary::before {
+  content: '\25B8';
+  display: inline-block;
+}
+
+.bond-fallback[open] summary::before { transform: rotate(90deg); }
 
 .bond-fallback p { margin-top: 6px; }
 .bond-fallback__memory { font-style: italic; }

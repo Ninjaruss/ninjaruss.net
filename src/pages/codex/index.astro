@@ -83,6 +83,12 @@ const placeholderStats =
     color: var(--color-text-muted);
   }
 
+  /* The global `code` rule is 0.9em, which drops a command the reader is meant
+     to type below the functional floor inside this already-small hint. */
+  .loose-threads__hint code {
+    font-size: inherit;
+  }
+
   .loose-threads__list {
     margin: 0;
     padding-left: var(--space-md);

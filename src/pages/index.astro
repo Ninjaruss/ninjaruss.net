@@ -167,7 +167,16 @@ const codexTile = await getCodexTileData();
         style="--stagger-delay: 100ms;"
       >
         <!-- Full-bleed channel avatar -->
-        <img class="yt-tile__avatar" src="/images/logos/yt-avatar.jpg" alt="Ninjaruss YouTube channel" />
+        {/* object-fit: cover into a tall-ish slot means the 16:9 source is
+            scaled by height, so the widest render (~684px at the 768 stacking
+            breakpoint) needs more than the 640 variant on retina. */}
+        <img
+          class="yt-tile__avatar"
+          src="/images/logos/yt-avatar-640.jpg"
+          srcset="/images/logos/yt-avatar-640.jpg 640w, /images/logos/yt-avatar-1024.jpg 1024w"
+          sizes="(max-width: 800px) 100vw, 177px"
+          alt="Ninjaruss YouTube channel"
+        />
         <span class="yt-tile__chip" aria-hidden="true">YouTube</span>
 
         <!-- Red tint on hover -->
@@ -902,7 +911,9 @@ const codexTile = await getCodexTileData();
     background-image: linear-gradient(var(--color-gold), var(--color-gold));
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 100% 22px;
+    /* 2em of the 11px label, so browser text-zoom scales the band with the
+       type instead of leaving it stranded at a fixed 22px. */
+    background-size: 100% 2em;
     color: var(--color-black);
     font-family: var(--font-display);
     font-size: var(--text-floor);

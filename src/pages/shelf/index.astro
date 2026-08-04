@@ -299,7 +299,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     border: 1px solid transparent;
     color: var(--color-muted);
     font-family: var(--font-display);
-    font-size: 11px;
+    font-size: var(--text-floor);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     white-space: nowrap;
@@ -464,7 +464,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
 
   .shelf-card__title {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-floor);
     color: var(--color-text);
     line-height: 1.4;
     word-break: break-word;
@@ -473,8 +473,10 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   }
   .shelf-card__title--fav { color: var(--color-gold); }
 
+  /* Decorative favourite marker — sits on the 10px hard floor, not the
+     functional one. */
   .shelf-card__star {
-    font-size: 10px;
+    font-size: var(--text-2xs);
     color: var(--color-gold);
     flex-shrink: 0;
     line-height: 1;
@@ -555,7 +557,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
 
   .shelf-hero__eyebrow {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: var(--text-floor);
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: var(--color-muted);
@@ -603,7 +605,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     align-items: center;
     min-height: 44px;
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-floor);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--color-gold-dim);
@@ -651,7 +653,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     background: none;
     border: none;
     color: var(--color-muted);
-    font-size: 16px;
+    font-size: var(--text-base);
     cursor: pointer;
     min-width: 44px;
     min-height: 44px;
@@ -692,7 +694,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   /* Panel content JS-injected classes */
   :global(.sp-type) {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: var(--text-floor);
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: var(--color-muted);
@@ -724,13 +726,13 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   }
   :global(.sp-date) {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: var(--text-floor);
     color: var(--color-muted);
     margin: 0;
   }
   :global(.sp-prose) {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-floor);
     color: var(--color-muted);
   }
 
@@ -744,7 +746,7 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     border: 1px solid rgba(var(--color-gold-rgb), 0.25);
     border-radius: var(--radius-sm);
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-floor);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--color-gold-dim);
