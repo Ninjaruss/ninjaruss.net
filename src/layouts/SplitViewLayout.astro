@@ -45,7 +45,10 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
       <header class="split-view__header">
         <span class="p4g-tab">{kickerText}</span>
         <div class="split-view__header-top">
-          <h2 class="split-view__title"><span class="p4g-heading">{title}</span></h2>
+          {/* The surface's own h1 ("Journal", "Codex"). The entry title in the
+              detail panel is the h2 under it — including on the standalone
+              /notes/[slug] routes, which render this same layout. */}
+          <h1 class="split-view__title"><span class="p4g-heading">{title}</span></h1>
           <span class="split-view__count" id="split-count" aria-live="polite"></span>
           {rssHref && (
             <a class="split-view__rss" href={rssHref} title="RSS feed" aria-label="RSS feed">
@@ -577,6 +580,10 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
   .split-view__content .entry__title {
     font-size: var(--text-panel-title);
     margin-bottom: var(--space-md);
+    /* Was inherited from the base h1 rule before the entry title became an h2
+       (see EntryHeader). Stated here so the codex concept title — which has no
+       .p4g-heading span to carry it — keeps the same casing. */
+    text-transform: uppercase;
   }
 
   .split-view__content .entry__meta {

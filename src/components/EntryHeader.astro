@@ -14,7 +14,10 @@ const showUpdated = shouldShowUpdatedDate(publishedAt, updatedAt);
 
 <header class="entry__header">
   {emblem && <span data-page-emblem data-src={emblem} hidden />}
-  <h1 class="entry__title"><span class="p4g-heading">{title}</span></h1>
+  {/* h2, not h1 — the split view's page title above it is the h1, and this
+      component only ever renders inside that layout (both server-side on
+      /notes|showcase/[slug] and injected into the detail panel). */}
+  <h2 class="entry__title"><span class="p4g-heading">{title}</span></h2>
   <span class="p4g-underline" aria-hidden="true"></span>
   <div class="entry__meta">
     {(publishedAt || showUpdated) && (
