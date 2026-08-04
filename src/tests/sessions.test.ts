@@ -3,6 +3,8 @@ import {
   tallyStats, buildRadarPoints, buildGuidePoints, parseQuestMenu, STAT_ORDER,
   applyLogScale, scaleAllTallies, STAT_CEILING, parseQuestFile, parseStreamIdeas,
   computeLevel,
+  hexToRgbTriplet,
+  STAT_COLORS,
   type StatName,
 } from '../utils/sessions';
 import { parseTwitchLiveResponse } from '../utils/twitchStatus';
@@ -14,6 +16,26 @@ const makeEntry = (publishedAt: string, stats: string[]) => ({
 describe('STAT_ORDER', () => {
   it('has exactly 5 stats', () => {
     expect(STAT_ORDER).toHaveLength(5);
+  });
+});
+
+describe('STAT_COLORS', () => {
+  it('covers STAT_ORDER exactly — no missing stat, no stray key', () => {
+    expect(Object.keys(STAT_COLORS).sort()).toEqual([...STAT_ORDER].sort());
+  });
+
+  it('is a 6-digit hex per stat', () => {
+    for (const stat of STAT_ORDER) {
+      expect(STAT_COLORS[stat]).toMatch(/^#[0-9a-f]{6}$/);
+    }
+  });
+});
+
+describe('hexToRgbTriplet', () => {
+  it('splits a hex into its channels', () => {
+    expect(hexToRgbTriplet('#ff4040')).toEqual([255, 64, 64]);
+    expect(hexToRgbTriplet('#2dd4bf')).toEqual([45, 212, 191]);
+    expect(hexToRgbTriplet('#000000')).toEqual([0, 0, 0]);
   });
 });
 

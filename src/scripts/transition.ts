@@ -1,3 +1,5 @@
+import { STAT_COLORS, type StatName } from '../utils/sessions';
+
 // ── Easing functions ─────────────────────────────────────────────────────────
 
 export const easeOut5 = (t: number): number => 1 - Math.pow(1 - t, 5);
@@ -16,7 +18,7 @@ export const easeDecel = (t: number): number => {
 
 // ── Stat card data ────────────────────────────────────────────────────────────
 
-export type StatName = 'Determination' | 'Insight' | 'Expression' | 'Sincerity' | 'Chaos';
+export type { StatName };
 
 export interface StatCard {
   color: string;
@@ -24,12 +26,13 @@ export interface StatCard {
   emblemPath: string;
 }
 
+/* Colours come from the single STAT_COLORS table in utils/sessions.ts. */
 const STAT_CARDS: Record<StatName, StatCard> = {
-  Determination: { color: '#ff4040', name: 'DETERMINATION', emblemPath: '/images/emblems/determination.png' },
-  Insight:       { color: '#4ab0ff', name: 'INSIGHT',       emblemPath: '/images/emblems/insight.png'       },
-  Expression:    { color: '#a855f7', name: 'EXPRESSION',    emblemPath: '/images/emblems/expression.png'    },
-  Sincerity:     { color: '#ffe52c', name: 'SINCERITY',     emblemPath: '/images/emblems/sincerity.png'     },
-  Chaos:         { color: '#2dd4bf', name: 'CHAOS',         emblemPath: '/images/emblems/chaos.png'         },
+  Determination: { color: STAT_COLORS.Determination, name: 'DETERMINATION', emblemPath: '/images/emblems/determination.png' },
+  Insight:       { color: STAT_COLORS.Insight,       name: 'INSIGHT',       emblemPath: '/images/emblems/insight.png'       },
+  Expression:    { color: STAT_COLORS.Expression,    name: 'EXPRESSION',    emblemPath: '/images/emblems/expression.png'    },
+  Sincerity:     { color: STAT_COLORS.Sincerity,     name: 'SINCERITY',     emblemPath: '/images/emblems/sincerity.png'     },
+  Chaos:         { color: STAT_COLORS.Chaos,         name: 'CHAOS',         emblemPath: '/images/emblems/chaos.png'         },
 };
 
 const ROUTE_STATS: [string, StatName][] = [

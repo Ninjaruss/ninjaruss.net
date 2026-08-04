@@ -5,7 +5,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 import BentoTile from '../components/BentoTile.astro';
 import { buildNovelTree, computeNovelStats, flattenFolderFiles } from '../utils/novel';
-import { tallyStats, buildDonutArcs, STAT_ORDER } from '../utils/sessions';
+import { tallyStats, buildDonutArcs, hexToRgbTriplet, STAT_COLORS, STAT_ORDER } from '../utils/sessions';
 import { stripMarkdown } from '../utils/content';
 import { formatDate } from '../utils/dates';
 import { getCodexTileData } from '../utils/codexContent';
@@ -95,13 +95,10 @@ const streamSessions = await getCollection('sessions', ({ data }) => !data.draft
 const streamTallies = tallyStats(streamSessions, 'recent');
 const streamSessionCount = streamSessions.length;
 
-const STAT_COLORS = {
-  Determination: { hex: '#ff4040', rgb: '255,64,64'   },
-  Insight:       { hex: '#4ab0ff', rgb: '74,176,255'  },
-  Expression:    { hex: '#a855f7', rgb: '168,85,247'  },
-  Sincerity:     { hex: '#ffe52c', rgb: '255,229,44'  },
-  Chaos:         { hex: '#2dd4bf', rgb: '45,212,191'  },
-} as const;
+/* Stat hexes live in utils/sessions.ts (STAT_COLORS) — this only derives the
+   rgb triplet the donut's rgba() fills need. */
+const statRgb = (stat: string): string =>
+  hexToRgbTriplet(STAT_COLORS[stat as keyof typeof STAT_COLORS] ?? '#777777').join(',');
 
 const STAT_ADJECTIVES: Record<string, string> = {
   Determination: 'Determined',
@@ -124,7 +121,8 @@ const leadingStats = maxTally > 0
   ? [...STAT_ORDER.filter(s => (streamTallies[s] ?? 0) === maxTally)]
   : [];
 const primaryLeadingStat = leadingStats[0] ?? 'Determination';
-const leadingColor = STAT_COLORS[primaryLeadingStat as keyof typeof STAT_COLORS];
+const leadingHex = STAT_COLORS[primaryLeadingStat as keyof typeof STAT_COLORS];
+const leadingRgb = statRgb(primaryLeadingStat);
 
 // tiedPair: 2+ tied leaders → cycle the first two; singleIcon for uncontested leader
 const tiedPair = leadingStats.length >= 2 ? (leadingStats.slice(0, 2) as [string, string]) : null;
@@ -300,7 +298,7 @@ const codexTile = await getCodexTileData();
         id="stream-tile"
         href="/status"
         class="bento-tile bento-tile--dark bento-tile--interactive stream-tile"
-        style={`--st-lead: ${leadingColor.hex};`}
+        style={`--st-lead: ${leadingHex};`}
       >
         <div class="bento-tile__header">
           <span class="bento-tile__label">Stream</span>
@@ -317,7 +315,7 @@ const codexTile = await getCodexTileData();
                 <circle
                   cx="40" cy="40" r="32"
                   fill="none"
-                  stroke={STAT_COLORS[arc.stat as keyof typeof STAT_COLORS]?.hex ?? '#777'}
+                  stroke={STAT_COLORS[arc.stat as keyof typeof STAT_COLORS] ?? '#777777'}
                   stroke-width="7"
                   stroke-dasharray={arc.dasharray}
                   stroke-dashoffset={arc.dashoffset}
@@ -328,8 +326,8 @@ const codexTile = await getCodexTileData();
             </g>
             <!-- center: tinted circle behind emblem -->
             <circle cx="40" cy="40" r="18"
-              fill={`rgba(${leadingColor.rgb},.09)`}
-              stroke={`rgba(${leadingColor.rgb},.2)`}
+              fill={`rgba(${leadingRgb},.09)`}
+              stroke={`rgba(${leadingRgb},.2)`}
               stroke-width="1"
             />
             <!-- single leading stat emblem -->
@@ -362,31 +360,31 @@ const codexTile = await getCodexTileData();
           <div class={tiedPair ? 'st-stat-label st-stat-label--cycling' : 'st-stat-label'}>
             {tiedPair && (
               <div class="st-label-pair st-icon-primary">
-                <span class="st-adjective" style={`color: ${STAT_COLORS[tiedPair[0] as keyof typeof STAT_COLORS]?.hex}`}>
+                <span class="st-adjective" style={`color: ${STAT_COLORS[tiedPair[0] as keyof typeof STAT_COLORS]}`}>
                   {STAT_ADJECTIVES[tiedPair[0]]}
                 </span>
-                <span class="st-phrase" style={`color: ${STAT_COLORS[tiedPair[0] as keyof typeof STAT_COLORS]?.hex}`}>
+                <span class="st-phrase" style={`color: ${STAT_COLORS[tiedPair[0] as keyof typeof STAT_COLORS]}`}>
                   {STAT_PHRASES[tiedPair[0]]}
                 </span>
               </div>
             )}
             {tiedPair && (
               <div class="st-label-pair st-icon-secondary">
-                <span class="st-adjective" style={`color: ${STAT_COLORS[tiedPair[1] as keyof typeof STAT_COLORS]?.hex}`}>
+                <span class="st-adjective" style={`color: ${STAT_COLORS[tiedPair[1] as keyof typeof STAT_COLORS]}`}>
                   {STAT_ADJECTIVES[tiedPair[1]]}
                 </span>
-                <span class="st-phrase" style={`color: ${STAT_COLORS[tiedPair[1] as keyof typeof STAT_COLORS]?.hex}`}>
+                <span class="st-phrase" style={`color: ${STAT_COLORS[tiedPair[1] as keyof typeof STAT_COLORS]}`}>
                   {STAT_PHRASES[tiedPair[1]]}
                 </span>
               </div>
             )}
             {!tiedPair && (
-              <span class="st-adjective" style={`color: ${leadingColor.hex}`}>
+              <span class="st-adjective" style={`color: ${leadingHex}`}>
                 {streamSessionCount > 0 ? STAT_ADJECTIVES[primaryLeadingStat] : 'Unwritten'}
               </span>
             )}
             {!tiedPair && (
-              <span class="st-phrase" style={`color: ${leadingColor.hex}`}>
+              <span class="st-phrase" style={`color: ${leadingHex}`}>
                 {streamSessionCount > 0 ? STAT_PHRASES[primaryLeadingStat] : 'The story begins.'}
               </span>
             )}
