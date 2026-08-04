@@ -118,10 +118,11 @@
 .desk-about__body p:last-child { margin-bottom: 0; }
 .desk-about__body em { color: var(--novel-warm-muted); }
 .desk-about__cta {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   margin-top: 0.9rem;
   padding: 8px 14px;
-  min-height: 0;
+  min-height: 44px;
   font-family: var(--font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.14em;

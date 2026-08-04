@@ -506,8 +506,8 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 50%;
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -599,6 +599,9 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   }
 
   .shelf-hero__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     font-family: var(--font-mono);
     font-size: 11px;
     text-transform: uppercase;
@@ -732,7 +735,10 @@ const characterData = (characterGroup?.entries ?? []).map(e => ({
   }
 
   .shelf-panel__link {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
     margin: 0 var(--space-lg) var(--space-xl);
     padding: 10px 16px;
     border: 1px solid rgba(var(--color-gold-rgb), 0.25);
