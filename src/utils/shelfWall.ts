@@ -35,6 +35,25 @@ export function wallRotation(slug: string): number {
   return ((h % 31) - 15) / 10;
 }
 
+/**
+ * Resolve the wall's initial filter from URL state. `?type=` wins; a legacy
+ * `#section-<type>` hash is honoured only when no `?type=` is present. A type
+ * absent from the wall falls back to All (''). `rewrite` reports whether the
+ * caller should apply the filter and rewrite the URL.
+ */
+export function resolveInitialFilter(
+  search: string,
+  hash: string,
+  presentTypes: ReadonlySet<string>,
+): { type: string; rewrite: boolean } {
+  const params = new URLSearchParams(search);
+  let type = params.get('type') ?? '';
+  const legacy = /^#section-([a-z]+)$/.exec(hash);
+  if (!type && legacy) type = legacy[1];
+  if (type && !presentTypes.has(type)) type = '';
+  return { type, rewrite: Boolean(type) || legacy !== null };
+}
+
 export type WallSortable = { title: string; date: Date | null };
 
 /** Newest first; undated entries last, tie-broken by title. Non-mutating. */

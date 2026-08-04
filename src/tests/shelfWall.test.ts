@@ -5,6 +5,7 @@ import {
   wallClass,
   wallRotation,
   sortWall,
+  resolveInitialFilter,
 } from '../utils/shelfWall';
 
 describe('wallTier', () => {
@@ -85,5 +86,62 @@ describe('sortWall', () => {
     const input = [e('b', '2020-01-01'), e('a', '2025-01-01')];
     sortWall(input);
     expect(input[0].title).toBe('b');
+  });
+});
+
+describe('resolveInitialFilter', () => {
+  const present = new Set(['music', 'anime', 'film']);
+
+  it('honours ?type= when present on the wall', () => {
+    expect(resolveInitialFilter('?type=music', '', present)).toEqual({
+      type: 'music',
+      rewrite: true,
+    });
+  });
+
+  it('falls back to All (no scrub) for a ?type= absent from the wall', () => {
+    expect(resolveInitialFilter('?type=bogus', '', present)).toEqual({
+      type: '',
+      rewrite: false,
+    });
+  });
+
+  it('honours a legacy #section-<type> hash when present on the wall', () => {
+    expect(resolveInitialFilter('', '#section-anime', present)).toEqual({
+      type: 'anime',
+      rewrite: true,
+    });
+  });
+
+  it('scrubs the URL for a legacy hash whose type is absent from the wall', () => {
+    expect(resolveInitialFilter('', '#section-bogus', present)).toEqual({
+      type: '',
+      rewrite: true,
+    });
+  });
+
+  it('prefers ?type= over a legacy hash when both are present', () => {
+    expect(resolveInitialFilter('?type=music', '#section-anime', present)).toEqual({
+      type: 'music',
+      rewrite: true,
+    });
+  });
+
+  it('is a no-op with no search and no hash', () => {
+    expect(resolveInitialFilter('', '', present)).toEqual({
+      type: '',
+      rewrite: false,
+    });
+  });
+
+  it('ignores a hash that does not match the #section-<type> pattern', () => {
+    expect(resolveInitialFilter('', '#section-Anime', present)).toEqual({
+      type: '',
+      rewrite: false,
+    });
+    expect(resolveInitialFilter('', '#anime', present)).toEqual({
+      type: '',
+      rewrite: false,
+    });
   });
 });

@@ -583,6 +583,8 @@ const entryData = allShelf.map(e => ({
 </style>
 
 <script>
+  import { resolveInitialFilter } from '../../utils/shelfWall';
+
   type EntryData = {
     slug: string;
     title: string;
@@ -665,6 +667,8 @@ const entryData = allShelf.map(e => ({
     jumpbar.addEventListener('click', e => {
       const link = (e.target as HTMLElement).closest<HTMLAnchorElement>('.shelf-jumpbar__link');
       if (!link) return;
+      // Real links — let the browser handle modified clicks (new tab/window).
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       e.preventDefault();
       const type = link.dataset.type ?? '';
       applyFilter(type);
@@ -673,12 +677,12 @@ const entryData = allShelf.map(e => ({
 
     // Initial state: ?type= param, or a legacy #section-<type> deep link.
     // Unknown values (absent from the wall) fall back to All.
-    const params = new URLSearchParams(location.search);
-    let initial = params.get('type') ?? '';
-    const legacy = location.hash.match(/^#section-([a-z]+)$/);
-    if (!initial && legacy) initial = legacy[1];
-    if (initial && !presentTypes.has(initial)) initial = '';
-    if (initial || legacy) {
+    const { type: initial, rewrite } = resolveInitialFilter(
+      location.search,
+      location.hash,
+      presentTypes,
+    );
+    if (rewrite) {
       applyFilter(initial);
       history.replaceState(null, '', initial ? `/shelf?type=${initial}` : '/shelf');
     }
