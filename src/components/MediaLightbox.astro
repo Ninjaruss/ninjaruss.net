@@ -88,6 +88,22 @@
     box-shadow: var(--shadow-glow);
   }
 
+  /* The emblem SVGs carry a viewBox and no width/height, so they have an
+     intrinsic aspect ratio but no intrinsic size. `.media-lightbox__content` is
+     shrink-to-fit, so `auto` and the cyclic `max-width: 100%` have nothing to
+     resolve against and the image collapses to its borders (~6px). Anchor SVGs
+     to the viewport instead — definite units, no cycle. Rasters are left alone
+     so a small image is never upscaled. 56vw-of-height keeps a 63:88 emblem
+     under the 80vh cap; any other ratio is still caught by max-height. */
+  .media-lightbox__img[src$='.svg'] {
+    width: min(90vw, 56vh);
+    height: auto;
+    /* `max-width: 100%` above is cyclic for these — the parent shrink-wraps the
+       image, so the percentage resolves to 0 and would clamp the width away.
+       The viewport-based width is the cap instead. */
+    max-width: none;
+  }
+
   .media-lightbox__caption {
     position: relative;
     z-index: 1;

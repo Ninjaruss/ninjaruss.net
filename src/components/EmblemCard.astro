@@ -281,9 +281,7 @@ const cardBack = '/images/ygo-card-backing.png';
 </style>
 
 <script>
-  function initEmblemTilt() {
-    const emblemCards = document.querySelectorAll('.emblem-card');
-
+  function initEmblemTilt(emblemCards: HTMLElement[]) {
     emblemCards.forEach((card) => {
       const flipper = card.querySelector('.emblem-card__flipper');
       if (!flipper) return;
@@ -342,10 +340,8 @@ const cardBack = '/images/ygo-card-backing.png';
     });
   }
 
-  function initEmblemFloat() {
+  function initEmblemFloat(emblemCards: HTMLElement[]) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const emblemCards = document.querySelectorAll('.emblem-card');
 
     emblemCards.forEach((card) => {
       // Suppress float on xs cards
@@ -408,8 +404,7 @@ const cardBack = '/images/ygo-card-backing.png';
     });
   }
 
-  function initEmblemLightbox() {
-    const cards = document.querySelectorAll('.emblem-card');
+  function initEmblemLightbox(cards: HTMLElement[]) {
     cards.forEach((card) => {
       // Skip if lightbox is disabled
       if (card.getAttribute('data-disable-lightbox') === 'true') {
@@ -442,9 +437,19 @@ const cardBack = '/images/ygo-card-backing.png';
   }
 
   function init() {
-    initEmblemTilt();
-    initEmblemFloat();
-    initEmblemLightbox();
+    // init() runs immediately AND on every astro:page-load, so on first load
+    // both fire against the same cards. Binding twice opened the lightbox twice
+    // per click and ran two float rAF loops per card — mark each card and wire
+    // only the fresh ones (same guard the lightbox uses).
+    const cards = Array.from(
+      document.querySelectorAll<HTMLElement>('.emblem-card')
+    ).filter((card) => card.dataset.emblemBound !== 'true');
+    if (cards.length === 0) return;
+    cards.forEach((card) => { card.dataset.emblemBound = 'true'; });
+
+    initEmblemTilt(cards);
+    initEmblemFloat(cards);
+    initEmblemLightbox(cards);
   }
 
   document.addEventListener('astro:page-load', init);
