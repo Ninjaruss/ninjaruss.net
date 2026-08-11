@@ -1,59 +1,81 @@
-\#\#\# Vesper
+## Vesper
 
-\#\#\#\# Identity & Role
+The kindest man in the story, and the only one who has never once been refused.
 
-\- Tag: The Reforming Martyr
+### The contradiction
 
-\- Main Trait: Reformer
+**He cannot bear to watch anyone suffer slowly — so he takes their suffering, and keeps his own.**
 
-\- Passive Trait: Martyr
+His question: *how long am I supposed to watch?*
 
-\#\#\#\# Abilities
+### What he actually is
 
-\- \*\*Passive:\*\* Involuntary flashbacks of his own and extracted memories.
+Not mercy. **Impatience.**
 
-\- \*\*Active: Extraction\*\* – Pulls a memory into a glass shard. Shatter the shard to return the memory. Cost: neural echoes (migraines, vertigo). He can borrow the skills contained in a memory while the shard is intact. Requires direct contact; ideally done stealthily. Memory loss temporary unless shard melted.
+He cannot bear to wait for people to figure it out. The intolerable thing is the *watching*, and the watching is what he's fixing — which is why he runs an institution instead of quietly medicating himself. A man who only wanted peace would take his own pain and stop.
 
-\- \*\*Advanced: Melt\*\* – Permanently internalizes a memory; the original owner loses it forever. Cost: accelerated neural damage, identity fragmentation, loss of parts of his own memories.
+**This is what makes him unlike the villain he'd otherwise be.** Most antagonists of his type are wrong about the world: wrong about resources, wrong about whether the peace holds, wrong about method. **Vesper is wrong about time.** His facts are all correct — people are suffering, he can stop it, they are asking him to, and it works. His single error is that he will not let the slow version happen. He does not believe a person arrived at over years differs from one arrived at this afternoon.
 
-\#\#\#\# Artifact: Prism (glass pendant)
+His crime is speed. There is no factual error to attack; only time.
 
-\- A glass prism worn as a pendant by his mother. She loved the light it scattered but never focused on anything long enough to finish it.
+### Three layers
 
-\- During the Flare, she unclasped it and pressed it into his hand. The prism witnessed her irreversible abandonment and became an artifact.
+**What you see.** Genuinely warm. Unhurried. Actually helpful. He is exactly as good as he looks, and that is the twist.
 
-\- Vesper holds the prism between himself and the patient. The memory enters the glass and separates — pain refracting from experience. A small shard splinters off, containing the extracted wound.
+- *Tell:* he asks permission every single time, and means it.
 
-\- All shards in his archive are fragments descended from this original prism.
+- *Tell:* he shows his work — demonstrates the mechanism openly, mid-arc, because candour buys more trust than concealment ever would.
 
-\#\#\#\# Character Chain
+- *Tell:* **he fixes small things before anyone asks.** Warm, correct, and faintly presumptuous. He does not wait for the request.
 
-\- History: Born with perfect memory. Mother was a puella aeternus: charming, full of potential, never committed, left chaos, and finally made an irreversible mistake that destroyed something Vesper loved. Vesper has carried that guilt and memory ever since.
+**What's underneath.** He waited. A whole childhood, for a mother to notice, to change, to become the person she could obviously have been — a thousand instances of waiting for someone who never arrived, and her one decisive act was leaving.
 
-\- Interpretation (Lie): “Painful memories are the root of all suffering. Remove them, and you create peace. People cannot change on their own; they need to be forced. The only way to have control is to become the very thing I hate – someone who takes away choice.” (Contradiction: he wants to free people, but enslaves them to his will.)
+The lesson he took was not *I was abandoned*. It was **waiting for people to change is worthless, and it costs you your life.** He has never waited again, for anyone.
 
-\- Motivation (Fear & Fix):
+- *Tell:* he reacts from memories he was never given. Four times, in order: a fighting style that isn't his, a gap in what he could know, the loadout at breakfast, and a phrase belonging to a woman he damaged years ago.
 
-\- Fear: That he is secretly like his mother – full of potential but destined to cause destruction. That suffering is endless and he is powerless to stop it.
+- *Tell:* being told *not yet* visibly costs him something. Not anger — a flicker, immediately covered.
 
-\- Fix: Force results, control everything, never leave anything unfinished. Extract all painful memories from society (or absorb them into himself) to create a docile, pain‑free world. Prove he is different from his mother by eliminating the messiness of human choice.
+**What he doesn't know.** He has become her. He now stands on the other side of his own wound — the one who remembers everything while the other person carries nothing — and cannot see it. He built a machine to produce the peace he waited for, and turned into the thing he was waiting on.
 
-\- Behavioral Pattern: When faced with suffering → immediately offers extraction (his fix). When someone refuses his help → becomes manipulative, then coercive. When his plan is threatened → escalates (extraction → absorption → mass extraction). Cannot tolerate ambiguity – must have a controlled outcome.
+### How he processes
 
-\- Boundary: “I will not erase my own memory of what my mother did. That memory is my wound, but it’s also the only proof that I’m not her. Without it, I wouldn’t know why I started – and I’d become just as hollow as the people I ‘help.’”
+Through memory — so everything he can do is a record, moved.
 
-\- Collision: Rain refuses Vesper’s offer of memory extraction – not out of fear, but out of a genuine belief that struggle is valuable. Vesper cannot comprehend this because his entire worldview is built on the assumption that pain must be erased. This forces Vesper to confront the possibility that his mother’s tragedy could have been avoided not by erasing memories, but by doing the drab work of being present.
+- **Deviation — extraction.** Direct contact; memory becomes glass. Shattering a shard returns it. The archive exists so that can't happen.
 
-\- True evil: useless people, aka people who see problems but do nothing about them.
+- **The Melt** — permanent erasure, and it costs one of his own. Three or four times, ever. The only permanent alteration anyone in this world can make.
 
-\#\#\#\# Layers
+- **The error, stated precisely:** he treats the record as *editable inventory* — remove the bad entries, keep the person. But entries are accumulated reaching, and removing them doesn't produce a happier person. It produces one who stops.
 
-\- Layer 1 (Immediate): Calm, gentle, reasonable. “I can help you become who you’re meant to be.” Bright, transparent.
+- **What actually beats him:** his power is made entirely of other people's finished pasts, and a record is always out of date. He cannot beat someone who isn't done becoming.
 
-\- Layer 2 (Situational): Extracts memories to correct flaws. Reshapes identity by removing what he judges to be broken. When someone resists his perspective, he reframes their resistance as confusion. "You're not ready yet." Dark, semi‑transparent.
+- **The one thing he'll wait for is his own skill.** He knows imprecision breaks people — he broke Shiori learning that. So *"you're not ready yet"* is technical, not moral. Precision he respects. Personal development he does not.
 
-\- Layer 3 (Foundational): Mother‑wound. She was an puella aeternus whose formlessness caused tragedy. He reforms others to prove he’s not her, yet clings to her memory as the one shard he won’t melt. Very dark, very obscure.
+### The ladder
 
-\#\#\#\# Combat Style
+1. Kindness demonstrated, not asserted — and offered before it's requested.
 
-\- Vesper’s combat style is that of a composite fighter. He is able to switch between styles based on the memories of those he’s extracted. Occasionally, echoes of the person’s memory appears briefly for the receiving end, almost as if they see an entirely different person in Vesper for a split second.
+2. Shows Rain the archive himself, and offers. *Not yet* costs him something.
+
+3. **The melt.** He takes Roxana's memory of standing because he has correctly diagnosed that her standing is what's killing her — the giving-through-the-body is armour, and it's destroying her. He sees it instantly and cannot watch her keep doing it. Right about the diagnosis, monstrous in the cure. Impatient mercy, not strategy.
+
+4. Hands them to the state and calls it a referral.
+
+5. Fights Rain with a snapshot of the woman who trained him, taken before she became what beat him.
+
+6. Takes everything Rain has and gets nothing.
+
+7. Left holding the prism. **In the corrected world he would be the only person left who wants anything** — satisfied, and completely alone in it.
+
+### Guards
+
+- **Evil never raises its voice.** Offers, forms, renovations, schedules. Violence belongs to the desperate and the good.
+
+- Not a mask twist. The pleasantness is real; the horror is what *kind* of good he is — a man whose kindness and whose atrocity are the same gesture.
+
+- **He has to be right sometimes**, or the refusal at the end proves nothing.
+
+- He remembers Shiori warmly, and he practised on her.
+
+- He keeps his own wound not from hypocrisy but because **the impatience was always aimed outward.** He can carry his; he isn't the failure. Everyone else is the one standing around not fixing themselves, in front of him, indefinitely.

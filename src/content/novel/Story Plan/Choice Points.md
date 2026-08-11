@@ -1,47 +1,99 @@
-\#\#\# Choice Points (Key Decisions)
+### Choice Points
 
-\#\#\#\# Inciting Incident Specifics
+*Replaced 2026-08-08 by ticket 16. The old Q&A doc (inciting-incident specifics, memory-manipulation mechanics, character functions, open questions) is superseded — every question it held has been answered elsewhere in the plan. What follows is the interaction design.*
 
-\- \*\*What specific action does Rain take?\*\* He takes a different path during his commute. This leads to an encounter where Rain willingly goes into a dark alleyway in an attempt to pursue a shadowy figure that silently calls to him (later revealed to be his subconscious taking form from his ability). He encounters something inspirational? Something that calls to him to take hold of it, likely the mirror.
+#### There are no branches. There are pitfalls.
 
-\- \*\*Why does this make him a fugitive?\*\* The government. They manipulate the story to where society itself is on the lookout for him as well. He is acting outside of the predictable norm and is designated as a fugitive. He is “disturbing the peace” in the sense that he is going against the comfort the society has established. Everything is fine and ignore the discrepancies in your comfortable reality.
+A menu of forks — and especially a menu of equally-valid endings — contradicts the thesis. "All paths remain open, each equally available, none costs anything" is Vesper's offer. A story arguing that a self is built through irreversible commitment cannot hand the player a save-scummable ending select.
 
-\- \*\*What are the immediate, tangible consequences?\*\* His family and/or close friends beg him to turn himself in. That he should admit his wrongs even though he has not done anything definitively wrong.
+- **One true ending.** Arc 5, the outbound train. Never optional, never clickable. It is not reached by choosing it; it is reached by getting *through*.
 
-\#\#\#\# Memory Manipulation Mechanics
+- **Four pitfalls**, one per arc, Arcs 1–4. A pitfall is a comfortable loop the player can get stuck in. It never kills, never punishes, never says no.
 
-\- \*\*Can Vesper literally erase memories? Implant false ones?\*\* Vesper can extract memories from himself and others and turn them into glass shards. When the glass shards are shattered, they linger for a moment that grants an echo of the memories before returning to the owner’s mind. He holds the memories he’s stolen in a vault to prevent the memories from returning. However, Vesper finds a way to integrate and force certain memories into himself by melting the shards through a difficult process.
+- **Five endings total, one true.**
 
-\- \*\*Is this technology? Magic? Psychic ability?\*\* Part of the magic system. His deviation ability that’s extended by his artifact.
+- **Arc 5 has no pitfall.** The loops are broken there.
 
-\- \*\*What are the limitations?\*\* He must be within direct contact with the person in order to extract their memory. Vesper ideally does this stealthily. The memory loss is temporary and can be returned once the corresponding glass shard is shattered.
+The pitfalls are the antagonist made playable. The declared evil of this story is the closed loop — stagnation, the waiting room, the infinite commute — and the finale breaks the closed dying loop. A structure where the player can be *held* somewhere pleasant is the thesis rendered as level design.
 
-\- \*\*How does Rain discover this is happening?\*\* The Roxana scene you mentioned (losing mobility functions) suggests Vesper can target specific memories. Vesper wants to optimize people. So his offering of removing tragic/negative experiences is very enticing for most people. In return for this service, they serve him in being compartmentalized agents for him.
+#### The law
 
-\#\#\#\# Character Functions
+**Retreat is always a button. Commitment is never a button.**
 
-\- \*\*How do Claire and Roxana meet Rain?\*\* (To be determined.)
+The world hands you the comfortable option pre-labeled, and no one ever hands you the other one — commitment is made *from within*, so the interface will not offer it. You walk into a pitfall through an ordinary labeled door. You climb out through a window the game never points at.
 
-\- \*\*What are their goals independent of Rain's story?\*\* To locate what happened to Aster Sparks, Roxana’s adoptive father.
+#### How a pitfall works
 
-\- \*\*Why do they join him/oppose Vesper?\*\* (To be determined.)
+1. You enter through an ordinary, comfortable, labeled door. Entering is never marked as a mistake.
 
-\- \*\*What do they DO in the story?\*\* They are idealized versions of what Rain aspires to be.
+2. The story stops advancing. Each cycle brings something genuinely new — never repeated text — but fractionally smaller than the last. Diminishing returns, not repetition. Each cycle ends on a small promise of something next.
 
-\#\#\#\# Open Questions
+3. **The exit is the Ghost.** Faded, palm upward, never labeled, always shown. The Ghost is a compass — commitment, never competence — so it can point at the way out without ever saying how. The player has been trained on this since Arc 1's *follow*.
 
-\- Shiori's passive ability: Afterimage seeing emotional residue of memories, or none at all? (Tentative)
+4. Each cycle the Ghost comes later and dimmer. **When it stops coming, the loop closes and the trap ending plays.** The want dies first, and *then* you can't leave.
 
-\- Roxana's advanced ability: Empathic flame? Protective fire? Something else?
+5. Skipping doesn't beat a loop — it reaches the ending sooner. Blurred days are what the trap is made of.
 
-\- The Perfect Clone placement: Arc 4 (internal climax) or Arc 5 (combined with external climax)?
+**A boring pitfall is a broken pitfall.** Comfort is not tedium. A real share of the joy budget is spent inside the traps — the player stays because it is genuinely lovely, and the horror is that it is lovely and goes nowhere.
 
-\- The Pursuer: Steam-wreathed agent tracking Rain. Affiliation with the System? Arc: turn or burnout?
+#### The four pitfalls
 
-\- Vesper's mother's specific tragedy: Sibling death? Something else?
+| Arc | The pitfall | Enters at | Exits to | Trap ending |
 
-\- The Devil's Bargain: What form does it take? Device, chemical, ritual?
+|-----|-------------|-----------|----------|-------------|
 
-\- The Inciting Incident stranger: Who else was in the restricted room?
+| 1 | **Go home** — the calls, the admission, the commute resuming | card 4, the drift | card 5, the follow | He turns himself in and admits wrongs he didn't commit |
 
-\- City/district names, Aster's fate (missing or dead), Shiori's gadgets, prison escape mechanics.
+| 2 | **Put it down** — stay a resident, let Vesper take the Split | card 6, the archive | card 7, Aster's trail ends here | He becomes a patient |
+
+| 3 | **Stay in the life** — the long movie | card 3, the lives | card 4, the mountain | He never ends the beloved life |
+
+| 4 | **Let it expire** — the tolerated life on the circuit line | card 7, the amnesty | card 8, the refusal | The offer dies unanswered; the commute closes over him |
+
+Arc 2's exit line is Rain's own: *"not yet."* It is the most honest button in the medium — nobody ever clicks *I surrender*, they click *not right now*, forty times.
+
+#### The trap endings erase the narrator
+
+Rain's interior voice *is* the unattributed narration — not a character speaking, but the channel the reader has lived inside since line one. So a trap ending does not describe self-erasure. It performs it on the prose: specificity drains, sentences shorten, the "I" appears less, feeling gives way to describing, describing gives way to schedule — the train, the weather, the hour, the rain — until the text is nouns and timetable and no one is home in it. Nothing bad happens the whole way down.
+
+This is the only place in the story where `unlit` lands on **Rain**.
+
+**Shared closing image, all four: the notebook, one line written, closed.** Same shot in the ward, on the commute, in the dream, at the station — it repeats because they are the same death. The outbound train is the only place in the entire work where the second line appears.
+
+Length: Arc 3 gets the full-length version. Arcs 1, 2 and 4 are 400–600 word compressions of the same shape.
+
+#### Reconvergence: nothing persists
+
+Every pitfall returns to the next card on the spine. No reward for leaving, no penalty for having lingered, no hidden ledger, no accumulator. Dreams are riskless and nothing compounds — which is why the notebook's second line can only be earned at the very end.
+
+The true ending needs no tally: you reach it by escaping every loop. Commitment is the same act performed four times, which is what commitment actually is.
+
+#### The dream register — three guards
+
+Trap endings read as dreams the player was stuck in.
+
+1. **Never a twist.** No sting, no reveal. The player half-knows throughout; Arc 3 confirms it flatly. Evil never raises its voice, and neither does this.
+
+2. **A register, not always a literal.** Arc 3's is a literal dilation dream. Arc 4's infinite commute is not a dream — it is the waking world subtracted until it behaves like one.
+
+3. **A dream cannot invent facts — it reveals people.** Dead-end scenes never carry plot information the spine requires. They carry emotional truth: what Roxana sounds like when she isn't performing strength, what his mother actually means beneath the generic encouragement, what Vesper sounds like when he isn't selling.
+
+**Dream ≠ didn't count.** A dream here is riskless, nothing compounds, no fall possible — so the frame is not an escape hatch, it is the diagnosis. It doesn't say *it didn't count*; it says *nothing you did in there could ever have counted, and you stayed anyway.*
+
+#### The Arc 3 vault
+
+The *lives* card is the optional-content vault **and** the pitfall. The player chooses which potential lives to enter and how long to linger; each is a self-contained vignette; they cannot all be seen in one run. The mountain grows with every one — the completionist earns the biggest graveyard, enacting the disease with their own hands while the game never says a word about it.
+
+**Governing rule for all optional content: nothing meaningful is reachable only by replay.** One attentive playthrough must feel complete. Replay changes which optional content you saw and which ending you got — never whether you got the story.
+
+#### Arc 5
+
+No pitfall, no branch, no ending fork. One non-branching commitment ritual at **the void**, where the player rebuilds Rain choice by choice — no divergent paths, no retreat, no wrong answer. It is the one place where commitment *is* a button, and that is exactly right: everything external has been stripped, so nothing remains to offer the comfortable option.
+
+**The refusal is not a player choice.** Rain refuses to have the Split removed, sets aside the Clone, writes the two lines.
+
+#### Protected non-choices
+
+- **The shard misread** (Arc 2, the melt) is Rain's alone. The point is that he couldn't tell which target mattered; offering the correct option destroys it.
+
+- **The ending of the beloved life** (Arc 3) is Rain's alone. The player chooses how many lives to enter and how long to linger; when they stop, Rain performs the ending himself, unprompted, on screen. The player never clicks to end her.

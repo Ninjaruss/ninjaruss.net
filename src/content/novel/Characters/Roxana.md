@@ -1,55 +1,61 @@
-\#\#\# Roxana Sparks
+## Roxana
 
-\#\#\#\# Identity & Role
+She has been giving since before she can remember, and nobody has ever asked her what she needs.
 
-\- Abstract Role: Body
+### The contradiction
 
-\- Tag: The Scarred Star
+**She can give anything and cannot receive.**
 
-\- Main Trait: Loner / Warden (watchful, guarded)
+Her question: *who am I when nobody needs me?*
 
-\- Passive Trait: Ember / Aspirant (wants to be a star, fears she’s too damaged)
+### Three layers
 
-\- Age: 27–28
+**What you see.** Warm, physical, immediately family. She decides you're hers within about four minutes and that's that.
 
-\- Height: 5’6”
+- *Tell:* she feeds people. She takes a hunted stranger into her home without asking him a single question about the charge.
 
-\- Flaw: "It's easier to be alone and do things on your own, but it is easy in the moment."
+- *Tell:* she touches people when she talks to them — she is the only character who does.
 
-\#\#\#\# Abilities
+**What's underneath.** The giving is armour. If she is needed, she never has to be known, and being known is the thing she cannot survive.
 
-\- \*\*Passive:\*\* Empathic pain amplified when she feels vulnerable or others nearby are suffering. Particularly sensitive due to having burns all over her arms.
+- *Tell:* every question about herself gets converted into a task. *(candidate)*
 
-\- \*\*Active: Flame\*\* – Conjure a small, tenacious flame fueled by her own body heat. The flame cannot be extinguished by water, wind, or smoldering. Extended use causes hypothermia. Can only be produced through her artifact (an empty lighter her adoptive father Aster Sparks gave her). Reacts to her physical gestures from primarily her hands, but can still move the flame with broader body movements.
+- *Tell:* she trains Rain relentlessly and never once tells him why she needs to. *(candidate)*
 
-\- \*\*Advanced ability:\*\* ? \*(To be defined; possibly empathic flame or protective fire.)\*
+**What she doesn't know.** The thing she calls her strength is the thing that took her legs. She accepted one hand in her adult life and it belonged to the man who unmade her.
 
-\#\#\#\# Character Chain & Backstory
+### How she processes
 
-\- Roxana was born to a household known for its physicality? Possibly a family of firefighters.
+Through her body's heat — so everything she can do is warmth, spent.
 
-\- She was imparted with the identity of being selfless at a young age; making her want to be someone who can save others. Someone who is strong but also very kind and caring.
+- **Passive — the empathic burn.** Other people's pain arrives unbidden, through the scars. She cannot choose to stop feeling it.
 
-\- After a tragedy that caused her family to be lost, she was permanently scarred when she tried to save both her parents with her arms, but the flames caught up to both of them.
+- **Deviation — the Bearing Flame**, through Aster's empty lighter. Fire that holds a body up that cannot stand.
 
-\- What followed was a few years of loneliness where the people around her seemed to not really care about her. They do, but in a hollow sense that never really saw her for herself. She found all the selfless acts she’s done never really were reciprocated in the way she needs it to be. Like giving a gift that was ignored and not accepted. She hated her family name due to the burden of being seen as a tragedy rather than an individual.
+- **Fuel is always her own heat.** The stand is unborrowed. **Ignition is care offered *and accepted*** — her passive aimed and permitted. Pain arrives uninvited; warmth only gets in when she lets it.
 
-\- Aster meets her and turns into a sort of father figure for her. He teaches her that the tenacity she has is one she needs to extend in spite of all of the people that won’t accept it or the “darkness” that attempts to shut her off.
+- **Cost:** when it gutters, total scaling helplessness. Injury quits *before* effort; cost spends *through* it. Same limpness, opposite grammar.
 
-\- One day, Aster disappeared without a trace. Not sure if it will be implied he’s dead.
+### The ladder
 
-\- Roxana proceeds to take on his last name Sparks as a sort of vow to become a person like him, someone who imparted her the simple wisdom when she needed it the most.
+1. At full capability — the last time anyone sees it.
 
-\#\#\#\# Layers
+2. Takes a steadying hand, the one time she ever accepts one, and loses her legs.
 
-\- Layer 1 (Immediate): Guarded, clipped, “I’m fine.” When alone: gentle, traces fire‑patterns in the air. Mid‑dark, transparent.
+3. In the tank: endless time in which nobody needs her. The armour has nothing to do and wears through.
 
-\- Layer 2 (Situational): Pushes people away; scars ache when others suffer nearby. Dark, semi‑transparent.
+4. Takes an offered hand that asks for nothing — and stands, in fire, without the memory of standing.
 
-\- Layer 3 (Foundational): Wants to be what her adoptive father Aster Sparks was — a protector, a light. Fears she already failed; the burns are the proof. Very bright, very obscure.
+5. Tells all of it flat, over a mundane task, and it lands harder for that.
 
-\#\#\#\# Artifact: Lighter
+6. Loses every exchange to a man who cannot be outlasted, and wins anyway, because she can relight and he can only spend.
 
-\- Empty on fuel. Given by Aster as a keepsake of something important that he wanted her to hold onto.
+7. Burns her father's shard. Then fills his empty lighter with her own flame.
 
-\- Looks like a worn down zippo lighter.
+### Guards
+
+- **Never a woman waiting to be retrieved.** Absence of agency only when it's the point of the scene.
+
+- Her paralysis is a lost memory of standing, not a spinal injury. Resistance goes limp; the flares ride the passive.
+
+- She is not sweet. She is relentless, and the relentlessness is the symptom.

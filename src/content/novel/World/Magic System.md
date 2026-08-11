@@ -1,61 +1,91 @@
-\#\#\# Magic System
+### Magic System
 
-\#\#\#\# The Flare
+*Provenance: rebuilt 2026-08-10 during the planning pass. The mechanics are the author's original system; the laws and terminology below were settled in that process and are recorded as working notes.*
 
-\- A global phenomena that occurs which exposes the entire world with an unseen energy. This energy does not affect most people, but affected those who have an actively trying to change. The energy has an attribute of resonance which clings onto those who are actively moving towards confronting themselves rather than those who are actively avoiding change; those who are stagnant and accept that will never awaken to any special ability.
+#### The Flare
 
-\- The Flare was a moment where the boundary between inner and outer worlds thinned. The energy clings to instances of irreversible change — motion that breaks its own loop. Commitment is the human name for this condition, but the Flare only measures the physics of a threshold crossed.
+A global phenomenon: for an instant, an unseen energy passed over the world. It did not affect most people. It clung to those who, at that moment, were in the middle of an irreversible change — motion that breaks its own loop. Commitment is the human name for that condition; the Flare only measured the physics of a threshold crossed. Those who were stagnant, and content to be, were not marked.
 
-\- The water's amplification property persists as long as it circulates through a living system—one in which the inhabitants continue to generate the kind of irreversible internal motion the Flare responds to. When the surrounding population sinks into stasis, the resonance fades, and the loop begins to die.
+**The Flare was a census of an instant, not a judgement of capacity.** Stagnation guaranteed nothing clung — but the absence of a mark proves nothing about a person. Plenty of people capable of the threshold simply weren't standing on one that day.
 
-\#\#\#\# Passive and Active Abilities
+**It is not a class system. It is a category the state invented out of an accident and then enforced.** The System treats contact with the marked as pre-crime, calls those people deviants, and warehouses their effects. Sorting people by a coincidence and calling it a kind is the manufacture of nothing, applied to persons. Nothing in the story should ever present the state's reading as true.
 
-\- The energy from the Flare affected those who were trying to confront themselves, which resulted in a passive quirk/burden that affects them. It is a passive ability based on the character’s deepest internal conflict that manifests without conscious control. The passive can only be perceived by them.
+The water's amplification persists as long as it circulates through a living system — one whose inhabitants keep generating the kind of irreversible internal motion the Flare responds to. When the population sinks into stasis, the resonance fades and the loop begins to die.
 
-\- As for active abilities, they are awakened once the user encounters an artifact that resonates with their core being. It is a unique ability that has a physiological cost (a metaphor for the emotional cost) which is shaped by intent.
+#### The two substrates
 
-\- The through line for the design of powers in this magic system is they are all forms of internal processing.
+**The Flare recorded commitment in two places.**
 
-\- Generally, the passive is an extended psychological burden while the active is a tool/skill that takes a physiological toll on the user.
+- **In people it left a Deviation** — live, usable, yours.
 
-\#\#\#\# Principles
+- **In objects it left an Imprint** — fixed, finished, someone else's.
 
-1\. All powers are sourced from each character’s way of internally processing their core psychological wound (Rain from his own perception of himself, Roxana from her body heat, Claire from her brain’s calculations, Vesper from his memory within his psyche).
+Same phenomenon, two states. Everything else in this system follows from that sentence.
 
-2\. There is a self-affecting physiological cost when using the active abilities.
+*Deviation* is the state's own clinical word, adopted: its pods exist to pacify "deviants." A bureaucracy naming a soul. It is also, exactly, what Rain does in the first scene — he deviates from his commute.
 
-3\. Passive abilities are the same internal processing of the core wound but in a more raw and unfocused way.
+People say **Imprints**. The state says **effects**.
 
-4\. The artifact does not grant new powers but rather channels the existing passive ability into a more intentional form.
+#### Passive and Active
 
-5\. No permanent physical change is made to the world. Memory and identity, however, can be permanently altered — this is the exception. Each active ability temporarily manifests something if applicable.
+The energy left everyone it marked with a **passive**: a permanent, uncontrollable quirk growing out of that person's deepest internal conflict, manifesting without conscious control.
 
-6\. Tied to the core wound of the character.
+**Only the person themselves can perceive their own passive** — which is why there is no public word for them, and why there never can be. Nobody can coin a term for a thing one person can see. Passives are named privately, by their owners, if they are named at all: the Ghost, the Static, the Split, the Bearing Flame. **Never invent a public term.
 
-7\. Advanced or evolved active abilities have their cost transformed reflecting the character’s growth or descent. That or their ability is refined but with the same or similar original cost.
+Deviations** are the deliberate abilities, awakened when the user encounters an Imprint that resonates with their core being. Generally: the passive is an extended psychological burden, the Deviation a tool or skill that takes a physiological toll.
 
-\#\#\#\# Artifacts
+Every power in this system is a form of internal processing.
 
-\- Artifacts are physical objects that witnessed an irreversible human commitment during the Flare. The energy imprinted on them not because they were in motion, but because they were touched by a decisive act — someone running toward danger, reaching to save, staying when others fled. An artifact carries the memory of that moment. When a person on the verge of their own commitment encounters a matching artifact, resonance occurs. The object channels the passive into the active. The artifact does not grant power; it focuses what is already there.
+#### Principles
 
-\- An artifact fits you if its witnessed commitment and your inner wound share a recognizable emotional shape. That shape is intuitive. You know it when you feel it. Using another person's artifact is possible but rare; the cost increases when the alignment is imperfect.
+1. All powers are sourced from how each character internally processes their core psychological wound — Rain from his own perception of himself, Roxana from her body heat, Claire from her brain's calculations, Vesper from memory.
 
-\- An artifact can witness multiple irreversible acts over time, layering its record. This is not a separate mechanic — it's the natural consequence of the artifact's nature.
+2. There is a self-affecting physiological cost to using a Deviation.
 
-\- The active ability cannot be accessed without the artifact. Not weakly, not partially—not at all. The artifact is not a training wheel. It is the instrument. If lost or destroyed, the user reverts to passive only until the artifact is recovered or a new resonant object is found and bonded.
+3. Passives are the same internal processing, in a rawer and more unfocused form.
 
-\- Exception: in moments of extraordinary emotional or physical extremity, a raw expression of the passive may briefly manifest without the artifact. This is not controlled, not repeatable, and comes at severe cost (see: Roxana's prison spark). The artifact remains essential for all deliberate, sustained active use.
+4. The Imprint does not grant a new power; it channels the existing passive into a more intentional form.
 
-\- The artifact may deepen in attunement over time, reflecting the user's growth, but is never made obsolete.
+5. No permanent physical change is made to the world. Memory and identity are the exception.
 
-\#\#\#\# Costs and Advanced Abilities
+6. Tied to the core wound of the character.
 
-\- All active abilities have a self-affecting physiological cost. The cost is a metaphor for the emotional toll of the wound being channeled. It scales with use—the longer or more intensely the ability is active, the greater the cost. Recovery is possible but not instant. The cost cannot be bypassed; it can only be endured or transformed (see Advanced Abilities).
+7. Advanced Deviations transform their cost, reflecting the character's growth or descent — or refine the ability while keeping the original cost.
 
-\- Advanced or evolved active abilities transform the cost rather than removing it. The transformation reflects the character's growth or descent.
+**The register law.** Each character's cost is paid in the currency they process with. A cost that feels flat is usually in the wrong register: the test is not *is this painful enough* but *is this their pain.*
 
-\- Example: Rain's base Clone causes acute sensory deprivation. His Perfect Clone removes the immediate sensory cost but introduces a deferred psychological cost. The cost changes form; it does not disappear.
+**The compass rule.** A passive can grant commitment; it never grants competence. Rain's Ghost points at what he wants. It never tells him how, and it is never right about method — only about wanting.
 
-\- Some advanced abilities are additions to the base form (Vesper can still shatter or melt); others are irreversible transformations (Rain's Clone becomes the Perfect Clone; he cannot revert).
+#### Imprints
 
-\- Rule: No ability causes permanent physical change to the world. Memory and identity are the exception. Vesper's advanced active (Melting a shard) permanently erases a memory from the original owner. This is the only form of permanent, irreversible alteration in the magic system. It is thematically central: memory is the record of the self. To destroy it is to destroy evidence of commitment. This exception is what makes Vesper's power uniquely transgressive.
+Imprints are ordinary objects that witnessed an irreversible human commitment during the Flare. The energy marked them not because they were in motion but because they were present for a decisive act — someone running toward danger, reaching to save, staying when others fled. The object carries the memory of that moment.
+
+**Resonance is a finished departure meeting an unfinished one.** An Imprint fits you when its completed commitment and your incomplete one share a recognisable emotional shape. You are borrowing somebody else's finished act to power your own unfinished one. That shape is intuitive — you know it when you feel it. Using another person's Imprint is possible but rare, and the cost rises as the alignment worsens.
+
+An Imprint can witness multiple irreversible acts over time, layering its record. This isn't a separate mechanic; it's the natural consequence of what an Imprint is.
+
+**A Deviation cannot be accessed without its Imprint.** Not weakly, not partially — not at all. The Imprint is not a training wheel; it is the instrument. Lose it and the user reverts to passive only until it is recovered or a new resonant object is bonded.
+
+*Exception:* in moments of extraordinary emotional or physical extremity, a raw expression of the passive may briefly manifest without an Imprint. Uncontrolled, not repeatable, and severely costly — see Roxana's prison spark. The Imprint remains essential for all deliberate use.
+
+An Imprint may deepen in attunement over time, but is never made obsolete.
+
+#### Costs and advanced Deviations
+
+All Deviations cost the user physically, and the cost is a metaphor for the emotional toll of the wound being channelled. It scales with use. Recovery is possible but not instant. It cannot be bypassed — only endured, or transformed.
+
+Advanced Deviations transform the cost rather than removing it, and the transformation reflects growth or descent. Rain's base Clone causes acute sensory deprivation; his Perfect Clone removes that and introduces a deferred psychological cost instead. The cost changes form; it does not disappear.
+
+Some advanced forms are additions (Vesper can still shatter or melt). Others are irreversible transformations — Rain's Clone becomes the Perfect Clone and cannot revert.
+
+#### The memory exception
+
+No ability causes permanent physical change to the world. Memory and identity are the sole exception, and only one person can reach them.
+
+Vesper extracts memory into glass. Shattering a shard returns the memory to its owner; melting one erases it permanently. That is the only irreversible alteration in this system, and it is thematically central: memory is the record of the self, so destroying it destroys the evidence of commitment.
+
+**The extraction law.** Wanting is sustained by the record of not-having. Vesper cannot extract a want — a want is not a memory. He extracts the *memories that generate* it. You cannot ache for what you don't remember failing at. Take the record and the reaching stops. This is why hollowing isn't a side effect of memory theft; it is what memory theft *is*, and why none of the patients can say what they want to make.
+
+**Precision is the horror.** Early and imprecise, he broke function and left the self intact — Shiori forgets, and is entirely herself. Late and precise, he leaves function intact and removes the self — the patients have flawless memories and nobody home. He got better by learning to stop breaking things, and the better he got, the worse the outcome.
+
+**And the correction to the motif:** the record is *evidence* of the self, not the substance of it. The self is the reaching; memory is its receipt. Vesper's precise error is treating the record as editable inventory — remove the bad entries, keep the person. But entries are accumulated reaching, and removing them doesn't produce a happier person. It produces one who no longer reaches.

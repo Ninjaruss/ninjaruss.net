@@ -1,75 +1,63 @@
-\#\#\# Claire
+## Claire
 
-\#\#\#\# Identity & Role
+She can see every outcome and cannot move until one of them is certain.
 
-\- Abstract Role: Mind
+### The contradiction
 
-\- Tag: The Certainty Junkie
+**She is never wrong and she is almost never in time.**
 
-\- Main Trait: Perfectionist
+Her question: *how do I act when I can't be sure?*
 
-\- Passive Trait: Addict (chases silence)
+### Three layers
 
-\- Age: 21–22
+**What you see.** Precise, cool, faintly impatient with the pace of other people's thinking.
 
-\- Height: 5’10”
+- *Tell:* she answers the question you were about to ask, which is charming twice and unnerving after that.
 
-\#\#\#\# Abilities
+- *Tell:* the monocle goes up before she speaks, every time. *(candidate)*
 
-\- \*\*Passive: Static\*\*
+**What's underneath.** The Static — the memory of the building coming down, running underneath everything, all the time. The Click is the only silence she ever gets, and it lasts a second.
 
-\- Constant internal noise: low hiss + intrusive voice fragments of worst-case failures. Always present. Fluctuates with emotional state. Only Claire perceives it.
+- *Tell:* the crashes, escalating. She has a protocol for them and executes it without comment.
 
-\- \*\*Active: Visual Calculus\*\*
+**What she doesn't know.** She isn't chasing certainty. She's chasing quiet — and she would pay for it with the part of herself that remembers why she started.
 
-\- Channels the Static through her monocle. Processes information at superhuman speed. The noise compresses, variables align, and everything resolves into one perfect trajectory. This resolution is the Click — a moment of internal silence and absolute certainty.
+### How she processes
 
-\- Most reliable with physical data (bullets, movement). Less reliable with human behavior. Useless on thoughts, emotions, truly random events, or herself.
+Through calculation — so everything she can do is a prediction, held.
 
-\- Cost: Metabolic crash (glucose depletion → tremors → collapse).
+- **Passive — the Static.** Intrusive, unstoppable noise; it *is* the memory, which is why removing it means permanent silence and why the countdown is real.
 
-\- The building prediction was an early, uncontrolled instance: Static spiked around her family's plans, then resolved into an unbidden Click. She saw the collapse as finished truth, not theory — and couldn't explain the steps.
+- **Deviation — Visual Calculus and the Still Point**, through the monocle. She reads intent and holds a zone where her model stays true.
 
-\- \*\*Advanced – Still Point\*\*
+- **Cost:** her own processing, spent. The crashes get worse.
 
-\- A small zone of quiet certainty; no metabolic crash. Practically looks like “ultra instinct” where projectiles entering her zone are near instantaneously reacted to.
+- **The catch that beats her:** prediction alone doesn't win. Prediction plus a borrowed body does — which is why she loses the spar, and why Vesper is unbeatable where she wasn't.
 
-\- Cost transforms: emotional regulation — the zone destabilises if she panics.
+### The ladder
 
-\#\#\#\# Character Chain & Backstory
+1. Calculates the exit and wins it.
 
-\- One of the younger siblings in a large family of prestigious architects.
+2. Predicts every move of the spar and loses anyway.
 
-\- After the Flare, Claire’s mind filled with static noise. At the debut of the family's grand building, the noise stopped — she felt something fundamentally flawed, but had no proof.
+3. Follows the trail to the only man who can give her silence.
 
-\- The family dismissed her; her certainty read as arrogance. She never intended to come across as arrogant. The Click arrives without explanation — a finished truth with no visible steps. She delivered her warning bluntly, absolutely, without the social grace that might have softened the blow. Her family saw a child who thought she knew better. What they missed was a terrified girl drowning in a certainty she couldn't justify.
+4. Comes back and makes the honest case for him, at full strength, and loses on a question about the fifty-first try.
 
-\- Then the catastrophe occurred. The building collapsed from an overlooked detail. Hundreds died.
+5. Goes to him alone and refuses the cure at the threshold, with nobody watching.
 
-\- To protect their name, the family blamed Claire. A cold, calculating response. Claire escaped and is now a fugitive, exiled, needing to control data to clear the misunderstanding. The world should know the truth, but no one believes her.
+6. The ribbon dies, the range collapses, the lens comes off — and she says *go* without knowing.
 
-\- Her wound is twofold: being right without credentials cost her everyone; and her own certainty, delivered without humility, may have contributed to the breach.
+7. The appointment she no longer keeps.
 
-\- What she must learn: \*\*Certainty is not the same as truth. The 1% doubt is not a failure — it's the space where growth and connection live.\*\* Acting without the Click doesn't mean acting blind. It means acting with enough trust in herself to survive being wrong.
+### Guards
 
-\#\#\#\# Layers
+Three, all required, all against the same misreading:
 
-\- Layer 1 (Calculating): Peaceful, slight smile, silent focus. Bright, transparent.
+1. The story has already conceded that treatment can be right. The target is removal-on-request-forever, not care.
 
-\- Layer 1 (Crashing): Tremors, slurring, collapse. Dark, transparent.
+2. She would take a treatment that helped her **carry** it. What's offered only ever **takes**. Therapy, not amputation.
 
-\- Layer 2 (Situational): Demands more data, delays action, withdraws into mental simulations. Mid‑dark, semi‑obscure.
+3. She visibly manages her condition — protocol, accommodations, accepted hands. Suffering is never valorised.
 
-\- Layer 3 (Foundational): Guilt over a failed prediction; fear of uselessness. “Certainty is safety.” Dark, obscure.
-
-\#\#\#\# Artifact: Monocle
-
-\- Worn on her left eye. Has a sprung sloped gallery to allow putting it on without eyebrow strain. Both eyes stay open. Her naked eye sees reality as it is; the eye behind the lens sees the prediction. It focuses the Static—the noise of branching worst-case scenarios—into a single visible trajectory, a ribbon of light only she can perceive. The real Click is internal, silent to everyone else, the moment the calculation locks into certainty.
-
-\#\#\#\# Physical Tells
-
-\- Hand over mouth: When lost in thought or processing, she rests her index and middle fingers lightly against her lips. Not a fist. Not a full cover. A precise, gentle touch—the gate that holds words back until she’s ready.
-
-\#\#\#\# Signature Objects
-
-\- Microfiber cloth - A small, plain square of microfiber, always in her pocket. She uses it constantly to ensure clarity - to be free of any imperfections that may impact her decision making. But the habit exceeds practicality. She polishes the monocle even when it's spotless. She wipes down surfaces that are already clean. The repetitive motion is soothing—a small, private ritual that provides minor relief from the Static without the cost of a calculation.
+Plus: she ends chronic, uncured, and chosen. No magic cure, and she does not die.
