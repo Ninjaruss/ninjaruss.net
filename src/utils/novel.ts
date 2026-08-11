@@ -5,6 +5,8 @@ import { marked } from 'marked';
 export interface NovelFile {
   slug: string;
   title: string;
+  /** Leading numeric prefix from the filename, if any — used to interleave with subfolders. */
+  order: number | null;
   body: string;         // markdown pre-rendered to HTML at build time
   created: string | null;
   modified: string | null;
@@ -15,6 +17,8 @@ export interface NovelFile {
 export interface NovelFolder {
   slug: string;
   title: string;
+  /** Leading numeric prefix from the folder name, if any. */
+  order: number | null;
   files: NovelFile[];
   subfolders: Record<string, NovelFolder>;
 }
@@ -45,6 +49,52 @@ export interface MetaData {
 export function unescapeScrivenerMarkdown(md: string): string {
   return md.replace(/\\([!"#$%&'()*+,\-./:;<=>?@[\]^_`{|}~])/g, '$1');
 }
+
+/**
+ * Scene labels (`a1s01_road_less_traveled`, `a3v02_life`, `a4d01_commute`) live on
+ * a scene document's first line — that's the drafting convention, so the Scrivener
+ * title can stay human-readable for this site. They're an authoring handle, not
+ * prose, so strip them before rendering: otherwise every scene's body, excerpt and
+ * word count is polluted by its own filename-in-disguise, which is especially loud
+ * while the cards are still empty.
+ *
+ * Only a lone label on the first non-blank line is removed; a label appearing mid-
+ * document is left alone (it's prose about a label at that point, not a header).
+ */
+const SCENE_LABEL_RE = /^a\d+[a-z]\d+_[a-z0-9_]+$/;
+
+export function stripSceneLabel(md: string): string {
+  const lines = md.split('\n');
+  let i = 0;
+  while (i < lines.length && lines[i].trim() === '') i++;
+  if (i >= lines.length || !SCENE_LABEL_RE.test(lines[i].trim())) return md;
+
+  const rest = lines.slice(i + 1);
+  while (rest.length && rest[0].trim() === '') rest.shift();
+  return rest.join('\n');
+}
+
+/**
+ * The scene template carries author-only notes on `%%` lines (the index-card
+ * synopsis, format reminders, pitfall rules). They are scaffolding for drafting
+ * and must never reach the page — left in, they show up as the scene's excerpt
+ * on the desk and inflate the rain gauge with words nobody wrote.
+ */
+export function stripAuthorComments(md: string): string {
+  return md
+    .split('\n')
+    .filter((line) => !line.trimStart().startsWith('%%'))
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+/**
+ * Top-level binder folders that exist for the author, not for readers. The Inbox is
+ * a scratch front door for hot ideas — it is deliberately unsorted, unedited, and
+ * frequently half a sentence, so it never belongs on the public desk.
+ */
+const PRIVATE_FOLDER_SLUGS = new Set(['inbox']);
 
 /** Convert a filename (without extension) to a URL-safe slug. */
 export function slugify(name: string): string {
@@ -116,7 +166,8 @@ function readSidecarMeta(mdFilePath: string): MetaData {
 /** Recursively build a NovelFolder from a directory path. */
 async function buildFolder(
   dirPath: string,
-  pathSegments: string[]
+  pathSegments: string[],
+  ownOrder: number | null = null
 ): Promise<NovelFolder> {
   // The folder's own display name / slug also honour a numeric prefix.
   const { clean: folderName } = parseOrderPrefix(basename(dirPath));
@@ -137,21 +188,24 @@ async function buildFolder(
   const files: NovelFile[] = [];
   const subfolders: Record<string, NovelFolder> = {};
 
-  for (const { entry, stat, isDir, clean } of entries) {
+  for (const { entry, stat, isDir, clean, order } of entries) {
     const fullPath = join(dirPath, entry);
 
     if (isDir) {
-      const sub = await buildFolder(fullPath, [...pathSegments, slugify(clean)]);
+      const sub = await buildFolder(fullPath, [...pathSegments, slugify(clean)], order);
       subfolders[sub.slug] = sub;
     } else {
       const fileSlug = slugify(clean);
-      const rawMarkdown = unescapeScrivenerMarkdown(readFileSync(fullPath, 'utf-8'));
+      const rawMarkdown = stripAuthorComments(
+        stripSceneLabel(unescapeScrivenerMarkdown(readFileSync(fullPath, 'utf-8')))
+      );
       const body = await marked.parse(rawMarkdown);
       const meta = readSidecarMeta(fullPath);
 
       files.push({
         slug: fileSlug,
         title: clean,
+        order,
         body,
         created: meta.created,
         modified: meta.modified,
@@ -161,7 +215,7 @@ async function buildFolder(
     }
   }
 
-  return { slug, title: folderName, files, subfolders };
+  return { slug, title: folderName, order: ownOrder, files, subfolders };
 }
 
 /**
@@ -176,6 +230,7 @@ export async function buildNovelTree(baseDir: string): Promise<NovelTree> {
   const entries = readdirSync(baseDir)
     .filter((entry) => statSync(join(baseDir, entry)).isDirectory())
     .map((entry) => ({ entry, ...parseOrderPrefix(entry) }))
+    .filter(({ clean }) => !PRIVATE_FOLDER_SLUGS.has(slugify(clean)))
     .sort(byOrderThenName);
 
   const tree: NovelTree = {};
@@ -213,10 +268,19 @@ function parseNovelDate(raw: string): Date | null {
 
 /** Depth-first flat file list for a folder, in tree order. */
 export function flattenFolderFiles(folder: NovelFolder): NovelFile[] {
-  return [
-    ...folder.files,
-    ...Object.values(folder.subfolders).flatMap(flattenFolderFiles),
+  // Files and subfolders are separate arrays on NovelFolder, but in the binder they
+  // are one ordered list: a numbered subfolder ("3 The lives", a scene card that owns
+  // child scenes) must sit between its numbered file siblings, not after all of them.
+  // Re-merge on the same key buildFolder sorted with.
+  const nodes: { order: number | null; clean: string; files: NovelFile[] }[] = [
+    ...folder.files.map((f) => ({ order: f.order, clean: f.title, files: [f] })),
+    ...Object.values(folder.subfolders).map((s) => ({
+      order: s.order,
+      clean: s.title,
+      files: flattenFolderFiles(s),
+    })),
   ];
+  return nodes.sort(byOrderThenName).flatMap((n) => n.files);
 }
 
 /** Top-level folder slug that holds planning docs (including the synopsis). */

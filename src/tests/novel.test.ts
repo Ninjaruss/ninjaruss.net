@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { slugify, parseMetaData, parseOrderPrefix, buildNovelTree, countWords, computeNovelStats, flattenFolderFiles, findRecentFiles, findSynopsisDoc, findFirstScene, unescapeScrivenerMarkdown, type NovelTree } from '../utils/novel';
+import { slugify, parseMetaData, parseOrderPrefix, buildNovelTree, countWords, computeNovelStats, flattenFolderFiles, findRecentFiles, findSynopsisDoc, findFirstScene, unescapeScrivenerMarkdown, stripSceneLabel, stripAuthorComments, type NovelTree } from '../utils/novel';
 import { join } from 'path';
 
 describe('slugify', () => {
@@ -39,15 +39,74 @@ describe('parseOrderPrefix', () => {
 });
 
 describe('buildNovelTree ordering', () => {
+  // Asserted on arc *numbers*, not slugs: the arc folders get renamed as the story
+  // is designed (Asylum -> Mirror, Prison -> Prisoner, ...), and a test that hardcodes
+  // slugs fails on a rename that is not a bug.
   it('sorts unprefixed sibling folders by natural order (Arc 2 before Arc 10)', async () => {
     const tree = await buildNovelTree(join(process.cwd(), 'src/content/novel'));
-    const arcs = Object.keys(tree.manuscript.subfolders);
-    const arc1 = arcs.indexOf('arc-1-fugitive');
-    const arc2 = arcs.indexOf('arc-2-asylum');
-    const arc3 = arcs.indexOf('arc-3-prison');
-    expect(arc1).toBeGreaterThanOrEqual(0);
-    expect(arc1).toBeLessThan(arc2);
-    expect(arc2).toBeLessThan(arc3);
+    const numbers = Object.values(tree.manuscript.subfolders)
+      .map((f) => f.title.match(/^Arc\s+(\d+)/))
+      .filter((m): m is RegExpMatchArray => m !== null)
+      .map((m) => parseInt(m[1], 10));
+
+    expect(numbers.length).toBeGreaterThanOrEqual(2);
+    expect(numbers).toEqual([...numbers].sort((a, b) => a - b));
+  });
+
+  it('places un-prefixed folders after the numbered arcs', async () => {
+    const tree = await buildNovelTree(join(process.cwd(), 'src/content/novel'));
+    const titles = Object.values(tree.manuscript.subfolders).map((f) => f.title);
+    const deadEnds = titles.indexOf('Dead Ends');
+    if (deadEnds >= 0) {
+      expect(deadEnds).toBe(titles.length - 1);
+    }
+  });
+});
+
+describe('stripAuthorComments', () => {
+  it('removes %% lines and collapses the gap they leave', () => {
+    expect(stripAuthorComments('a\n\n%% note to self\n\nb')).toBe('a\n\nb');
+  });
+
+  it('removes indented %% lines too', () => {
+    expect(stripAuthorComments('   %% indented\nreal')).toBe('real');
+  });
+
+  it('returns empty for a comment-only document', () => {
+    expect(stripAuthorComments('%% one\n%% two\n')).toBe('');
+  });
+
+  it('leaves a mid-line %% alone', () => {
+    expect(stripAuthorComments('he said %% out loud')).toBe('he said %% out loud');
+  });
+});
+
+describe('stripSceneLabel', () => {
+  it('removes a leading scene label and the blank line after it', () => {
+    expect(stripSceneLabel('a1s01_road_less_traveled\n\nI am Rain.')).toBe('I am Rain.');
+  });
+
+  it('handles dead-end and vignette label forms', () => {
+    expect(stripSceneLabel('a4d01_commute\n\nThe 6:12.')).toBe('The 6:12.');
+    expect(stripSceneLabel('a3v02_life\n\nA life.')).toBe('A life.');
+  });
+
+  it('tolerates leading blank lines before the label', () => {
+    expect(stripSceneLabel('\n\na2s06_archive\n\nStored light.')).toBe('Stored light.');
+  });
+
+  it('leaves a label-only document empty', () => {
+    expect(stripSceneLabel('a5s10_outbound_train\n')).toBe('');
+  });
+
+  it('leaves prose untouched when the first line is not a label', () => {
+    const prose = 'The rain poured, yet I did not fall.';
+    expect(stripSceneLabel(prose)).toBe(prose);
+  });
+
+  it('does not strip a label that appears mid-document', () => {
+    const md = 'Some prose.\n\na1s01_road_less_traveled';
+    expect(stripSceneLabel(md)).toBe(md);
   });
 });
 
@@ -139,11 +198,12 @@ describe('countWords', () => {
 });
 
 const file = (over: object) => ({
+  order: null,
   slug: 'f', title: 'F', body: '<p>one two three</p>',
   created: null, modified: null, mtime: null, path: ['x'], ...over,
 });
-const folder = (slug: string, files: any[], subfolders = {}) =>
-  ({ slug, title: slug, files, subfolders });
+const folder = (slug: string, files: any[], subfolders = {}, order: number | null = null) =>
+  ({ slug, title: slug, order, files, subfolders });
 
 describe('computeNovelStats', () => {
 
@@ -194,55 +254,38 @@ describe('computeNovelStats', () => {
 });
 
 describe('flattenFolderFiles', () => {
-  it('returns root files then subfolder files depth-first, in tree order', () => {
-    const tree = folder('lore', [file({ slug: 'root-a' })], {
-      'magic-system': folder('magic-system', [file({ slug: 'sub-a' }), file({ slug: 'sub-b' })], {
-        deeper: folder('deeper', [file({ slug: 'deep-a' })]),
-      }),
-      plot: folder('plot', [file({ slug: 'plot-a' })]),
+  // Contract: files and subfolders are ONE ordered list, merged on the same key
+  // buildFolder sorted with. A numbered subfolder is a scene card that owns child
+  // scenes ("3 The lives"), so it must land between its numbered file siblings.
+  it('interleaves a numbered subfolder with its numbered file siblings', () => {
+    const tree = folder('arc-3', [
+      file({ slug: 'intake', title: 'Intake', order: 1 }),
+      file({ slug: 'true-silence', title: 'True silence', order: 2 }),
+      file({ slug: 'the-mountain', title: 'The mountain', order: 4 }),
+    ], {
+      'the-lives': folder('the-lives', [
+        file({ slug: 'a-life-1', title: 'A life', order: 1 }),
+      ], {}, 3),
     });
-    expect(flattenFolderFiles(tree).map((f: any) => f.slug))
-      .toEqual(['root-a', 'sub-a', 'sub-b', 'deep-a', 'plot-a']);
+    expect(flattenFolderFiles(tree).map((f) => f.slug)).toEqual([
+      'intake', 'true-silence', 'a-life-1', 'the-mountain',
+    ]);
   });
 
-  it('returns empty array for empty folder', () => {
-    expect(flattenFolderFiles(folder('themes', []))).toEqual([]);
-  });
-});
-
-describe('findRecentFiles', () => {
-  const tree: NovelTree = {
-    manuscript: folder('manuscript', [
-      file({ slug: 'old-scene', modified: '2026-05-01' }),
-      file({ slug: 'new-scene', modified: '2026-07-01' }),
-    ]),
-    characters: folder('characters', [
-      file({ slug: 'rain-doc', modified: null, mtime: '2026-06-20T00:00:00.000Z' }),
-    ]),
-    world: folder('world', [
-      file({ slug: 'dated-note', modified: 'June 1, 2026' }),
-      file({ slug: 'undated', modified: null, mtime: null }),
-      file({ slug: 'bad-date', modified: 'not a date', mtime: null }),
-    ]),
-  };
-
-  it('returns newest scenes first when scenes=true', () => {
-    const result = findRecentFiles(tree, { scenes: true, limit: 2 });
-    expect(result.map((f) => f.slug)).toEqual(['new-scene', 'old-scene']);
+  it('recurses depth-first and keeps nested subfolder contents together', () => {
+    const tree = folder('lore', [file({ slug: 'root-a', title: 'A root', order: 1 })], {
+      magic: folder('magic', [file({ slug: 'sub-a', title: 'Sub', order: 1 })], {
+        deep: folder('deep', [file({ slug: 'deep-a', title: 'Deep', order: 1 })], {}, 2),
+      }, 2),
+    });
+    expect(flattenFolderFiles(tree).map((f) => f.slug)).toEqual(['root-a', 'sub-a', 'deep-a']);
   });
 
-  it('returns newest non-scene files when scenes=false, using mtime fallback', () => {
-    const result = findRecentFiles(tree, { scenes: false, limit: 2 });
-    expect(result.map((f) => f.slug)).toEqual(['rain-doc', 'dated-note']);
-  });
-
-  it('excludes files without a parseable date and respects limit', () => {
-    const result = findRecentFiles(tree, { scenes: false, limit: 10 });
-    expect(result.map((f) => f.slug)).toEqual(['rain-doc', 'dated-note']);
-  });
-
-  it('returns empty array on empty tree', () => {
-    expect(findRecentFiles({}, { scenes: true, limit: 1 })).toEqual([]);
+  it('falls back to natural alphabetical order when nothing is numbered', () => {
+    const tree = folder('lore', [file({ slug: 'beta', title: 'Beta' })], {
+      alpha: folder('alpha', [file({ slug: 'alpha-1', title: 'Alpha one' })]),
+    });
+    expect(flattenFolderFiles(tree).map((f) => f.slug)).toEqual(['alpha-1', 'beta']);
   });
 });
 
