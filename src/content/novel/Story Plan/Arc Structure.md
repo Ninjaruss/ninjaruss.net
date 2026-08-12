@@ -6,6 +6,8 @@
 
 **Arc 1: The Fugitive**
 
+- **Owned by:** Rain. Five of eight cards he is alone or nearly.
+
 - **Central Question:** Can you take one irreversible step, even if you don't feel ready?
 
 - Rain seemingly running away from his problems that have been thrust upon him, but really he’s avoiding the stuff in himself, the introspection. He is forced to be portrayed as a fugitive as a result of a singular small commitment to being uncomfortable (making a decision to change the status quo of his life; aka break the cycle of his commute for a moment to explore the ghost).
@@ -19,6 +21,8 @@
 The Ghost reads as hallucination throughout and is never explained in-arc. Ends on the asylum threshold: pleasant, open-doored.
 
 **Arc 2: The Mirror (Asylum)**
+
+- **Owned by:** Vesper. His house, his argument, his four tells; the arc is his case being made honestly.
 
 - **Central Question:** Can you keep wanting something, even when the wanting is what hurts? *(Revised 2026-08-10. The original — "Can you trust someone who seems to be everything you wish you were?" — is retired as the compass and survives as the reread question: it primed mask-hunting, and Vesper is a twist of kind, not of mask.)*
 
@@ -40,6 +44,8 @@ Disclosure runs in three layers: the result is open, the mechanism is shown deli
 
 **Arc 3: The Prisoner**
 
+- **Owned by:** Rain's interior — and Roxana's plot. His trial is a void; every *event* in the arc is hers (the tank, the review, the signature, the accepted hand, the spark, the gutter, the carry), and the book's only POV cut is to her. It is Roxana's arc happening around Rain's trial.
+
 - **Central Question:** Can you end every life you could have lived, even the one where you were happy?
 
 - An intrusive and claustrophobic cell with deprivation pods designed to pacify the deviants/troublemakers in society. Rain faces all of his internal struggles and truly sees them visually within his mind. He must kill the self that likes infinite potential, so he kills every single possibility of his selves until only he himself remains. Once he triggers his own awakening, I think his passive ability ghost will play a role in activating Roxana’s ability remotely to escape the deprivation tanks. It acts on his own will subconsciously and reaches for the nearest person to connect with. By it appearing to Roxana, she is able to... *(spark flame without artifact)*.
@@ -53,6 +59,8 @@ Disclosure runs in three layers: the result is open, the mechanism is shown deli
 **Decided 2026-08-08 — the pitfall:** *stay in the life* — the long movie. Card 3, exiting to card 4.
 
 **Arc 4: The Witness (Circuit Line)**
+
+- **Owned by:** Claire. The advocate and the voice are the arc's spine; Shiori is the arrival, not the owner.
 
 - **Central Question:** Can you keep choosing it when nothing is chasing you? *(Revised 2026-08-10 from the longer original, which was too unwieldy to steer a scene; this version is also literally true of the arc — the System tolerates rather than chases.)*
 
@@ -69,6 +77,8 @@ The Devil's Bargain is the state's amnesty with Rain's goggles on the manifest: 
 **Decided 2026-08-08 — the pitfall:** *let it expire.* Card 7 (the amnesty), exiting to card 8.
 
 **Arc 5: The Proof (Caldera)**
+
+- **Owned by:** Rain, with card 9's codas-in-rings as a staged handoff — the arc giving itself away in order, then the outbound train taking it back for one man alone.
 
 - **Central Question:** In spite of all of it, can you choose to be yourself?
 

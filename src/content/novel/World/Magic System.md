@@ -1,5 +1,6 @@
 ### Magic System
 
+
 *Provenance: rebuilt 2026-08-10 during the planning pass. The mechanics are the author's original system; the laws and terminology below were settled in that process and are recorded as working notes.*
 
 #### The Flare
@@ -89,3 +90,15 @@ Vesper extracts memory into glass. Shattering a shard returns the memory to its 
 **Precision is the horror.** Early and imprecise, he broke function and left the self intact — Shiori forgets, and is entirely herself. Late and precise, he leaves function intact and removes the self — the patients have flawless memories and nobody home. He got better by learning to stop breaking things, and the better he got, the worse the outcome.
 
 **And the correction to the motif:** the record is *evidence* of the self, not the substance of it. The self is the reaching; memory is its receipt. Vesper's precise error is treating the record as editable inventory — remove the bad entries, keep the person. But entries are accumulated reaching, and removing them doesn't produce a happier person. It produces one who no longer reaches.
+
+#### How the world and the record behave
+
+*Decided 2026-08-12.*
+
+**The world arc.** The correction advances on **accepted relief, never on resistance.** The state never reacts to being fought; it processes demand — so the people moving the world arc are the patients, the Widower, and every citizen who made a reasonable request, while the group's resistance moves nothing. The city's weather is the measure: heavy at the start, thinning as the correction spreads, stopped in corrected districts, clean at the end. **Exactly two beats move because of Rain, and both are withdrawals, never retaliation** — the boundary takes the anchor station hours after he refuses, and the loop breaks at the end.
+
+**The record without a reader.** The apparatus preserves everything and nobody looks. That is why Arc 4's exoneration works: the camera kept recording while no one watched the feed — the record existed, the attention did not, and the only person who ever looks is the girl who built it.
+
+Which completes a pair with the testimony rule. **Vesper's crimes delete their own evidence. The state's machinery keeps all of it and reads none.** Two ways evidence fails — one active, one indifferent — and between them, nobody has ever been stopped. Neither is ever explained on the page; both are demonstrated.
+
+**Never build the tower.** No camera walls, no checkpoints, nobody who feels observed. The machinery is old gear still running in rooms nobody visits. The moment the apparatus is visible the story acquires a regime, evil raises its voice, and Arc 4 stops hurting.

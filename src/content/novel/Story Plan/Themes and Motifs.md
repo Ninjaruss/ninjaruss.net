@@ -82,6 +82,8 @@ A story about the slow accumulation of small acts needs an antagonist who is the
 
 - Rain / Water - Commitment as something you let fall on you rather than to avoid. Accumulation. Flow vs Stagnation.
 
+- **The water states.** Three of the cast are states of water and the fourth is what changes one. **Rain is liquid** — he falls, moves, accumulates, and he is the only one who falls. **Vesper is frozen** — memory becomes glass, stored, transparent, hard. **The Pursuer is vapour** — his own wanting boiled off and spent as somebody else's work. **Roxana is fire.** Frozen and vapour are both stagnation: they are the two ways water is prevented from falling, which makes the story's two antagonists **the two methods of stopping rain.** It closes on an image already drafted — his steam condenses on cold wet wool as he stops walking, in the first clean rain. Shiori is outside the system, correctly: she is the control group, and an element would grant her a power the design denies her.
+
 - Falling - An irreversible act that can happen unexpectedly or through acceptance. Sometimes, you need to let yourself fall and take a risk.
 
 - Hands - How each character's gesturing of their hands show their willingness to reach towards others. Rain has his hand open for yearning, but is later reframed to be open to accepting others and giving his support. Vesper has his hand reached towards as if he wants to adjust something, almost a little controlling.
@@ -98,7 +100,13 @@ Rain stares upwards towards a blank ceiling. Since the city is mostly always rai
 
 - Claire: Noise vs. Silence — overthinking intrusive mind vs. the peace of certainty. The Click is the silence she chases.
 
-- Shiori: Afterimage / Records — gadgets as external memory, compensating for what Vesper damaged.
+- Shiori: **The maker's mark, and the backup.** Two objects. The mark is authorship — a doodle, a charm, a boot-screen joke, never a logo; how you find her work in a room, in a world whose evil is the smooth unattributed rollout. The backup is insurance — redundancy built into a doorbell, a life held somewhere the thing that reaches memory cannot reach. She faces forward. Her gadgets defend a future self; they do not excavate a lost one.
+
+- The Pursuer: **Steam.** His own wanting, burned as fuel and venting as somebody else's work. It drifts in the corners of scenes for arcs before anyone names him, indistinguishable from a rain city's mist until you learn the pattern. The greatcoat traps and shapes it, so the armour is the escaping self, and defending visibly spends him. Plate armour is the city's myth; there was never any. At the end it condenses — settles, on cold wet wool, in the first clean rain.
+
+**The motif law.** Every one of these has a moving form and a still form, and *which one the character wants is the character.* Rain wants the still one — the Perfect Clone, solid and beautiful and doing nothing — and Arc 4 hands it to him as a reward. Roxana wants the moving one, and the gutter is her cost. **Vesper has no moving form at all:** glass never moves, and the absence is the characterisation, because he treats the record as inventory and inventory is a thing that holds still. **Claire and the Pursuer both want the still form, to opposite verdicts** — her silence would remove her reason to act, his ends a life spent acting without one, and the cure test is what separates them. Stage them as a pair; nobody remarks on it.
+
+**And every motif must be perceptible without the gold.** The marks are load-bearing stage directions used sparingly, so a motif that only reads when the gold is on is one the draft cannot use. Steam, scars, glass, a doodle, a notebook, a lens: all of them work in plain description, in the dark, with no marks at all.
 
 #### The "Shine"
 
@@ -129,6 +137,42 @@ Rain stares upwards towards a blank ceiling. Since the city is mostly always rai
 The rule: gold tracks the subject's relationship to commitment, and the reader's tell is that **live gold moves while dead gold holds still.** Intensity is never the axis — on an intensity ladder the Perfect Clone would outrank true shine, and the grammar would endorse the lie the story exists to expose. Mark only when the scene's visual argument needs the gold seen.
 
 **The world-law:** only three things glow gold — living overcoming, frozen records of it, and Rain's own self-projections. Rain manufactures dead gold; Vesper can only keep it. Rain never perceives his own; it is shown once, from outside, at the refusal.
+
+#### The three layers of characterization
+
+*Working framework, 2026-08-12. Two axes and three layers; every character sits somewhere different on each.*
+
+**Brightness ↔ darkness is how a character interacts with time** — volatility, energy spent, conflict sought, danger entered, against *reservation* in the use of energy. Dark is not low energy. **Transparency ↔ obscurity is how readily the traits can be seen** — whether they pass through obfuscation or not.
+
+**Layer 1 — immediate.** The immediate act. All dialogue is layer 1: the act of speaking and the mood of what comes out. The information carried by what is said may belong to another layer.
+
+**Layer 2 — situational.** Characterization carried by *linked actions* — actions with cause and effect between them. What kind of situations the character is willing to make.
+
+**Layer 3 — setting and concept.** Omnipresent details. Not permanent, *regular* — a hairstyle is layer 3 because it is omnipresent until it changes. The test is intent to be regular; a thing done once and not meant to continue is layer 2, characterizing the wanting-to.
+
+**Layer 0 — universal.** Acts anyone could do. Not flavour: contrast in how layer 0 manifests *becomes* layer 3. Six people running and one visibly wrecked is firm information about all six.
+
+**Place a character at their tonic, never at an average** — whichever layer dominates their default contribution to a scene, the point at rest that produces least tension.
+
+**The main trait is the character, and must be evidenced within an immediate radius of every expression** — any line of prose, any piece of dialogue, anything shown. **The passive trait can only modulate, never replace;** something of the main always remains. Map the passive as a separate character with its own three layers. The most idiosyncratic expressions come from where main and passive meet.
+
+**Modulation** comes from the passive trait, from scene and plot, and from mood, and it chains. **Weak modulation is the valuable kind** — small consistent pulls snowball and can be cashed in later, so a hard pull lands as inevitable rather than sudden. Where the weak and strong modulations sit *is* the style of the work.
+
+**True change is extraordinarily rare.** What reads as development is almost always the story shifting which layer it focuses on — dramatic stories drift toward layer 3 — or latent layer 2 and 3 material finally surfacing. Which is what this story does: Rain does not become someone else, a latent layer 3 surfaces, and the retention law has him re-choose it every morning.
+
+#### Writing the felt-ownership cost
+
+*Working note, 2026-08-12.*
+
+**Do not render it dreamlike.** The dream register is already spent on the four pitfalls and on Arc 3, and a dreamlike finale invites the reading that the story was a dream — which kills the thesis, because you only grow where you can fall and dreams can't fall.
+
+The finale is the hardest, most concrete prose in the book. **The mismatch between how solid the world is and how little of it he can own is what produces the effect.**
+
+**The rule: complete in event, empty in sensation.** After the void, his interior voice keeps its interiority about the present and loses it about the past. He can say exactly what he did on the mountain — sequence, specifics, who was there — and cannot supply one thing about what it was like, while the ache stays as loud as it has ever been.
+
+**Guard: vagueness reads as amnesia.** The recall must be sharper than usual, never blurrier. He loses nothing.
+
+**Arc 3 plant:** render the dream-lives at full weight, indistinguishable in texture from the waking scenes, so the reader learns inside Arc 3 that feeling real proves nothing.
 
 #### Influences, and what the story declines
 

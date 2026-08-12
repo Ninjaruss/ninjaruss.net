@@ -8,6 +8,24 @@ The kindest man in the story, and the only one who has never once been refused.
 
 His question: *how long am I supposed to watch?*
 
+**Mid-to-late forties.** Main trait: Fixer. Passive trait: Impatient.
+
+**He has no impossible decision, and that's the point.** He is the only man in the story who has never once been refused, so he has never stood at a crossroads. The story manufactures his only one and he refuses to recognise it as a decision: keep taking, or wait. He cannot wait. *(Latent and never answered: peace for everyone, or being the one who provides it. If a cure held he'd be unnecessary, and the subscription is the evidence. Let the story ask; never answer.)*
+
+**The line he keeps.** He asks permission every time and means it. The most frightening man in the book has a real line and honours it — the argument is not that he breaks rules, it's that his rule was the wrong rule, because consent without disclosure isn't consent.
+
+**His relationship to change.** He believes people can be *changed* and cannot *become.* He will wait years for his own precision to improve and not one week for a person's character — he believes in his own development and nobody else's, and that single asymmetry generates his entire practice.
+
+**The anti-chip.** *Never once refused* is the opposite of having something to prove, which is exactly why being told *not yet* costs him something visible.
+
+### The archetype
+
+*The affable villain.* The reader expects the mask to drop.
+
+**Where it's spent.** There is no mask — and the arcs he isn't present for are the arcs he wins.
+
+**Guard, and this is the strongest temptation in the book.** He never gets a villain moment. The pull to make him secretly rotten will arrive feeling like taste; it is the archetype trying to close back over him.
+
 ### What he actually is
 
 Not mercy. **Impatience.**
@@ -52,6 +70,26 @@ Through memory — so everything he can do is a record, moved.
 
 - **The one thing he'll wait for is his own skill.** He knows imprecision breaks people — he broke Shiori learning that. So *"you're not ready yet"* is technical, not moral. Precision he respects. Personal development he does not.
 
+### The daily act
+
+**He fixes a small thing before anyone asks.** It scales without changing shape: a jammed drawer in Arc 2, a woman's memory of standing in Arc 3, a city in Arc 4. The kindness and the atrocity are the same gesture at three magnifications, which the reader can see rather than be told.
+
+Its shadow, in every scene: his own wound stays untouched while he fixes yours. He never turns the gesture around. Play it as a visible constant, never as commentary.
+
+**It never breaks.** Everyone else's compulsion becomes an authored act; his doesn't. That is why he ends holding the prism.
+
+### How it reaches the page
+
+**Layer 1 — immediate · bright / transparent.** Asks permission and means it, fixes the latch that was catching, shows his work. He is exactly as good as he looks, and the transparency is real.
+
+**Layer 2 — situational · bright / obscure.** He makes situations whose real logic nobody reads: the archive shown as trust, the melt, the referral. Everyone reads mercy; it is impatience.
+
+**Layer 3 — setting and concept · bright / transparent.** Glass, the archive, the prism, an institution that is his argument on open display.
+
+**The shape: transparent → obscure → transparent.** A dip in the middle, and unusual. You can see what he is and what he does, and never why *this* situation was made. That is how a man with no mask stays unreadable, and why the four tells are the only way in.
+
+**Tonic: layer 1.**
+
 ### The ladder
 
 1. Kindness demonstrated, not asserted — and offered before it's requested.
@@ -77,5 +115,9 @@ Through memory — so everything he can do is a record, moved.
 - **He has to be right sometimes**, or the refusal at the end proves nothing.
 
 - He remembers Shiori warmly, and he practised on her.
+
+- **Why the reader can't dismiss him.** He was a child who waited. He is right sometimes, and the story concedes it in writing. And he never enjoys it — no relish, ever; his pleasure is relief felt on someone else's behalf, and the reader feels it too.
+
+- **His far pole, shown once.** The one thing he'll wait for is his own skill. Stage that a single time and the whole character is legible.
 
 - He keeps his own wound not from hypocrisy but because **the impatience was always aimed outward.** He can carry his; he isn't the failure. Everyone else is the one standing around not fixing themselves, in front of him, indefinitely.

@@ -16,6 +16,31 @@ Rain is the thing that falls. "I am Rain." and "Now I fall." are the same senten
 
 **The true evil.** Not motion versus stillness — unauthored existence. The manufacture of nothing. Whatever caps the number of times you get to try again.
 
+### The cast
+
+Everyone has outsourced their authorship, and each is a version of Rain further down a different road — which is why he idealises them. He is admiring more advanced cases of his own disease.
+
+| | Outsourced to | Their daily act | What Rain reaches for | What it actually is |
+|---|---|---|---|---|
+| **Rain** | potential | he asks the question nobody asked them | — | — |
+| **Roxana** | other people's need | she hands you a task | a home that asks nothing | her armour |
+| **Claire** | certainty | she takes the decision off your hands | certainty he can borrow | her cage |
+| **Vesper** | the past | he fixes a small thing before anyone asks | permission to be one finite thing | subtraction wearing the face of resolution |
+| **The Pursuer** | the institution | he completes the record. he signs | proof that a man can simply act | a corpse that walks |
+| **Shiori** | the record | she backs it up | freedom from his own record | **exactly what he thinks it is** |
+
+Four of the five reaches are wrong. **Shiori is the one he's right about, and he never notices** — he learns it from the mountain instead, at full price. Nobody points at this.
+
+Each daily act breaks in the arc where the outsourcing is named, and is replaced by the same act performed once, deliberately: Rain answers in a quiet room; Roxana asks for something; Claire hands a decision back; Shiori keeps one thing without notes; the Pursuer's last act is unrecorded. **Vesper is the control. His never breaks.**
+
+### The Guardian
+
+There isn't one. No wise figure guides Rain toward the goal — Roxana trains him toward being Aster, Claire supplies certainty he has to stop borrowing, Vesper is the false guardian the book exists to refuse, and the only thing in the slot is the Ghost: wordless, granting commitment and never competence. A story about ending outsourced authorship cannot have a mentor telling the protagonist what to do.
+
+**It is a vacancy with a name on it.** Aster is the Guardian this cast should have had — the investigator who hunted Vesper, dead before page one. Three living characters hold three relationships to him: **Roxana is trying to rebuild him out of a stranger**, **Vesper is wearing him** (the shard, the fighting style, tell #1 — the Shadow captured the Guardian), and **Claire is following his trail for the wrong reason.** Nobody ever says *he would have known what to do*, and nobody eulogises him as a mentor. It is built entirely out of those three relationships.
+
+The finale's three parallel fights are the abstract roles: Roxana is Body, Claire is Mind, Rain is will.
+
 ### The shape
 
 Five arcs. Each asks one question. Each of the first four contains one comfortable loop that answers it wrongly — a pitfall you can rest in, where the story stops advancing and nothing bad happens.
@@ -186,7 +211,22 @@ One true ending. Four trap endings. Five in total, and only one of them has a se
 
 ### The throughlines
 
-Fifteen threads, and where each one touches down.
+Sixteen threads, and where each one touches down.
+
+**The rain** — the world arc
+
+- the correction advances on accepted relief, never on resistance. the state processes demand; it does not react to being fought
+
+- **A1** heavy and constant. a city where everyone is still reaching
+
+- **A2–3** thinning, as the correction spreads
+
+- **A4** stopped, in corrected districts
+
+- **A5** clean, when the loop breaks
+
+- *never stated. nobody remarks that the rain is thinner. it is weather, described accurately.*
+
 
 **The notebook** — a graveyard of n = 1
 

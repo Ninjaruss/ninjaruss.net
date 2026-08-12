@@ -97,3 +97,14 @@ No pitfall, no branch, no ending fork. One non-branching commitment ritual at **
 - **The shard misread** (Arc 2, the melt) is Rain's alone. The point is that he couldn't tell which target mattered; offering the correct option destroys it.
 
 - **The ending of the beloved life** (Arc 3) is Rain's alone. The player chooses how many lives to enter and how long to linger; when they stop, Rain performs the ending himself, unprompted, on screen. The player never clicks to end her.
+
+
+#### What the trap endings are for
+
+*Decided 2026-08-12.*
+
+Recognition as the temperature, grief as the shape, arriving late. The surface stays pleasant to the last line — a boring pitfall is a broken pitfall, and nothing bad happens the whole way down. The loss lands after the screen goes quiet.
+
+It needs no contrast with the true ending's second line. The player has carried that notebook for hours and nobody in the story ever mentions it; they have watched him start things and stop, silently, the entire way. **The final image doesn't require a comparison — it requires an accumulation, and the accumulation is already built.**
+
+Two guards. **Never accuse** — the trap ending does not tell the player what they did; the moment it lectures, the story is condemning the Widower. And **recognition, not embarrassment** — they should feel seen, not caught.

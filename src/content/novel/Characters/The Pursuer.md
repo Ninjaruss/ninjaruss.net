@@ -10,6 +10,24 @@ His question: *is it too late to stop?*
 
 He is Rain's inverse and the story says so out loud: *the man who acts without wanting hunts the man who wants without acting.* Rain cannot start. He cannot stop.
 
+**Around fifty to fifty-five.** Main trait: Endurer. Passive trait: Compliant — the institution supplies the verb.
+
+**The impossible decision.** Stop and be nothing, or continue and be nothing later. Both ends are the same, which is what makes it impossible and what makes it a different paralysis from Rain's: Rain is frozen between goods, the Pursuer between two nothings. He takes the one that's his.
+
+**The line he won't cross, and never does.** He does not lie. Not once. The amnesty is a genuine offer, accurately described, by a man incapable of misrepresenting it — which is what makes refusing it cost Rain something real.
+
+**His relationship to change.** He realised, it was too late, and he has held that for thirty years. He is the only person in this book who is not wrong about himself.
+
+**Why the reader forgives him.** He understands his situation completely and stays courteous inside it, and he never hurts anyone he doesn't have to — round one, he loses only the exit and does not pursue.
+
+### The archetype
+
+*The juggernaut.* The reader expects him defeated in a final clash, or converted.
+
+**Where it's spent.** He is a fuel burn with a date he computed himself, he never allies, and his defeat is that he stops walking.
+
+**Guard.** The coat never comes off as the fix, and nobody thanks him.
+
 ### Three layers
 
 **What you see.** Unhurried, courteous, procedural. He is the politest catastrophe in the book.
@@ -36,6 +54,24 @@ Through endurance — so everything he can do is fuel, borrowed.
 
 - **Cost:** he wins every exchange and empties by winning. Running out is literal — **running empty means he stops walking.**
 
+### The daily act
+
+Two, one per audience. For Rain: **he walks** — never runs, at any speed anyone else is moving, in three encounters. For the reader, arcs before he has a name: **steam in the corners of scenes.**
+
+And the small one on top: **he completes the record. He signs.** His signature at the bottom of a dead man's intake; his own disposal date in his own handwriting. He is the only character in this book who documents, in a story whose villain's crimes delete their own evidence.
+
+**Breaks exactly.** His last act is unrecorded — he stops walking and files nothing. Thirty years of completed paperwork, and the one thing he ever authored has no entry.
+
+### How it reaches the page
+
+**Layer 1 — immediate · dark / transparent.** Never runs. Courteous, minimal. You see everything he does and learn nothing.
+
+**Layer 2 — situational · dark / obscure.** He creates no situations. He processes.
+
+**Layer 3 — setting and concept · bright / very obscure.** Born burning. A furnace the System recruited, with the wanting burned as fuel.
+
+**The steam is his passive trait, visible.** A bright layer 3 being consumed to power a dark main trait, and the vapour drifting in the corners is that combustion escaping. Which gives the condensation at the end an exact meaning: the burning stops, and what was being spent finally settles.
+
 ### The ladder
 
 1. Glimpsed in the drift: the hunt gets a face.
@@ -57,3 +93,7 @@ Through endurance — so everything he can do is fuel, borrowed.
 - **He never allies.** No intel, no joining, no redemption scene. The gate simply stops being manned.
 
 - He is the reason the thesis doesn't collapse into *just endure*. Endurance without re-choosing is not commitment; it's momentum.
+
+- **Rain asks him the question, once** — probably at the Arc 4 amnesty — and it is the only thing anyone has offered him in thirty years. In Arc 5 he empties, stands aside, and that question is part of why. Never stated, never thanked, never connected on the page. He still never allies; the gate simply stops being manned.
+
+- **`{TK}` — the far pole, and the highest-leverage unknown in the project alongside Aster's echo.** He was born burning: a man of enormous wanting, and the story never shows it. His most important layer has no characterizing detail attached to it at all. One specific thing he once wanted — in his own handwriting, or in somebody else's memory — converts him from a tragic mechanism into a man.

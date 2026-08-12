@@ -8,6 +8,24 @@ A young man with a notebook full of things he started, and not one second line u
 
 His question: *if I become one thing, what happens to everyone else I could have been?*
 
+**Heart · 23 · the Paralyzed Dreamer.** Main trait: Deferrer. Passive trait: Dreamer.
+
+**The impossible decision.** He wants to matter and he wants to stay possible, and every act of mattering deletes possibility. Arc 3 makes the arithmetic literal; the notebook is a man refusing to spend his inventory.
+
+**The line he won't cross — and does.** He will not send someone else in his place. It is why the Clone is deception-only and why its cost is the Ghost. Arc 4's last stop is him crossing it and being rewarded for it. He keeps the Perfect Clone forever: the line is never restored as a rule, only re-chosen as a morning.
+
+**His relationship to change.** Ignorant of it. He is changing continuously and is the last to know — which is why he never perceives his own shine, and why the finale's cost is that he changed completely and cannot feel it.
+
+**Why the reader stays with him.** His mistakes are always made forward. He never fails by hiding or protecting himself; he fails by reaching at the wrong thing.
+
+### The archetype
+
+*The nobody who gets a power.* The reader expects the ability to arrive and for him to grow into being capable.
+
+**Where it's spent.** The Ghost is a compass, not a radar — it grants commitment and never competence — and his own kit stays dark until Arc 3.
+
+**Guard.** No ability of Rain's ever solves a scene. The moment one does, the story is about acquiring power instead of spending it.
+
 ### Three layers
 
 **What you see.** Easy company. Agreeable, self-deprecating, genuinely likeable, and slightly not-there.
@@ -36,6 +54,28 @@ Through his own perception of himself — so everything he can do is a self, see
 
 - **The Split.** His own ledger of past failure, in his own voice. Unmarked at first; one italic line at the awakening; permanent after that.
 
+### The daily act
+
+**He asks people the question nobody has asked them.** Never therapeutic, never the subject of a scene — a half-beat of curiosity aimed at the wrong person at the wrong time, dropped the moment someone changes the subject. He asks Roxana what she needs. He asks Claire what she'd do after the quiet. He asks the Pursuer whether it's too late. He does not count any of it as doing anything, and it is the reason five people in this book turn around.
+
+The pen is its visible twin: the story shows you the pen he never writes with, and hides the questions.
+
+**Breaks in Arc 4, at the voice** — he stops asking and answers, in a quiet room, at the one moment this doc says he has nothing. Everything he says there he learned from answers people gave him when he asked.
+
+**Guard.** Nobody ever remarks on it. The instant someone says *you're good at that*, it becomes a skill, and a skill is a capacity.
+
+### How it reaches the page
+
+**Layer 1 — immediate · dark / transparent.** Easy company, agreeable, self-deprecating. The pen spun and never used. Low volatility, and everyone can read it.
+
+**Layer 2 — situational · bright / obscure.** Give him an emergency and he moves instantly. He follows a light into an alley, charges a man three feet short, takes the road less travelled. He makes volatile situations and nobody can predict them — which is exactly why Claire cannot calculate him, and why she keeps him.
+
+**Layer 3 — setting and concept · bright / very obscure.** The Ghost, the Split, the notebook, the charge, the name. A want that never stops, hidden from everyone including him.
+
+**Tonic: layer 1.** He reads as agreeable and not-there, and the story drifts toward layer 3 across five arcs.
+
+**Where main and passive meet: the notebook.** A bright want written down, and a dark refusal to continue it, in one object.
+
 ### The ladder
 
 1. Takes the road less traveled, and it costs him everything.
@@ -59,3 +99,7 @@ Through his own perception of himself — so everything he can do is a self, see
 - **He never perceives his own shine.** It is shown once, from outside, at the refusal. That is the story's one camera break.
 
 - He keeps every memory at the end. He simply cannot feel that any of it was him.
+
+- **Never write him as a different man.** He does not change. A latent layer 3 surfaces and he re-chooses it every morning — which is why the last image is a train and blank pages rather than an arrival.
+
+- **He idealises five people and is wrong about four.** Shiori is the one where the thing he admires is real, cost her nothing to have, and is the answer to his question — and he never identifies it. He learns it from the mountain instead, at full price. Never let anyone point at this.
