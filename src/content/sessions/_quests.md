@@ -1,6 +1,6 @@
 ## The Question
 
-Truly identify the overarching singular goal for my life.
+How can I effectively make my old self integrate into my new self?
 
 ## Active
 
@@ -10,20 +10,18 @@ Truly identify the overarching singular goal for my life.
 
 ## Ideas — Insight
 
-- Play Persona 4 Golden / Trails in the Sky the 1st / Wagotabi to learn more vocab
-- Watch a children's show in Japanese (Doraemon?)
+- Playing Dead by Daylight in only Japanese
 
 ## Ideas — Expression
 
-- Sing COLORS by FLOW karaoke (with proper singing voice)
-- Draw/design a new profile asset
+- Posting a checkpoint video of the story structure for Remember Rain so far
 
 ## Ideas — Sincerity
 
-- Search for simple ways to interact with Japanese people
+- Post a Shut up and YAP on backsliding and/or the pessimism of strength (in spite of it all philosophy)
 
 ## Ideas — Chaos
 
-- Motorcycle scuffed stream
+- Walk and talk live stream
 
 ## Completed

@@ -1,6 +1,6 @@
 ---
 name: NINJARUSS
-epithet: the fool who left for Japan
+epithet: the fool who will move to Japan
 portrait: /images/stream/portrait.png
 ---
 

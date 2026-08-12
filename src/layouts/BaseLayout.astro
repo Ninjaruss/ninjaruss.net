@@ -19,7 +19,7 @@ const {
   ogType = 'website',
 } = Astro.props;
 const siteTitle = 'ninjaruss';
-const fullTitle = title === 'Home' ? '*live without regret*' : `${title} — ${siteTitle}`;
+const fullTitle = title === 'Home' ? '*in spite of it all*' : `${title} — ${siteTitle}`;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://ninjaruss.net');
 const resolvedOgImage = ogImage ?? '/social-default.svg';
 const ogImageUrl = new URL(resolvedOgImage, Astro.site || 'https://ninjaruss.net').href;

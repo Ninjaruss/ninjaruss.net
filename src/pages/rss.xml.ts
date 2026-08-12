@@ -18,7 +18,7 @@ export async function GET(context: APIContext) {
   const items = await getJournalItems();
   return rss({
     title: 'ninjaruss — journal',
-    description: 'Notes and showcases from ninjaruss.net — live without regret.',
+    description: 'Notes and showcases from ninjaruss.net — in spite of it all.',
     site: context.site!,
     items: items.map(({ entry, type, href }) => ({
       title: entry.data.title,
