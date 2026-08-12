@@ -8,7 +8,17 @@ export function stripMarkdown(markdown: string): string {
     .replace(/```[\s\S]*?```/g, '')           // Remove code blocks
     .replace(/`[^`]+`/g, '')                  // Remove inline code
     .replace(/<\/?[a-zA-Z][^>]*>/g, ' ')                 // Remove raw HTML tags (incl. multi-line)
-    .replace(/&[a-z#0-9]+;/gi, ' ')           // Remove HTML entities
+    // Decode the entities an HTML renderer actually emits — blanking these ate
+    // apostrophes ("the author&#39;s" → "the author s") in every excerpt.
+    .replace(/&(amp|lt|gt|quot|apos|#0*39|#x0*27);/gi, (_m, e: string) => {
+      const key = e.toLowerCase();
+      if (key === 'amp') return '&';
+      if (key === 'lt') return '<';
+      if (key === 'gt') return '>';
+      if (key === 'quot') return '"';
+      return "'";
+    })
+    .replace(/&[a-z#0-9]+;/gi, ' ')           // Remaining entities → space
     .replace(/!\[.*?\]\(.*?\)/g, '')          // Remove images
     .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Remove links, keep text
     .replace(/^#{1,6}\s+/gm, '')              // Remove headings

@@ -6,6 +6,13 @@ describe('stripMarkdown', () => {
     expect(stripMarkdown('Hello <strong>world</strong>')).toBe('Hello world');
   });
 
+  it('decodes the entities a renderer emits instead of blanking them', () => {
+    // marked escapes apostrophes as &#39;; blanking them turned every
+    // "the author's notes" into "the author s notes" in excerpts and search.
+    expect(stripMarkdown('the author&#39;s notes')).toBe("the author's notes");
+    expect(stripMarkdown('Fish &amp; chips, 3 &lt; 4, &quot;quoted&quot;')).toBe('Fish & chips, 3 < 4, "quoted"');
+  });
+
   it('strips iframe embeds entirely', () => {
     const input = '<iframe width="560" height="315" src="https://www.youtube.com/embed/x"></iframe>\n\nA video essay about Marie.';
     expect(stripMarkdown(input)).toBe('A video essay about Marie.');

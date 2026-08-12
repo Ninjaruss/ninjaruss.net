@@ -443,16 +443,40 @@
 }
 .binder-panel__list a {
   display: block;
-  padding: 5px 0;
+  padding: 8px 0 8px 10px;
+  /* The rule is the hover affordance; at rest it's a hairline gutter. */
+  border-left: 2px solid var(--novel-border);
   font-family: var(--font-body);
   font-size: 0.85rem;
   color: var(--novel-parchment);
   text-decoration: none;
-  transition: color 120ms ease;
+  transition: color 120ms ease, border-color 120ms ease, padding-left 120ms ease;
 }
 .binder-panel__list a:hover,
 .binder-panel__list a:focus-visible {
   color: var(--color-gold);
+  border-left-color: var(--color-gold);
+  padding-left: 14px;
+}
+.binder-row__title {
+  display: block;
+  line-height: 1.35;
+}
+/* The scannable half: every outline doc's opening line, clamped to two. */
+.binder-row__hook {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--novel-warm-dim);
+}
+.binder-panel__list a:hover .binder-row__hook,
+.binder-panel__list a:focus-visible .binder-row__hook {
+  color: var(--novel-warm-muted);
 }
 
 /* ══ Reading page ══ */
@@ -662,7 +686,7 @@
   .desk-top--solo { grid-template-columns: 1fr; }
   .desk-binder { grid-template-columns: 1fr; }
   /* Comfortable touch targets for the dense lists */
-  .binder-panel__list a { padding: 11px 0; }
+  .binder-panel__list a { padding: 11px 0 11px 10px; }
   .scene-row { padding: 10px 12px; gap: 10px; }
   .scene-row__words { display: none; } /* keep rows to number + title on narrow screens */
 
