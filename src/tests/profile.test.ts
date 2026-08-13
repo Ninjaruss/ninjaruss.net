@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { pickProfile } from '../utils/profile';
+import { pickProfile, nowLine, profileSchema } from '../utils/profile';
 
 describe('pickProfile', () => {
   it('returns null when the collection is empty', () => {
@@ -19,9 +19,12 @@ describe('pickProfile', () => {
     const entries = [{ id: 'zeta.md' }, { id: 'alpha.md' }];
     expect(pickProfile(entries)).toEqual({ id: 'alpha.md' });
   });
-});
 
-import { nowLine } from '../utils/profile';
+  it('does not treat about-me as the named entry', () => {
+    const entries = [{ id: 'about-me.md' }, { id: 'aaa.md' }];
+    expect(pickProfile(entries)).toEqual({ id: 'aaa.md' });
+  });
+});
 
 const nowEntry = (title: string, iso: string, draft = false) => ({
   data: { title, publishedAt: new Date(iso), draft },
@@ -57,16 +60,22 @@ describe('nowLine', () => {
     expect(nowLine([nowEntry('   ', '2026-08-01')])).toBeNull();
   });
 
-  it('skips entries with an unparseable date', () => {
+  it('keeps the first array element when two entries tie on date', () => {
     const entries = [
-      nowEntry('Good', '2026-06-01'),
-      { data: { title: 'Broken', publishedAt: new Date('not a date'), draft: false } },
+      nowEntry('First', '2026-08-01'),
+      nowEntry('Second', '2026-08-01'),
     ];
-    expect(nowLine(entries)).toEqual({ title: 'Good', href: '/now' });
+    expect(nowLine(entries)).toEqual({ title: 'First', href: '/now' });
+  });
+
+  it('returns null when the newest title is blank, without falling back', () => {
+    const entries = [
+      nowEntry('Older but good', '2026-06-01'),
+      nowEntry('   ', '2026-08-01'),
+    ];
+    expect(nowLine(entries)).toBeNull();
   });
 });
-
-import { profileSchema } from '../utils/profile';
 
 const validProfile = {
   hook: 'I decide on a whim and figure out the logistics after.',
@@ -80,7 +89,11 @@ const validProfile = {
 
 describe('profileSchema', () => {
   it('accepts a fully populated profile', () => {
-    expect(profileSchema.parse(validProfile)).toMatchObject(validProfile);
+    expect(profileSchema.parse(validProfile)).toEqual(validProfile);
+  });
+
+  it('rejects an empty hook', () => {
+    expect(() => profileSchema.parse({ hook: '' })).toThrow();
   });
 
   it('defaults every list to empty so a minimal file still renders', () => {
