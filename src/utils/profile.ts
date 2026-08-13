@@ -18,3 +18,33 @@ export function pickProfile<T extends { id: string }>(entries: readonly T[]): T 
   if (named) return named;
   return [...entries].sort((a, b) => a.id.localeCompare(b.id))[0];
 }
+
+export interface NowLine {
+  title: string;
+  href: string;
+}
+
+interface NowEntryLike {
+  data: { title?: string; publishedAt?: Date; draft?: boolean };
+}
+
+/**
+ * The single live element on the card. Returns null rather than a placeholder
+ * whenever there is nothing real to show — an empty slot is honest, a stub line
+ * is not.
+ */
+export function nowLine(entries: readonly NowEntryLike[]): NowLine | null {
+  const usable = entries.filter(e =>
+    !e.data.draft &&
+    e.data.publishedAt instanceof Date &&
+    !Number.isNaN(e.data.publishedAt.getTime())
+  );
+  if (usable.length === 0) return null;
+
+  const latest = usable.reduce((a, b) =>
+    (b.data.publishedAt as Date) > (a.data.publishedAt as Date) ? b : a
+  );
+
+  const title = latest.data.title?.trim();
+  return title ? { title, href: '/now' } : null;
+}
