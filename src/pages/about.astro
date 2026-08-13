@@ -1,7 +1,170 @@
 ---
-// There is deliberately no About page: the answer to "who is this?" is the
-// current identity declaration in the journal — learn about me through the
-// stuff I do. When a newer declaration note is written, repoint this redirect
-// at it; /about then becomes a timeline of declarations via git history.
-return Astro.redirect('/notes/i-am-ninjaruss', 301);
+import { getCollection } from 'astro:content';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavPill from '../components/NavPill.astro';
+import { parseProtagonist, DEFAULT_PROTAGONIST } from '../utils/protagonist';
+import { pickProfile, nowLine } from '../utils/profile';
+import '../styles/about.css';
+
+/* The profile card. This page used to 301 to /notes/i-am-ninjaruss on the
+   principle that there should be no About page — learn about me through the
+   stuff I do. That principle is intact: everything below is output and links,
+   not biography, and the declaration note is still the deep read (linked from
+   the prose). What changed is that a stranger now gets a one-screen answer
+   before being handed 1,200 words. */
+
+// Name / epithet / portrait share one source with /status.
+let protagonist = DEFAULT_PROTAGONIST;
+try {
+  const raw = readFileSync(join(process.cwd(), 'src/content/sessions/_protagonist.md'), 'utf-8');
+  protagonist = parseProtagonist(raw);
+} catch {
+  /* Missing file degrades to defaults — same contract as /status. */
+}
+
+const profileEntries = await getCollection('profile');
+const entry = pickProfile(profileEntries);
+const profile = entry?.data ?? null;
+const Content = entry ? (await entry.render()).Content : null;
+
+const nowEntries = await getCollection('now');
+const now = nowLine(nowEntries);
+
+const primaryLinks   = profile?.links.filter(l => l.primary) ?? [];
+const secondaryLinks = profile?.links.filter(l => !l.primary) ?? [];
 ---
+
+<BaseLayout
+  title="About"
+  description="Who Ninjaruss is: a writer working toward Remember Rain, moving to Japan, building small things on the way."
+>
+  <NavPill />
+  <div class="about p3r-animate">
+    <header class="about__header">
+      <span class="p4g-tab">profile</span>
+      <h1 class="about__title"><span class="p4g-heading">{protagonist.name}</span></h1>
+      <span class="p4g-underline" aria-hidden="true"></span>
+      {protagonist.epithet && <p class="about__epithet">{protagonist.epithet}</p>}
+    </header>
+
+    <div class="about__grid">
+      <aside class="about__rail">
+        {protagonist.portrait && (
+          <div class="about__portrait-wrap p4g-cut">
+            <img
+              class="about__portrait"
+              src={protagonist.portrait}
+              alt={`Portrait of ${protagonist.name}`}
+              width="280"
+              height="280"
+              loading="eager"
+            />
+          </div>
+        )}
+
+        {profile && profile.credentials.length > 0 && (
+          <ul class="about__credentials">
+            {profile.credentials.map(line => (
+              <li class="about__credential">{line}</li>
+            ))}
+          </ul>
+        )}
+
+        {profile && profile.links.length > 0 && (
+          <section>
+            <h2 class="about__section-label">Find me</h2>
+            <div class="about__links">
+              {primaryLinks.map(link => (
+                <a class="about__link about__link--primary p4g-sweep" href={link.href}><span>{link.label}</span></a>
+              ))}
+              {secondaryLinks.map(link => (
+                <a class="about__link p4g-sweep" href={link.href}><span>{link.label}</span></a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <section>
+          <h2 class="about__section-label">Connect</h2>
+          {profile?.connect && <p class="about__connect">{profile.connect}</p>}
+          {/* Address + href injected client-side so it never sits in the served HTML */}
+          <a href="#mailbox" class="about__mail" id="about-mail"></a>
+          {/* JS-free fallback: still obfuscated, no `@` or `mailto:` in the HTML */}
+          <noscript>
+            <p class="about__mail">mailbox [at] ninjaruss [dot] net</p>
+          </noscript>
+        </section>
+      </aside>
+
+      <main class="about__main">
+        {profile && <p class="about__hook">{profile.hook}</p>}
+
+        {profile && profile.makes.length > 0 && (
+          <section>
+            <h2 class="about__section-label">What I make</h2>
+            <div class="about__makes">
+              {profile.makes.map(make => (
+                <a class="about__make" href={make.href}>
+                  <span class="about__make-label">{make.label}</span>
+                  <span class="about__make-blurb">{make.blurb}</span>
+                </a>
+              ))}
+            </div>
+            {profile.makesMore && (
+              <p class="about__makes-more">
+                <a href={profile.makesMore.href}>{profile.makesMore.text} →</a>
+              </p>
+            )}
+          </section>
+        )}
+
+        {profile && profile.subjects.length > 0 && (
+          <section>
+            <h2 class="about__section-label">Subjects I explore</h2>
+            <div class="about__subject-groups">
+              {profile.subjects.map(group => (
+                <div>
+                  <h3 class="about__subject-group-name">{group.group}</h3>
+                  <ul class="about__subject-list">
+                    {group.items.map(item => <li class="about__subject">{item}</li>)}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {Content && (
+          <section class="prose">
+            <h2 class="about__section-label">About</h2>
+            <Content />
+          </section>
+        )}
+
+        {now && (
+          <section class="about__now">
+            <h2 class="about__section-label">Now</h2>
+            <a class="about__now-link" href={now.href}>{now.title} →</a>
+          </section>
+        )}
+      </main>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  /* Mailbox address assembled at runtime so scrapers reading the served HTML
+     never see a mailto or a full address. Same pattern as the homepage Email
+     tile and the /status mail strip. */
+  function initAboutMail(): void {
+    const el = document.getElementById('about-mail') as HTMLAnchorElement | null;
+    if (!el || el.textContent) return;
+    const addr = ['mailbox', ['ninjaruss', 'net'].join('.')].join('@');
+    el.textContent = addr;
+    el.href = 'mailto:' + addr;
+  }
+  initAboutMail();
+  document.addEventListener('astro:page-load', initAboutMail);
+</script>
