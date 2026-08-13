@@ -12,6 +12,10 @@ Her question: *if I lose this too, will there be anything left of me?*
 
 **25–26.** Main trait: Maker. Passive trait: Bracing.
 
+**She asked once, was maimed for it, and has never asked again.** Her response to being subtracted from was to build something — **the building *is* the not-asking.** She is not exempt from this cast's disease; she is the one who tried the cure and was punished for it. Which is what causes her line (*she never asks a person to remember for her*) and her passive (bracing is what you do after asking once and losing something for it).
+
+The story still never treats her original request as a sin. She was right to ask. What the story says is not *don't ask* — it is that **she asked the one man for whom asking was fatal.**
+
 **The impossible decision.** She can be useful or she can be herself, and the rig is the only copy. Running the fourth front spends the archive of her own life to buy other people's fights. Stage it as choosing — she picks each burnt-out component — not as a cost discovered afterward.
 
 **The line she won't cross.** She never asks a person to remember for her. Machines only, which is why she built a system instead of leaning on anyone, and why the isolation is self-inflicted and invisible. It breaks in the gentlest available direction: the coda, one unnotated thing, trusting herself.

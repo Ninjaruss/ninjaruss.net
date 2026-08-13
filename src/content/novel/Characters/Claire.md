@@ -10,6 +10,10 @@ Her question: *how do I act when I can't be sure?*
 
 **Mind · 21–22 · the Certainty Junkie.** Main trait: Preemptor. Passive trait: Addict, chasing silence.
 
+**Preemptor does not mean she acts early — she pre-empts *uncertainty*,** in herself and in everyone near her, and the paralysis is simply what happens when she can't. That is both halves of *never wrong and almost never in time.*
+
+**She is mentally more mature than Rain and emotionally less secure.** The maturity is real; the insecurity is what the certainty compensates for. Supplying decisions to other people is also how she avoids ever having to request anything herself.
+
 **The impossible decision.** She wants the quiet, and she wants to remain the person who went into that building — and the Static *is* the building. The two wants are the same object, which is why no compromise exists.
 
 **The line she won't cross — and does, as a victory.** She will not act without a model. The lens coming off is the crossing, and it is the only crossing in the book that is unambiguously good. Deliberate contrast with Rain's, which is his relapse.
@@ -58,7 +62,7 @@ Through calculation — so everything she can do is a prediction, held.
 
 **She takes the decision off your hands.** The unremarkable solve at the hideout is one instance of a continuous behaviour: she resolves other people's small ambiguities before they finish stating them, and nobody thanks her because nobody notices.
 
-She and Rain are the same transaction from opposite ends — he outsources, she absorbs — and neither remarks on it, which is why Arc 4's *end the outsourcing* lands on her as an injury rather than a lesson.
+She and Rain are the same transaction from opposite ends — **she absorbs and he permits it**; he would never have asked — and neither remarks on it, which is why Arc 4's *end the outsourcing* lands on her as an injury rather than a lesson.
 
 **Breaks at the overwatch.** The ribbon dies, the range collapses, the lens comes off, and she hands a decision back: *go.* She spends the whole book taking decisions from people and ends by giving one away without a model.
 

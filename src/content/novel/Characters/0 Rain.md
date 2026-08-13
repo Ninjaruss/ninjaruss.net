@@ -10,6 +10,8 @@ His question: *if I become one thing, what happens to everyone else I could have
 
 **Heart · 23 · the Paralyzed Dreamer.** Main trait: Deferrer. Passive trait: Dreamer.
 
+**Refusing to ask *is* the avoidance.** Asking requires naming what you want, out loud, in front of a witness who might say no. It makes the thing real and creates an expectation — it is a fall, and a man protecting an unspent inventory of possible selves cannot afford one. **His solitude and his paralysis are one trait, not two.** He does not outsource to people; he outsources to *potential*, and refusing help is how he keeps the inventory unspent.
+
 **The impossible decision.** He wants to matter and he wants to stay possible, and every act of mattering deletes possibility. Arc 3 makes the arithmetic literal; the notebook is a man refusing to spend his inventory.
 
 **The line he won't cross — and does.** He will not send someone else in his place. It is why the Clone is deception-only and why its cost is the Ghost. Arc 4's last stop is him crossing it and being rewarded for it. He keeps the Perfect Clone forever: the line is never restored as a rule, only re-chosen as a morning.
@@ -38,7 +40,9 @@ His question: *if I become one thing, what happens to everyone else I could have
 
 - *Tell:* he cannot answer in a quiet room. Give him an emergency and he moves instantly; give him a question and a chair and he has nothing.
 
-- *Tell:* he outsources. Claire solves a small problem, he lets her, and neither of them remarks on it.
+- *Tell:* he **permits**, he never asks. Claire solves a small problem, he lets her, and neither of them remarks on it. He would not have requested it. Permitting costs him nothing and commits him to nothing, which is exactly why he allows it.
+
+- *Tell:* **he asks everyone what they need and never once says what he needs.** The older brother's disease.
 
 **What he doesn't know.** His effect on people already outruns his command of himself. He believes he's a passenger in his own life while visibly changing everyone he meets.
 

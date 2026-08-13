@@ -8,7 +8,9 @@ The kindest man in the story, and the only one who has never once been refused.
 
 His question: *how long am I supposed to watch?*
 
-**Mid-to-late forties.** Main trait: Fixer. Passive trait: Impatient.
+**Mid-to-late forties.** Main trait: Fixer. Passive trait: Impatient. *(Impatience is the core — the wound — not the main trait. What you picture is the kindness that adjusts things; the impatience is the layer you reach on second thought.)*
+
+**His crime, stated at its most precise: he removes the need to ask.** He fixes small things before anyone requests them. Asking for help is an act of commitment, and it is the one act that would have saved any of these people — his kindness is what makes it unnecessary, one courtesy at a time.
 
 **He has no impossible decision, and that's the point.** He is the only man in the story who has never once been refused, so he has never stood at a crossroads. The story manufactures his only one and he refuses to recognise it as a decision: keep taking, or wait. He cannot wait. *(Latent and never answered: peace for everyone, or being the one who provides it. If a cure held he'd be unnecessary, and the subscription is the evidence. Let the story ask; never answer.)*
 

@@ -174,6 +174,38 @@ The finale is the hardest, most concrete prose in the book. **The mismatch betwe
 
 **Arc 3 plant:** render the dream-lives at full weight, indistinguishable in texture from the waking scenes, so the reader learns inside Arc 3 that feeling real proves nothing.
 
+#### The ask axis
+
+*Decided 2026-08-12.*
+
+**Asking for help is an act of commitment, and almost nobody in this book can do it.** It requires naming what you want, out loud, in front of a witness who might say no. It makes the thing real and creates an expectation. That is a fall.
+
+- **Rain** asks everyone what they need and never once says what he needs. His solitude and his paralysis are one trait, not two — refusing help is how he keeps the inventory of possible selves unspent.
+
+- **Roxana** converts every question about herself into a task. She gets there first, so nobody ever has to ask — and neither does she.
+
+- **Claire** takes decisions off people's hands. Supplying certainty is how she avoids ever requesting any.
+
+- **The Pursuer** is the extreme case: a man of enormous wanting who never asked, and had it burned out of him.
+
+- **Shiori asked once, was maimed for it, and never asked again.** The building is the not-asking. She is not the exception; she is the one who tried and was punished. The story never treats the request as a sin — she was right to ask, and she asked the one man for whom asking was fatal.
+
+**Three of them give and none of them can ask.** Rain, Roxana and Claire are three variations on a single refusal, which is why he is drawn to them and why none of the three can receive what the others are holding out.
+
+**And Vesper's crime, at its most precise: he removes the need to ask.** He fixes small things before anyone requests them. Asking is the act that would have saved any of them, and his kindness is what makes it unnecessary — a relief that removes your reason to act, one courtesy at a time.
+
+#### Three scales of self-surveillance
+
+The panopticon in this story is the **empty** one — the tower unmanned and the discipline continuing anyway. That is the mechanism behind *nothing is chasing you*, and it runs at three scales.
+
+- **Internal — the Split.** The subject as his own overseer: a ledger of past failure in his own voice, and the thing that keeps him quiet in a room. The trap endings are self-policing having won. And he never perceives his own shine: seen by everyone, unable to see himself.
+
+- **Interpersonal — Claire.** She answers the question you were about to ask, which is charming twice and unnerving after that. Being read before you speak, at conversational scale.
+
+- **Civic — Shiori's system.** Built out of need, scaled by an institution, watching everyone. Her insurance became everyone's cage.
+
+**Never build the tower.** No camera walls, no checkpoints, nobody who feels observed. The machinery is old gear still running in rooms nobody visits.
+
 #### Influences, and what the story declines
 
 *Working note, 2026-08-11. A boundary marker, not content — no character voices a philosopher, and none of these names appear in the manuscript.*

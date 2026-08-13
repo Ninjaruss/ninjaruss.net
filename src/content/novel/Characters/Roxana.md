@@ -10,6 +10,8 @@ Her question: *who am I when nobody needs me?*
 
 **Body · 27–28.** Main trait: Provider. Passive trait: Unreceivable.
 
+**Its social face: she is unaskable.** She arrives with the task already in hand, so nobody ever has to ask her for anything — and she never has to ask either.
+
 **The impossible decision, and her power enforces it.** She wants to be needed and she wants to be known, and she believes nobody leans on someone whose bottom they've seen. The Bearing Flame ignites only on care offered *and accepted* — so she can only stand by receiving the one thing she cannot survive receiving. The magic isn't a metaphor for the decision; it's the mechanism that won't let her dodge it.
 
 **The line she won't cross — crossed while she's unconscious.** She will not be carried. Arc 3 ends with Rain carrying her out of her father's grave, without consent, which is precisely why the Arc 4 reveal is structurally necessary: she has to agree to something already done to her.

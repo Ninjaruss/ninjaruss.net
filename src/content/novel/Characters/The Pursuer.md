@@ -10,7 +10,9 @@ His question: *is it too late to stop?*
 
 He is Rain's inverse and the story says so out loud: *the man who acts without wanting hunts the man who wants without acting.* Rain cannot start. He cannot stop.
 
-**Around fifty to fifty-five.** Main trait: Endurer. Passive trait: Compliant — the institution supplies the verb.
+**Around fifty to fifty-five.** Main trait: Endurer — compliance is part of it; the institution supplies the verb. Passive trait: **the Furnace**, the man of enormous wanting he was born as, now burned as fuel. *(The steam is that passive, visible.)*
+
+He is the extreme case on the ask axis: a man who wanted enormously, never once asked for anything, and had it burned out of him.
 
 **The impossible decision.** Stop and be nothing, or continue and be nothing later. Both ends are the same, which is what makes it impossible and what makes it a different paralysis from Rain's: Rain is frozen between goods, the Pursuer between two nothings. He takes the one that's his.
 
@@ -68,7 +70,7 @@ And the small one on top: **he completes the record. He signs.** His signature a
 
 **Layer 2 — situational · dark / obscure.** He creates no situations. He processes.
 
-**Layer 3 — setting and concept · bright / very obscure.** Born burning. A furnace the System recruited, with the wanting burned as fuel.
+**Layer 3 — setting and concept · bright / very obscure.** Born burning. The Furnace — his passive — with the wanting spent as fuel.
 
 **The steam is his passive trait, visible.** A bright layer 3 being consumed to power a dark main trait, and the vapour drifting in the corners is that combustion escaping. Which gives the condensation at the end an exact meaning: the burning stops, and what was being spent finally settles.
 
