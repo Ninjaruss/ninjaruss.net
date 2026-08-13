@@ -1,0 +1,238 @@
+/* ── /about — profile card ──────────────────────────────────────────────
+   Tokens and P4G utilities only: no new colors, no new radii. The card is a
+   single-zone surface, so per the diagonal-language rule it carries the motif
+   through .p4g-tab / .p4g-heading / .p4g-underline / .p4g-sweep only — no
+   decorative seams. */
+
+.about {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem calc(var(--nav-clearance, 96px) + 3rem);
+}
+
+.about__header {
+  margin-bottom: 2.5rem;
+}
+
+.about__title {
+  margin: 0.75rem 0 0;
+  font-size: var(--text-page-title);
+}
+
+.about__epithet {
+  margin: 0.75rem 0 0;
+  color: var(--color-gold);
+  font-style: italic;
+}
+
+/* ── Two-column card ─────────────────────────────────────────────────── */
+
+.about__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (max-width: 1023px) {
+  .about__grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+/* ── Left rail ───────────────────────────────────────────────────────── */
+
+.about__rail {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* clip-path clips box-shadow, so the hard gold shadow goes on a wrapper. */
+.about__portrait-wrap {
+  filter: drop-shadow(var(--shadow-hard));
+}
+
+.about__portrait {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--color-surface-2);
+}
+
+@media (max-width: 1023px) {
+  .about__portrait-wrap {
+    max-width: 220px;
+  }
+}
+
+.about__credentials {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about__credential {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.about__section-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  transform: skewX(var(--skew-display));
+  margin-bottom: 0.75rem;
+}
+
+/* ── Links ───────────────────────────────────────────────────────────── */
+
+.about__links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.about__link {
+  position: relative;
+  display: block;
+  padding: 0.6rem 0.9rem;
+  min-height: 44px;
+  border: 1px solid var(--color-surface-3);
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.about__link--primary {
+  border-color: var(--color-gold);
+  font-weight: 700;
+}
+
+.about__connect {
+  margin: 0 0 0.75rem;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.about__mail {
+  color: var(--color-gold);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+/* ── Right column ────────────────────────────────────────────────────── */
+
+.about__main {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.about__hook {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.about__makes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.about__make {
+  position: relative;
+  display: block;
+  padding: 0.9rem 1.1rem;
+  border-left: 2px solid var(--color-surface-3);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: border-color var(--animation-base) var(--animation-easing),
+              transform var(--animation-base) var(--animation-easing);
+}
+
+.about__make:hover,
+.about__make:focus-visible {
+  border-left-color: var(--color-gold);
+  transform: translateX(4px);
+}
+
+.about__make-label {
+  display: block;
+  font-weight: 700;
+  font-size: var(--text-panel-title);
+}
+
+.about__make-blurb {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.about__makes-more {
+  color: var(--color-text-subtle);
+  font-size: 0.85rem;
+}
+
+.about__subject-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.75rem;
+}
+
+.about__subject-group-name {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: rgba(var(--color-gold-rgb), 0.55);
+  margin-bottom: 0.5rem;
+}
+
+.about__subject-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.about__subject {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.about__now {
+  padding: 1rem 1.25rem;
+  border: 1px solid rgba(var(--color-gold-rgb), 0.25);
+  background: var(--color-surface-1);
+}
+
+.about__now-link {
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about__make {
+    transition: none;
+  }
+  .about__make:hover,
+  .about__make:focus-visible {
+    transform: none;
+  }
+}
