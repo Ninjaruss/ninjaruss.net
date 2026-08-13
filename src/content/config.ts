@@ -1,4 +1,5 @@
 import { defineCollection, z } from 'astro:content';
+import { profileSchema } from '../utils/profile';
 
 // Shared schema fields across all content types
 const sharedSchema = z.object({
@@ -80,6 +81,13 @@ const socialLinks = defineCollection({
   }),
 });
 
+// Profile — single-entry collection backing the /about card. The schema lives in
+// utils/profile.ts so vitest (which cannot resolve astro:content) can test it.
+const profile = defineCollection({
+  type: 'content',
+  schema: profileSchema,
+});
+
 export const collections = {
   shelf,
   notes,
@@ -87,4 +95,5 @@ export const collections = {
   now,
   sessions,
   'social-links': socialLinks,
+  profile,
 };
