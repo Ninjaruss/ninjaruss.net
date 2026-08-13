@@ -72,9 +72,14 @@ Everything else is authored.
 
 | Row | Copy |
 |---|---|
+| Remember Rain | The visual novel — people who cross a point of no return. The thing I'm actually trying to get good enough to make |
 | Ninjaruss (YouTube / Twitch) | Yap videos on life, Japanese learning live, and whatever I decide to explore next |
-| Remember Rain | Visual novel in progress — people who cross a point of no return |
 | Things I build | Utasync (learn Japanese through music), L-file (the Usogui database that didn't exist), and this site |
+
+Row order is deliberate: the writing leads, because that is the stated goal.
+This does not contradict the two-platform hierarchy in FIND ME — YouTube keeps
+primary CTA billing there as the way people arrive, while this list states what
+the work is *for*.
 
 Followed by: *plus a video essay, a Roblox ninja clan, and whatever's next →*
 linking to `/journal?types=showcase`.
@@ -105,11 +110,18 @@ channel split is not settled and the card should not assert one.
 Each group's items are plain text, not links. Thematic browsing already has a
 home at `/codex`; the card closes with a link there rather than 12 deep links.
 
-**ABOUT** — three short paragraphs, first person:
+**ABOUT** — four short paragraphs, first person. The writing leads; software is
+named as a real interest and a means, not the identity:
 
-> I build software and get paid for none of it: a visual novel called Remember
-> Rain, a Japanese-learning app I made because nothing like it existed, and a
-> database for a manga almost nobody has read.
+> What I want is to be a writer. Remember Rain is the visual novel I'm working
+> toward being good enough to actually make — a producer and storyteller who can
+> put something like it into the world is the version of me I'm aiming at.
+> Everything else here is practice or scaffolding for that.
+>
+> Software is the interest that pays its way. I build small applications for
+> myself — a Japanese-learning app because nothing like it existed, a database
+> for a manga almost nobody has read, this site. A tech job will probably be
+> what buys me stability. It isn't the goal.
 >
 > The thread is commitment. Infinite potential is comfortable, and it's a slow
 > way to erase yourself — so I make the choice out loud, where backing out costs
@@ -124,8 +136,8 @@ Closes with a link to the full declaration (`/notes/i-am-ninjaruss`).
 **NOW** — one line: the latest `now` entry's title, linked to `/now`. The single
 live element on the page.
 
-**CONNECT** — "Open to collaboration — niche apps, JP-learning tools, anything
-weeb-adjacent." Plus the mail link. No pricing, no services, no availability
+**CONNECT** — "Open to collaboration — stories, niche apps, JP-learning tools,
+anything weeb-adjacent." Plus the mail link. No pricing, no services, no availability
 block.
 
 **FIND ME** — two primary CTAs (YouTube, and the journal as "read"), with Twitch,
