@@ -7,6 +7,41 @@
  * `astro:content`, which keeps it loadable in a plain node test run.
  */
 
+import { z } from 'astro/zod';
+
+export const profileSchema = z.object({
+  /** The one line a stranger reads first, under the name. */
+  hook: z.string(),
+  /** Mono lines establishing background. No employer names, no job titles. */
+  credentials: z.array(z.string()).default([]),
+  /** WHAT I MAKE rows, in deliberate order — the writing leads. */
+  makes: z.array(z.object({
+    label: z.string(),
+    blurb: z.string(),
+    href: z.string(),
+  })).default([]),
+  /** The "and whatever's next" line closing the makes list. */
+  makesMore: z.object({
+    text: z.string(),
+    href: z.string(),
+  }).optional(),
+  /** SUBJECTS I EXPLORE, grouped. Plain text — thematic browsing lives at /codex. */
+  subjects: z.array(z.object({
+    group: z.string(),
+    items: z.array(z.string()),
+  })).default([]),
+  /** The collaboration invitation above the mail link. */
+  connect: z.string().optional(),
+  /** FIND ME links; `primary: true` gets CTA billing. */
+  links: z.array(z.object({
+    label: z.string(),
+    href: z.string(),
+    primary: z.boolean().default(false),
+  })).default([]),
+});
+
+export type ProfileData = z.infer<typeof profileSchema>;
+
 /**
  * The profile collection is a singleton, but a collection is still a list.
  * Prefer the entry literally named `about`; otherwise take the alphabetically
