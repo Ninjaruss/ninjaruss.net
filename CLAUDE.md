@@ -64,6 +64,7 @@ Collection-specific extensions:
 - **notes**: uses sharedSchema without extensions (no tags — thematic grouping lives in /codex; relatedness via `collections`)
 - **showcase**: uses sharedSchema without extensions
 - **now**: simplified schema with `title` (defaults to 'Now'), `publishedAt` (required), `updatedAt`, `draft`
+- **profile**: single entry backing `/about` — `hook` (required), `credentials[]`, `makes[]` (`{label, blurb, href}`), `makesMore` (`{text, href}`), `subjects[]` (`{group, items[]}`), `connect`, `links[]` (`{label, href, primary}`). Every string is `.min(1)` — a blank field is a build error, not a silently empty card. Schema is defined in `src/utils/profile.ts` and imported into `config.ts` (not inline) so it stays unit-testable. Body markdown is the ABOUT prose. Deliberately has **no** `draft` field: it's a singleton the author edits directly
 
 ## Layouts
 
@@ -196,7 +197,6 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 
 ### Legacy Routes (301 Redirects)
 - `/stream` → redirects to `/status` (the sessions/stat-tracking page was renamed; `astro.config.mjs` `redirects`).
-- `/about` → redirects to the current identity-declaration note (`/notes/i-am-ninjaruss`). Deliberate design: no static About page — "learn about me through the stuff I do." When a newer declaration note is written, repoint this redirect (`src/pages/about.astro`). The homepage title tile carries a quiet "who?" corner link to it.
 - `/notes` → redirects to `/journal?types=note` (list page only; detail routes live)
 - `/showcase` → redirects to `/journal?types=showcase` (list page only; detail routes live)
 - `/favorites` → redirects to `/shelf` (the `?fav=1` filter no longer exists)
@@ -210,6 +210,7 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 
 ### Utility Pages
 - `/` — Homepage with BentoGrid tiles
+- `/about` — profile card. One card, one screen: header (name/epithet/portrait from `_protagonist.md` via `parseProtagonist`, shared with `/status`), credential lines, WHAT I MAKE, SUBJECTS I EXPLORE, ABOUT prose, NOW, CONNECT + FIND ME. Copy is hand-written in the single-entry `profile` collection (`src/content/profile/about.md`); the Zod schema and the `pickProfile`/`nowLine` selectors live in `src/utils/profile.ts` (pure — vitest can't resolve `astro:content`, same split as `journal.ts`/`journalMerge.ts`). Exactly one live element: the NOW line, pulled from the latest `now` entry and omitted entirely when there isn't one. Reached from the homepage title tile's "who?" corner link; deliberately **not** in NavPill (an 8th item breaks the 4+3 mobile wrap). Was a 301 to `/notes/i-am-ninjaruss` — the "no static About page" stance is preserved in spirit (the card is all output and links, no biography) and that note is now the deep read, linked from the ABOUT prose. The email address is assembled client-side (`#about-mail`), never in the served HTML. Link labels inside `.p4g-sweep` anchors **must** be wrapped in an element (`<span>`): the utility lifts children via `.p4g-sweep > *`, which doesn't match bare text nodes, so an unwrapped label gets painted over by the gold panel on hover.
 - `/now` — Latest "Now" entry (current focus)
 - `/now/archive` — Historical "Now" entries list
 - `/rss.xml` — Journal RSS feed (`src/pages/rss.xml.ts`, `@astrojs/rss`): merged notes + showcases, **excerpt-only by design** (~300 chars + link — the feed is a doorbell, the site is the room). Autodiscovery `<link rel="alternate">` in BaseLayout head.
@@ -366,6 +367,7 @@ absence counters anywhere on the page.
 | `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `parseOrderPrefix()`, `unescapeScrivenerMarkdown()`, `stripSceneLabel()`, `countWords()`, `computeNovelStats()`, `flattenFolderFiles()`, `findRecentFiles()`, `findSynopsisDoc()`, `findFirstScene()` | Scrivener-backed novel content loader + rain-gauge stats + desk recency/intro helpers |
 | `src/utils/sessions.ts` (formerly `stream.ts`) | `tallyStats()`, `buildRadarPoints()`, `buildGuidePoints()`, `applyLogScale()`, `scaleAllTallies()`, `parseStreamIdeas()`, `parseQuestFile()`, `parseQuestMenu()` (legacy, unused by pages), `buildDonutArcs()`, `computeLevel()`, `hexToRgbTriplet()`, `STAT_COLORS`, `STAT_ORDER`, `STAT_CEILING` | `sessions` collection stat aggregation/scaling for the `/status` radar + donut, the single stat-colour table (`STAT_COLORS` — the only place the five stat hexes are written; index.astro, status/index.astro and scripts/transition.ts all read it), level/XP math, and `_quests.md` parsing (`parseQuestFile` — sections: The Question / Active / Ideas — \<Stat\> / Completed) |
 | `src/utils/protagonist.ts` | `parseProtagonist()`, `DEFAULT_PROTAGONIST` | Minimal frontmatter reader for `_protagonist.md` (name/epithet/portrait); missing file/fields degrade to defaults |
+| `src/utils/profile.ts` | `profileSchema`, `pickProfile()`, `nowLine()` | /about profile card data layer — Zod schema (from `astro/zod`, **not** `astro:content`, so vitest can load it), singleton entry selection, and the single live NOW line (returns null rather than a placeholder when there's nothing real to show) |
 | `src/utils/codexContent.ts` + `src/utils/codex/` | `getCodexPageData()`, `getCodexTileData()`; pure modules: schema, json, stabilize, resolve, corpus, prompt, pipeline | /codex data layer — see Codex System section |
 | `src/utils/shelfWall.ts` | `wallTier()`, `wallShape()`, `wallClass()`, `wallRotation()`, `sortWall()`, `resolveInitialFilter()` | /shelf wall logic — affection tiers, shape/span classes, slug-seeded rotation, ordering, filter-URL resolution |
 | `src/utils/splitView/` | (11 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
