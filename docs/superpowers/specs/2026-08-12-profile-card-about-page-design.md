@@ -1,4 +1,4 @@
-# /who — Profile Card
+# /about — Profile Card
 
 **Date:** 2026-08-12
 **Status:** approved design, pending implementation plan
@@ -18,7 +18,8 @@ introduction.
 
 ## What we're building
 
-`/who` — a single profile card page. One card, one screen on desktop. Its shape
+`/about` — a single profile card page, replacing the redirect. One card, one
+screen on desktop. Its shape
 follows the creator profile-card convention (subjects / roles / about / contact)
 rather than a resume or a manifesto.
 
@@ -52,9 +53,20 @@ Everything else is authored.
 - `NINJARUSS`
 - Epithet: *the fool who will move to Japan*
 - Hook: "I decide on a whim and figure out the logistics after. This is the evidence."
-- Quiet credential line — a single mono line establishing employability without
-  a resume block. **Author supplies the wording.** Working placeholder:
-  `software engineer by day · building the exit`
+- Quiet credential lines — two mono lines establishing background without a
+  resume block. No employer names, no job titles:
+
+  > B.S. Computer Science, 2021
+  > four years at a desk, then I quit to see how things fall — now on a grocery
+  > floor, on purpose
+
+  The second line is the card's most load-bearing fact: the downshift was a
+  deliberate full reset, taken partly to accumulate money for the move and
+  partly out of curiosity about what retail work actually feels like. It is the
+  strongest available evidence for the "comfort as the enemy" thesis the rest of
+  the site argues, and it earns its place precisely because it costs something to
+  say. Employer names are omitted — the shape of the move is the point, not who
+  signed the checks.
 
 **WHAT I MAKE** — three current rows plus one variety line:
 
@@ -95,10 +107,9 @@ home at `/codex`; the card closes with a link there rather than 12 deep links.
 
 **ABOUT** — three short paragraphs, first person:
 
-> I'm a software developer who spends most of his energy on things that don't
-> pay: a visual novel called Remember Rain, a Japanese-learning app I built
-> because nothing like it existed, and a database for a manga almost nobody has
-> read.
+> I build software and get paid for none of it: a visual novel called Remember
+> Rain, a Japanese-learning app I made because nothing like it existed, and a
+> database for a manga almost nobody has read.
 >
 > The thread is commitment. Infinite potential is comfortable, and it's a slow
 > way to erase yourself — so I make the choice out loud, where backing out costs
@@ -127,10 +138,10 @@ lives.
 ### Content source
 
 A new `profile` content collection holding a single entry,
-`src/content/profile/who.md`:
+`src/content/profile/about.md`:
 
 - **Frontmatter** (Zod-validated in `src/content/config.ts`): `hook`,
-  `quietLine`, `makes[]` (`{ label, blurb, href }`), `makesMore`
+  `credentials[]` (the mono lines), `makes[]` (`{ label, blurb, href }`), `makesMore`
   (`{ text, href }`), `subjects[]` (`{ group, items[] }`), `connect`, `links[]`
   (`{ label, href, primary }`).
 - **Body**: the ABOUT prose as markdown.
@@ -139,29 +150,34 @@ Name and epithet come from `_protagonist.md` via the existing
 `parseProtagonist()` — not duplicated in the profile file. One portrait, one
 name, one source of truth, already shared with `/status`.
 
-Rationale for a collection over a bare `_who.md`: the card's structured lists
+Rationale for a collection over a bare `_about.md`: the card's structured lists
 (makes, subjects, links) benefit from Zod validation at build time, and the body
 prose wants normal markdown rendering. `_protagonist.md`'s hand-rolled parser
 exists because it holds three scalar fields; this holds nested arrays.
 
 ### Route
 
-`src/pages/who.astro` — static, prerendered, `BaseLayout` + `NavPill`.
+`src/pages/about.astro` — the existing file, converted from a 301 redirect into
+a real page. Static, prerendered, `BaseLayout` + `NavPill`.
 
-### Redirects and entry points
+### Entry points
 
-- Homepage title-tile "who?" corner link: `/about` → `/who`
-- `src/pages/about.astro`: repoint the 301 from `/notes/i-am-ninjaruss` to
-  `/who`. The declaration note stays reachable from the card's ABOUT section, so
-  nothing is orphaned; `/about` now lands on the summary and the note becomes
-  the deep read.
-- `/who` is **not** added to `NavPill`. Eight items would break the 4+3 mobile
+- The homepage title-tile "who?" corner link already points at `/about` and needs
+  no change — it now lands on the card instead of bouncing to the note.
+- The declaration note `/notes/i-am-ninjaruss` stays reachable from the card's
+  ABOUT section, so nothing is orphaned. `/about` becomes the summary; the note
+  becomes the deep read.
+- This reverses the stance recorded in the old `about.astro` comment ("there is
+  deliberately no About page"). The reasoning behind that comment — learn about
+  me through the stuff I do — is preserved: the card is entirely output and
+  links, not biography. Update the comment rather than deleting it silently.
+- `/about` is **not** added to `NavPill`. Eight items would break the 4+3 mobile
   wrap, and the card is a destination you visit once, not a section you navigate
   between.
 
 ### Styling
 
-New `src/styles/who.css`, reusing existing tokens and P4G vocabulary utilities —
+New `src/styles/about.css`, reusing existing tokens and P4G vocabulary utilities —
 `.p4g-tab` (kicker "PROFILE"), `.p4g-heading` (h1 `NINJARUSS`), `.p4g-underline`,
 `.p4g-sweep` on the CTA links, `.p4g-cut` on the portrait frame. No new colors,
 no new radii.
@@ -192,11 +208,11 @@ first pointerenter/focus/touch/click.
 
 Existing `protagonist.test.ts` coverage of `parseProtagonist` is unchanged.
 
-## Open item
+## Documentation to update
 
-The quiet credential line is a placeholder pending the author's own wording. The
-page must render correctly when `quietLine` is absent, so this does not block
-implementation.
+- `CLAUDE.md` — the Legacy Routes section currently documents `/about` as a 301
+  to `/notes/i-am-ninjaruss`. It becomes a real page and moves out of that list.
+- The comment in `src/pages/about.astro` explaining why no About page exists.
 
 ## Invariants respected
 
