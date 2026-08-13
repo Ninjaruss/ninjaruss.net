@@ -34,11 +34,18 @@ const now = nowLine(nowEntries);
 
 const primaryLinks   = profile?.links.filter(l => l.primary) ?? [];
 const secondaryLinks = profile?.links.filter(l => !l.primary) ?? [];
+
+/* Off-site links open in a new tab, matching the homepage service tiles. This
+   page's job is to answer "who is this?" — it shouldn't be the last thing the
+   visitor sees on the site. */
+const isExternal = (href: string) => /^https?:\/\//i.test(href);
 ---
 
 <BaseLayout
   title="About"
   description="Who Ninjaruss is: a writer working toward Remember Rain, moving to Japan, building small things on the way."
+  ogImage={protagonist.portrait ?? undefined}
+  ogType="profile"
 >
   <NavPill />
   <div class="about p3r-animate">
@@ -76,11 +83,16 @@ const secondaryLinks = profile?.links.filter(l => !l.primary) ?? [];
           <section>
             <h2 class="about__section-label">Find me</h2>
             <div class="about__links">
-              {primaryLinks.map(link => (
-                <a class="about__link about__link--primary p4g-sweep" href={link.href}><span>{link.label}</span></a>
-              ))}
-              {secondaryLinks.map(link => (
-                <a class="about__link p4g-sweep" href={link.href}><span>{link.label}</span></a>
+              {[...primaryLinks, ...secondaryLinks].map(link => (
+                <a
+                  class:list={['about__link', 'p4g-sweep', link.primary && 'about__link--primary']}
+                  href={link.href}
+                  {...(isExternal(link.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  {/* The label must be an element: .p4g-sweep lifts children via
+                      `> *`, which does not match a bare text node. */}
+                  <span>{link.label}</span>
+                </a>
               ))}
             </div>
           </section>
@@ -89,8 +101,9 @@ const secondaryLinks = profile?.links.filter(l => !l.primary) ?? [];
         <section>
           <h2 class="about__section-label">Connect</h2>
           {profile?.connect && <p class="about__connect">{profile.connect}</p>}
-          {/* Address + href injected client-side so it never sits in the served HTML */}
-          <a href="#mailbox" class="about__mail" id="about-mail"></a>
+          {/* Address + href injected client-side so it never sits in the served HTML.
+              `hidden` until then: an empty anchor is focusable with no accessible name. */}
+          <a href="#mailbox" class="about__mail" id="about-mail" hidden></a>
           {/* JS-free fallback: still obfuscated, no `@` or `mailto:` in the HTML */}
           <noscript>
             <p class="about__mail">mailbox [at] ninjaruss [dot] net</p>
@@ -98,7 +111,9 @@ const secondaryLinks = profile?.links.filter(l => !l.primary) ?? [];
         </section>
       </aside>
 
-      <main class="about__main">
+      {/* A <div>, not <main>: BaseLayout already wraps the slot in <main>, and a
+          nested one is invalid and duplicates the landmark. */}
+      <div class="about__main">
         {profile && <p class="about__hook">{profile.hook}</p>}
 
         {profile && profile.makes.length > 0 && (
@@ -106,7 +121,11 @@ const secondaryLinks = profile?.links.filter(l => !l.primary) ?? [];
             <h2 class="about__section-label">What I make</h2>
             <div class="about__makes">
               {profile.makes.map(make => (
-                <a class="about__make" href={make.href}>
+                <a
+                  class="about__make"
+                  href={make.href}
+                  {...(isExternal(make.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
                   <span class="about__make-label">{make.label}</span>
                   <span class="about__make-blurb">{make.blurb}</span>
                 </a>
@@ -114,7 +133,7 @@ const secondaryLinks = profile?.links.filter(l => !l.primary) ?? [];
             </div>
             {profile.makesMore && (
               <p class="about__makes-more">
-                <a href={profile.makesMore.href}>{profile.makesMore.text} →</a>
+                <a href={profile.makesMore.href}>{profile.makesMore.text} <span aria-hidden="true">→</span></a>
               </p>
             )}
           </section>
@@ -146,10 +165,10 @@ const secondaryLinks = profile?.links.filter(l => !l.primary) ?? [];
         {now && (
           <section class="about__now">
             <h2 class="about__section-label">Now</h2>
-            <a class="about__now-link" href={now.href}>{now.title} →</a>
+            <a class="about__now-link" href={now.href}>{now.title} <span aria-hidden="true">→</span></a>
           </section>
         )}
-      </main>
+      </div>
     </div>
   </div>
 </BaseLayout>
@@ -164,6 +183,7 @@ const secondaryLinks = profile?.links.filter(l => !l.primary) ?? [];
     const addr = ['mailbox', ['ninjaruss', 'net'].join('.')].join('@');
     el.textContent = addr;
     el.href = 'mailto:' + addr;
+    el.hidden = false;
   }
   initAboutMail();
   document.addEventListener('astro:page-load', initAboutMail);

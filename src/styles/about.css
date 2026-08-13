@@ -39,6 +39,12 @@
     grid-template-columns: 1fr;
     gap: 2.5rem;
   }
+
+  /* Stacked, the answer comes before the exits. The rail carries the portrait
+     and five outbound links; leading a phone visitor with those puts the ways
+     off the page ahead of the reason to stay. */
+  .about__main { order: 1; }
+  .about__rail { order: 2; }
 }
 
 /* ── Left rail ───────────────────────────────────────────────────────── */
@@ -77,18 +83,29 @@
 }
 
 .about__credential {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   line-height: 1.5;
   color: var(--color-text-muted);
 }
 
-.about__section-label {
+/* Same job and same numbers as .st-label on /status. inline-block so the skew
+   applies to the text box rather than a full-width block; font-family: inherit
+   so the `h2` rule in typography.css doesn't swap in the display face and give
+   this label a different typeface from its twin on /status. The margin is
+   !important-free but must beat `.prose h2` (0-1-1), which would otherwise
+   give the "About" label a different bottom margin from its five siblings. */
+.about__section-label,
+.prose h2.about__section-label {
+  display: inline-block;
+  font-family: inherit;
   font-size: 0.75rem;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-gold);
   transform: skewX(var(--skew-display));
+  margin-top: 0;
   margin-bottom: 0.75rem;
 }
 
@@ -101,8 +118,10 @@
 }
 
 .about__link {
-  position: relative;
-  display: block;
+  /* flex + center so the label sits in the middle of the 44px target rather
+     than at the top of it. */
+  display: flex;
+  align-items: center;
   padding: 0.6rem 0.9rem;
   min-height: 44px;
   border: 1px solid var(--color-surface-3);
@@ -126,7 +145,7 @@
 
 .about__mail {
   color: var(--color-gold);
-  font-family: var(--font-mono, monospace);
+  font-family: var(--font-mono);
   font-size: 0.85rem;
   word-break: break-all;
 }
