@@ -1,6 +1,6 @@
 # /about Profile Card Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Turn `/about` from a 301 redirect into a single-screen profile card that answers "who is this?" for a stranger.
 
@@ -34,7 +34,7 @@
 - Create: `src/utils/profile.ts`
 - Create: `src/tests/profile.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `src/tests/profile.test.ts`:
 
@@ -63,12 +63,12 @@ describe('pickProfile', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run src/tests/profile.test.ts`
 Expected: FAIL — `Failed to resolve import "../utils/profile"`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 Create `src/utils/profile.ts`:
 
@@ -95,12 +95,12 @@ export function pickProfile<T extends { id: string }>(entries: readonly T[]): T 
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run src/tests/profile.test.ts`
 Expected: PASS — 4 tests
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/utils/profile.ts src/tests/profile.test.ts
@@ -119,7 +119,7 @@ latest entry has no usable title.
 - Modify: `src/utils/profile.ts`
 - Modify: `src/tests/profile.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Append to `src/tests/profile.test.ts`:
 
@@ -170,12 +170,12 @@ describe('nowLine', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run src/tests/profile.test.ts`
 Expected: FAIL — `nowLine is not a function`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 Append to `src/utils/profile.ts`:
 
@@ -211,12 +211,12 @@ export function nowLine(entries: readonly NowEntryLike[]): NowLine | null {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run src/tests/profile.test.ts`
 Expected: PASS — 10 tests
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/utils/profile.ts src/tests/profile.test.ts
@@ -231,7 +231,7 @@ git commit -m "feat: nowLine selector for the profile card's live line"
 - Modify: `src/utils/profile.ts`
 - Modify: `src/tests/profile.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Append to `src/tests/profile.test.ts`:
 
@@ -289,12 +289,12 @@ describe('profileSchema', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run src/tests/profile.test.ts`
 Expected: FAIL — `profileSchema is not exported` / undefined
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 Add to the top of `src/utils/profile.ts`, directly under the file docblock:
 
@@ -335,12 +335,12 @@ export const profileSchema = z.object({
 export type ProfileData = z.infer<typeof profileSchema>;
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run src/tests/profile.test.ts`
 Expected: PASS — 16 tests
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/utils/profile.ts src/tests/profile.test.ts
@@ -354,7 +354,7 @@ git commit -m "feat: zod schema for the profile card entry"
 **Files:**
 - Modify: `src/content/config.ts`
 
-- [ ] **Step 1: Add the import**
+- [x] **Step 1: Add the import**
 
 At the top of `src/content/config.ts`, below the existing `astro:content` import, add:
 
@@ -362,7 +362,7 @@ At the top of `src/content/config.ts`, below the existing `astro:content` import
 import { profileSchema } from '../utils/profile';
 ```
 
-- [ ] **Step 2: Define the collection**
+- [x] **Step 2: Define the collection**
 
 Immediately after the `socialLinks` collection definition and before `export const collections`, add:
 
@@ -375,7 +375,7 @@ const profile = defineCollection({
 });
 ```
 
-- [ ] **Step 3: Register it**
+- [x] **Step 3: Register it**
 
 Change the `export const collections` block to:
 
@@ -391,12 +391,12 @@ export const collections = {
 };
 ```
 
-- [ ] **Step 4: Verify the config still type-checks**
+- [x] **Step 4: Verify the config still type-checks**
 
 Run: `npx astro check --minimumSeverity error`
 Expected: no errors referencing `config.ts` or `profile`. (Errors elsewhere in the repo, if any pre-exist, are out of scope — confirm with `git stash` if unsure.)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/content/config.ts
@@ -413,7 +413,7 @@ spec — do not paraphrase, reword, or "improve" it.
 **Files:**
 - Create: `src/content/profile/about.md`
 
-- [ ] **Step 1: Write the content file**
+- [x] **Step 1: Write the content file**
 
 Create `src/content/profile/about.md`:
 
@@ -482,13 +482,13 @@ I'm moving to Japan. Everything on this site is either preparation for that or e
 [The full declaration →](/notes/i-am-ninjaruss)
 ```
 
-- [ ] **Step 2: Verify the schema accepts it**
+- [x] **Step 2: Verify the schema accepts it**
 
 Run: `npm run build`
 Expected: build succeeds. A Zod error here means the frontmatter and
 `profileSchema` disagree — fix the frontmatter, not the schema.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/content/profile/about.md
@@ -502,7 +502,7 @@ git commit -m "content: the profile card copy"
 **Files:**
 - Create: `src/styles/about.css`
 
-- [ ] **Step 1: Write the stylesheet**
+- [x] **Step 1: Write the stylesheet**
 
 Create `src/styles/about.css`:
 
@@ -750,7 +750,7 @@ Create `src/styles/about.css`:
 `--font-mono` is defined at `src/styles/typography.css:10` (`'JetBrains Mono',
 monospace`) — the token names above are correct as written.
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add src/styles/about.css
@@ -764,7 +764,7 @@ git commit -m "style: profile card styles for /about"
 **Files:**
 - Modify: `src/pages/about.astro` (currently a 6-line redirect — replace entirely)
 
-- [ ] **Step 1: Replace the redirect with the page**
+- [x] **Step 1: Replace the redirect with the page**
 
 Overwrite `src/pages/about.astro`:
 
@@ -941,7 +941,7 @@ const secondaryLinks = profile?.links.filter(l => !l.primary) ?? [];
 </script>
 ```
 
-- [ ] **Step 2: Build**
+- [x] **Step 2: Build**
 
 Run: `npm run build`
 Expected: build succeeds, and the output includes `dist/about/index.html` (or
@@ -953,7 +953,7 @@ Expected: `0` — the address must not be in the served HTML.
 Verify: `grep -o "Remember Rain" dist/about/index.html | head -1`
 Expected: `Remember Rain`
 
-- [ ] **Step 3: Verify in the browser**
+- [x] **Step 3: Verify in the browser**
 
 Start the dev server via the preview tooling (never `npm run dev` in a shell)
 and check `/about`:
@@ -962,7 +962,7 @@ and check `/about`:
 - The mail link fills in and its `href` is a `mailto:`.
 - No console errors.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/pages/about.astro
@@ -976,7 +976,7 @@ git commit -m "feat: /about is the profile card, not a redirect"
 **Files:**
 - Modify: `CLAUDE.md`
 
-- [ ] **Step 1: Remove /about from Legacy Routes**
+- [x] **Step 1: Remove /about from Legacy Routes**
 
 In `CLAUDE.md`, under `### Legacy Routes (301 Redirects)`, delete this bullet:
 
@@ -984,7 +984,7 @@ In `CLAUDE.md`, under `### Legacy Routes (301 Redirects)`, delete this bullet:
 - `/about` → redirects to the current identity-declaration note (`/notes/i-am-ninjaruss`). Deliberate design: no static About page — "learn about me through the stuff I do." When a newer declaration note is written, repoint this redirect (`src/pages/about.astro`). The homepage title tile carries a quiet "who?" corner link to it.
 ```
 
-- [ ] **Step 2: Document the page**
+- [x] **Step 2: Document the page**
 
 Under `### Utility Pages`, after the `/` bullet, add:
 
@@ -992,7 +992,7 @@ Under `### Utility Pages`, after the `/` bullet, add:
 - `/about` — profile card. One card, one screen: header (name/epithet/portrait from `_protagonist.md` via `parseProtagonist`, shared with `/status`), credential lines, WHAT I MAKE, SUBJECTS I EXPLORE, ABOUT prose, NOW, CONNECT + FIND ME. Copy is hand-written in the single-entry `profile` collection (`src/content/profile/about.md`); the Zod schema and the `pickProfile`/`nowLine` selectors live in `src/utils/profile.ts` (pure — vitest cannot resolve `astro:content`). Exactly one live element: the NOW line, pulled from the latest `now` entry and omitted entirely when there isn't one. Reached from the homepage title tile's "who?" corner link; deliberately **not** in NavPill (an 8th item breaks the 4+3 mobile wrap). Was a 301 to `/notes/i-am-ninjaruss` — that note is now linked from the ABOUT prose as the deep read. The email address is assembled client-side (`#about-mail`), never in the served HTML.
 ```
 
-- [ ] **Step 3: Add the collection to the schema docs**
+- [x] **Step 3: Add the collection to the schema docs**
 
 Under `## Content Collections Schema`, after the `now` bullet in the
 collection-specific extensions list, add:
@@ -1001,7 +1001,7 @@ collection-specific extensions list, add:
 - **profile**: single entry backing `/about` — `hook` (required), `credentials[]`, `makes[]` (`{label, blurb, href}`), `makesMore` (`{text, href}`), `subjects[]` (`{group, items[]}`), `connect`, `links[]` (`{label, href, primary}`). Schema defined in `src/utils/profile.ts`, not inline in `config.ts`, so it is unit-testable. Body markdown is the ABOUT prose.
 ```
 
-- [ ] **Step 4: Add the utility module row**
+- [x] **Step 4: Add the utility module row**
 
 In the `## Utility Modules` table, add a row:
 
@@ -1009,7 +1009,7 @@ In the `## Utility Modules` table, add a row:
 | `src/utils/profile.ts` | `profileSchema`, `pickProfile()`, `nowLine()` | /about profile card data layer — Zod schema (from `astro/zod`, not `astro:content`, so vitest can load it), singleton entry selection, and the single live NOW line |
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add CLAUDE.md
@@ -1020,29 +1020,33 @@ git commit -m "docs: /about is a real page now"
 
 ## Task 9: Full verification
 
-- [ ] **Step 1: Run the whole test suite**
+- [x] **Step 1: Run the whole test suite**
 
 Run: `npm run test`
 Expected: all suites pass, including the 16 new `profile.test.ts` tests.
 
-- [ ] **Step 2: Clean build**
+- [x] **Step 2: Clean build**
 
 Run: `rm -rf .astro node_modules/.astro && npm run build`
 Expected: succeeds. (The cache clear pre-empts the known stale-cache
 `[glob-loader] Duplicate id` warning that a new collection directory can
 trigger.)
 
-- [ ] **Step 3: Confirm no route regressions**
+- [x] **Step 3: Confirm no route regressions**
 
-Run: `ls dist/about* dist/notes/i-am-ninjaruss* -d`
+Run: `ls -d dist/client/about dist/client/notes/i-am-ninjaruss`
 Expected: both exist — the card and the declaration note.
 
-- [ ] **Step 4: Confirm the email is not in any built page**
+(Corrected 2026-08-12: this originally read `dist/about*`, which never
+matches. The Vercel adapter emits static output under `dist/client/`, so
+the unqualified path reports a false regression on a healthy build.)
+
+- [x] **Step 4: Confirm the email is not in any built page**
 
 Run: `grep -rl "mailbox@ninjaruss" dist/ | head`
 Expected: no output.
 
-- [ ] **Step 5: Commit any remaining changes**
+- [x] **Step 5: Commit any remaining changes**
 
 ```bash
 git status

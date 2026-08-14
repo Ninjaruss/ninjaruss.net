@@ -1,5 +1,13 @@
 ---
-hook: "I decide on a whim and figure out the logistics after. This is the evidence."
+# The hook leads the card, so it should carry the half of you the rest of the
+# page is actually about. The previous line — "I decide on a whim and figure out
+# the logistics after. This is the evidence." — sold decisiveness, which the
+# second credential already says better ("I quit to see how things fall"), while
+# everything linked below is about the difficulty of following through.
+hook: "Potential is comfortable. Committing out loud is not. This is the evidence."
+# EXPIRES OCTOBER 2026: the grocery-floor line below and "I'm moving to Japan"
+# in the prose both go stale on arrival. Nothing else on this card drifts — the
+# NOW line is the only live element — so these two are the ones to revisit.
 credentials:
   - "B.S. Computer Science, 2021"
   - "four years at a desk, then I quit to see how things fall — now on a grocery floor, on purpose"
@@ -48,7 +56,7 @@ links:
   - label: "MyAnimeList"
     href: "https://myanimelist.net/animelist/Ninjaruss_?status=7&order=4&order2=0"
   - label: "Spotify"
-    href: "https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD?si=2b68cabcfc26451c"
+    href: "https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD"
 ---
 
 What I want is to be a writer. Remember Rain is the visual novel I'm working toward being good enough to actually make — a producer and storyteller who can put something like it into the world is the version of me I'm aiming at. Everything else here is practice or scaffolding for that.
