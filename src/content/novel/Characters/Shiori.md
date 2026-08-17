@@ -10,7 +10,9 @@ She is the only character who is right without ever saying so.
 
 Her question: *if I lose this too, will there be anything left of me?*
 
-**25–26.** Main trait: Maker. Passive trait: Bracing.
+**25–26.** Main trait: **Irrepressible** — literally the thing that cannot be kept down, which is her thematic function stated as temperament. Passive trait: **Braced.**
+
+**Both bright.** She does not brace by withdrawing, she braces by *building* — redundancy in a doorbell is energy spent, not conserved. She is one-note on brightness and fundamentally incapable of dark, with all her range on the transparency axis instead. She and Rain are the cast's only one-note characters, at opposite temperatures.
 
 **She asked once, was maimed for it, and has never asked again.** Her response to being subtracted from was to build something — **the building *is* the not-asking.** She is not exempt from this cast's disease; she is the one who tried the cure and was punished for it. Which is what causes her line (*she never asks a person to remember for her*) and her passive (bracing is what you do after asking once and losing something for it).
 
@@ -58,6 +60,8 @@ She has no Deviation and no Imprint. Unmarked by timing, not by nature — and s
 
 ### The daily acts
 
+**The behaviour, in one word: making.** It is what *Irrepressible* looks like from outside.
+
 Two, and only one of them breaks.
 
 **She backs it up.** Redundancy built into a doorbell. This is fear, and it's the one she gives up — the coda is her keeping a single thing without notes.
@@ -84,7 +88,7 @@ Together they do her whole arc without a speech: she stops needing the copy, and
 
 **Layer 2 — situational · bright / translucent.** Boards to accuse, spends her rig, answers a hole by making a thing.
 
-**Layer 3 — setting and concept · dark / very obscure.** The injury, the extraction she does not remember, the exhaustion of the bracing — and the fact that she is the healthiest person in the book.
+**Layer 3 — setting and concept · bright / very obscure.** Even her deepest layer is doing something. The injury, the extraction she does not remember, the exhaustion of the bracing — and the fact that she is the healthiest person in the book.
 
 **Tonic: layer 1, overwhelmingly.** And the structural oddity: she is introduced through layer 3 evidence with no layer 1 attached — three arcs of machinery before she ever speaks.
 

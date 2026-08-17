@@ -8,7 +8,9 @@ A young man with a notebook full of things he started, and not one second line u
 
 His question: *if I become one thing, what happens to everyone else I could have been?*
 
-**Heart · 23 · the Paralyzed Dreamer.** Main trait: Deferrer. Passive trait: Dreamer.
+**Heart · 23 · the Paralyzed Dreamer.** Main trait: **Suspended** — held mid-air, not falling. Passive trait: **Yearning** — a want that is stored rather than spent.
+
+**Both dark, and that is the character.** He is one-note on brightness: he wants more than anyone in this story and does less than anyone in it, so the wanting costs nothing, risks nothing and enters no conflict. **Every volatile thing he does arrives as scene modulation** — an emergency pulls him bright and he never gets there from inside, which is why he moves instantly in a crisis and has nothing in a quiet room. It also makes the Arc 5 refusal the largest moment in the book: the one time he goes bright with nothing chasing him. His range lives entirely on the transparency axis.
 
 **Refusing to ask *is* the avoidance.** Asking requires naming what you want, out loud, in front of a witness who might say no. It makes the thing real and creates an expectation — it is a fall, and a man protecting an unspent inventory of possible selves cannot afford one. **His solitude and his paralysis are one trait, not two.** He does not outsource to people; he outsources to *potential*, and refusing help is how he keeps the inventory unspent.
 
@@ -60,6 +62,8 @@ Through his own perception of himself — so everything he can do is a self, see
 
 ### The daily act
 
+**The behaviour, in one word: deferral.** It is what *Suspended* looks like from outside.
+
 **He asks people the question nobody has asked them.** Never therapeutic, never the subject of a scene — a half-beat of curiosity aimed at the wrong person at the wrong time, dropped the moment someone changes the subject. He asks Roxana what she needs. He asks Claire what she'd do after the quiet. He asks the Pursuer whether it's too late. He does not count any of it as doing anything, and it is the reason five people in this book turn around.
 
 The pen is its visible twin: the story shows you the pen he never writes with, and hides the questions.
@@ -72,9 +76,9 @@ The pen is its visible twin: the story shows you the pen he never writes with, a
 
 **Layer 1 — immediate · dark / transparent.** Easy company, agreeable, self-deprecating. The pen spun and never used. Low volatility, and everyone can read it.
 
-**Layer 2 — situational · bright / obscure.** Give him an emergency and he moves instantly. He follows a light into an alley, charges a man three feet short, takes the road less travelled. He makes volatile situations and nobody can predict them — which is exactly why Claire cannot calculate him, and why she keeps him.
+**Layer 2 — situational · bright (scene-driven) / obscure.** Give him an emergency and he moves instantly. He follows a light into an alley, charges a man three feet short, takes the road less travelled. He makes volatile situations and nobody can predict them — which is exactly why Claire cannot calculate him, and why she keeps him.
 
-**Layer 3 — setting and concept · bright / very obscure.** The Ghost, the Split, the notebook, the charge, the name. A want that never stops, hidden from everyone including him.
+**Layer 3 — setting and concept · dark / very obscure.** The Ghost, the Split, the notebook, the charge, the name. Enormous stored want, none of it spent, hidden from everyone including him.
 
 **Tonic: layer 1.** He reads as agreeable and not-there, and the story drifts toward layer 3 across five arcs.
 

@@ -160,6 +160,29 @@ The rule: gold tracks the subject's relationship to commitment, and the reader's
 
 **True change is extraordinarily rare.** What reads as development is almost always the story shifting which layer it focuses on — dramatic stories drift toward layer 3 — or latent layer 2 and 3 material finally surfacing. Which is what this story does: Rain does not become someone else, a latent layer 3 surfaces, and the retention law has him re-choose it every morning.
 
+#### The trait map
+
+*Decided 2026-08-12. Single-word textures, not job titles — the trait is the temperament that generates the behaviour, and it must be provable within an immediate radius of every expression the character makes.*
+
+| | Main | Passive | Brightness |
+|---|---|---|---|
+| **Rain** | Suspended | Yearning | **dark / dark** |
+| **Vesper** | Solicitous | Waiting | bright / dark |
+| **Claire** | Exacting | Parched | dark / bright |
+| **Roxana** | Ardent | Withheld | bright / dark |
+| **Shiori** | Irrepressible | Braced | **bright / bright** |
+| **The Pursuer** | Inexorable | Burning | dark / bright |
+
+**Four are opposed; two are not, and the exceptions are the point.**
+
+**Rain is one-note dark.** A want that never converts to motion is not volatile — it costs nothing, risks nothing, enters no conflict. He wants more than anyone in this story and does less than anyone in it. **Every volatile thing he does is scene modulation, not temperament:** an emergency pulls him bright and he never gets there from inside. Which is why he moves instantly in a crisis and has nothing in a quiet room, and why the Arc 5 refusal is the largest moment in the book — the one time he goes bright with nothing chasing him.
+
+**Shiori is one-note bright.** She does not brace by withdrawing, she braces by *building*; redundancy in a doorbell is energy spent. She is fundamentally incapable of dark, and all her range lives on the transparency axis instead.
+
+**They are the cast's only one-note characters, at opposite temperatures** — a second, independent confirmation of the mirror-halves pairing, arriving on an axis that had nothing to do with it. It is also why their conflict is silence-shaped: neither of them can ask, and their division lives in what stays invisible rather than in what gets spent.
+
+**The behaviour names sit one level down** and belong in the daily-act sections, never here: deferral, fixing, pre-emption, providing, making, enduring. Those are what the traits look like from outside.
+
 #### Writing the felt-ownership cost
 
 *Working note, 2026-08-12.*

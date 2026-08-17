@@ -8,7 +8,7 @@ She can see every outcome and cannot move until one of them is certain.
 
 Her question: *how do I act when I can't be sure?*
 
-**Mind · 21–22 · the Certainty Junkie.** Main trait: Preemptor. Passive trait: Addict, chasing silence.
+**Mind · 21–22 · the Certainty Junkie.** Main trait: **Exacting** — she is precise, and she exacts a price. Passive trait: **Parched** — silence as water. **Dark against bright:** she avoids any action without a model, and the crashes are literal energy burned to collapse.
 
 **Preemptor does not mean she acts early — she pre-empts *uncertainty*,** in herself and in everyone near her, and the paralysis is simply what happens when she can't. That is both halves of *never wrong and almost never in time.*
 
@@ -59,6 +59,8 @@ Through calculation — so everything she can do is a prediction, held.
 - **The catch that beats her:** prediction alone doesn't win. Prediction plus a borrowed body does — which is why she loses the spar, and why Vesper is unbeatable where she wasn't.
 
 ### The daily act
+
+**The behaviour, in one word: pre-emption** — of uncertainty, in herself and in everyone near her. It is what *Exacting* looks like from outside.
 
 **She takes the decision off your hands.** The unremarkable solve at the hideout is one instance of a continuous behaviour: she resolves other people's small ambiguities before they finish stating them, and nobody thanks her because nobody notices.
 

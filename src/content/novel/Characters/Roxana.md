@@ -8,7 +8,7 @@ She has been giving since before she can remember, and nobody has ever asked her
 
 Her question: *who am I when nobody needs me?*
 
-**Body · 27–28.** Main trait: Provider. Passive trait: Unreceivable.
+**Body · 27–28.** Main trait: **Ardent** — burning, eager, devoted; it stands next to the flame motif without stealing it. Passive trait: **Withheld** — passive voice on purpose: she is withheld from you *while* handing you everything. **Bright against dark.**
 
 **Its social face: she is unaskable.** She arrives with the task already in hand, so nobody ever has to ask her for anything — and she never has to ask either.
 
@@ -57,6 +57,8 @@ Through her body's heat — so everything she can do is warmth, spent.
 - **Cost:** when it gutters, total scaling helplessness. Injury quits *before* effort; cost spends *through* it. Same limpness, opposite grammar.
 
 ### The daily act
+
+**The behaviour, in one word: providing.** It is what *Ardent* looks like from outside.
 
 **She hands you a task.** Every question about herself converts into one; every arrival is met with something to carry. It is a conversation-avoidance system that looks exactly like hospitality, and it works on everyone including the reader.
 

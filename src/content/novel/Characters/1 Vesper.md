@@ -8,7 +8,7 @@ The kindest man in the story, and the only one who has never once been refused.
 
 His question: *how long am I supposed to watch?*
 
-**Mid-to-late forties.** Main trait: Fixer. Passive trait: Impatient. *(Impatience is the core — the wound — not the main trait. What you picture is the kindness that adjusts things; the impatience is the layer you reach on second thought.)*
+**Mid-to-late forties.** Main trait: **Solicitous** — the rare word that means both *caring* and *excessively concerned*, which is the whole man in one dictionary entry. Passive trait: **Waiting** — the boy still waiting for his mother, and the one posture he built an institution to abolish. **Bright against dark.** *(Impatience is the core — the wound — not the main trait. What you picture is the kindness that adjusts things; the impatience is the layer you reach on second thought.)*
 
 **His crime, stated at its most precise: he removes the need to ask.** He fixes small things before anyone requests them. Asking for help is an act of commitment, and it is the one act that would have saved any of these people — his kindness is what makes it unnecessary, one courtesy at a time.
 
@@ -73,6 +73,8 @@ Through memory — so everything he can do is a record, moved.
 - **The one thing he'll wait for is his own skill.** He knows imprecision breaks people — he broke Shiori learning that. So *"you're not ready yet"* is technical, not moral. Precision he respects. Personal development he does not.
 
 ### The daily act
+
+**The behaviour, in one word: fixing.** It is what *Solicitous* looks like from outside.
 
 **He fixes a small thing before anyone asks.** It scales without changing shape: a jammed drawer in Arc 2, a woman's memory of standing in Arc 3, a city in Arc 4. The kindness and the atrocity are the same gesture at three magnifications, which the reader can see rather than be told.
 

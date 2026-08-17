@@ -10,7 +10,7 @@ His question: *is it too late to stop?*
 
 He is Rain's inverse and the story says so out loud: *the man who acts without wanting hunts the man who wants without acting.* Rain cannot start. He cannot stop.
 
-**Around fifty to fifty-five.** Main trait: Endurer — compliance is part of it; the institution supplies the verb. Passive trait: **the Furnace**, the man of enormous wanting he was born as, now burned as fuel. *(The steam is that passive, visible.)*
+**Around fifty to fifty-five.** Main trait: **Inexorable** — one speed for thirty years; compliance is part of it, since the institution supplies the verb. Passive trait: **Burning** — the furnace, the man of enormous wanting he was born as, now spent as fuel. *(The steam is that passive, visible.)* **Dark against bright, and the most extreme pair in the cast.**
 
 He is the extreme case on the ask axis: a man who wanted enormously, never once asked for anything, and had it burned out of him.
 
@@ -57,6 +57,8 @@ Through endurance — so everything he can do is fuel, borrowed.
 - **Cost:** he wins every exchange and empties by winning. Running out is literal — **running empty means he stops walking.**
 
 ### The daily act
+
+**The behaviour, in one word: enduring.** It is what *Inexorable* looks like from outside.
 
 Two, one per audience. For Rain: **he walks** — never runs, at any speed anyone else is moving, in three encounters. For the reader, arcs before he has a name: **steam in the corners of scenes.**
 
