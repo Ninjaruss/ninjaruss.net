@@ -32,10 +32,14 @@ Delete entirely:
   donut, log entry, quest card, bond panel styles).
 - From `src/utils/sessions.ts`: `tallyStats`, `buildRadarPoints`, `buildGuidePoints`,
   `applyLogScale`, `scaleAllTallies`, `parseStreamIdeas`, `parseQuestFile`,
-  `parseQuestMenu`, `buildDonutArcs`, `computeLevel(totalSessions)`, `STAT_ORDER`,
-  `STAT_ADJECTIVES`, `STAT_PHRASES` — and any other export that exists solely to
-  feed the screens above. Confirm via grep before deleting each export; don't
-  remove anything still referenced elsewhere.
+  `parseQuestMenu`, `buildDonutArcs`, `computeLevel(totalSessions)`, `STAT_ORDER` —
+  and any other export that exists solely to feed the screens above. Confirm via
+  grep before deleting each export; don't remove anything still referenced
+  elsewhere.
+- From `src/pages/index.astro`: the local `STAT_ADJECTIVES`/`STAT_PHRASES` consts
+  and the leading-stat/donut derivation (`streamTallies`, `leadingStats`,
+  `primaryLeadingStat`, `tiedPair`, `singleIcon`) — these live in the homepage
+  file itself, not in `utils/sessions.ts`; see Part 3.
 
 Keep, unchanged:
 
@@ -47,7 +51,9 @@ Keep, unchanged:
   If `utils/sessions.ts` ends up gutted enough that keeping the file feels wrong,
   `STAT_COLORS`/`StatName` may move to a small dedicated module — implementation's
   call, not a design requirement.
-- The `social-links` collection/schema (reused in Part 2, rendered differently).
+- The `social-links` collection/schema — **not used by this spec** (see Part 2,
+  Supporting row: it models Bonds/confidants, not platform links, and has no real
+  entries yet; corrected during plan-writing after re-checking the schema).
 - `src/content/sessions/*.md` (the historical session log files) — left in the repo
   as an inert archive. Nothing reads them after this change. Pruning them is
   explicitly out of scope for this spec; revisit separately if desired.
@@ -128,10 +134,24 @@ Two small, near-zero-maintenance items side by side beneath the arc card:
   (`level = floor(sqrt(totalWords / K))` or similar) and the constant `K` are an
   implementation detail to tune for reasonable early pacing; not fixed by this spec.
 
-- **"Find me elsewhere" strip** — a compact, flat (non-interactive-detail-panel)
-  rendering of the `social-links` collection: label + link per entry, no expandable
-  lore/rank-gauge/arcana treatment from the old Bonds screen. Just enough to point
-  a new viewer at Twitch/YouTube/Discord/etc.
+- **"Find me elsewhere" strip** — reuses `profile.links` (the same
+  `label`/`href`/`primary` list already populated and rendered on `/about` as
+  `.p4g-sweep` pills, sourced from the singleton `profile` collection). One
+  source of truth for "where to find Russ" instead of duplicating a hardcoded
+  list that would drift from `/about` over time. **Not** the `social-links`
+  collection: that models Bonds/confidants (`arcana`/`affinity`/`rank`/`lore`),
+  has no url/platform field, and currently has zero real (non-draft) entries —
+  a schema mismatch, not a usable data source. `social-links` is left untouched
+  and unused by this spec; a future Bonds feature is a separate decision.
+
+### 4. Mailbox strip
+
+Carried over unchanged from the old page's Status screen: label + "send mail to
+be read on stream" sub-line + an address assembled client-side into `#mail-address`
+(never present in served HTML), with a `<noscript>` obfuscated-text fallback.
+Required because the homepage's `#mail-tile` links to `/status` as its no-JS
+fallback — removing this strip entirely would leave that fallback landing on a
+page with no mail content.
 
 ## Part 3 — Homepage Stream tile
 
