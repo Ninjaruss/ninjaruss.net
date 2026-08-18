@@ -1,3 +1,12 @@
+## Current Arc
+
+**Arc:** Arc I — Integration
+**Stat:** Expression
+**Updated:** August 2026
+
+Posting live "shut up and yap" videos to make the old self and the new self
+legible to each other in public, out loud, instead of privately.
+
 ## The Question
 
 How can I effectively make my old self integrate into my new self?
