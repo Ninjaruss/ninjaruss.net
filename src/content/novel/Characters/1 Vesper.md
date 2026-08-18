@@ -38,6 +38,10 @@ He cannot bear to wait for people to figure it out. The intolerable thing is the
 
 His crime is speed. There is no factual error to attack; only time.
 
+**And underneath the impatience, causing it.** He spent a childhood watching a woman full of potential refuse to commit to any of it, waiting for her to become the person she could obviously have been. She never did. So watching someone squander potential is watching his mother again — and every second he does not intervene is a second he resembles the man who stood there and let her do it.
+
+**Terror of resemblance is the root. Impatience is what it feels like from inside, and what it looks like from outside.** He does not raise his voice because raising it would be *her* chaos. He cannot let the slow version happen because the slow version is the one that failed with her. *How long am I supposed to watch* is what he asks aloud; underneath it runs *how long before I become the one being watched.*
+
 ### Three layers
 
 **What you see.** Genuinely warm. Unhurried. Actually helpful. He is exactly as good as he looks, and that is the twist.
@@ -125,3 +129,27 @@ Its shadow, in every scene: his own wound stays untouched while he fixes yours. 
 - **His far pole, shown once.** The one thing he'll wait for is his own skill. Stage that a single time and the whole character is legible.
 
 - He keeps his own wound not from hypocrisy but because **the impatience was always aimed outward.** He can carry his; he isn't the failure. Everyone else is the one standing around not fixing themselves, in front of him, indefinitely.
+
+- **He must never say it.** No line comparing Rain to his mother, no moment of self-awareness about the resemblance. What he doesn't know is that he has become her — the one who remembers everything while the other person carries nothing. If he could see the resemblance he was avoiding, he could see the one he achieved, and the tragedy collapses.
+
+- **The mother stays absent.** No flashback, no scene, no face. She is the thousand nothings and one decisive leaving. Dramatised, she becomes a character with her own defence, and his wound becomes a dispute rather than a fact.
+
+---
+
+*— design notes below: skip while drafting —*
+
+### Where it comes from
+
+**The history.** Born with perfect memory. His mother was full of potential and never committed to any of it — charming, chaotic, leaving wreckage behind her, until one irreversible mistake destroyed something he loved. He has carried the memory since.
+
+**The lie he believes.** *Painful memories are the root of all suffering. Remove them and you create peace. People cannot change on their own; they need to be forced.* The contradiction he cannot see: he wants to free people, and does it by taking their choice away.
+
+**The fear.** That he is secretly like her — full of potential and destined to cause destruction. **The fix:** force results, control everything, never leave anything unfinished.
+
+**His boundary, in his own words.** *"I will not erase my own memory of what my mother did. That memory is my wound, but it's also the only proof that I'm not her. Without it, I wouldn't know why I started — and I'd become just as hollow as the people I help."*
+
+**What he calls true evil:** people who see problems and do nothing about them. Which is, precisely, his accusation against Rain.
+
+**Rain is the mother, at the age Vesper first started watching** — a man full of potential who will not commit to any of it. Which is why the refusal is not merely frustrating: he is watching the same thing happen again and being told he may not intervene. Never stated on the page.
+
+**Two drafting notes.** Arc 2: the flicker that costs him at *not yet* is **recognition**, not frustration — he has met her again and she has said the thing she always said. Arc 5: the prism is **the only proof he is not her**, so he ends holding his own evidence in a world with nobody left to show it to.

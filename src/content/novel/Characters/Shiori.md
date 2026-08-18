@@ -40,11 +40,17 @@ The story still never treats her original request as a sin. She was right to ask
 
 - *Tell:* the maker's mark is always whimsy — a doodle, a charm, a boot-screen joke. Never a logo. It's how you find her work in a room, if you know.
 
-- *Tell:* the nervous laugh she keeps, from ninety seconds in a vault with a stranger.
+- *Tell:* **Rain's** nervous laugh — the one detail she remembers without notes, from ninety seconds in a vault with a stranger whose name she never got. It is the recognition mechanism in Arc 4: he laughs mid-accusation and the file connects.
+
+- *Tell:* **she narrates aloud while she works.** *Okay, that goes there, then the blue one, then I check the seal.* A memory aid wearing the costume of chatter, and everyone reads it as her simply being talkative. It is why she talks the way she does — function, not personality. **The payoff is the one scene where she goes quiet.**
+
+- *Tell:* **she never puts a tool away.** The screwdriver lies across the exact seam she stopped at; the pliers rest on the component she was holding. **The tool is the bookmark** — not a label saying what a thing is, but a marker saying where she was. Her workspace is permanently covered in deployed tools and she physically cannot tidy up: every surface is a sentence she hasn't finished.
 
 **What's underneath.** Bracing. She is not haunted by what she lost — she is defending against the next loss, constantly, and it is exhausting.
 
 - *Tell:* she backs everything up. She builds redundancy into a doorbell. Her gadgets are insurance, not archaeology.
+
+- *Tell:* **she builds a solution to the wrong problem.** Building is how she avoids asking what the problem actually is, so she braces the flank that doesn't get attacked. Her insurance became everyone's cage precisely because she solved it alone.
 
 **What she doesn't know.** She went to Vesper herself, and asked. The wound erased its own origin, and she has lived with a condition that has no beginning.
 
@@ -122,4 +128,22 @@ Together they do her whole arc without a speech: she stops needing the copy, and
 
 - **The relationship, alluded and never staged.** By the end the story implies she is the person Rain builds something with afterward. The seed is already written: ninety seconds in a vault with a stranger, the laugh she kept, and the Arc 4 beat where he laughs mid-accusation and the file connects. Five guards, all required. **Never a reward** — the train is motion, not a victory lap; this is a door, not a landing. **Never resolved on the page** — no confession, no kiss, no stated feeling; they still never discuss the thing they are both about. **Never a cure** — she does not fix the felt-ownership cost, because nothing does; her not-reassuring him is company, not medicine, and if it ever reads as love repairing him the finale collapses into the thing the book argues against. **Never reduces her** — her arc finishes on its own terms. **No genre signalling** — no blushing, no comic misunderstanding.
 
-- **The memory-wager is the laugh.** When the cameras go off and she keeps one thing without notes, it is the laugh she has had since the vault. It is hers, it predates him mattering to her, and it is the one memory she never needed a machine to hold — so her thematic climax and the allusion are the same beat, and neither reduces the other. Nothing is said.
+- **The memory-wager is the laugh.** When the cameras go off and she keeps one thing without notes, it is **his** laugh, the one thing she has held without notes since the vault. It is hers, it predates him mattering to her, and it is the one memory she never needed a machine to hold — so her thematic climax and the allusion are the same beat, and neither reduces the other. Nothing is said.
+
+- **What she'd never admit: she wants to be accompanied without having to be useful.** It sits exactly on her uncrossable line, and it is the seed the ending already plants.
+
+- **Her maker's mark is whimsy; her bookmarks are not.** The doodle, the charm, the boot-screen joke are decoration and signature. The tools left lying on the spot are grimly practical, with no decoration at all. Her signature is playful and her survival system isn't, and the gap between them is the character.
+
+---
+
+*— design notes below: skip while drafting —*
+
+### Where it comes from
+
+Her memory condition was caused by an early, imprecise extraction by Vesper. Stress worsens it; calm routines stabilise it.
+
+**Terror of disappearing.**
+
+**She asked once, was maimed for it, and has never asked again.** Her response to being subtracted from was to build something — **the building *is* the not-asking.** She is not exempt from this cast's disease; she is the one who tried the cure and was punished for it. The story still never treats the request as a sin: she was right to ask, and **she asked the one man for whom asking was fatal.**
+
+**The Arc 5 wager, made stageable.** The coda is not merely that she keeps one thing without notes — it is that **she closes something without marking her place.** Sets the tool down in the drawer instead of on the seam, and trusts she'll find her way back. Paired with the laugh: she stops marking her place, and keeps his.

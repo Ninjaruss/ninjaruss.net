@@ -14,6 +14,8 @@ His question: *if I become one thing, what happens to everyone else I could have
 
 **Refusing to ask *is* the avoidance.** Asking requires naming what you want, out loud, in front of a witness who might say no. It makes the thing real and creates an expectation — it is a fall, and a man protecting an unspent inventory of possible selves cannot afford one. **His solitude and his paralysis are one trait, not two.** He does not outsource to people; he outsources to *potential*, and refusing help is how he keeps the inventory unspent.
 
+**What he is actually afraid of.** Committing produces evidence, and evidence can be ordinary. His worth is kept in his potential rather than in anything he has done. He would never put it that way — he says the other true thing, that choosing one path kills every other version of himself and he can feel them dying. Both are real. **Only one of them explains why he cannot finish anything, however small.**
+
 **The impossible decision.** He wants to matter and he wants to stay possible, and every act of mattering deletes possibility. Arc 3 makes the arithmetic literal; the notebook is a man refusing to spend his inventory.
 
 **The line he won't cross — and does.** He will not send someone else in his place. It is why the Clone is deception-only and why its cost is the Ghost. Arc 4's last stop is him crossing it and being rewarded for it. He keeps the Perfect Clone forever: the line is never restored as a rule, only re-chosen as a morning.
@@ -39,6 +41,8 @@ His question: *if I become one thing, what happens to everyone else I could have
 - *Tell:* he looks up. At ceilings, at cloud cover, at anything that isn't sky.
 
 **What's underneath.** Not laziness — dread. Choosing one thing means killing every other version of himself, and he can feel them dying.
+
+- *Tell:* **the notebook holds first lines, not abandoned epics.** Grief for unlived selves would leave small things easy — abandoning a small idea costs almost nothing. He stops at exactly one line every time because the second one is evidence.
 
 - *Tell:* he cannot answer in a quiet room. Give him an emergency and he moves instantly; give him a question and a chair and he has nothing.
 
@@ -111,3 +115,23 @@ The pen is its visible twin: the story shows you the pen he never writes with, a
 - **Never write him as a different man.** He does not change. A latent layer 3 surfaces and he re-chooses it every morning — which is why the last image is a train and blank pages rather than an arrival.
 
 - **He idealises five people and is wrong about four.** Shiori is the one where the thing he admires is real, cost her nothing to have, and is the answer to his question — and he never identifies it. He learns it from the mountain instead, at full price. Never let anyone point at this.
+
+- **He never states it as ego.** He would say the finitude version, and he believes it — it is the dignified frame and it is also true. The reader assembles the rest from the notebook and from what he does. The moment he says *I'm afraid I'm ordinary*, he has diagnosed himself, and a man who can diagnose it could act on it.
+
+- **The ego must never make him unlikeable.** The origin carries it: praised for a gift, steered away from using it. And his generosity is real — he asks everyone what they need. Ego-wounded and kind is a person; ego alone is a type.
+
+---
+
+*— design notes below: skip while drafting —*
+
+### Where it comes from
+
+**The history.** Gifted praise, discouraged dreams, waiting for permission.
+
+**The lie he believes.** *My worth comes from my infinite potential, not from anything I actually do. The moment I commit to one path, I become finite — and finite means I might fail.*
+
+**The fear.** That choosing one finite path will prove he isn't special, and will kill all his other potential selves. **The fix:** avoid commitment by staying in preparation mode, seeking perfect certainty, and using proxies to act at a distance.
+
+**The parents.** Not villains — hardworking, fearful people who equate security with love. His father makes assumptions and doesn't listen. His mother worries constantly and offers support that feels generic: *you can do it*, without understanding what "it" is. **They want him to be safe. He wants to be seen. These are not the same thing.** He learned to deflect because deflecting was safer than explaining himself to people who couldn't hear him. They reach him by phone call and text — which is what makes their silence in Arc 4 land.
+
+**The two fears are sequenced, and the book already does it.** Arc 3 answers finitude — he lives every potential life whole, ends each one, and survives standing on a mountain of everyone he spent a lifetime being. Arc 5 answers the deeper one: emptied completely, achieving nothing legible, he writes two lines. Not a masterpiece, not proof of talent. A second line. **The cruellest available ending was never failure — it is succeeding and being unable to feel it.**

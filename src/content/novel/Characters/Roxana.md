@@ -103,3 +103,21 @@ Through her body's heat — so everything she can do is warmth, spent.
 - **The scars are the channel.** Pain arrives through them unbidden; warmth only when she permits it. She gives warmth and spends heat.
 
 - **Her training of Rain is an attempt to reconstitute Aster.** The Guardian this cast should have had is dead, and she is trying to rebuild him out of a stranger. Never stated.
+
+---
+
+*— design notes below: skip while drafting —*
+
+### Where it comes from
+
+**The history.** Born to a household known for its physicality — possibly firefighters. She was handed the identity of being selfless young, and wanted to become someone who saves people: strong, and also very kind.
+
+**The scars.** A tragedy took her family. She was permanently scarred trying to save both her parents — with her arms — and the flames caught up to both of them. **Her passive arrives through the exact place where she failed to save two people.**
+
+**The years after.** Loneliness in which the people around her didn't really see her. They cared, in a hollow way that never saw her as herself. Every selfless act she performed came back unreciprocated — **like giving a gift that is ignored and not accepted.** She came to hate her family name for making her a tragedy instead of an individual.
+
+**Aster.** He became a father figure and taught her that the tenacity she has is one she needs to extend in spite of the people who won't accept it, and in spite of the dark that tries to shut her off. Then he vanished without a trace.
+
+**The vow.** She took his surname. **Roxana Sparks** — a vow to become a person like the one who gave her the simple wisdom when she needed it most. The lighter is his. So is the name.
+
+**Open:** whether the fire is her *origin* or her *debt*. Guilt appears nowhere in her current design — the giving is framed as armour against being known, which is the more distinctive reading. Decide deliberately rather than by omission.

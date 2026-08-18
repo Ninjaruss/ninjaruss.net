@@ -217,6 +217,18 @@ The finale is the hardest, most concrete prose in the book. **The mismatch betwe
 
 **And Vesper's crime, at its most precise: he removes the need to ask.** He fixes small things before anyone requests them. Asking is the act that would have saved any of them, and his kindness is what makes it unnecessary — a relief that removes your reason to act, one courtesy at a time.
 
+#### The essence of each character
+
+*Decided 2026-08-18. Where a character's stated essence and their backstory described two different roots, this is the resolution.*
+
+**Rain — fear of being unspecial is the root; finitude is how he articulates it.** Committing produces evidence, and evidence can be ordinary; his worth is kept in his potential rather than in anything he has done. Finitude is genuinely felt and it is downstream — losing potential selves would be merely wistful if those selves were not where the worth is kept. **The test is the notebook: it holds first lines, not abandoned epics**, and only fear of producing evidence explains stopping at exactly one every time. **The book already sequences the two** — Arc 3 answers finitude at the mountain, Arc 5 answers unspecialness with two lines that prove nothing. Guards: **he never states it as ego** (a man who can diagnose it could act on it), and **the ego must never make him unlikeable** — the origin carries it, and his generosity is real.
+
+**Vesper — terror of resemblance is the root; impatience is its expression.** Watching someone squander potential is watching his mother again, and every second he does not intervene is a second he resembles the man who stood there and let her do it. This gives the register law a reason — **raising his voice would be her chaos** — and sharpens *wrong about time*: the slow version is the one that failed with her. **Rain is the mother, at the age Vesper first started watching.** The Arc 2 flicker at *not yet* is recognition, not frustration; the prism is the only proof he is not her, held at the end with nobody left to show it to. Guards: **he must never say it**, and **the mother stays absent**.
+
+**Claire — vindication is her stated motive; silence is her actual one; she cannot tell the difference.** She says she needs the archive for proof and a world that believes her; she needs the noise to stop. **She never lies and she is wrong about her own motive — different properties.** The overwatch is the inverse of the wound: disbelieved once for a certainty she could not justify, believed at last with none at all.
+
+**Roxana, Shiori and the Pursuer are single-rooted** and need no resolution. One open question: whether Roxana's fire is her **origin** or her **debt** — guilt appears nowhere in her design, and the armour-against-being-known reading is the more distinctive one.
+
 #### Three scales of self-surveillance
 
 The panopticon in this story is the **empty** one — the tower unmanned and the discipline continuing anyway. That is the mechanism behind *nothing is chasing you*, and it runs at three scales.

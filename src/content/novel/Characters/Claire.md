@@ -14,6 +14,8 @@ Her question: *how do I act when I can't be sure?*
 
 **She is mentally more mature than Rain and emotionally less secure.** The maturity is real; the insecurity is what the certainty compensates for. Supplying decisions to other people is also how she avoids ever having to request anything herself.
 
+**What she says she wants, and what she wants.** She says she needs the archive because it holds data — proof, a way to clear the misunderstanding, a world that finally believes her. What she needs is for the noise to stop. Both are true sentences about her, and only one is the reason. **She cannot tell the difference.**
+
 **The impossible decision.** She wants the quiet, and she wants to remain the person who went into that building — and the Static *is* the building. The two wants are the same object, which is why no compromise exists.
 
 **The line she won't cross — and does, as a victory.** She will not act without a model. The lens coming off is the crossing, and it is the only crossing in the book that is unambiguously good. Deliberate contrast with Rain's, which is his relapse.
@@ -105,3 +107,27 @@ Three, all required, all against the same misreading:
 3. She visibly manages her condition — protocol, accommodations, accepted hands. Suffering is never valorised.
 
 Plus: she ends chronic, uncured, and chosen. No magic cure, and she does not die.
+
+- **She never lies, and she is wrong about her own motive.** Those are different properties. The gap between them is where the character lives — she argues honestly, at full strength, and the dishonesty is never in the argument, only in her account of why she is making it.
+
+---
+
+*— design notes below: skip while drafting —*
+
+### Where it comes from
+
+**The history.** One of the younger siblings in a large family of prestigious architects.
+
+After the Flare her mind filled with static. At the debut of the family's grand building the noise stopped — and she knew something was fundamentally flawed, with no proof and no visible steps. The Click arrives as a finished truth. She delivered the warning bluntly, absolutely, without the grace that might have softened it, and her family saw a child who thought she knew better. **What they missed was a terrified girl drowning in a certainty she couldn't justify.**
+
+Then the building came down from an overlooked detail, and hundreds died. To protect the name, the family blamed her.
+
+**The wound is twofold:** being right without credentials cost her everyone — and her own certainty, delivered without humility, may have contributed to the breach.
+
+**And this is why she cannot receive.** The last time she offered something true, she lost every person she had. Supplying certainty outward is the safe direction of the same act; requesting anything is the direction that took everything.
+
+**The overwatch is the inverse of the wound.** She was disbelieved once for a certainty she could not justify. At the overwatch the ribbon dies, the range collapses, the lens comes off, and she says *go* — with no certainty, no model, nothing to justify it. And Rain goes. She spends the book trying to be believed by producing proof, and is finally believed at the one moment she has none. The family never appears and never needs to: the wound is answered by a different act, not by being taken back.
+
+**What she must learn.** Certainty is not the same as truth. The one percent of doubt is not a failure — it is the space where growth and connection live.
+
+**Arc 2 drafting note:** her interest in the archive is stated as evidentiary. Never corrected on the page.
