@@ -8,12 +8,9 @@ import {
   countWords,
   flattenFolderFiles,
   findRecentFiles,
-  findSynopsisDoc,
-  findFirstScene,
   STORY_FOLDER_SLUG,
 } from '../../utils/novel';
 import type { NovelFile, NovelFolder, NovelTree } from '../../utils/novel';
-import { stripMarkdown } from '../../utils/content';
 import { formatDate } from '../../utils/dates';
 
 type View = 'desk' | 'folder' | 'file';
@@ -70,52 +67,13 @@ function fileUrl(f: NovelFile): string {
   return `/novel/${f.path.join('/')}`;
 }
 
-function excerptOf(html: string, max = 300): string {
-  const text = stripMarkdown(html).replace(/\s+/g, ' ').trim();
-  if (text.length <= max) return text;
-  const cut = text.slice(0, max);
-  return `${cut.slice(0, cut.lastIndexOf(' '))}…`;
-}
-
 function folderHasContent(f: NovelFolder): boolean {
   return flattenFolderFiles(f).length > 0;
-}
-
-// Binder rows show a one-line hook so the outline is scannable by meaning
-// rather than by filename. Every outline doc opens with a summarising line
-// under its title, so: drop the headings, take the first block of prose,
-// and prefer to end on its first full sentence.
-function hookOf(html: string, title = '', max = 130): string {
-  const bodyOnly = html.replace(/<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>/gi, '');
-  const blocks = [...bodyOnly.matchAll(/<(p|li)\b[^>]*>([\s\S]*?)<\/\1>/gi)].map((m) => m[2]);
-  const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
-  const titleKey = normalize(title);
-  // Skip two kinds of useless opening block, when there's real prose behind them:
-  // a wholly-italic editorial aside (provenance notes, "replaced by…"), and a
-  // line that merely restates the document's own title.
-  const isUseless = (b: string) => {
-    if (/^\s*<em\b[^>]*>[\s\S]*<\/em>\s*$/i.test(b)) return true;
-    return titleKey.length > 0 && normalize(stripMarkdown(b)) === titleKey;
-  };
-  const chosen = blocks.find((b) => !isUseless(b)) ?? blocks[0] ?? bodyOnly;
-  const text = stripMarkdown(chosen).replace(/\s+/g, ' ').trim();
-  if (!text) return '';
-  if (text.length <= max) return text;
-  const sentenceEnd = text.slice(0, max).search(/[.!?](?=\s|$)/);
-  if (sentenceEnd >= 40) return text.slice(0, sentenceEnd + 1);
-  const cut = text.slice(0, max);
-  const lastSpace = cut.lastIndexOf(' ');
-  return `${(lastSpace > 40 ? cut.slice(0, lastSpace) : cut).trimEnd()}…`;
 }
 
 // ── Desk data ──────────────────────────────────────────────────────────
 const stats = view === 'desk' ? computeNovelStats(tree) : null;
 const latestScene = view === 'desk' ? (findRecentFiles(tree, { scenes: true, limit: 1 })[0] ?? null) : null;
-const sceneExcerpt = latestScene ? excerptOf(latestScene.body) : '';
-// "What is this?" intro — sourced from a Story Plan doc so the pitch lives in
-// the binder, not hardcoded in the site. No doc → no panel.
-const synopsisDoc = view === 'desk' ? findSynopsisDoc(tree) : null;
-const firstScene = view === 'desk' ? findFirstScene(tree) : null;
 
 // Script — chapter-select data (manuscript only). Scene numbers run
 // continuously in reading order (same order as the prev/next page-turn).
@@ -144,11 +102,8 @@ const scriptArcs: ArcGroup[] = manuscriptFolder
   : [];
 
 // Binder — the outline folders (everything but the manuscript)
-interface IndexRow { file: NovelFile; hook: string; }
-interface IndexSub { title: string; rows: IndexRow[]; }
-interface IndexGroup { slug: string; title: string; count: number; words: number; rootRows: IndexRow[]; subs: IndexSub[]; }
-const toRows = (files: NovelFile[]): IndexRow[] =>
-  files.map((file) => ({ file, hook: hookOf(file.body, file.title) }));
+interface IndexSub { title: string; files: NovelFile[]; }
+interface IndexGroup { slug: string; title: string; rootFiles: NovelFile[]; subs: IndexSub[]; }
 const binderGroups: IndexGroup[] = view === 'desk'
   ? Object.values(tree)
       .filter((f) => f.slug !== STORY_FOLDER_SLUG)
@@ -156,12 +111,10 @@ const binderGroups: IndexGroup[] = view === 'desk'
       .map((f) => ({
         slug: f.slug,
         title: f.title,
-        count: flattenFolderFiles(f).length,
-        words: flattenFolderFiles(f).reduce((sum, file) => sum + countWords(file.body), 0),
-        rootRows: toRows(f.files),
+        rootFiles: f.files,
         subs: Object.values(f.subfolders)
           .filter(folderHasContent)
-          .map((sub) => ({ title: sub.title, rows: toRows(flattenFolderFiles(sub)) })),
+          .map((sub) => ({ title: sub.title, files: flattenFolderFiles(sub) })),
       }))
   : [];
 
@@ -211,43 +164,36 @@ const pageTitle =
           <h1 class="p4g-heading novel-header__title">Remember Rain</h1>
           <span class="p4g-underline"></span>
         </div>
-        <p class="novel-header__stats">
-          {stats.storyWords.toLocaleString('en-US')} script words · {stats.outlineWords.toLocaleString('en-US')} outline words
-        </p>
       </header>
 
-      {(synopsisDoc || latestScene) && (
-        <div class:list={['desk-top', { 'desk-top--solo': !(synopsisDoc && latestScene) }]}>
-          {synopsisDoc && (
-            <section class="desk-about p3r-animate" style="--stagger-delay: 30ms" aria-label="About this visual novel">
-              <div class="desk-about__body" set:html={synopsisDoc.body} />
-              {firstScene && (
-                <a class="desk-about__cta" href={fileUrl(firstScene)}>
-                  read from the start <span aria-hidden="true">→</span>
-                </a>
-              )}
-            </section>
-          )}
-          {latestScene && (
-            <div class="desk-top__scene p3r-animate" style="--stagger-delay: 60ms">
-              <a class="desk-sheet-wrap" href={fileUrl(latestScene)}>
-                <article class="desk-sheet">
-                  <div class="desk-sheet__meta">
-                    <span class="desk-sheet__kicker">latest scene</span>
-                    <span class="desk-sheet__count">{countWords(latestScene.body).toLocaleString('en-US')} words</span>
-                  </div>
-                  <h2 class="desk-sheet__title">{latestScene.title}</h2>
-                  <p class="desk-sheet__excerpt">{sceneExcerpt}</p>
-                  <span class="desk-sheet__cta">keep reading</span>
-                </article>
-              </a>
-              {!synopsisDoc && firstScene && firstScene.slug !== latestScene.slug && (
-                <a class="desk-restart" href={fileUrl(firstScene)}>↺ read from the start</a>
-              )}
-            </div>
-          )}
-        </div>
-      )}
+      <nav class="desk-binder p3r-animate" style="--stagger-delay: 30ms" aria-label="Outline documents">
+        {binderGroups.map((group) => (
+          <section class="binder-panel" id={group.slug}>
+            <h2 class="binder-panel__header">{group.title}</h2>
+            {group.rootFiles.length > 0 && (
+              <ul class="binder-panel__list">
+                {group.rootFiles.map((file) => (
+                  <li>
+                    <a href={fileUrl(file)}>{file.title}</a>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {group.subs.map((sub) => (
+              <div class="binder-panel__sub">
+                <h3 class="binder-panel__sublabel">{sub.title}</h3>
+                <ul class="binder-panel__list">
+                  {sub.files.map((file) => (
+                    <li>
+                      <a href={fileUrl(file)}>{file.title}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </section>
+        ))}
+      </nav>
 
       <section class="desk-script p3r-animate" id="manuscript" style="--stagger-delay: 90ms" aria-label="Script">
         <header class="desk-script__header">
@@ -278,46 +224,6 @@ const pageTitle =
           </section>
         ))}
       </section>
-
-      <nav class="desk-binder p3r-animate" style="--stagger-delay: 150ms" aria-label="Outline documents">
-        {binderGroups.map((group) => (
-          <section class="binder-panel" id={group.slug}>
-            <h2 class="binder-panel__header">
-              {group.title}
-              <span class="binder-panel__count">
-                {group.count} {group.count === 1 ? 'doc' : 'docs'} · {group.words.toLocaleString('en-US')} words
-              </span>
-            </h2>
-            {group.rootRows.length > 0 && (
-              <ul class="binder-panel__list">
-                {group.rootRows.map(({ file, hook }) => (
-                  <li>
-                    <a href={fileUrl(file)}>
-                      <span class="binder-row__title">{file.title}</span>
-                      {hook && <span class="binder-row__hook">{hook}</span>}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {group.subs.map((sub) => (
-              <div class="binder-panel__sub">
-                <h3 class="binder-panel__sublabel">{sub.title}</h3>
-                <ul class="binder-panel__list">
-                  {sub.rows.map(({ file, hook }) => (
-                    <li>
-                      <a href={fileUrl(file)}>
-                        <span class="binder-row__title">{file.title}</span>
-                        {hook && <span class="binder-row__hook">{hook}</span>}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </section>
-        ))}
-      </nav>
     </main>
   )}
 
