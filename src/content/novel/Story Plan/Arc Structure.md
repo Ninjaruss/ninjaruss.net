@@ -100,6 +100,8 @@ The Devil's Bargain is the state's amnesty with Rain's goggles on the manifest: 
 
 **Decided 2026-08-10 — the cost.** Rain keeps every memory; this is not amnesia. What he loses is felt ownership — his own achievements file as fiction, remembered perfectly and impossible to feel as his. Triumph goes light; the ache stays heavy, which is the opposite pole to what Vesper sells, and why he keeps going.
 
+**Added 2026-08-19 — this cost is payoff, not a new wound.** The Perfect Clone already taught him this trade in Arc 4: send the version of himself that risks nothing, get relief with no weight in it back. The finale is the same trade paid honestly for the first time — he finally commits for real, and the part of him that registers weight has spent the whole book atrophying on substitutes. It is not a twist of fate. It is the bill. (See Rain's character doc, "How he processes," for the Clone-as-potential equation this pays off — never state the connection on the page.)
+
 **Superseded (2026-08-07):** the old betrayal-mid-finale beat, and "Claire may have been assisting Vesper unknowingly" — her complicity is now the delivered patients plus her advocacy, resolved at the door. The trial and mountain material now lives in Arc 3.
 
 #### Key Plot Beats

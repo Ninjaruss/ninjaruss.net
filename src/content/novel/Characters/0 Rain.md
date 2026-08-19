@@ -18,7 +18,7 @@ His question: *if I become one thing, what happens to everyone else I could have
 
 **The impossible decision.** He wants to matter and he wants to stay possible, and every act of mattering deletes possibility. Arc 3 makes the arithmetic literal; the notebook is a man refusing to spend his inventory.
 
-**The line he won't cross — and does.** He will not send someone else in his place. It is why the Clone is deception-only and why its cost is the Ghost. Arc 4's last stop is him crossing it and being rewarded for it. He keeps the Perfect Clone forever: the line is never restored as a rule, only re-chosen as a morning.
+**The line he won't cross — and does.** He will not send someone else in his place. It is why the Clone is deception-only and why its cost is the Ghost. Arc 4's last stop is him crossing it and being rewarded for it. He keeps the Perfect Clone forever: the line is never restored as a rule, only re-chosen as a morning. **What crossing it actually is:** choosing the version of himself that costs nothing over the one that does. He has been making that choice his entire life without a mechanic to name it; Arc 4 gives it a name, a cost, and a reward, and rewards it anyway.
 
 **His relationship to change.** Ignorant of it. He is changing continuously and is the last to know — which is why he never perceives his own shine, and why the finale's cost is that he changed completely and cannot feel it.
 
@@ -58,9 +58,9 @@ Through his own perception of himself — so everything he can do is a self, see
 
 - **Passive — the Ghost.** Faded gold, palm upward. A compass, never a radar: it tells him *to go*, never how, and it only ever points at what he actually wants. Read as hallucination for a whole arc; never explained.
 
-- **Deviation — the Clone**, through the goggles. Intangible, deception only.
+- **Deviation — the Clone**, through the goggles. Intangible, deception only. **This is potential, embodied.** Not a decoy that happens to resemble him — a version of Rain that doesn't exist, sent to be seen instead of him. Every use is the same transaction his whole character runs on: risk nothing, spend nothing, keep the inventory unspent.
 
-- **The Perfect Clone** costs the Ghost, burned live. During: commitment fails, movement goes half-committed. After: wantless hours. The tell is that the silence feels like *relief*.
+- **The Perfect Clone** costs the Ghost, burned live. During: commitment fails, movement goes half-committed. After: wantless hours. The tell is that the silence feels like *relief*. **This is the trade made literal:** the feels-good ephemeral self stands in for him, and what he gets back is relief with no weight in it — because nothing that wasn't risked can be felt as accomplished. Potential was never neutral. It was training him not to feel his own wins.
 
 - **The Split.** His own ledger of past failure, in his own voice. Unmarked at first; one italic line at the awakening; permanent after that.
 
@@ -119,6 +119,8 @@ The pen is its visible twin: the story shows you the pen he never writes with, a
 - **He never states it as ego.** He would say the finitude version, and he believes it — it is the dignified frame and it is also true. The reader assembles the rest from the notebook and from what he does. The moment he says *I'm afraid I'm ordinary*, he has diagnosed himself, and a man who can diagnose it could act on it.
 
 - **The ego must never make him unlikeable.** The origin carries it: praised for a gift, steered away from using it. And his generosity is real — he asks everyone what they need. Ego-wounded and kind is a person; ego alone is a type.
+
+- **Nobody ever names the Clone as potential, on the page or off it in dialogue.** The equation lives in this doc so every scene using the ability is written with it in mind — not so a character can explain it. The moment anyone says the ability *is* his potential, it becomes a metaphor being pointed at instead of a mechanic being lived inside, and the finale's cost stops landing as discovery and starts reading as a callback.
 
 ---
 
