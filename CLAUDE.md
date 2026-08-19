@@ -85,8 +85,8 @@ The homepage uses a visual hierarchy pattern:
 - **Core tiles** (`.bento-tile--core`): Journal and Shelf (Media Log) with elevated gold glow and larger typography. The homepage Shelf tile's 8-cover collage tucks under a diagonal top edge (`.tile-poster-strip` clip) — one cut, no new colors.
 - **Signal tiles**: Current activity indicators (Now, Latest) — Now shows the latest now-entry's title; Latest is 2×2 with a stripped-markdown excerpt, an absolute per-entry date (`.latest-date`, never time-since, rendered lowercase to match the journal tile's date rows), and cycles client-side through the latest 2 notes + latest 1 showcase (interleaved note/showcase/note, 7s interval; each swap is a P4G gold sweep — a skewed gold panel (`.latest-tile__sweep`, `skewX(--skew-accent)`, the same move as the journal-entry hover `.list-item::before`) sweeps across via the `latest-sweep` keyframes on `#latest-tile.is-cycling`: in to cover, entry swapped behind it at the midpoint, out to reveal; cycling is skipped entirely under `prefers-reduced-motion`, which also sets the sweep `animation: none`). The emblem sits on a deeper-black angled field (`.latest-tile__emblem-wrap`, `clip-path` + negative-margin bleed) traced by a gold hairline (`::before`, skewX(-4deg) measured against the clip edge); ≤768px the field flattens to the tile's bottom edge and the hairline hides.
 - **Novel tile** (`.novel-tile`, 1×2, rows 2-3): "rain gauge" — script words (Manuscript/ folder, big gold; labelled "script words" in the UI) vs outline words (other folders, small grey) from `computeNovelStats()`. Each rain drop is randomized per-visit (position/speed/delay/length/opacity) by `initializeNovelRain`. Client script (`initializeNovelRain`) reads `data-scene-modified`/`data-outline-modified` and sets `is-raining` (scene work ≤14 days, CSS rain animation scaled by `--rain-strength`), `is-misting` (outline-only work ≤14 days, sparse slow drizzle), or `is-waiting` (static "the rain waits." line); the rain spans the full tile (14 drops with varied lengths via `--len`, spread across the width). Design invariant: never red, never displays a count of absent days — the tile rewards accumulation, it does not shame absence.
-- **Stream tile** (`.stream-tile`, `#stream-tile` — ids/classes unchanged; the visible label reads "Status" / "Status Log"): Dark 1×2 tile linking to `/status`; shows live stat donut chart (session stats from the `sessions` collection) with leading stat emblem and session count. Pulsing red border (`--color-live`) when live (live-streaming state, unrelated to the sessions rename).
-- **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) and an Email tile (2×1, `#mail-tile`) with 48x48px logos/icons and hover effects. The email address (mailbox@ninjaruss.net) is never in the served HTML — `initializeMailTile()` assembles the `mailto:` on first pointerenter/focus/touch/click (bot-scrape mitigation; same pattern fills `#mail-address` in `/status`'s Status-screen mail strip). Angled gold kicker chips name each tile's role (WATCHLIST / LISTENING / CONTACT), corner-cut clip-path (no hover shadow — clip-path would clip it, same reason there's no focus outline ring — hover/focus feedback is the gold sweep + lift instead), brand-colored hovers replaced by the shared `.p4g-sweep` gold wash with black text.
+- **Stream tile** (`.stream-tile`, `#stream-tile`): Dark 1×2 tile linking to `/status`; shows a one-line teaser of the current arc's decision text (read from `_quests.md`'s `## Current Arc` section, same source `/status`'s arc card uses) instead of the retired stat-tally donut. Pulsing red border (`--color-live`) when live, via the unchanged `/api/live-status.ts` polling.
+- **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) and an Email tile (2×1, `#mail-tile`) with 48x48px logos/icons and hover effects. The email address (mailbox@ninjaruss.net) is never in the served HTML — `initializeMailTile()` assembles the `mailto:` on first pointerenter/focus/touch/click (bot-scrape mitigation; same pattern fills `#mail-address` in `/status`'s mailbox strip). Angled gold kicker chips name each tile's role (WATCHLIST / LISTENING / CONTACT), corner-cut clip-path (no hover shadow — clip-path would clip it, same reason there's no focus outline ring — hover/focus feedback is the gold sweep + lift instead), brand-colored hovers replaced by the shared `.p4g-sweep` gold wash with black text.
 - **YouTube tile**: Full-bleed channel avatar with an angled gold "YouTube" kicker chip (`.yt-tile__chip`); switches to Twitch live preview when streaming (live overlay covers the chip)
 
 Tile variants: `interactive` (default), `highlight` (gold bg), `dark`, `static`
@@ -123,7 +123,7 @@ Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title
 - `bento.css` — Grid system and tile variants
 - `transitions.css` — P4G-style animations and view transitions
 - `novel.css` — Novel writer's-desk UI (gold/black/brown; desk landing, folder pages, paper/ink reading pages, sepia rain canvas)
-- `status.css` — `/status` P4G pause-menu hub styles (character sheet, stat radar, session log, quest board, bonds panel)
+- `status.css` — `/status` Persona arc card styles (identity header, accent-colored arc card with an emblem badge, level chip + find-me-elsewhere links row, mailbox strip)
 
 ### Key CSS Variables
 ```css
@@ -210,7 +210,7 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 
 ### Utility Pages
 - `/` — Homepage with BentoGrid tiles
-- `/about` — profile card. One card, one screen: header (name/epithet/portrait from `_protagonist.md` via `parseProtagonist`, shared with `/status`), credential lines, WHAT I MAKE, SUBJECTS I EXPLORE, ABOUT prose, NOW, CONNECT + FIND ME. Copy is hand-written in the single-entry `profile` collection (`src/content/profile/about.md`); the Zod schema and the `pickProfile`/`nowLine` selectors live in `src/utils/profile.ts` (pure — vitest can't resolve `astro:content`, same split as `journal.ts`/`journalMerge.ts`). Exactly one live element: the NOW line, pulled from the latest `now` entry and omitted entirely when there isn't one. Reached from the homepage title tile's "who?" corner link; deliberately **not** in NavPill (an 8th item breaks the 4+3 mobile wrap). Was a 301 to `/notes/i-am-ninjaruss` — the "no static About page" stance is preserved in spirit (the card is all output and links, no biography) and that note is now the deep read, linked from the ABOUT prose. The email address is assembled client-side (`#about-mail`), never in the served HTML. Link labels inside `.p4g-sweep` anchors **must** be wrapped in an element (`<span>`): the utility lifts children via `.p4g-sweep > *`, which doesn't match bare text nodes, so an unwrapped label gets painted over by the gold panel on hover.
+- `/about` — profile card. One card, one screen: header (name/epithet/portrait from `_protagonist.md` via `parseProtagonist`, shared with `/status`), credential lines, WHAT I MAKE, SUBJECTS I EXPLORE, ABOUT prose, NOW, CONNECT + FIND ME. Copy is hand-written in the single-entry `profile` collection (`src/content/profile/about.md`); the Zod schema and the `pickProfile`/`nowLine` selectors live in `src/utils/profile.ts` (pure — vitest can't resolve `astro:content`, same split as `journal.ts`/`journalMerge.ts`). Exactly one live element: the NOW line, pulled from the latest `now` entry and omitted entirely when there isn't one. Reached from an always-visible "About" button under the homepage title tile's tagline (`.title-tile__about`, `.p4g-sweep`; 2026-08 pass — replaced a low-contrast, hover-revealed "who?" corner link that new visitors weren't noticing); deliberately **not** in NavPill (an 8th item breaks the 4+3 mobile wrap) and still homepage-only. Was a 301 to `/notes/i-am-ninjaruss` — the "no static About page" stance is preserved in spirit (the card is all output and links, no biography) and that note is now the deep read, linked from the ABOUT prose. The email address is assembled client-side (`#about-mail`), never in the served HTML. Link labels inside `.p4g-sweep` anchors **must** be wrapped in an element (`<span>`): the utility lifts children via `.p4g-sweep > *`, which doesn't match bare text nodes, so an unwrapped label gets painted over by the gold panel on hover.
 - `/now` — Latest "Now" entry (current focus)
 - `/now/archive` — Historical "Now" entries list
 - `/rss.xml` — Journal RSS feed (`src/pages/rss.xml.ts`, `@astrojs/rss`): merged notes + showcases, **excerpt-only by design** (~300 chars + link — the feed is a doorbell, the site is the room). Autodiscovery `<link rel="alternate">` in BaseLayout head.
@@ -294,66 +294,70 @@ has a 2×1 Codex tile cycling synthesis first-sentences with the latest-sweep pa
 Scripts live in scripts/codex/ (tsx); manual mode scratch files codex-prompt.txt /
 codex-response.json are gitignored. Tests: src/tests/codex.test.ts (pure modules only).
 
-## Sessions & /status (protagonist pause menu)
+## Sessions & /status (Persona arc card)
 
 The `sessions` collection logs work sessions (Japanese, writing, streams) as
 hand-written markdown — create a `.md` in `src/content/sessions/` (VS Code
-snippet: type `session` + Tab for the frontmatter skeleton in
-`.vscode/ninjaruss.code-snippets`), commit, done. No capture loop, no AI step
-(the former mirror loop was deleted 2026-08; spec:
-docs/superpowers/specs/2026-08-03-status-protagonist-redesign-design.md).
+snippet: type `session` + Tab). These files are currently an inert historical
+archive: nothing on `/status` reads them anymore (see below), so creating new
+ones is optional bookkeeping, not something the page depends on.
 
-`/status` is a P4G pause-menu hub — skewed menu (Status / Log / Quests / Bonds),
-one screen at a time via URL hash (`/status#quests`); no-JS falls back to all
-sections stacked (an inline blocking script plus an `astro:after-swap` listener
-add the `js` class on `<html>`, which hides inactive screens; the after-swap
-hook exists because Astro's view-transition swap strips html attributes and
-skips re-running inline scripts). Routing needs all three listeners: explicit
-click handlers cover the menu anchors (Astro's ClientRouter intercepts them via
-pushState, so hashchange never fires for those), the `hashchange` listener
-covers programmatic `location.hash = 'log'` jumps (radar-vertex and quest-strip
-clicks depend on it — do not delete it as "unused"), and `popstate` covers
-back/forward. Styles in `src/styles/status.css`; every **section** label on the
-page uses the one shared `.st-label` class (0.75rem / 0.14em / gold / uppercase
-/ `--skew-display`), with `.st-label--sub` (0.7rem, gold @55%, no skew) for a
-sub-header inside a section (Ideas → Potential Streams) — the old
-`.j-section-label` / `.s-panel-label` / `.q-section-label` trio is gone, so
-don't reintroduce a per-screen label style; quest-screen spacing is a
-positional rule (`#quests > .st-label`). Smaller per-item labels that annotate
-a single field — `.sheet-obj-label` (current objective), `.q-question-label`,
-`.j-next-label`, `.bd-section-label` (bond detail), `.s-mail-label` — are a
-different job and stay separate on purpose. Radar vertices and quest stat
-strips are `tabindex="0" role="button"`, and they share one Enter/Space handler
-with the bond rows (`onActivateKey`, Space preventDefault'd — don't re-add a
-per-element copy), so the log filter is reachable without a mouse; when a filter
-is on, the Log screen's header shows a clear-filter button (`#log-clear`, ✕-only
-below 480px, keeping its dynamic aria-label) that hands focus back to
-`#log-label` (`tabindex="-1"`) as it hides itself.
-The date strip in the topbar is restated client-side from the visitor's clock on
-load and `astro:page-load` (the page is prerendered — the server value is only
-the build day, kept as the no-JS fallback). ≤900px the menu is a 2×2 grid.
+`/status` (spec: docs/superpowers/specs/2026-08-18-status-page-arc-revamp-design.md)
+was rebuilt 2026-08 from a four-screen session-log pause menu into a single flat
+screen, because the log required per-stream maintenance that competed with the
+actual writing/Japanese-learning work it was meant to reflect. The page is
+viewer-facing, not a personal tracker: its job is "what chapter of the story is
+this, and what's currently being decided" — not "how many sessions has Russ
+logged." Top to bottom:
 
-- **Status**: character sheet — portrait/name/epithet from
-  `src/content/sessions/_protagonist.md` (underscore = not a collection entry;
-  parsed by `src/utils/protagonist.ts`, missing file/fields degrade to
-  defaults), level + XP bar from `computeLevel(totalSessions)` in
-  `src/utils/sessions.ts` (`level = max(1, floor(sqrt(4n)))` — monotonic, never
-  decays; label is always forward-looking "next: N sessions"; XP bar is
-  role="progressbar"), current objective = first Active quest in `_quests.md`,
-  stat radar (recent/all-time), date strip (today only — deliberately NO day
-  counter), mail strip.
-- **Log**: sessions newest-first with stat chips, summary, `memorable`
-  pull-quote, optional `reflection`/`nextStep`/`quest`, and a red LIVE marker
-  for `streamed: true`.
-- **Quests**: rendered from `src/content/sessions/_quests.md` via
-  `parseQuestFile` (sections: The Question / Active / Ideas — <Stat> /
-  Completed). Quests only ever come from this file. The Ideas stat strips
-  double as log filters (click → `#log` filtered).
-- **Bonds**: `social-links` collection as an S.Link screen with slide-in
-  detail panel (keyboard-operable rows: tabindex + Enter/Space).
+- **Identity header** — portrait/name/epithet from `_protagonist.md` (shared
+  with `/about`), parsed by `parseProtagonist()` (`src/utils/protagonist.ts`);
+  missing file/fields degrade to defaults.
+- **Arc card** (`.arc-card`) — the page's one piece of content. Whole-card
+  accent-colored by the arc's stat (border/kicker/updated stamp use
+  `STAT_COLORS`), with a stat emblem badge (`/images/emblems/<stat>.png`) on a
+  dark circular plate for contrast (the emblem PNGs are opaque-white-background
+  line art and wash out if dropped directly on a pale accent color like
+  Insight). Sourced from a `## Current Arc` section in `_quests.md`
+  (`**Arc:**`/`**Stat:**`/`**Updated:**` fields + a decision paragraph),
+  parsed by `parseCurrentArc()` (`src/utils/currentArc.ts`). An absent or
+  incomplete section hides the card entirely rather than rendering blanks; an
+  unrecognized `Stat` value degrades to a neutral gold accent rather than
+  failing the build. Hand-edited, expected to change every few weeks/months —
+  not per-stream. The rest of `_quests.md` (The Question / Active / Ideas —
+  `<Stat>` / Completed) is Russ's private planning scaffold and is **not**
+  rendered anywhere on the page.
+- **Supporting row** — a plain `LV n` chip (`.sheet-level`, no stat coloring)
+  computed at build time by `computeSiteLevel()` (`src/utils/level.ts`) from
+  the total word count across the novel manuscript's story words
+  (`computeNovelStats().storyWords` — outline/planning docs don't count) plus
+  every non-draft `notes`/`showcase` entry body
+  (`computeSiteWordCount()`/`countMarkdownWords()`); monotonic, no decay, no
+  new authoring — it's a byproduct of writing already happening. Beside it, a
+  "find me elsewhere" links strip reusing `profile.links` (the same data
+  `/about` renders, filtered to external URLs) — **not** the `social-links`
+  collection, which models Bonds/confidants (`arcana`/`affinity`/`rank`/`lore`)
+  and has no real entries.
+- **Mailbox strip** — carried over unchanged: address assembled client-side
+  into `#mail-address` (never in served HTML), `<noscript>` obfuscated-text
+  fallback. Kept because the homepage's `#mail-tile` links to `/status` as its
+  no-JS fallback.
 
-Design invariants (unchanged): stats never decay, no streaks/shame states, no
-absence counters anywhere on the page.
+`STAT_COLORS`/`STAT_ORDER`/`StatName`/`hexToRgbTriplet` are all that remain in
+`src/utils/sessions.ts` — everything else (tallying, radar/donut geometry,
+quest-file parsing, the log-scale level curve) was deleted with the pause menu.
+`STAT_COLORS` is still consumed by `scripts/transition.ts`'s per-route
+page-transition card effect (a static route→stat color mapping, unrelated to
+session tallies) and by the arc card above.
+
+The homepage's Stream tile (`#stream-tile`, dark 1×2, links to `/status`) no
+longer shows a stat-tally donut; it shows the same live-now indicator as
+before (`/api/live-status.ts`, unchanged) plus a one-line teaser of the current
+arc's decision text, read from the same `_quests.md` section.
+
+The `social-links` collection/schema is unused by any page as of 2026-08 (it
+has one `draft: true` sample entry) — a future Bonds/confidants feature is a
+separate decision, not part of this page.
 
 ## Utility Modules
 
@@ -365,7 +369,7 @@ absence counters anywhere on the page.
 | `src/utils/journalMerge.ts` | pure merge/sort logic (no astro imports) | Unit-testable core of journal.ts (vitest can't resolve `astro:content`) |
 | `src/utils/dates.ts` | `formatDate()`, `shouldShowUpdatedDate()` | Date formatting and update-date display logic |
 | `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `parseOrderPrefix()`, `unescapeScrivenerMarkdown()`, `stripSceneLabel()`, `countWords()`, `computeNovelStats()`, `flattenFolderFiles()`, `findRecentFiles()`, `findSynopsisDoc()`, `findFirstScene()` | Scrivener-backed novel content loader + rain-gauge stats + desk recency/intro helpers |
-| `src/utils/sessions.ts` (formerly `stream.ts`) | `tallyStats()`, `buildRadarPoints()`, `buildGuidePoints()`, `applyLogScale()`, `scaleAllTallies()`, `parseStreamIdeas()`, `parseQuestFile()`, `parseQuestMenu()` (legacy, unused by pages), `buildDonutArcs()`, `computeLevel()`, `hexToRgbTriplet()`, `STAT_COLORS`, `STAT_ORDER`, `STAT_CEILING` | `sessions` collection stat aggregation/scaling for the `/status` radar + donut, the single stat-colour table (`STAT_COLORS` — the only place the five stat hexes are written; index.astro, status/index.astro and scripts/transition.ts all read it), level/XP math, and `_quests.md` parsing (`parseQuestFile` — sections: The Question / Active / Ideas — \<Stat\> / Completed) |
+| `src/utils/sessions.ts` | `STAT_ORDER`, `StatName`, `STAT_COLORS`, `hexToRgbTriplet()` | The shared stat vocabulary/colors — the only place the five stat hexes are written (`index.astro`'s homepage tile, `status/index.astro`'s arc card, and `scripts/transition.ts`'s page-transition card all read `STAT_COLORS`). Tallying/radar/donut/quest-parsing/level-curve logic that used to live here was deleted in the 2026-08 `/status` rebuild (see Sessions & /status above) |
 | `src/utils/protagonist.ts` | `parseProtagonist()`, `DEFAULT_PROTAGONIST` | Minimal frontmatter reader for `_protagonist.md` (name/epithet/portrait); missing file/fields degrade to defaults |
 | `src/utils/profile.ts` | `profileSchema`, `pickProfile()`, `nowLine()` | /about profile card data layer — Zod schema (from `astro/zod`, **not** `astro:content`, so vitest can load it), singleton entry selection, and the single live NOW line (returns null rather than a placeholder when there's nothing real to show) |
 | `src/utils/codexContent.ts` + `src/utils/codex/` | `getCodexPageData()`, `getCodexTileData()`; pure modules: schema, json, stabilize, resolve, corpus, prompt, pipeline | /codex data layer — see Codex System section |
