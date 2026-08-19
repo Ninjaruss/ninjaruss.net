@@ -178,10 +178,10 @@ Note the one deliberate change from the original: `margin-bottom: var(--space-lg
 Run: `npm run build`
 Expected: exit 0, no errors.
 
-Run: `grep -c 'arc-card' dist/about/index.html`
+Run: `grep -c 'arc-card' dist/client/about/index.html`
 Expected: a number ≥ 1 (the card is in the built HTML).
 
-Run: `grep -o 'Current arc[^<]*' dist/about/index.html`
+Run: `grep -o 'Current arc[^<]*' dist/client/about/index.html`
 Expected: `Current arc · <Stat>` matching the `**Stat:**` field in `src/content/sessions/_quests.md`.
 
 - [ ] **Step 5: Commit**
@@ -241,11 +241,14 @@ In `src/styles/about.css`, find the `.about__connect` rule and add this rule dir
 Run: `npm run build`
 Expected: exit 0.
 
-Run: `grep -c 'Send mail to be read on stream' dist/about/index.html`
+Run: `grep -c 'Send mail to be read on stream' dist/client/about/index.html`
 Expected: `1`
 
-Run: `grep -c 'mailto:' dist/about/index.html`
-Expected: `0` — the address is still assembled client-side and must never appear in the served HTML.
+Run: `grep -c 'mailbox@ninjaruss' dist/client/about/index.html`
+Expected: `0` — the address is assembled client-side and must never appear in the
+served HTML. (Do not grep for the substring `mailto:` — the inline assembly
+script legitimately contains the literal `"mailto:"`, so that check always
+returns 1 and proves nothing.)
 
 - [ ] **Step 4: Commit**
 
@@ -306,7 +309,7 @@ Replace with:
 Run: `npm run build`
 Expected: exit 0.
 
-Run: `grep -ro '"/status"\|"/stream"' .vercel/output/config.json dist/status/index.html dist/stream/index.html 2>/dev/null`
+Run: `grep -ro '"/status"\|"/stream"' .vercel/output/config.json dist/client/status/index.html dist/client/stream/index.html 2>/dev/null`
 
 Expected: at least one hit. The Vercel adapter may emit redirects into
 `.vercel/output/config.json` as routes rather than as meta-refresh files in
@@ -315,8 +318,8 @@ Expected: at least one hit. The Vercel adapter may emit redirects into
 - if `.vercel/output/config.json` exists, run
   `grep -o '"src": "/status[^}]*' .vercel/output/config.json` and expect a
   route whose `Location` header is `/about`;
-- if `dist/status/index.html` exists instead, run
-  `grep -o 'url=[^"]*' dist/status/index.html` and expect `url=/about`.
+- if `dist/client/status/index.html` exists instead, run
+  `grep -o 'url=[^"]*' dist/client/status/index.html` and expect `url=/about`.
 
 Do the same check for `/stream`. Both must resolve to `/about` directly — if
 either points at the other, the chain was not removed.
@@ -417,10 +420,10 @@ Do not add or remove any other item: the list must stay at 7 so the ≤768px 4+3
 Run: `npm run build`
 Expected: exit 0.
 
-Run: `grep -o 'href="/about"[^>]*aria-current="page"' dist/about/index.html`
+Run: `grep -o 'href="/about"[^>]*aria-current="page"' dist/client/about/index.html`
 Expected: one match — the About item is marked current on its own page.
 
-Run: `grep -c 'href="/status"' dist/journal/index.html`
+Run: `grep -c 'href="/status"' dist/client/journal/index.html`
 Expected: `0` — no interior page still links to the dead route.
 
 - [ ] **Step 3: Commit**
@@ -572,16 +575,16 @@ Then update the comment directly above it, which names the old destination. Find
 Run: `npm run build`
 Expected: exit 0.
 
-Run: `grep -c 'href="/status"' dist/index.html`
+Run: `grep -c 'href="/status"' dist/client/index.html`
 Expected: `0`
 
-Run: `grep -c 'title-tile__about' dist/index.html`
+Run: `grep -c 'title-tile__about' dist/client/index.html`
 Expected: `0`
 
-Run: `grep -o 'stream-tile[^>]*' dist/index.html | head -1`
+Run: `grep -o 'stream-tile[^>]*' dist/client/index.html | head -1`
 Expected: contains `href="/about"` (attribute order may differ).
 
-Run: `grep -o '<span class="bento-tile__label">About</span>' dist/index.html`
+Run: `grep -o '<span class="bento-tile__label">About</span>' dist/client/index.html`
 Expected: one match.
 
 - [ ] **Step 7: Commit**
