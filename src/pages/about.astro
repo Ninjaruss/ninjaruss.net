@@ -127,6 +127,9 @@ const isExternal = (href: string) => /^https?:\/\//i.test(href);
         <section>
           <h2 class="about__section-label">Connect</h2>
           {profile?.connect && <p class="about__connect">{profile.connect}</p>}
+          {/* Carried over from the retired /status mailbox strip. One line of
+              literal copy, not a profile schema field. */}
+          <p class="about__connect-stream">Send mail to be read on stream</p>
           {/* Address + href injected client-side so it never sits in the served HTML.
               `hidden` until then: an empty anchor is focusable with no accessible name. */}
           <a href="#mailbox" class="about__mail" id="about-mail" hidden></a>

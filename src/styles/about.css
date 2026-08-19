@@ -143,6 +143,14 @@
   line-height: 1.6;
 }
 
+.about__connect-stream {
+  margin: 0 0 0.75rem;
+  color: var(--color-text-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+}
+
 .about__mail {
   color: var(--color-gold);
   font-family: var(--font-mono);
