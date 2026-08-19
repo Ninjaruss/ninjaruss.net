@@ -39,7 +39,7 @@ const ROUTE_STATS: [string, StatName][] = [
   ['/notes',    'Insight'],
   ['/novel',    'Expression'],
   ['/shelf',    'Sincerity'],
-  ['/status',   'Chaos'],
+  ['/about',    'Chaos'],
   ['/showcase', 'Determination'],
   ['/now',      'Sincerity'],
   ['/',         'Sincerity'],

@@ -82,9 +82,9 @@ describe('statForPath', () => {
   it('returns Sincerity for /shelf/slug', () => {
     expect(statForPath('/shelf/some-anime').color).toBe('#ffe52c');
   });
-  it('returns Chaos for /status', () => {
-    expect(statForPath('/status').color).toBe('#2dd4bf');
-    expect(statForPath('/status').name).toBe('CHAOS');
+  it('returns Chaos for /about', () => {
+    expect(statForPath('/about').color).toBe('#2dd4bf');
+    expect(statForPath('/about').name).toBe('CHAOS');
   });
   it('returns Determination for /showcase', () => {
     expect(statForPath('/showcase').color).toBe('#ff4040');
