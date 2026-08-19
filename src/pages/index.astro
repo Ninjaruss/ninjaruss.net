@@ -93,7 +93,7 @@ for (const folder of Object.values(novelTree)) {
 }
 const novelStats = computeNovelStats(novelTree);
 
-// Stream tile data — current arc teaser, read the same way /status reads it.
+// About tile data — current arc teaser, read the same way /about reads it.
 let questsRaw = '';
 try {
   questsRaw = readFileSync(join(process.cwd(), 'src/content/sessions/_quests.md'), 'utf-8');
