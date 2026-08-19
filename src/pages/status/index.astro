@@ -4,567 +4,115 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NavPill from '../../components/NavPill.astro';
-import {
-  tallyStats,
-  buildRadarPoints,
-  buildGuidePoints,
-  parseQuestFile,
-  parseStreamIdeas,
-  computeLevel,
-  hexToRgbTriplet,
-  STAT_COLORS,
-  STAT_ORDER,
-  scaleAllTallies,
-  STAT_CEILING,
-} from '../../utils/sessions';
-import { parseProtagonist } from '../../utils/protagonist';
+import { parseProtagonist, DEFAULT_PROTAGONIST } from '../../utils/protagonist';
+import { parseCurrentArc } from '../../utils/currentArc';
+import { STAT_COLORS, hexToRgbTriplet } from '../../utils/sessions';
+import { buildNovelTree, computeNovelStats } from '../../utils/novel';
+import { getAllCollections } from '../../utils/collections';
+import { computeSiteWordCount, computeSiteLevel } from '../../utils/level';
+import { pickProfile } from '../../utils/profile';
 import '../../styles/status.css';
 
-/* Colours come from the single STAT_COLORS table in utils/sessions.ts. */
-const STAT_META: Record<string, { color: string; tagline: string; phrase: string[]; keywords: string; emblem: string; silFilter: string }> = {
-  Determination: {
-    color: STAT_COLORS.Determination, tagline: 'The will to continue',
-    phrase: ['Pierce the heavens.'], keywords: 'Push. Guts. Resolve.',
-    emblem: '/images/emblems/determination.png', silFilter: 'sil-det',
-  },
-  Insight: {
-    color: STAT_COLORS.Insight, tagline: 'Seeing through the noise',
-    phrase: ['Clear Mind,', 'Accel Synchro.'], keywords: 'Perceive. Focus. Transcend.',
-    emblem: '/images/emblems/insight.png', silFilter: 'sil-ins',
-  },
-  Chaos: {
-    color: STAT_COLORS.Chaos, tagline: 'Embracing the unexpected',
-    phrase: ['Into the dark', 'without a torch.'], keywords: 'Risk. Fall. Rise.',
-    emblem: '/images/emblems/chaos.png', silFilter: 'sil-cha',
-  },
-  Sincerity: {
-    color: STAT_COLORS.Sincerity, tagline: 'Meaning what you say',
-    phrase: ['No mask.'], keywords: 'Heart. Speak true. Trust.',
-    emblem: '/images/emblems/sincerity.png', silFilter: 'sil-sin',
-  },
-  Expression: {
-    color: STAT_COLORS.Expression, tagline: 'Making something from nothing',
-    phrase: ['So the world', 'will not forget.'], keywords: 'Craft. Create. Soul.',
-    emblem: '/images/emblems/expression.png', silFilter: 'sil-exp',
-  },
-};
-
-const streamEntries = await getCollection('sessions', ({ data }) => !data.draft);
-const socialLinks   = await getCollection('social-links', ({ data }) => !data.draft);
-
-streamEntries.sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
-socialLinks.sort((a, b) => b.data.rank - a.data.rank);
-
-const bondsJson = JSON.stringify(
-  socialLinks.map(link => ({
-    name:            link.data.name,
-    arcana:          link.data.arcana,
-    affinity:        link.data.affinity,
-    rank:            link.data.rank,
-    stat:            link.data.stat ?? null,
-    statColor:       link.data.stat ? (STAT_META[link.data.stat]?.color ?? null) : null,
-    reachedDate:     link.data.reachedDate ?? null,
-    lore:            link.data.lore ?? null,
-    lastSession:     link.data.lastSession ?? null,
-    lastInteraction: link.data.lastInteraction ?? null,
-    // Same fallback the list row uses — without it a bond with a stat but no
-    // custom image shows its emblem in the row and an empty ring in the detail.
-    img:             link.data.img ?? (link.data.stat ? STAT_META[link.data.stat]?.emblem ?? null : null),
-  }))
-);
-
-const recentTallies = tallyStats(streamEntries, 'recent');
-const allTallies    = tallyStats(streamEntries, 'all');
-const recentMax     = Math.max(1, ...Object.values(recentTallies).map(v => v ?? 0));
-const allScaled     = scaleAllTallies(allTallies);
-
-// Radar geometry — center 200,200; R=185; TEXT_R=245 gives 60-unit text-to-icon gap uniformly across all vertices
-const CX = 200, CY = 200, R = 185;
-const TEXT_R = R + 60;
-
-const recentPoints = buildRadarPoints(recentTallies, recentMax,    CX, CY, R);
-const allPoints    = buildRadarPoints(allScaled,     STAT_CEILING, CX, CY, R);
-const guides       = [0.25, 0.5, 0.75, 1].map(f => buildGuidePoints(f, CX, CY, R));
-
-const axes = STAT_ORDER.map((_, i) => {
-  const angle = (-90 + i * 72) * (Math.PI / 180);
-  return {
-    x2: (CX + R * Math.cos(angle)).toFixed(2),
-    y2: (CY + R * Math.sin(angle)).toFixed(2),
-  };
-});
-
-const statVertices = STAT_ORDER.map((stat, i) => {
-  const angle = (-90 + i * 72) * (Math.PI / 180);
-  const vx = +(CX + R * Math.cos(angle)).toFixed(2);
-  const vy = +(CY + R * Math.sin(angle)).toFixed(2);
-  const tx = +(CX + TEXT_R * Math.cos(angle)).toFixed(2);
-  const ty = +(CY + TEXT_R * Math.sin(angle)).toFixed(2);
-  const meta = STAT_META[stat];
-  const anchor = vx < CX - 10 ? 'end' : vx > CX + 10 ? 'start' : 'middle';
-  const clipId = `clip-${stat.toLowerCase().slice(0, 3)}`;
-  return { stat, vx, vy, tx, ty, meta, anchor, clipId };
-});
-
-const questRaw = readFileSync(join(process.cwd(), 'src/content/sessions/_quests.md'), 'utf-8');
-const streamIdeas    = parseStreamIdeas(questRaw);
-const questFile      = parseQuestFile(questRaw);
-const currentObjective = questFile.active[0]?.text ?? null;
-
-let protagonistRaw = '';
+let protagonist = DEFAULT_PROTAGONIST;
 try {
-  protagonistRaw = readFileSync(join(process.cwd(), 'src/content/sessions/_protagonist.md'), 'utf-8');
+  const raw = readFileSync(join(process.cwd(), 'src/content/sessions/_protagonist.md'), 'utf-8');
+  protagonist = parseProtagonist(raw);
 } catch { /* missing file → defaults */ }
-const protagonist = parseProtagonist(protagonistRaw);
-const levelInfo   = computeLevel(streamEntries.length);
-const xpPercent   = Math.round(
-  (levelInfo.intoLevel / (levelInfo.intoLevel + levelInfo.needed)) * 100
-);
 
-// Current date for the date strip
-const now = new Date();
-const dayNames  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const dateDow   = dayNames[now.getUTCDay()];
-const dateDay   = now.getUTCDate();
-const dateMonth = `${monthNames[now.getUTCMonth()]} ${now.getUTCFullYear()}`;
-
-const recentData = JSON.stringify(recentTallies);
-const allData    = JSON.stringify(allTallies);
-
-// Hex color to SVG feColorMatrix filter values
-function hexToSilMatrix(hex: string): string {
-  const [r, g, b] = hexToRgbTriplet(hex);
-  return `0 0 0 0 ${(r/255).toFixed(3)}  0 0 0 0 ${(g/255).toFixed(3)}  0 0 0 0 ${(b/255).toFixed(3)}  -2 0 0 0 1.5`;
-}
-
-const SIL_FILTERS: Record<string, { id: string; matrix: string }> = {
-  Determination: { id: 'sil-det', matrix: hexToSilMatrix(STAT_COLORS.Determination) },
-  Insight:       { id: 'sil-ins', matrix: hexToSilMatrix(STAT_COLORS.Insight)       },
-  Expression:    { id: 'sil-exp', matrix: hexToSilMatrix(STAT_COLORS.Expression)    },
-  Sincerity:     { id: 'sil-sin', matrix: hexToSilMatrix(STAT_COLORS.Sincerity)     },
-  Chaos:         { id: 'sil-cha', matrix: hexToSilMatrix(STAT_COLORS.Chaos)         },
-};
+let questsRaw = '';
+try {
+  questsRaw = readFileSync(join(process.cwd(), 'src/content/sessions/_quests.md'), 'utf-8');
+} catch { /* missing file → no arc card */ }
+const currentArc = parseCurrentArc(questsRaw);
 
 function colorBg(hex: string, a: number): string {
   return `rgba(${hexToRgbTriplet(hex).join(',')},${a})`;
 }
+
+const arcColor = currentArc?.stat ? STAT_COLORS[currentArc.stat] : null;
+const arcEmblem = currentArc?.stat
+  ? `/images/emblems/${currentArc.stat.toLowerCase()}.png`
+  : '/images/emblems/default.svg';
+const arcCardStyle = arcColor
+  ? `--arc-color:${arcColor};--arc-color-dim:${colorBg(arcColor, 0.35)}`
+  : '';
+
+const novelDir = join(process.cwd(), 'src/content/novel');
+const novelTree = await buildNovelTree(novelDir);
+const { storyWords } = computeNovelStats(novelTree);
+const { allNotes, allShowcase } = await getAllCollections();
+const journalBodies = [...allNotes, ...allShowcase].map(e => e.body ?? '');
+const totalWords = computeSiteWordCount(storyWords, journalBodies);
+const level = computeSiteLevel(totalWords);
+
+const profileEntries = await getCollection('profile');
+const profile = pickProfile(profileEntries)?.data ?? null;
+const isExternal = (href: string) => /^https?:\/\//i.test(href);
+const elsewhereLinks = (profile?.links ?? []).filter(l => isExternal(l.href));
 ---
 
-<BaseLayout title="Status" description="Protagonist status — sessions, quests, and bonds for ninjaruss.">
-  {/* Blocking classic script: lands the `js` class before first paint, so the
-      no-JS stacked fallback never flashes while the module script loads. */}
-  <script is:inline>document.documentElement.classList.add('js');</script>
+<BaseLayout title="Status" description="What chapter of the story this is, and what's currently being decided.">
   <NavPill />
-  <div id="slash"><div class="slash-blade" id="blade"></div></div>
 
-  <div class="status-page">
-    <header class="st-topbar">
-      <h1 class="st-title p4g-heading">Status</h1>
-      {/* Server values are the build-day fallback; the script below refreshes
-          them from the visitor's own clock so the strip is never stale. */}
-      <div class="st-date" aria-label="Today's date">
-        <span class="st-date-dow" id="st-date-dow">{dateDow}</span>
-        <span class="st-date-num" id="st-date-num">{dateDay}</span>
-        <span class="st-date-month" id="st-date-month">{dateMonth}</span>
+  <div class="status-page p3r-animate">
+    <div class="sheet">
+      <div class="sheet-portrait">
+        {protagonist.portrait
+          ? <img src={protagonist.portrait} alt="" />
+          : <div class="sheet-portrait-empty" aria-hidden="true"></div>}
       </div>
-      <a class="s-live" href="https://www.twitch.tv/ninjaruss_" target="_blank" rel="noopener">
-        <div class="s-live-dot"></div>Live
-      </a>
-    </header>
-
-    <div class="st-hub">
-      <nav class="st-menu" aria-label="Status screens">
-        <a href="#status" class="st-menu-item is-active" data-screen="status" aria-current="page">Status</a>
-        <a href="#log"    class="st-menu-item" data-screen="log">Log</a>
-        <a href="#quests" class="st-menu-item" data-screen="quests">Quests</a>
-        <a href="#bonds"  class="st-menu-item" data-screen="bonds">Bonds</a>
-      </nav>
-
-      <div class="st-stage">
-        <section class="st-screen is-active" id="status" data-screen="status">
-          <div class="sheet">
-            <div class="sheet-portrait">
-              {protagonist.portrait
-                ? <img src={protagonist.portrait} alt="" />
-                : <div class="sheet-portrait-empty" aria-hidden="true"></div>}
-            </div>
-            <div class="sheet-id">
-              <p class="sheet-name p4g-heading">{protagonist.name}</p>
-              {protagonist.epithet && <p class="sheet-epithet">{protagonist.epithet}</p>}
-              <div class="sheet-level-row">
-                <span class="sheet-level p4g-cut">LV {levelInfo.level}</span>
-                <div class="sheet-xp" role="progressbar" aria-valuenow={xpPercent} aria-valuemin="0" aria-valuemax="100"
-                     aria-label="Progress to next level">
-                  <div class="sheet-xp-fill" style={`width:${xpPercent}%`}></div>
-                </div>
-                <span class="sheet-xp-label">next: {levelInfo.needed} {levelInfo.needed === 1 ? 'session' : 'sessions'}</span>
-              </div>
-              {currentObjective && (
-                <div class="sheet-objective">
-                  <span class="sheet-obj-label">Current objective</span>
-                  <span class="sheet-obj-text">{currentObjective}</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div class="s-radar-container">
-            <div class="s-mode-toggle">
-              <button class="s-toggle-btn active" data-mode="recent">Recent (10)</button>
-              <button class="s-toggle-btn"        data-mode="all">All Time</button>
-            </div>
-
-            <div id="stream-tally-data" data-recent={recentData} data-all={allData} hidden></div>
-
-            <svg viewBox="-140 -108 665 548" aria-label="Stat radar chart" id="radar-svg">
-              <defs>
-                {Object.entries(SIL_FILTERS).map(([, f]) => (
-                  <filter id={f.id} color-interpolation-filters="sRGB" x="-10%" y="-10%" width="120%" height="120%">
-                    <feColorMatrix type="saturate" values="0" result="g"/>
-                    <feColorMatrix in="g" type="matrix" values={f.matrix}/>
-                  </filter>
-                ))}
-                {statVertices.map(({ clipId, vx, vy }) => (
-                  <clipPath id={clipId}>
-                    <circle cx={vx} cy={vy} r="18"/>
-                  </clipPath>
-                ))}
-              </defs>
-
-              <g id="radar-layer-bg">
-                {guides.map(pts => <polygon class="s-radar-guide" points={pts}/>)}
-                {axes.map(ax => <line class="s-radar-axis" x1={CX} y1={CY} x2={ax.x2} y2={ax.y2}/>)}
-
-                <polygon id="radar-all"    class="s-radar-poly-all"    points={allPoints}/>
-                <polygon id="radar-recent" class="s-radar-poly-recent" points={recentPoints}/>
-              </g>
-
-              <g id="radar-layer-vertices">
-              {statVertices.map(({ stat, vx, vy, tx, ty, meta, anchor, clipId }) => {
-                const count = recentTallies[stat as (typeof STAT_ORDER)[number]] ?? 0;
-                const sil = SIL_FILTERS[stat];
-                const numAnchor = anchor;
-                const numX = tx;
-                const numY = ty - 30;
-                const phraseY = ty + 20;
-                return (
-                  <g class="radar-vertex" data-stat={stat} style={`--stat-color: ${meta.color}`}
-                     tabindex="0" role="button"
-                     aria-label={`${stat} — filter the session log`}>
-                    <rect
-                      x={anchor === 'end'   ? tx - 160 : anchor === 'start' ? tx : tx - 80}
-                      y={ty - 60} width="160" height="80"
-                      fill="transparent"
-                    />
-                    <circle class="v-dot-small" cx={vx} cy={vy} r="7" fill={meta.color}/>
-                    <text x={numX} y={numY} text-anchor={numAnchor}
-                          font-family="system-ui,sans-serif" font-size="34" font-weight="900"
-                          fill={meta.color} stroke="#060608" stroke-width="6" paint-order="stroke fill"
-                          data-vertex-count={stat}>{count}</text>
-                    <text x={tx} y={ty} text-anchor={anchor}
-                          font-family="monospace" font-size="14" font-weight="700"
-                          fill={meta.color} stroke="#060608" stroke-width="4" paint-order="stroke fill"
-                          letter-spacing="1">{stat.toUpperCase()}</text>
-                    <text class="v-keywords" x={tx} y={ty + 16} text-anchor={anchor}
-                          font-family="monospace" font-size="10"
-                          fill={colorBg(meta.color, 0.5)} stroke="#060608" stroke-width="3" paint-order="stroke fill">
-                      {meta.keywords}
-                    </text>
-                    <text class="v-phrase" x={tx} y={phraseY} text-anchor={anchor}
-                          font-family="monospace" font-size="12"
-                          fill={colorBg(meta.color, 0.9)} stroke="#060608" stroke-width="3" paint-order="stroke fill">
-                      {meta.phrase.map((line, i) => (
-                        <tspan x={tx} dy={i === 0 ? '0' : '16'}>{line}</tspan>
-                      ))}
-                    </text>
-                    <g class="v-emblem-large">
-                      <circle class="v-emblem-backdrop" cx={vx} cy={vy} r="19" fill="#111111"/>
-                      <circle class="v-emblem-ring" cx={vx} cy={vy} r="20" fill={colorBg(meta.color, 0.08)} stroke={meta.color} stroke-width="1.5"/>
-                      <image href={meta.emblem} x={vx - 18} y={vy - 18} width="36" height="36"
-                             clip-path={`url(#${clipId})`} filter={`url(#${sil.id})`}
-                             preserveAspectRatio="xMidYMid slice"/>
-                    </g>
-                  </g>
-                );
-              })}
-              </g>
-            </svg>
-          </div>
-
-          <!-- Mailbox — folded into Status (was its own near-empty tab) -->
-
-          <div class="s-mail-strip">
-            <div class="s-mail-label">Mailbox</div>
-            <div class="s-mail-sub">Send mail to be read on stream</div>
-            {/* Address + href injected client-side so it never sits in the served HTML */}
-            <a href="#mailbox" class="mail-address" id="mail-address"></a>
-            {/* JS-free fallback: address in a human-readable, still-obfuscated
-                form (no `@`/`mailto:` in the served HTML) so a no-JS visitor
-                who follows the Email tile here isn't left with a dead link. */}
-            <noscript>
-              <p class="mail-address">mailbox [at] ninjaruss [dot] net</p>
-            </noscript>
-          </div>
-        </section>
-
-        <section class="st-screen" id="log" data-screen="log">
-          <div class="j-log">
-            <div class="j-log-top">
-              {/* tabindex="-1": focus lands here after the clear button hides
-                  itself, so the keyboard user is not dropped onto <body>. */}
-              <div class="st-label" id="log-label" tabindex="-1">Session Log</div>
-              {/* Only rendered as visible once a stat filter is on — the log
-                  is otherwise unfiltered and there is nothing to clear. */}
-              <button class="j-log-clear" id="log-clear" type="button" hidden>
-                <span class="j-log-clear-x" aria-hidden="true">×</span>
-                <span class="j-log-clear-label">clear filter</span>
-              </button>
-            </div>
-            <div class="j-log-list" id="log-list">
-              {streamEntries.map(entry => {
-                const d   = entry.data.publishedAt;
-                const dow = dayNames[d.getUTCDay()];
-                const day = d.getUTCDate();
-                const mon = monthNames[d.getUTCMonth()];
-                return (
-                  <div class="j-entry" data-stats={JSON.stringify(entry.data.stats)}>
-                    <div class="j-entry-date-block">
-                      <div class="j-entry-dow">{dow}</div>
-                      <div class="j-entry-day-num">{day}</div>
-                      <div class="j-entry-month">{mon}</div>
-                    </div>
-                    <div class="j-entry-body">
-                      <div class="j-entry-title">{entry.data.title}{entry.data.streamed && <span class="j-entry-live" title="streamed live">LIVE</span>}</div>
-                      <div class="j-entry-summary">{entry.data.summary}</div>
-                      <div class="j-entry-chips">
-                        {entry.data.stats.map(stat => {
-                          const m = STAT_META[stat];
-                          return (
-                            <span class="j-chip" style={`color:${m?.color};border-color:${colorBg(m?.color ?? '#888', 0.3)};background:${colorBg(m?.color ?? '#888', 0.08)}`}>
-                              {stat}
-                            </span>
-                          );
-                        })}
-                      </div>
-                      {entry.data.memorable && (
-                        <div class="j-entry-memo">{entry.data.memorable}</div>
-                      )}
-                      {entry.data.reflection && <div class="j-entry-reflection">{entry.data.reflection}</div>}
-                      {entry.data.nextStep && (
-                        <div class="j-entry-next">
-                          <span class="j-next-label">Next</span> {entry.data.nextStep}
-                        </div>
-                      )}
-                      {entry.data.quest && <div class="j-entry-quest">⚑ {entry.data.quest}</div>}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        <section class="st-screen" id="quests" data-screen="quests">
-          {questFile.question && (
-            <blockquote class="q-question">
-              <span class="q-question-label">The question</span>
-              <p>{questFile.question}</p>
-            </blockquote>
-          )}
-
-          <div class="st-label">Active</div>
-          {questFile.active.length > 0 ? (
-            <div class="q-active-list">
-              {questFile.active.map(q => {
-                const color = q.stat ? STAT_META[q.stat]?.color : null;
-                return (
-                  <div class="q-card" style={color ? `--q-color:${color}` : ''}>
-                    {q.stat && <span class="q-card-stat">{q.stat}</span>}
-                    <p class="q-card-text">{q.text}</p>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <p class="q-empty">No active quests.</p>
-          )}
-
-          <div class="st-label">Ideas</div>
-          <div class="j-streams">
-            <div class="j-section-header">
-              <div class="st-label st-label--sub">Potential Streams</div>
-              <div class="j-section-rule"></div>
-              <div class="j-section-sub">click a stat to filter the log</div>
-            </div>
-
-            {STAT_ORDER.map(stat => {
-              const meta  = STAT_META[stat];
-              const ideas = streamIdeas[stat] ?? [];
-              const glow  = colorBg(meta.color, 0.4);
-              return (
-                <div class="j-stream-strip" data-stat={stat} style={`--strip-color:${meta.color}`}
-                     tabindex="0" role="button"
-                     aria-label={`${stat} — filter the session log`}>
-                  <div class="j-strip-label">
-                    <div class="j-stat-dot" style={`background:${meta.color};box-shadow:0 0 5px ${glow}`}></div>
-                    <div class="j-stat-name-sm" style={`color:${meta.color}`}>{stat}</div>
-                  </div>
-                  <div class="j-strip-ideas">
-                    {ideas.map(idea => (
-                      <span class="j-idea-pill" style={`color:${meta.color};border-color:${colorBg(meta.color, 0.25)}`}>
-                        {idea}
-                      </span>
-                    ))}
-                  </div>
-                  <span class="j-strip-clear">× clear</span>
-                </div>
-              );
-            })}
-          </div>
-
-          {questFile.completed.length > 0 && (
-            <>
-              <div class="st-label">Completed</div>
-              <ul class="q-completed">
-                {questFile.completed.map(q => (
-                  <li>
-                    {q.date && <span class="q-completed-date">{q.date}</span>}
-                    {q.stat && <span class="q-completed-stat">[{q.stat}]</span>}
-                    {q.text}
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
-        </section>
-
-        <section class="st-screen" id="bonds" data-screen="bonds">
-          <div class="bonds-list-col">
-            <div class="bonds-header">
-              <span class="st-label">Bonds · {socialLinks.length}</span>
-            </div>
-            <div class="bonds-list">
-              {socialLinks.map(link => {
-                const statColor  = link.data.stat ? STAT_META[link.data.stat]?.color : null;
-                const colorBorder = statColor ? colorBg(statColor, 0.3)  : '#2a2a2a';
-                const colorBgVal  = statColor ? colorBg(statColor, 0.06) : 'rgba(255,255,255,0.04)';
-                const colorGlow   = statColor ? colorBg(statColor, 0.1)  : 'transparent';
-                const numerals    = ['I','II','III','IV','V'];
-                const rankLabel   = link.data.rank > 0 ? `RANK ${numerals[link.data.rank - 1] ?? link.data.rank}` : 'RANK —';
-                const hasFallback = Boolean(link.data.lore || link.data.reachedDate || link.data.lastSession);
-                return (
-                  <>
-                  <div class="bond-row" data-bond={link.data.name}
-                       tabindex="0" role="button"
-                       style={statColor ? `--bd-row-color:${statColor}` : ''}>
-                    <div class="bond-emblem-col">
-                      <div class="bond-emblem-wrap"
-                           style={`--bond-color-border:${colorBorder};--bond-color-bg:${colorBgVal};--bond-color-glow:${colorGlow}`}>
-                        {link.data.img
-                          ? <img class="bond-img" src={link.data.img} alt="" />
-                          : link.data.stat && STAT_META[link.data.stat]
-                            ? <img class="bond-img" src={STAT_META[link.data.stat].emblem} alt="" />
-                            : null
-                        }
-                      </div>
-                    </div>
-                    <div class="bond-info">
-                      <div class="bond-arcana-label">{link.data.arcana}</div>
-                      <div class="bond-name" style={statColor ? `color:${statColor}` : ''}>{link.data.name}</div>
-                      <div class="bond-affinity">{link.data.affinity}</div>
-                    </div>
-                    <div class="bond-rank-col">
-                      <div class="bond-rank-numeral" style={statColor ? `color:${statColor}` : ''}>{rankLabel}</div>
-                      <div class="bond-rank-pips">
-                        {Array.from({ length: 5 }, (_, i) => (
-                          <span class="bond-pip" style={i < link.data.rank && statColor
-                            ? `background:${statColor};border-color:${statColor};box-shadow:0 0 5px ${colorBg(statColor, 0.5)}`
-                            : ''}/>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  {/* No-JS reader: the slide-in detail panel needs JS, so the
-                      same lore / reached date / memory render inline as a
-                      disclosure. `html.js` hides it before first paint. */}
-                  {hasFallback && (
-                    <details class="bond-fallback">
-                      <summary>{link.data.name} — details</summary>
-                      {link.data.reachedDate && <p class="bond-fallback__meta">Reached · {link.data.reachedDate}</p>}
-                      {link.data.lore && <p>{link.data.lore}</p>}
-                      {link.data.lastSession && <p class="bond-fallback__memory">{link.data.lastSession}</p>}
-                    </details>
-                  )}
-                  </>
-                );
-              })}
-              {socialLinks.length === 0 && (
-                <p class="bonds-empty" style="padding: var(--space-lg); color: var(--color-text-subtle); font-size: var(--text-sm); line-height: 1.5;">
-                  No bonds forged yet — they'll appear here as the stream grows.
-                </p>
-              )}
-            </div>
-          </div>
-
-          <!-- Slide-in detail panel -->
-          <div class="bond-detail-panel">
-            <div class="bd-inner">
-              <div class="bd-header">
-                <button class="bd-close" id="bond-detail-close" aria-label="Close">✕</button>
-                <div class="bd-emblem" id="bd-emblem">
-                  <img id="bd-img" alt="" />
-                </div>
-                <div class="bd-arcana"   id="bd-arcana"></div>
-                <div class="bd-name"     id="bd-name"></div>
-                <div class="bd-affinity" id="bd-affinity"></div>
-                <div class="bd-stat-badge" id="bd-stat-badge">
-                  <div class="bd-stat-dot"  id="bd-stat-dot"></div>
-                  <span class="bd-stat-text" id="bd-stat-text"></span>
-                </div>
-                <div class="bd-rank-row">
-                  <div class="bd-rank-label" id="bd-rank-label"></div>
-                  <div class="bd-rank-pips" id="bd-rank-pips">
-                    {Array.from({ length: 5 }, () => <span class="bd-pip-d"></span>)}
-                  </div>
-                </div>
-                <div class="bd-rank-date" id="bd-rank-date"></div>
-              </div>
-              <div class="bd-section">
-                <div class="bd-section-label">About</div>
-                <div class="bd-lore" id="bd-lore"></div>
-              </div>
-              <div class="bd-section">
-                <div class="bd-section-label">Last Session</div>
-                <div class="bd-memory"      id="bd-memory"></div>
-                <div class="bd-memory-when" id="bd-memory-when"></div>
-              </div>
-            </div>
-          </div>
-
-          <div id="bonds-data" data-bonds={bondsJson} hidden></div>
-        </section>
+      <div class="sheet-id">
+        <h1 class="sheet-name p4g-heading">{protagonist.name}</h1>
+        {protagonist.epithet && <p class="sheet-epithet">{protagonist.epithet}</p>}
       </div>
+    </div>
+
+    {currentArc && (
+      <section class="arc-card" style={arcCardStyle} aria-label="Current arc">
+        <div class="arc-card__top">
+          <div class="arc-badge">
+            <img src={arcEmblem} alt="" />
+          </div>
+          <div>
+            <span class="arc-kicker">Current arc{currentArc.stat ? ` · ${currentArc.stat}` : ''}</span>
+            <h2 class="arc-title">{currentArc.arc}</h2>
+          </div>
+        </div>
+        <span class="arc-decision-label">Active decision</span>
+        <p class="arc-decision-text">{currentArc.decision}</p>
+        {currentArc.updated && <span class="arc-updated">updated {currentArc.updated}</span>}
+      </section>
+    )}
+
+    <div class="status-row">
+      <span class="sheet-level p4g-cut">LV {level}</span>
+      {elsewhereLinks.length > 0 && (
+        <nav class="status-links" aria-label="Find me elsewhere">
+          {elsewhereLinks.map(link => (
+            <a class="status-link p4g-sweep" href={link.href} target="_blank" rel="noopener noreferrer">
+              <span>{link.label}</span>
+            </a>
+          ))}
+        </nav>
+      )}
+    </div>
+
+    <div class="s-mail-strip">
+      <div class="s-mail-label">Mailbox</div>
+      <div class="s-mail-sub">Send mail to be read on stream</div>
+      {/* Address + href injected client-side so it never sits in the served HTML */}
+      <a href="#mailbox" class="mail-address" id="mail-address"></a>
+      <noscript>
+        <p class="mail-address">mailbox [at] ninjaruss [dot] net</p>
+      </noscript>
     </div>
   </div>
 </BaseLayout>
 
 <script>
-  /* ── Live detection (Twitch + YouTube) ───────────────── */
-  async function checkLiveStatus(): Promise<void> {
-    try {
-      const res = await fetch('/api/live-status');
-      if (!res.ok) return;
-      const { live } = await res.json() as { live: boolean };
-      document.querySelector('.s-live')?.classList.toggle('is-live', live);
-      if (live) document.title = '🔴 LIVE — ninjaruss_';
-    } catch { /* non-critical */ }
-  }
-  checkLiveStatus();
-  setInterval(checkLiveStatus, 300_000);
-
-  /* ── Mailbox address — assembled at runtime so scrapers reading the
-     served HTML never see a mailto or full address ─────────────────── */
+  /* Mailbox address — assembled at runtime so scrapers reading the served
+     HTML never see a mailto or full address. Same pattern as the homepage
+     Email tile (#mail-tile), whose no-JS fallback links here. */
   function initMailAddress(): void {
     const el = document.getElementById('mail-address') as HTMLAnchorElement | null;
     if (!el || el.textContent) return;
@@ -574,290 +122,4 @@ function colorBg(hex: string, a: number): string {
   }
   initMailAddress();
   document.addEventListener('astro:page-load', initMailAddress);
-
-  /* ── Date strip — the page is prerendered, so the server value is only the
-     build day. Restate it from the visitor's clock (their local today, the
-     one they'd read off a wall). Same short names as the frontmatter. */
-  function initDateStrip(): void {
-    const dowEl   = document.getElementById('st-date-dow');
-    const numEl   = document.getElementById('st-date-num');
-    const monthEl = document.getElementById('st-date-month');
-    if (!dowEl || !numEl || !monthEl) return;
-    const days   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const now = new Date();
-    dowEl.textContent   = days[now.getDay()];
-    numEl.textContent   = String(now.getDate());
-    monthEl.textContent = `${months[now.getMonth()]} ${now.getFullYear()}`;
-  }
-  initDateStrip();
-  document.addEventListener('astro:page-load', initDateStrip);
-
-  /* Signals to CSS that one-screen-at-a-time is available; without JS every
-     screen stays visible, stacked. (Also set by an is:inline script in the body
-     so the class lands before first paint — this line covers module re-runs.) */
-  document.documentElement.classList.add('js');
-
-  /* ── Screen routing (URL hash) ──────────────────────────
-     Declared at module scope so the window-level listeners below are registered
-     exactly once, instead of once per astro:page-load return to this page. */
-  const SCREENS = ['status', 'log', 'quests', 'bonds'] as const;
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  function screenFromHash(): string {
-    const h = location.hash.replace('#', '');
-    return (SCREENS as readonly string[]).includes(h) ? h : 'status';
-  }
-
-  function showScreen(name: string): void {
-    // Window-level listeners outlive a view transition; no-op on other pages.
-    if (!document.querySelector('.st-menu')) return;
-    document.querySelectorAll<HTMLElement>('.st-screen').forEach(s => {
-      s.classList.toggle('is-active', s.dataset.screen === name);
-    });
-    document.querySelectorAll<HTMLAnchorElement>('.st-menu-item').forEach(a => {
-      const active = a.dataset.screen === name;
-      a.classList.toggle('is-active', active);
-      // "page", or absent — never aria-current="false"
-      if (active) a.setAttribute('aria-current', 'page');
-      else a.removeAttribute('aria-current');
-    });
-    if (!reduceMotion.matches) {
-      const blade = document.getElementById('blade');
-      if (blade) {
-        blade.classList.remove('slash-go');
-        void blade.offsetWidth;
-        blade.classList.add('slash-go');
-        blade.addEventListener('animationend', () => blade.classList.remove('slash-go'), { once: true });
-      }
-      const stage = document.querySelector<HTMLElement>(`.st-screen[data-screen="${name}"]`);
-      if (stage) {
-        stage.style.animation = 'none';
-        void stage.offsetWidth;
-        stage.style.animation = 'panelWipe 0.4s cubic-bezier(0.16,1,0.3,1) both';
-        stage.addEventListener('animationend', () => { stage.style.animation = ''; }, { once: true });
-      }
-    }
-  }
-
-  window.addEventListener('hashchange', () => showScreen(screenFromHash()));
-  window.addEventListener('popstate', () => showScreen(screenFromHash()));
-
-  /* Astro's swapRootAttributes replaces <html>'s class list on a view-transition
-     navigation, and the is:inline script above does not re-run (data-astro-exec).
-     astro:after-swap fires before paint, so re-adding the class here keeps a
-     soft-nav into /status from flashing all four screens stacked. */
-  document.addEventListener('astro:after-swap', () => {
-    document.documentElement.classList.add('js');
-  });
-
-  /* ── DOM init ─────────────────────────────────────────── */
-  document.addEventListener('astro:page-load', () => {
-    document.documentElement.classList.add('js');
-
-    let activeStrip: HTMLElement | null = null;
-
-    showScreen(screenFromHash());
-    // Astro's ClientRouter intercepts same-page hash links and updates the URL
-    // with history.pushState, which fires popstate on back/forward but never
-    // hashchange on the click itself — so switch off the clicked item directly.
-    document.querySelectorAll<HTMLAnchorElement>('.st-menu-item').forEach(a => {
-      a.addEventListener('click', () => showScreen(a.dataset.screen!));
-    });
-
-    /* ── Stat mode toggle ─────────────────────────────── */
-    const dataEl     = document.getElementById('stream-tally-data');
-    const recentData = JSON.parse(dataEl?.dataset.recent ?? '{}') as Record<string, number>;
-    const allData    = JSON.parse(dataEl?.dataset.all    ?? '{}') as Record<string, number>;
-
-    document.querySelectorAll<HTMLButtonElement>('.s-toggle-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.s-toggle-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const mode  = btn.dataset.mode as 'recent' | 'all';
-        const tally = mode === 'recent' ? recentData : allData;
-
-        document.querySelectorAll<SVGTextElement>('[data-vertex-count]').forEach(el => {
-          el.textContent = String(tally[el.dataset.vertexCount!] ?? 0);
-        });
-
-        const radarRecent = document.getElementById('radar-recent')!;
-        const radarAll    = document.getElementById('radar-all')!;
-        if (mode === 'recent') {
-          radarRecent.classList.remove('is-secondary');
-          radarAll.classList.remove('is-primary');
-        } else {
-          radarRecent.classList.add('is-secondary');
-          radarAll.classList.add('is-primary');
-        }
-      });
-    });
-
-    /* ── Journal log filter ───────────────────────────── */
-    function setLogFilter(stat: string): void {
-      document.querySelectorAll<HTMLElement>('.j-stream-strip').forEach(s => {
-        const isMatch = stat !== 'all' && s.dataset.stat === stat;
-        s.classList.toggle('active', isMatch);
-        if (isMatch) activeStrip = s;
-      });
-      if (stat === 'all') activeStrip = null;
-
-      const label = document.getElementById('log-label');
-      if (label) label.textContent = stat === 'all' ? 'Session Log' : `Session Log · ${stat}`;
-
-      const clearBtn = document.getElementById('log-clear');
-      if (clearBtn) {
-        clearBtn.hidden = stat === 'all';
-        if (stat !== 'all') {
-          clearBtn.setAttribute('aria-label', `Clear the ${stat} filter and show every session`);
-        }
-      }
-
-      document.querySelectorAll<HTMLElement>('.j-entry').forEach(entry => {
-        if (stat === 'all') { entry.hidden = false; return; }
-        const stats: string[] = JSON.parse(entry.dataset.stats ?? '[]');
-        entry.hidden = !stats.includes(stat);
-      });
-    }
-
-    /* Enter/Space activate for every role="button" element on this page —
-       radar vertices, quest stat strips, bond rows. Space is prevented so it
-       doesn't scroll the page. */
-    function onActivateKey(el: Element, run: () => void): void {
-      el.addEventListener('keydown', (e: Event) => {
-        const key = (e as KeyboardEvent).key;
-        if (key !== 'Enter' && key !== ' ') return;
-        e.preventDefault();
-        run();
-      });
-    }
-
-    /* Clearing hides the button, so hand focus to the log label rather than
-       letting it fall back to <body> (click and keyboard both route here —
-       a <button> fires click for Enter/Space too). */
-    document.getElementById('log-clear')?.addEventListener('click', () => {
-      setLogFilter('all');
-      document.getElementById('log-label')?.focus();
-    });
-
-    document.querySelectorAll<HTMLElement>('.j-stream-strip').forEach(strip => {
-      const activate = () => {
-        setLogFilter(activeStrip === strip ? 'all' : strip.dataset.stat!);
-        location.hash = 'log';
-      };
-      strip.addEventListener('click', activate);
-      onActivateKey(strip, activate);
-    });
-
-    /* ── Radar vertex click → log screen + filter ─────── */
-    document.querySelectorAll<SVGGElement>('.radar-vertex').forEach(g => {
-      const activate = () => {
-        const stat = g.dataset.stat!;
-        if (screenFromHash() === 'log') {
-          setLogFilter(activeStrip?.dataset.stat === stat ? 'all' : stat);
-        } else {
-          location.hash = 'log';
-          setLogFilter(stat);
-        }
-      };
-      g.addEventListener('click', activate);
-      onActivateKey(g, activate);
-    });
-
-    /* ── Bond detail ──────────────────────────────────── */
-    interface BondData {
-      name: string; arcana: string; affinity: string; rank: number;
-      stat: string | null; statColor: string | null;
-      reachedDate: string | null; lore: string | null;
-      lastSession: string | null; lastInteraction: string | null;
-      img: string | null;
-    }
-
-    const bondsDataEl = document.getElementById('bonds-data');
-    if (bondsDataEl) {
-      const allBonds: BondData[] = JSON.parse(bondsDataEl.dataset.bonds ?? '[]');
-      const bondMap = Object.fromEntries(allBonds.map(b => [b.name, b]));
-      const detailPanel = document.getElementById('bonds')!;
-      let activeBondRow: HTMLElement | null = null;
-
-      function openBondDetail(row: HTMLElement): void {
-        const d = bondMap[row.dataset.bond!];
-        if (!d) return;
-        const color = d.statColor ?? '#888';
-
-        const emblemEl = document.getElementById('bd-emblem')!;
-        emblemEl.style.cssText = `border:1.5px solid ${color}4d;background:${color}10;box-shadow:0 0 28px ${color}1a`;
-        const imgEl = document.getElementById('bd-img') as HTMLImageElement;
-        if (d.img) { imgEl.src = d.img; imgEl.style.display = ''; }
-        else { imgEl.style.display = 'none'; }
-
-        document.getElementById('bd-arcana')!.textContent   = d.arcana;
-        const nameEl = document.getElementById('bd-name')!;
-        nameEl.textContent = d.name;
-        nameEl.style.color = color;
-        document.getElementById('bd-affinity')!.textContent = d.affinity;
-
-        const badge = document.getElementById('bd-stat-badge')!;
-        if (d.stat) {
-          badge.style.display = 'inline-flex';
-          badge.style.borderColor = `${color}4d`;
-          document.getElementById('bd-stat-dot')!.style.background = color;
-          document.getElementById('bd-stat-text')!.textContent = d.stat;
-        } else {
-          badge.style.display = 'none';
-        }
-
-        const numerals   = ['I','II','III','IV','V'];
-        const rankLabelEl = document.getElementById('bd-rank-label')!;
-        rankLabelEl.textContent = d.rank === 0 ? 'RANK —' : `RANK ${numerals[d.rank - 1] ?? d.rank}`;
-        rankLabelEl.style.color = color;
-
-        const pipsEl = document.getElementById('bd-rank-pips');
-        pipsEl?.querySelectorAll<HTMLElement>('.bd-pip-d').forEach((pip, i) => {
-          const filled = i < d.rank;
-          pip.style.cssText = filled
-            ? `--bd-color:${color};--bd-glow:${color}66;background:${color};border-color:${color};box-shadow:0 0 6px ${color}66`
-            : '';
-          pip.classList.toggle('filled', filled);
-        });
-
-        document.getElementById('bd-rank-date')!.textContent   = d.reachedDate ? `Reached · ${d.reachedDate}` : '';
-        document.getElementById('bd-lore')!.textContent        = d.lore ?? '';
-        document.getElementById('bd-memory')!.textContent      = d.lastSession ?? '';
-        document.getElementById('bd-memory-when')!.textContent = d.lastInteraction ?? '';
-
-        document.querySelectorAll('.bond-row').forEach(r => {
-          r.classList.remove('bd-active');
-          (r as HTMLElement).style.removeProperty('--bd-row-color');
-        });
-        row.classList.add('bd-active');
-        row.style.setProperty('--bd-row-color', color);
-        activeBondRow = row;
-        detailPanel.classList.add('detail-open');
-      }
-
-      function closeBondDetail(): void {
-        detailPanel.classList.remove('detail-open');
-        document.querySelectorAll('.bond-row').forEach(r => {
-          r.classList.remove('bd-active');
-          (r as HTMLElement).style.removeProperty('--bd-row-color');
-        });
-        activeBondRow = null;
-      }
-
-      document.querySelectorAll<HTMLElement>('.bond-row').forEach(row => {
-        const activate = () => {
-          if (row === activeBondRow) closeBondDetail();
-          else openBondDetail(row);
-        };
-        row.addEventListener('click', activate);
-        onActivateKey(row, activate);
-      });
-
-      document.getElementById('bond-detail-close')?.addEventListener('click', closeBondDetail);
-      document.addEventListener('keydown', (e: KeyboardEvent) => {
-        if (e.key === 'Escape' && activeBondRow) closeBondDetail();
-      });
-    }
-  });
 </script>
