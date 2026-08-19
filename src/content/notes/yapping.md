@@ -1,8 +1,7 @@
 ---
 title: "The Importance (and Uselessness) of Yapping"
 emblem: "/images/emblems/flame.svg"
-publishedAt: 2026-07-28
-updatedAt: 2026-07-30
+publishedAt: 2026-08-19
 ---
 
 ## I am the Mayor of Yappington City. None dare question my ability to perform the infinite yapworks.
