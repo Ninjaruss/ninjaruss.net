@@ -1,7 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NavPill from '../components/NavPill.astro';
+import { parseCurrentArc } from '../utils/currentArc';
+import { STAT_COLORS, hexToRgbTriplet } from '../utils/sessions';
 
 const allNowPosts = await getCollection('now', ({ data }) => !data.draft);
 const sortedPosts = allNowPosts.sort((a, b) =>
@@ -17,6 +21,30 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
   month: 'long',
   day: 'numeric',
 });
+
+/* The current arc — moved here from /about. Read from the same _quests.md
+   section, with the same contract: an absent or incomplete section renders
+   no card at all rather than blanks, and an unrecognized Stat degrades to
+   neutral gold. */
+let questsRaw = '';
+try {
+  questsRaw = readFileSync(join(process.cwd(), 'src/content/sessions/_quests.md'), 'utf-8');
+} catch {
+  /* Missing file → no arc card. */
+}
+const currentArc = parseCurrentArc(questsRaw);
+
+function colorBg(hex: string, a: number): string {
+  return `rgba(${hexToRgbTriplet(hex).join(',')},${a})`;
+}
+
+const arcColor = currentArc?.stat ? STAT_COLORS[currentArc.stat] : null;
+const arcEmblem = currentArc?.stat
+  ? `/images/emblems/${currentArc.stat.toLowerCase()}.png`
+  : '/images/emblems/default.svg';
+const arcCardStyle = arcColor
+  ? `--arc-color:${arcColor};--arc-color-dim:${colorBg(arcColor, 0.35)}`
+  : '';
 ---
 
 <BaseLayout title="Now" description="What I'm currently focused on.">
@@ -41,6 +69,23 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
       <div class="now__content prose">
         <Content />
       </div>
+
+      {currentArc && (
+        <section class="arc-card" style={arcCardStyle} aria-label="Current arc">
+          <div class="arc-card__top">
+            <div class="arc-badge">
+              <img src={arcEmblem} alt="" />
+            </div>
+            <div>
+              <span class="arc-kicker">Current arc{currentArc.stat ? ` · ${currentArc.stat}` : ''}</span>
+              <h2 class="arc-title">{currentArc.arc}</h2>
+            </div>
+          </div>
+          <span class="arc-decision-label">Active decision</span>
+          <p class="arc-decision-text">{currentArc.decision}</p>
+          {currentArc.updated && <span class="arc-updated">updated {currentArc.updated}</span>}
+        </section>
+      )}
 
       <footer class="now__footer p3r-animate" style="--stagger-delay: 200ms;">
         <div class="now__footer-divider" aria-hidden="true"></div>
@@ -136,6 +181,82 @@ const lastUpdated = latestPost.data.publishedAt.toLocaleDateString('en-US', {
 
   .now__content p:last-child {
     margin-bottom: 0;
+  }
+
+  /* ── Current arc card ──────────────────────────────────────────────── */
+  /* Moved from about.css. The whole card is accent-colored by the arc's
+     stat via --arc-color / --arc-color-dim, set inline on the element;
+     both fall back to gold when the Stat is missing or unknown. */
+
+  .arc-card {
+    margin-top: var(--space-xl);
+    border: 2px solid var(--arc-color, var(--color-gold));
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .arc-card__top {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--arc-color-dim, rgba(var(--color-gold-rgb), 0.25));
+  }
+  /* The emblem PNGs are opaque-white line art, so they need a dark plate —
+     dropped straight onto a pale accent like Insight they wash out. */
+  .arc-badge {
+    flex: 0 0 auto;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--color-surface-1);
+    border: 2px solid var(--arc-color, var(--color-gold));
+    box-shadow: 0 0 16px var(--arc-color-dim, rgba(var(--color-gold-rgb), 0.35));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .arc-badge img { width: 44px; height: 44px; object-fit: contain; }
+  .arc-kicker {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--arc-color, var(--color-gold));
+    margin-bottom: 4px;
+  }
+  .arc-title {
+    margin: 0;
+    font-size: var(--text-panel-title);
+    color: var(--color-text);
+  }
+  .arc-decision-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+    margin-bottom: 6px;
+  }
+  .arc-decision-text {
+    margin: 0 0 var(--space-sm);
+    color: var(--color-text);
+    line-height: 1.65;
+  }
+  .arc-updated {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--arc-color, var(--color-gold));
+  }
+
+  @media (max-width: 768px) {
+    .arc-card__top { flex-wrap: wrap; }
   }
 
   /* Footer */

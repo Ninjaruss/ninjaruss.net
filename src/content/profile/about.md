@@ -1,10 +1,5 @@
 ---
-# The hook leads the card, so it should carry the half of you the rest of the
-# page is actually about. The previous line — "I decide on a whim and figure out
-# the logistics after. This is the evidence." — sold decisiveness, which the
-# second credential already says better ("I quit to see how things fall"), while
-# everything linked below is about the difficulty of following through.
-hook: "Potential is comfortable. Committing out loud is not. This is the evidence."
+hook: "I'm killing my potential, on purpose, where backing out costs something. This is the evidence."
 # EXPIRES OCTOBER 2026: the grocery-floor line below and "I'm moving to Japan"
 # in the prose both go stale on arrival. Nothing else on this card drifts — the
 # NOW line is the only live element — so these two are the ones to revisit.
@@ -43,7 +38,7 @@ subjects:
       - "Vibe coding niche apps for an audience of one"
       - "Live streaming as thinking out loud"
       - "Anime and manga as mirrors — Gurren Lagann, Usogui, 5D's, Code Geass"
-connect: "Open to collaboration — stories, niche apps, JP-learning tools, anything weeb-adjacent."
+connect: "Open to collaborating on stories, niche apps, JP-learning tools — whatever's weeb-adjacent enough to hook me."
 links:
   - label: "YouTube"
     href: "https://www.youtube.com/@Ninjaruss_"
@@ -59,12 +54,12 @@ links:
     href: "https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD"
 ---
 
-What I want is to be a writer. Remember Rain is the visual novel I'm working toward being good enough to actually make — a producer and storyteller who can put something like it into the world is the version of me I'm aiming at. Everything else here is practice or scaffolding for that.
+What I actually want is to be a writer. Remember Rain is the visual novel I'm trying to get good enough to make — the kind of person who can put something like it into the world is who I'm aiming to become. Everything else here is practice, or scaffolding for that.
 
-Software is the interest that pays its way. I build small applications for myself — a Japanese-learning app because nothing like it existed, a database for a manga almost nobody has read, this site. A tech job will probably be what buys me stability. It isn't the goal.
+Software's the interest that pays its way. I build small stuff for myself — a Japanese-learning app because nothing like it existed, a database for a manga almost nobody's read, this site. A tech job will probably be what buys me the stability to do the rest. It was never the actual goal.
 
-The thread is commitment. Infinite potential is comfortable, and it's a slow way to erase yourself — so I make the choice out loud, where backing out costs something, and then I document the falling forward. The notes, the streams, the months I lost and got back.
+The thread through all of it is killing my potential on purpose. Staying comfortable and infinitely capable is a slow way to erase yourself, so instead I make the choice out loud, somewhere backing out actually costs something, and then I document the falling forward — the notes, the streams, the months I lose and (eventually) get back.
 
-I'm moving to Japan. Everything on this site is either preparation for that or evidence I'm capable of it.
+I'm moving to Japan. Everything on this site is either me getting ready for that or proof I can actually follow through.
 
 [The full declaration →](/notes/i-am-ninjaruss)

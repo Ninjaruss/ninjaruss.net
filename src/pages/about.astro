@@ -5,8 +5,6 @@ import { join } from 'path';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NavPill from '../components/NavPill.astro';
 import { parseProtagonist, DEFAULT_PROTAGONIST } from '../utils/protagonist';
-import { parseCurrentArc } from '../utils/currentArc';
-import { STAT_COLORS, hexToRgbTriplet } from '../utils/sessions';
 import { pickProfile, nowLine } from '../utils/profile';
 import '../styles/about.css';
 
@@ -25,30 +23,6 @@ try {
 } catch {
   /* Missing file degrades to defaults — same contract as /status. */
 }
-
-/* The current arc — the page's one live element besides the NOW line. Read
-   from the same _quests.md section /status used to read, with the same
-   contract: an absent or incomplete section renders no card at all rather
-   than blanks, and an unrecognized Stat degrades to neutral gold. */
-let questsRaw = '';
-try {
-  questsRaw = readFileSync(join(process.cwd(), 'src/content/sessions/_quests.md'), 'utf-8');
-} catch {
-  /* Missing file → no arc card. */
-}
-const currentArc = parseCurrentArc(questsRaw);
-
-function colorBg(hex: string, a: number): string {
-  return `rgba(${hexToRgbTriplet(hex).join(',')},${a})`;
-}
-
-const arcColor = currentArc?.stat ? STAT_COLORS[currentArc.stat] : null;
-const arcEmblem = currentArc?.stat
-  ? `/images/emblems/${currentArc.stat.toLowerCase()}.png`
-  : '/images/emblems/default.svg';
-const arcCardStyle = arcColor
-  ? `--arc-color:${arcColor};--arc-color-dim:${colorBg(arcColor, 0.35)}`
-  : '';
 
 const profileEntries = await getCollection('profile');
 const entry = pickProfile(profileEntries);
@@ -143,23 +117,6 @@ const isExternal = (href: string) => /^https?:\/\//i.test(href);
       {/* A <div>, not <main>: BaseLayout already wraps the slot in <main>, and a
           nested one is invalid and duplicates the landmark. */}
       <div class="about__main">
-        {currentArc && (
-          <section class="arc-card" style={arcCardStyle} aria-label="Current arc">
-            <div class="arc-card__top">
-              <div class="arc-badge">
-                <img src={arcEmblem} alt="" />
-              </div>
-              <div>
-                <span class="arc-kicker">Current arc{currentArc.stat ? ` · ${currentArc.stat}` : ''}</span>
-                <h2 class="arc-title">{currentArc.arc}</h2>
-              </div>
-            </div>
-            <span class="arc-decision-label">Active decision</span>
-            <p class="arc-decision-text">{currentArc.decision}</p>
-            {currentArc.updated && <span class="arc-updated">updated {currentArc.updated}</span>}
-          </section>
-        )}
-
         {profile && <p class="about__hook">{profile.hook}</p>}
 
         {profile && profile.makes.length > 0 && (
