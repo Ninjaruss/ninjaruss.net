@@ -12,6 +12,9 @@ export default defineConfig({
   redirects: {
     '/media': '/shelf',
     '/media/[...slug]': '/shelf/[...slug]',
-    '/stream': '/status',
+    /* /stream → /status → /about happened over two renames. Both point
+       straight at /about so there is no redirect chain. */
+    '/stream': '/about',
+    '/status': '/about',
   },
 });

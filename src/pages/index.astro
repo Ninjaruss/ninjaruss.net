@@ -11,6 +11,7 @@ import { stripMarkdown } from '../utils/content';
 import { formatDate } from '../utils/dates';
 import { getCodexTileData } from '../utils/codexContent';
 import { readFileSync } from 'fs';
+import { parseProtagonist, DEFAULT_PROTAGONIST } from '../utils/protagonist';
 
 // Query all content collections for items with publishedAt dates
 const notes = await getCollection('notes', ({ data }) => !data.draft && data.publishedAt);
@@ -92,13 +93,22 @@ for (const folder of Object.values(novelTree)) {
 }
 const novelStats = computeNovelStats(novelTree);
 
-// Stream tile data — current arc teaser, read the same way /status reads it.
+// About tile data — current arc teaser, read the same way /about reads it.
 let questsRaw = '';
 try {
   questsRaw = readFileSync(join(process.cwd(), 'src/content/sessions/_quests.md'), 'utf-8');
 } catch { /* missing file → no teaser */ }
 const currentArc = parseCurrentArc(questsRaw);
 const arcColor = currentArc?.stat ? STAT_COLORS[currentArc.stat] : 'var(--color-gold)';
+
+/* Name for the About tile — same source /about reads. */
+let protagonist = DEFAULT_PROTAGONIST;
+try {
+  const protagonistRaw = readFileSync(join(process.cwd(), 'src/content/sessions/_protagonist.md'), 'utf-8');
+  protagonist = parseProtagonist(protagonistRaw);
+} catch {
+  /* Missing file → defaults. */
+}
 
 // Prepare data for client-side cycling. The date is formatted at build time —
 // absolute only, never time-since (no-shame invariant).
@@ -124,7 +134,6 @@ const codexTile = await getCodexTileData();
           <div class="title-tile__rule title-tile__rule--bottom" aria-hidden="true"></div>
         </div>
         <p class="title-tile__description">In spite of it all...</p>
-        <a class="title-tile__about p4g-sweep" href="/about"><span>About</span></a>
       </div>
 
       <a
@@ -275,13 +284,15 @@ const codexTile = await getCodexTileData();
 
       <a
         id="stream-tile"
-        href="/status"
+        href="/about"
         class="bento-tile bento-tile--dark bento-tile--interactive stream-tile"
         style={`--st-lead: ${arcColor};`}
       >
+        {/* Reads as a profile card first — a stranger should learn there is a
+            person here, with the current arc underneath as evidence. */}
         <div class="bento-tile__header">
-          <span class="bento-tile__label">Status</span>
-          <h3 class="bento-tile__title">{currentArc ? currentArc.arc : 'Status'}</h3>
+          <span class="bento-tile__label">About</span>
+          <h3 class="bento-tile__title">{protagonist.name}</h3>
         </div>
 
         <div class="st-body">
@@ -388,9 +399,9 @@ const codexTile = await getCodexTileData();
       <!-- Row 5 — email (2×1) fills the cols under MAL/Spotify (quote tile removed).
            The mailto: is assembled client-side on first interaction so the address
            never appears in the static HTML (bot-scrape mitigation). The static href
-           is a real no-JS fallback (the /status Mailbox), not a dead #anchor — with
+           is a real no-JS fallback (the /about Connect block), not a dead #anchor — with
            JS the click is always intercepted to open the mailto. -->
-      <a href="/status" id="mail-tile" class="logo-tile logo-tile--mail p4g-sweep bento-tile--span-2x1 p3r-animate" style="--stagger-delay: 200ms;">
+      <a href="/about" id="mail-tile" class="logo-tile logo-tile--mail p4g-sweep bento-tile--span-2x1 p3r-animate" style="--stagger-delay: 200ms;">
         <span class="logo-tile__kicker" aria-hidden="true"><span>Contact</span></span>
         <svg class="logo-tile__img" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
           <rect x="2.5" y="5" width="19" height="14" rx="1.5"/>
@@ -699,36 +710,6 @@ const codexTile = await getCodexTileData();
   .title-tile:hover .title-tile__description,
   .title-tile:has(:focus-visible) .title-tile__description {
     opacity: 1;
-  }
-
-  /* Always-visible entry point to the profile card — a new visitor
-     shouldn't have to hover to discover it. */
-  .title-tile__about {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 44px;
-    min-height: 44px;
-    margin-top: var(--space-sm);
-    padding: 8px 20px;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--color-gold);
-    text-decoration: none;
-    border: 1px solid rgba(var(--color-gold-rgb), 0.4);
-    transition: border-color var(--transition-fast);
-  }
-
-  .title-tile__about:hover,
-  .title-tile__about:focus-visible {
-    border-color: var(--color-gold);
-  }
-
-  .title-tile__about:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
   }
 
   /* ─── Journal Tile ────────────────────────────────────── */
