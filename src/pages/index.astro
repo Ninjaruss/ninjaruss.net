@@ -2259,6 +2259,8 @@ const codexTile = await getCodexTileData();
   function stopTracesCycle(): void {
     clearInterval(tracesCycleTimer);
     tracesCycleTimer = undefined;
+    tracesCyclePaused = false;
+    tracesCycleIndex = 0;
   }
 
   async function initializeTracesBand(): Promise<void> {
