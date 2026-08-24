@@ -208,15 +208,18 @@ const messages = await listMessages();
   }
 
   function initializeTracesForm(): void {
-    // initBotId is idempotent per BotID's own design — safe to call again
-    // on every (re-)init, and it needs to re-arm for the new page instance.
-    initBotId({
-      protect: [{ path: '/api/traces', method: 'POST' }],
-    });
-
     const form = document.getElementById('traces-form') as HTMLFormElement | null;
     if (!form || form.dataset.bound === 'true') return;
     form.dataset.bound = 'true';
+
+    // Re-arms BotID protection for this page instance. Runs at most once per
+    // real page instance (guarded above), since calling it twice on the same
+    // instance (e.g. astro:page-load firing on the initial load too, not just
+    // soft-navs) left the protected fetch permanently pending — confirmed via
+    // live testing, not an assumption.
+    initBotId({
+      protect: [{ path: '/api/traces', method: 'POST' }],
+    });
 
     const list = document.getElementById('traces-list');
     const status = document.getElementById('traces-form__status');
