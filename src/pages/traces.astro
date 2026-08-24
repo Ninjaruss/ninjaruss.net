@@ -163,7 +163,7 @@ const messages = await listMessages();
     padding-bottom: calc(var(--nav-clearance, 80px) + var(--space-md));
   }
 
-  .traces-list__item {
+  :global(.traces-list__item) {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
@@ -174,17 +174,17 @@ const messages = await listMessages();
     border-radius: var(--radius-md);
   }
 
-  .traces-list__name {
+  :global(.traces-list__name) {
     font-family: var(--font-display);
     color: var(--color-gold);
   }
 
-  .traces-list__message {
+  :global(.traces-list__message) {
     color: var(--color-text);
     flex: 1;
   }
 
-  .traces-list__date {
+  :global(.traces-list__date) {
     font-size: var(--text-sm);
     color: var(--color-text-muted);
     font-family: var(--font-mono);
