@@ -112,9 +112,16 @@ already uses for `/api/live-status.ts` polling:
    as `wallRotation()` in `shelfWall.ts` — slug-seeded, here
    id-seeded). This tilt is a fixed cosmetic angle per message, not an
    animation — it never changes after render.
-3. Hover/focus on a pill reveals that entry's message in a small
-   flyout (the `?limit=15` response already includes message text, so
-   no second fetch is needed)
+3. The pills' flyouts **auto-cycle**, one active at a time, ~2.5s apart,
+   looping continuously — the same idea as the homepage Latest tile's
+   auto-cycling excerpt, so a visitor who never touches the band still
+   passively sees several messages. Hovering/focusing a pill pauses the
+   cycle on that pill (so reading isn't interrupted) and resumes from
+   there on mouseleave/blur. Under `prefers-reduced-motion`, cycling is
+   disabled entirely (matching the Latest tile's own reduced-motion
+   behavior) and the first pill's flyout is shown statically. (The
+   `?limit=15` response already includes message text, so no second
+   fetch is needed for any of this.)
 4. **Clicking the "Traces" tab, or any pill, opens a modal/dialog over
    the homepage** — it does not navigate away. The modal fetches
    `GET /api/traces` (no limit — full list) on open and client-renders
@@ -166,8 +173,22 @@ in the visual companion.
    no separate rate-limit service needed at this volume
 4. **Length cap + plain-text-only** — removes the two easiest spam
    vectors (wall-of-text payloads, embedded links/markup)
+5. **Blocklist** — a narrow, whole-word/phrase match (with basic
+   leetspeak normalization) against an editable list of terms. Ships
+   with only unambiguous self-harm-incitement phrases by default (zero
+   legitimate use, zero false-positive risk); it is explicitly not a
+   general profanity/slur filter — what else counts as unacceptable
+   for this site is the owner's editorial call, made by extending the
+   list directly, not something generated generically. This targets
+   the one gap the layers above don't cover: a single human-typed
+   hostile message posting once. The admin-delete route remains the
+   backstop for whatever this doesn't catch.
 
 ## Moderation
+
+The blocklist above (see Anti-spam) is a proactive filter, not a
+review step — it runs inline on submit, before insert. It complements,
+rather than replaces, the reactive safety valve below.
 
 No pre-publish queue — messages go live immediately. The only
 after-the-fact control is `DELETE /api/traces/[id]`, gated by a secret
@@ -194,9 +215,9 @@ same pattern as `journal.ts`/`journalMerge.ts` and `shelfWall.ts`):
   rate-limit trigger, honeypot trigger, admin delete) per the
   project's verification workflow before calling this done
 - `/traces` page, the homepage band, and the modal verified visually
-  in the browser preview (empty state, several entries, hover/focus
-  reveal, mobile tap-then-reveal-then-open, modal open/close/focus-trap,
-  reduced-motion)
+  in the browser preview (empty state, several entries, auto-cycling
+  flyouts, hover-to-pause/resume, mobile tap-then-reveal-then-open,
+  modal open/close/focus-trap, reduced-motion disables cycling)
 
 ## Open implementation details (left for the plan)
 
