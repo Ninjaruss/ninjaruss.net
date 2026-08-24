@@ -1749,8 +1749,10 @@ const codexTile = await getCodexTileData();
   }
 
   /* Ticket-stub treatment: dashed gold border on black, mono caps, a small
-     sparkle accent — reads like a raffle/claim stub rather than a plain tag. */
-  .traces-band__pill {
+     sparkle accent — reads like a raffle/claim stub rather than a plain tag.
+     :global() — pills are created client-side via document.createElement,
+     so they never receive Astro's scoped data-astro-cid-* attribute. */
+  :global(.traces-band__pill) {
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -1768,22 +1770,22 @@ const codexTile = await getCodexTileData();
     transition: border-color var(--transition-fast), background-color var(--transition-fast);
   }
 
-  .traces-band__pill::after {
+  :global(.traces-band__pill::after) {
     content: '\2726';
     margin-left: var(--space-xs);
     font-size: var(--text-floor, 10px);
     opacity: 0.6;
   }
 
-  .traces-band__pill:hover,
-  .traces-band__pill:focus-visible,
-  .traces-band__pill.is-revealed,
-  .traces-band__pill.is-active {
+  :global(.traces-band__pill:hover),
+  :global(.traces-band__pill:focus-visible),
+  :global(.traces-band__pill.is-revealed),
+  :global(.traces-band__pill.is-active) {
     border-color: var(--color-gold-orange);
     background: rgba(var(--color-gold-rgb), 0.08);
   }
 
-  .traces-band__flyout {
+  :global(.traces-band__flyout) {
     position: absolute;
     bottom: calc(100% + var(--space-xs));
     left: 50%;
@@ -1804,17 +1806,17 @@ const codexTile = await getCodexTileData();
     transition: opacity var(--transition-fast);
   }
 
-  .traces-band__pill:hover .traces-band__flyout,
-  .traces-band__pill:focus-visible .traces-band__flyout,
-  .traces-band__pill.is-revealed .traces-band__flyout,
-  .traces-band__pill.is-active .traces-band__flyout {
+  :global(.traces-band__pill:hover .traces-band__flyout),
+  :global(.traces-band__pill:focus-visible .traces-band__flyout),
+  :global(.traces-band__pill.is-revealed .traces-band__flyout),
+  :global(.traces-band__pill.is-active .traces-band__flyout) {
     opacity: 1;
     visibility: visible;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .traces-band__pill,
-    .traces-band__flyout {
+    :global(.traces-band__pill),
+    :global(.traces-band__flyout) {
       transition: none;
     }
   }
@@ -1860,7 +1862,10 @@ const codexTile = await getCodexTileData();
     max-height: calc(85vh - 60px);
   }
 
-  .traces-modal__loading {
+  /* :global() — the initial markup has this class on a static <p>, but
+     openTracesModal() also re-injects it via body.innerHTML for the
+     loading/error states, creating untagged elements each time. */
+  :global(.traces-modal__loading) {
     color: var(--color-text-muted);
     font-style: italic;
     text-align: center;
@@ -1870,8 +1875,11 @@ const codexTile = await getCodexTileData();
   /* The modal reuses the /traces page's form/list class names so styling
      stays in one place conceptually — copy the relevant blocks from
      traces.astro's <style> block here as well (form rows, submit button,
-     list items) scoped under .traces-modal__body. */
-  .traces-modal__body .traces-form {
+     list items) scoped under .traces-modal__body. All :global() — this
+     entire subtree is built client-side via innerHTML/createElement in
+     renderTracesModalBody/buildTraceListItem, so none of it ever receives
+     Astro's scoped data-astro-cid-* attribute. */
+  :global(.traces-modal__body .traces-form) {
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
@@ -1880,13 +1888,13 @@ const codexTile = await getCodexTileData();
     border-bottom: var(--border-thin) solid var(--color-border);
   }
 
-  .traces-modal__body .traces-form__row {
+  :global(.traces-modal__body .traces-form__row) {
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
   }
 
-  .traces-modal__body .traces-form__row label {
+  :global(.traces-modal__body .traces-form__row label) {
     font-family: var(--font-display);
     font-size: var(--text-xs);
     text-transform: uppercase;
@@ -1894,7 +1902,7 @@ const codexTile = await getCodexTileData();
     color: var(--color-text-muted);
   }
 
-  .traces-modal__body .traces-form__row input {
+  :global(.traces-modal__body .traces-form__row input) {
     min-height: 44px;
     padding: var(--space-sm) var(--space-md);
     background: var(--color-bg-elevated);
@@ -1904,7 +1912,7 @@ const codexTile = await getCodexTileData();
     font-size: var(--text-md);
   }
 
-  .traces-modal__body .traces-form__honeypot {
+  :global(.traces-modal__body .traces-form__honeypot) {
     position: absolute;
     left: -9999px;
     width: 1px;
@@ -1912,7 +1920,7 @@ const codexTile = await getCodexTileData();
     overflow: hidden;
   }
 
-  .traces-modal__body .traces-form__submit {
+  :global(.traces-modal__body .traces-form__submit) {
     align-self: flex-start;
     min-height: 44px;
     padding: var(--space-sm) var(--space-xl);
@@ -1924,23 +1932,23 @@ const codexTile = await getCodexTileData();
     border-radius: var(--radius-sm);
   }
 
-  .traces-modal__body .traces-form__status {
+  :global(.traces-modal__body .traces-form__status) {
     font-size: var(--text-sm);
     color: var(--color-text-muted);
     min-height: 1.5em;
   }
 
-  .traces-modal__body .traces-form__status[data-tone='error'] {
+  :global(.traces-modal__body .traces-form__status[data-tone='error']) {
     color: var(--color-live);
   }
 
-  .traces-modal__body .traces-list {
+  :global(.traces-modal__body .traces-list) {
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
   }
 
-  .traces-modal__body .traces-list__item {
+  :global(.traces-modal__body .traces-list__item) {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
@@ -1951,16 +1959,16 @@ const codexTile = await getCodexTileData();
     border-radius: var(--radius-md);
   }
 
-  .traces-modal__body .traces-list__item.is-highlighted {
+  :global(.traces-modal__body .traces-list__item.is-highlighted) {
     border-color: var(--color-gold);
   }
 
-  .traces-modal__body .traces-list__name {
+  :global(.traces-modal__body .traces-list__name) {
     font-family: var(--font-display);
     color: var(--color-gold);
   }
 
-  .traces-modal__body .traces-list__message {
+  :global(.traces-modal__body .traces-list__message) {
     color: var(--color-text);
     flex: 1;
   }
