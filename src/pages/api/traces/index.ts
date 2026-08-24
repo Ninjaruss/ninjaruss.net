@@ -11,20 +11,23 @@ import {
 } from '../../../utils/traces';
 import { insertMessage, lastSubmissionByIpHash, listMessages } from '../../../utils/tracesDb';
 
-function json(body: unknown, status: number): Response {
+function json(body: unknown, status: number, extraHeaders?: Record<string, string>): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...extraHeaders },
   });
 }
 
 export const GET: APIRoute = async ({ url }) => {
   const limitParam = url.searchParams.get('limit');
   const limit = limitParam ? Number(limitParam) : undefined;
-  const rows = await listMessages(limit && Number.isInteger(limit) && limit > 0 ? limit : undefined);
+  // Always cap the query — 200 is a reasonable ceiling for a personal-site
+  // guestbook, whether the caller omits ?limit= or passes something huge.
+  const effectiveLimit = limit && Number.isInteger(limit) && limit > 0 ? Math.min(limit, 200) : 200;
+  const rows = await listMessages(effectiveLimit);
   const entries = rows.map(r => ({ id: r.id, name: r.name, message: r.message }));
 
-  return json({ entries }, 200);
+  return json({ entries }, 200, { 'Cache-Control': 'no-store' });
 };
 
 export const POST: APIRoute = async (context: APIContext) => {
@@ -43,8 +46,15 @@ export const POST: APIRoute = async (context: APIContext) => {
     return json({ ok: true }, 200);
   }
 
-  const verification = await checkBotId();
-  if (verification.isBot) {
+  let isBot = false;
+  try {
+    const verification = await checkBotId();
+    isBot = verification.isBot;
+  } catch {
+    // Fail open: an infra hiccup shouldn't block real submissions — the
+    // other anti-abuse layers (honeypot, blocklist, rate-limit) still apply.
+  }
+  if (isBot) {
     return json({ error: 'Access denied' }, 403);
   }
 
@@ -60,7 +70,7 @@ export const POST: APIRoute = async (context: APIContext) => {
     );
   }
 
-  const salt = import.meta.env.TRACES_IP_SALT as string | undefined;
+  const salt = process.env.TRACES_IP_SALT;
   if (!salt) {
     return json({ error: 'Server misconfigured' }, 500);
   }

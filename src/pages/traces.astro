@@ -20,7 +20,7 @@ const messages = await listMessages();
       <span class="p4g-underline" aria-hidden="true"></span>
     </header>
 
-    <form id="traces-form" class="traces-form">
+    <form id="traces-form" class="traces-form" method="post">
       <div class="traces-form__row">
         <label for="tr-name">Name</label>
         <input id="tr-name" name="name" type="text" maxlength={NAME_MAX_LENGTH} required />
@@ -49,18 +49,17 @@ const messages = await listMessages();
     </form>
 
     <ul id="traces-list" class="traces-list">
-      {messages.length > 0 ? (
-        messages.map((m) => (
-          <li id={`trace-${m.id}`} class="traces-list__item">
-            <span class="traces-list__name">{m.name}</span>
-            <span class="traces-list__message">{m.message}</span>
-            <span class="traces-list__date">{formatDate(new Date(m.created_at))}</span>
-          </li>
-        ))
-      ) : (
-        <p class="empty-state">No one's signed yet — be the first.</p>
-      )}
+      {messages.map((m) => (
+        <li id={`trace-${m.id}`} class="traces-list__item">
+          <span class="traces-list__name">{m.name}</span>
+          <span class="traces-list__message">{m.message}</span>
+          <span class="traces-list__date">{formatDate(new Date(m.created_at))}</span>
+        </li>
+      ))}
     </ul>
+    {messages.length === 0 && (
+      <p class="empty-state">No one's signed yet — be the first.</p>
+    )}
   </div>
 </BaseLayout>
 
@@ -111,7 +110,7 @@ const messages = await listMessages();
     border: var(--border-thin) solid var(--color-border);
     border-radius: var(--radius-md);
     color: var(--color-text);
-    font-size: var(--text-md);
+    font-size: var(--text-base);
   }
 
   .traces-form__row input:focus-visible {
@@ -201,10 +200,6 @@ const messages = await listMessages();
 <script>
   import { initBotId } from 'botid/client/core';
 
-  initBotId({
-    protect: [{ path: '/api/traces', method: 'POST' }],
-  });
-
   interface SubmitResponse {
     id: number;
     name: string;
@@ -212,70 +207,87 @@ const messages = await listMessages();
     createdAt: string;
   }
 
-  const form = document.getElementById('traces-form') as HTMLFormElement | null;
-  const list = document.getElementById('traces-list');
-  const status = document.getElementById('traces-form__status');
+  function initializeTracesForm(): void {
+    // initBotId is idempotent per BotID's own design — safe to call again
+    // on every (re-)init, and it needs to re-arm for the new page instance.
+    initBotId({
+      protect: [{ path: '/api/traces', method: 'POST' }],
+    });
 
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!form || !status) return;
+    const form = document.getElementById('traces-form') as HTMLFormElement | null;
+    if (!form || form.dataset.bound === 'true') return;
+    form.dataset.bound = 'true';
 
-    const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
-    const formData = new FormData(form);
-    const payload = {
-      name: formData.get('name'),
-      message: formData.get('message'),
-      website: formData.get('website'),
-    };
+    const list = document.getElementById('traces-list');
+    const status = document.getElementById('traces-form__status');
 
-    if (submitBtn) submitBtn.disabled = true;
-    status.textContent = '';
-    status.removeAttribute('data-tone');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!status) return;
 
-    try {
-      const res = await fetch('/api/traces', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+      const formData = new FormData(form);
+      const payload = {
+        name: formData.get('name'),
+        message: formData.get('message'),
+        website: formData.get('website'),
+      };
 
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        status.textContent = (data as { error?: string }).error || 'Something went wrong.';
+      if (submitBtn) submitBtn.disabled = true;
+      status.textContent = '';
+      status.removeAttribute('data-tone');
+
+      try {
+        const res = await fetch('/api/traces', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          status.textContent = (data as { error?: string }).error || 'Something went wrong.';
+          status.dataset.tone = 'error';
+          return;
+        }
+
+        const entry = await res.json() as SubmitResponse;
+
+        const emptyState = document.querySelector('.empty-state');
+        emptyState?.remove();
+
+        const li = document.createElement('li');
+        li.id = `trace-${entry.id}`;
+        li.className = 'traces-list__item';
+        li.innerHTML = `
+          <span class="traces-list__name"></span>
+          <span class="traces-list__message"></span>
+          <span class="traces-list__date"></span>
+        `;
+        li.querySelector('.traces-list__name')!.textContent = entry.name;
+        li.querySelector('.traces-list__message')!.textContent = entry.message;
+        li.querySelector('.traces-list__date')!.textContent = new Date(entry.createdAt).toLocaleDateString('en-US', {
+          timeZone: 'UTC',
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        });
+        list?.prepend(li);
+
+        form.reset();
+        status.textContent = 'Signed — thanks for leaving your mark.';
+      } catch {
+        status.textContent = 'Network error — please try again.';
         status.dataset.tone = 'error';
-        return;
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
       }
+    });
+  }
 
-      const entry = await res.json() as SubmitResponse;
+  initializeTracesForm();
 
-      const emptyState = document.querySelector('.empty-state');
-      emptyState?.remove();
-
-      const li = document.createElement('li');
-      li.id = `trace-${entry.id}`;
-      li.className = 'traces-list__item';
-      li.innerHTML = `
-        <span class="traces-list__name"></span>
-        <span class="traces-list__message"></span>
-        <span class="traces-list__date"></span>
-      `;
-      li.querySelector('.traces-list__name')!.textContent = entry.name;
-      li.querySelector('.traces-list__message')!.textContent = entry.message;
-      li.querySelector('.traces-list__date')!.textContent = new Date(entry.createdAt).toLocaleDateString('en-US', {
-        timeZone: 'UTC',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      });
-      list?.prepend(li);
-
-      form.reset();
-      status.textContent = 'Signed — thanks for leaving your mark.';
-    } catch {
-      status.textContent = 'Network error — please try again.';
-      status.dataset.tone = 'error';
-    } finally {
-      if (submitBtn) submitBtn.disabled = false;
-    }
+  document.addEventListener('astro:page-load', () => {
+    initializeTracesForm();
   });
 </script>

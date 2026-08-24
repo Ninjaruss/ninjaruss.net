@@ -1872,6 +1872,16 @@ const codexTile = await getCodexTileData();
     padding: var(--space-xl);
   }
 
+  /* Empty state — same treatment as traces.astro's own .empty-state, but
+     :global() + scoped under the modal body since this element is created
+     client-side (renderTracesModalBody's innerHTML). */
+  :global(.traces-modal__body .empty-state) {
+    color: var(--color-text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: var(--space-xl);
+  }
+
   /* The modal reuses the /traces page's form/list class names so styling
      stays in one place conceptually — copy the relevant blocks from
      traces.astro's <style> block here as well (form rows, submit button,
@@ -1909,7 +1919,7 @@ const codexTile = await getCodexTileData();
     border: var(--border-thin) solid var(--color-border);
     border-radius: var(--radius-md);
     color: var(--color-text);
-    font-size: var(--text-md);
+    font-size: var(--text-base);
   }
 
   :global(.traces-modal__body .traces-form__honeypot) {
@@ -2326,17 +2336,13 @@ const codexTile = await getCodexTileData();
     startTracesCycle(pills);
   }
 
-  let tracesModalBound = false;
-  let tracesModalLoaded = false;
-
   function bindTracesModal(): void {
-    if (tracesModalBound) return;
-    tracesModalBound = true;
-
     const tab = document.getElementById('traces-tab');
     const modal = document.getElementById('traces-modal') as HTMLDialogElement | null;
     const closeBtn = document.getElementById('traces-modal-close');
     if (!tab || !modal || !closeBtn) return;
+    if (modal.dataset.bound === 'true') return;
+    modal.dataset.bound = 'true';
 
     tab.addEventListener('click', (e) => {
       const evt = e as MouseEvent;
@@ -2360,13 +2366,13 @@ const codexTile = await getCodexTileData();
 
     modal.showModal();
 
-    if (!tracesModalLoaded) {
+    if (body.dataset.loaded !== 'true') {
       body.innerHTML = '<p class="traces-modal__loading">Loading…</p>';
       try {
         const res = await fetch('/api/traces');
         const data = await res.json() as { entries: TraceEntry[] };
         renderTracesModalBody(body, data.entries);
-        tracesModalLoaded = true;
+        body.dataset.loaded = 'true';
       } catch {
         body.innerHTML = '<p class="traces-modal__loading">Couldn\'t load — try again.</p>';
         return;
@@ -2374,6 +2380,7 @@ const codexTile = await getCodexTileData();
     }
 
     if (scrollToId !== undefined) {
+      body.querySelectorAll('.is-highlighted').forEach(el => el.classList.remove('is-highlighted'));
       const target = body.querySelector(`[data-trace-id="${scrollToId}"]`);
       target?.scrollIntoView({ block: 'nearest' });
       target?.classList.add('is-highlighted');

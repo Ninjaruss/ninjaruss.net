@@ -4,7 +4,7 @@ import type { APIRoute } from 'astro';
 import { deleteMessage } from '../../../utils/tracesDb';
 
 export const DELETE: APIRoute = async ({ params, request }) => {
-  const adminKey = import.meta.env.TRACES_ADMIN_KEY as string | undefined;
+  const adminKey = process.env.TRACES_ADMIN_KEY;
   const provided = request.headers.get('x-admin-key');
 
   if (!adminKey || provided !== adminKey) {
