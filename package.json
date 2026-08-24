@@ -24,8 +24,10 @@
     "marked": "^17.0.6"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "gray-matter": "^4.0.3",
     "tsx": "^4.23.0",
+    "typescript": "^5.9.3",
     "vitest": "^4.1.2"
   }
 }
