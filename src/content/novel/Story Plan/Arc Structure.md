@@ -70,6 +70,8 @@ Disclosure runs in three layers: the result is open, the mechanism is shown deli
 
 **Decided 2026-08-06 — three visitors seal three exits.** Shiori boards as an accuser and is flipped by her own confiscated machines. Roxana tells her tank flat. Claire returns to make the honest case *for* Vesper at full strength — and Rain finds his voice: he concedes the data, ends the outsourcing, and states the momentum theorem. *Retry capacity is what every evil destroys. What's your model's answer for the fifty-first?* Evil is whatever caps n.
 
+**Added 2026-08-19 — the case Claire actually makes.** Written out in full in Themes and Motifs, "Antithesis (Vesper)": the cure test run at civic scale, arguing the waiting room is itself unconsented mass coercion and the correction at least asks. It must land as genuinely strong before Rain's rebuttal — see that doc's guard against strawmanning it.
+
 **The parents' silence.** The boundary takes their district mid-arc and the calls stop. Rain misreads the quiet as relief; at the anchor station — his own home station — he does the arithmetic and understands he mistook amputation for peace.
 
 The Devil's Bargain is the state's amnesty with Rain's goggles on the manifest: burn the vault and un-take the inciting incident. He refuses while the offer is live. The Perfect Clone manifests after the refusal — relapse dressed as reward. The arc ends on false gold.
