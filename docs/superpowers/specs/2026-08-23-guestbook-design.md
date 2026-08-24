@@ -1,6 +1,9 @@
-# Guestbook — design spec
+# Traces — design spec
 
-Date: 2026-08-23
+Date: 2026-08-23 (revised: renamed from "Guestbook" to "Traces";
+homepage interaction changed from full-page navigation to a
+modal/overlay, per follow-up discussion after the visual companion
+session)
 
 ## Purpose
 
@@ -11,10 +14,18 @@ invisibly (no CAPTCHA), and the input shape itself should nudge
 people toward short, honest/playful lines rather than open-ended
 ranting or spam-shaped text.
 
+**Naming:** the feature is called **Traces** everywhere user-facing
+(the homepage tab, the page title, the standalone route). "Guestbook"
+was the working name during design; it's dated and generic. Internal
+identifiers (table name, route paths, util filenames) use `traces`
+throughout for consistency — there is no user-facing/internal name
+split.
+
 ## Non-goals
 
-- Per-page/per-note comments (rejected in favor of a single guestbook)
-- User accounts, auth, or verified identity for guestbook authors
+- Per-page/per-note comments (rejected in favor of a single running
+  list)
+- User accounts, auth, or verified identity for authors
 - A moderation queue / pre-publish approval step (messages publish
   immediately; see Moderation)
 - Threaded replies or reactions
@@ -29,15 +40,15 @@ good fit, and lets the rate-limit check and the message list come
 from the same simple SQL rather than juggling a second KV service.
 
 ```sql
-create table guestbook_messages (
+create table traces_messages (
   id          bigserial primary key,
   name        text not null,
   message     text not null,
   ip_hash     text not null,
   created_at  timestamptz not null default now()
 );
-create index guestbook_messages_created_at_idx
-  on guestbook_messages (created_at desc);
+create index traces_messages_created_at_idx
+  on traces_messages (created_at desc);
 ```
 
 `ip_hash` is `sha256(ip + secret_salt)` — never the raw IP. It exists
@@ -48,23 +59,34 @@ only for rate-limiting and abuse tracing, not display.
 The site is currently fully static. Astro 5 with the Vercel adapter
 allows per-route opt-out of prerendering (`export const prerender =
 false`) without changing the site-wide `output` mode — only the
-guestbook routes below go dynamic; everything else stays static as
-today.
+routes below go dynamic; everything else stays static as today.
 
-- `POST /api/guestbook` — submit a message
-- `GET /api/guestbook/recent` — public, returns the last ~15 `{ id,
-  name }` pairs only (no message text — see Homepage below)
-- `DELETE /api/guestbook/[id]` — admin delete, gated by a secret key
+- `POST /api/traces` — submit a message
+- `GET /api/traces` — public, returns messages newest-first as JSON
+  (`{ entries: [{ id, name, message }] }`). Accepts an optional
+  `?limit=N` query param: the homepage band requests `?limit=15`; the
+  modal (see below) requests it with no limit for the full list. One
+  route handles both the band's small feed and the modal's full list
+  — no need for a separate `/recent` endpoint.
+- `DELETE /api/traces/[id]` — admin delete, gated by a secret key
   checked against an `x-admin-key` header (env var
-  `GUESTBOOK_ADMIN_KEY`); not a UI, invoked manually (curl/bookmarklet)
-- `/guestbook` page — full list, newest first, server-rendered (same
-  on-demand rendering as the API routes) so it's always current;
-  P4G-styled list matching the journal/shelf visual language
+  `TRACES_ADMIN_KEY`); not a UI, invoked manually (curl/bookmarklet)
+- `/traces` page — full list + the submit form, newest first,
+  server-rendered (same on-demand rendering as the API routes) so it's
+  always current; P4G-styled, matching the journal/shelf visual
+  language. This is the **fallback and canonical destination**: it
+  works with no JS, and it's what gets linked/shared. It is not the
+  primary way most visitors will interact with the feature — see
+  Homepage below.
 
 ### Data flow — submit
 
-1. Visitor fills name + message on `/guestbook` (see Input below)
-2. Client posts to `POST /api/guestbook` with a BotID token attached
+Identical whether the visitor is on the `/traces` page or the
+homepage modal (see Homepage) — both post to the same endpoint and
+render the response the same way, just into different DOM containers:
+
+1. Visitor fills name + message (see Input below)
+2. Client posts to `POST /api/traces` with a BotID token attached
 3. Server validates, in order, short-circuiting on first failure:
    - honeypot field non-empty → reject silently (200 OK, no-op) so
      bots get no signal they were caught
@@ -78,42 +100,52 @@ today.
 5. Client appends the new entry to the visible list (optimistic) and
    clears the form
 
-### Data flow — homepage band
+### Data flow — homepage
 
-The homepage stays static-generated; the band is a small progressive
-enhancement layered on top, the same pattern the Stream tile already
-uses for `/api/live-status.ts` polling:
+The homepage stays static-generated; everything below is a
+progressive-enhancement layer, the same pattern the Stream tile
+already uses for `/api/live-status.ts` polling:
 
-1. On page load, client fetches `GET /api/guestbook/recent`
+1. On page load, client fetches `GET /api/traces?limit=15`
 2. Renders each returned name as a small pill in a horizontal band,
    positioned/rotated deterministically from its `id` (same technique
    as `wallRotation()` in `shelfWall.ts` — slug-seeded, here
-   id-seeded)
-3. Hover/focus on a name reveals that entry's message in a small
-   flyout (a second, on-demand fetch or — simpler — `/recent` returns
-   message text too, capped at 15 rows, since the payload is tiny;
-   revisit only if that ever feels wrong)
-4. Clicking a name navigates to `/guestbook` (view-transition link)
-5. Touch devices: first tap reveals the flyout, a second tap on the
-   same name (or the flyout itself) navigates — matching the
+   id-seeded). This tilt is a fixed cosmetic angle per message, not an
+   animation — it never changes after render.
+3. Hover/focus on a pill reveals that entry's message in a small
+   flyout (the `?limit=15` response already includes message text, so
+   no second fetch is needed)
+4. **Clicking the "Traces" tab, or any pill, opens a modal/dialog over
+   the homepage** — it does not navigate away. The modal fetches
+   `GET /api/traces` (no limit — full list) on open and client-renders
+   the same form + full list that `/traces` renders server-side. A
+   pill click also scrolls the modal's list to that entry on open.
+5. Touch devices: first tap on a pill reveals the flyout; a second tap
+   (or tapping elsewhere on the pill) opens the modal — matching the
    hover-then-click pattern already used elsewhere in the codebase
-6. No JS → the band simply doesn't render. This is fine: it's
-   decorative surfacing, not the source of truth. `/guestbook` (plain
-   server-rendered list, no JS required to read) is.
+6. No JS → the band simply doesn't render, and the "Traces" tab is a
+   plain link to `/traces` instead of a modal trigger (progressive
+   enhancement: the tab is an `<a href="/traces">` by default; JS
+   intercepts the click to open the modal instead, same technique the
+   homepage's journal tile already uses for its own click routing)
+7. The modal is dismissible via ESC, a close button, and clicking the
+   backdrop — standard dialog behavior, focus-trapped while open
 
 ### Placement
 
 Not a bento tile. A thin horizontal strip below the bento grid, above
-the footer — the homepage's `NavPill` is already hidden here (per
-CLAUDE.md), so this space is free. Visually: small angled/rotated name
-pills in the P4G gold-on-black language, echoing the `/shelf` wall's
-pinned-rotation motif at a much smaller scale.
+where the footer would be — the homepage's `NavPill` is already hidden
+here (per CLAUDE.md), so this space is free. Visually: small
+angled/rotated name pills in a **ticket-stub treatment** — dashed gold
+border on black, monospace caps, a small ✦ accent — chosen over a
+plain quiet tag or a paper-sticky-note look after reviewing all three
+in the visual companion.
 
 ## Input shape (the tone-steering part)
 
-- Two fields: `name` (short, required) and `message` (required,
-  hard-capped at ~100 characters — enforced both client-side via
-  `maxlength` and server-side)
+- Two fields: `name` (short, required, capped at 40 characters) and
+  `message` (required, hard-capped at 100 characters — enforced both
+  client-side via `maxlength` and server-side)
 - No rotating prompts (adds build/maintenance surface for a tone
   effect the character cap already produces)
 - No reaction chips (dropped — extra design/build surface, cap does
@@ -130,18 +162,17 @@ pinned-rotation motif at a much smaller scale.
 2. **Vercel BotID** — invisible challenge on the submit endpoint, no
    user-facing puzzle
 3. **Rate limit** — one submission per `ip_hash` per rate-limit window
-   (e.g. 5 minutes), enforced via a query against
-   `guestbook_messages` — no separate rate-limit service needed at
-   this volume
+   (e.g. 5 minutes), enforced via a query against `traces_messages` —
+   no separate rate-limit service needed at this volume
 4. **Length cap + plain-text-only** — removes the two easiest spam
    vectors (wall-of-text payloads, embedded links/markup)
 
 ## Moderation
 
 No pre-publish queue — messages go live immediately. The only
-after-the-fact control is `DELETE /api/guestbook/[id]`, gated by a
-secret admin key, invoked manually when something slips through. No
-admin UI; this is a safety valve, not a workflow.
+after-the-fact control is `DELETE /api/traces/[id]`, gated by a secret
+admin key, invoked manually when something slips through. No admin
+UI; this is a safety valve, not a workflow.
 
 ## Testing
 
@@ -149,24 +180,26 @@ Following the project's existing split (pure logic in `src/utils/`,
 unit-tested with vitest; framework glue thin and untested directly —
 same pattern as `journal.ts`/`journalMerge.ts` and `shelfWall.ts`):
 
-- New `src/utils/guestbook.ts` (pure): message validation (length/
+- New `src/utils/traces.ts` (pure): message validation (length/
   empty-after-trim), rate-limit window check (given "now" and "last
-  submission at", pure comparison), `ip_hash` computation, and the
-  id-seeded rotation/position calc for the homepage band
-- `src/tests/guestbook.test.ts` covers all of the above
-- API routes (`src/pages/api/guestbook*.ts`) stay thin: parse request
-  → call pure validators → touch the DB → respond. Not unit-tested
+  submission at", pure comparison), `ip_hash` computation
+- New `src/utils/tracesRotation.ts` (pure, zero imports — gets bundled
+  directly into the homepage's client `<script>`): the id-seeded
+  rotation calc for the homepage band's pills
+- `src/tests/traces.test.ts` and `src/tests/tracesRotation.test.ts`
+  cover the above
+- API routes (`src/pages/api/traces*.ts`) stay thin: parse request →
+  call pure validators → touch the DB → respond. Not unit-tested
   directly; verified manually via the dev server (submit flow,
-  rate-limit trigger, honeypot trigger, admin delete) per the project's
-  verification workflow before calling this done
-- `/guestbook` page and the homepage band verified visually in the
-  browser preview (empty state, several entries, hover/focus reveal,
-  mobile tap-then-navigate, reduced-motion)
+  rate-limit trigger, honeypot trigger, admin delete) per the
+  project's verification workflow before calling this done
+- `/traces` page, the homepage band, and the modal verified visually
+  in the browser preview (empty state, several entries, hover/focus
+  reveal, mobile tap-then-reveal-then-open, modal open/close/focus-trap,
+  reduced-motion)
 
 ## Open implementation details (left for the plan)
 
 - Exact copy for the placeholder/label and empty states
 - Rate-limit window length (proposing 5 minutes, adjustable)
-- Character cap (proposing 100, adjustable)
-- Exact visual treatment of the band (pill styling, spacing, mobile
-  behavior at narrow widths)
+- Exact modal sizing/breakpoint behavior on narrow viewports
