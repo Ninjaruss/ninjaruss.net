@@ -437,6 +437,21 @@ const codexTile = await getCodexTileData();
       </a>
     </BentoGrid>
   </div>
+
+  <section class="traces-band" id="traces-band" aria-label="Traces signatures">
+    <a href="/traces" class="traces-band__label p4g-tab" id="traces-tab">Traces</a>
+    <div class="traces-band__pills" id="traces-band-pills"></div>
+  </section>
+
+  <dialog id="traces-modal" class="traces-modal">
+    <div class="traces-modal__header">
+      <span class="p4g-tab">Traces</span>
+      <button type="button" class="traces-modal__close" id="traces-modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="traces-modal__body" id="traces-modal-body">
+      <p class="traces-modal__loading">Loading…</p>
+    </div>
+  </dialog>
 </BaseLayout>
 
 <style>
@@ -1716,9 +1731,249 @@ const codexTile = await getCodexTileData();
       order: 2;
     }
   }
+
+  .traces-band {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-md);
+    max-width: var(--content-max-width, 1200px);
+    margin: 0 auto;
+    padding: var(--space-md) var(--space-md) calc(var(--nav-clearance, 80px) + var(--space-md));
+  }
+
+  .traces-band__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  /* Ticket-stub treatment: dashed gold border on black, mono caps, a small
+     sparkle accent — reads like a raffle/claim stub rather than a plain tag. */
+  .traces-band__pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: var(--space-2xs) var(--space-sm);
+    background: var(--color-black);
+    border: var(--border-hairline) dashed var(--color-gold);
+    border-radius: var(--radius-sm);
+    color: var(--color-gold);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    transform: rotate(var(--rot, 0deg));
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .traces-band__pill::after {
+    content: '\2726';
+    margin-left: var(--space-xs);
+    font-size: var(--text-floor, 10px);
+    opacity: 0.6;
+  }
+
+  .traces-band__pill:hover,
+  .traces-band__pill:focus-visible,
+  .traces-band__pill.is-revealed,
+  .traces-band__pill.is-active {
+    border-color: var(--color-gold-orange);
+    background: rgba(var(--color-gold-rgb), 0.08);
+  }
+
+  .traces-band__flyout {
+    position: absolute;
+    bottom: calc(100% + var(--space-xs));
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    max-width: 60vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: var(--space-2xs) var(--space-sm);
+    background: var(--color-bg-elevated);
+    border: var(--border-hairline) solid var(--color-gold);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-size: var(--text-xs);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--transition-fast);
+  }
+
+  .traces-band__pill:hover .traces-band__flyout,
+  .traces-band__pill:focus-visible .traces-band__flyout,
+  .traces-band__pill.is-revealed .traces-band__flyout,
+  .traces-band__pill.is-active .traces-band__flyout {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .traces-band__pill,
+    .traces-band__flyout {
+      transition: none;
+    }
+  }
+
+  .traces-modal {
+    width: min(600px, 92vw);
+    max-height: 85vh;
+    margin: auto;
+    padding: 0;
+    background: var(--color-bg-base);
+    border: var(--border-medium) solid var(--color-gold-dim);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+  }
+
+  .traces-modal::backdrop {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .traces-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: var(--border-thin) solid var(--color-border);
+  }
+
+  .traces-modal__close {
+    min-width: 44px;
+    min-height: 44px;
+    color: var(--color-text-muted);
+    font-size: var(--text-lg);
+  }
+
+  .traces-modal__close:hover,
+  .traces-modal__close:focus-visible {
+    color: var(--color-gold);
+  }
+
+  .traces-modal__body {
+    padding: var(--space-lg);
+    overflow-y: auto;
+    max-height: calc(85vh - 60px);
+  }
+
+  .traces-modal__loading {
+    color: var(--color-text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: var(--space-xl);
+  }
+
+  /* The modal reuses the /traces page's form/list class names so styling
+     stays in one place conceptually — copy the relevant blocks from
+     traces.astro's <style> block here as well (form rows, submit button,
+     list items) scoped under .traces-modal__body. */
+  .traces-modal__body .traces-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-lg);
+    border-bottom: var(--border-thin) solid var(--color-border);
+  }
+
+  .traces-modal__body .traces-form__row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .traces-modal__body .traces-form__row label {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-text-muted);
+  }
+
+  .traces-modal__body .traces-form__row input {
+    min-height: 44px;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-bg-elevated);
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: var(--text-md);
+  }
+
+  .traces-modal__body .traces-form__honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .traces-modal__body .traces-form__submit {
+    align-self: flex-start;
+    min-height: 44px;
+    padding: var(--space-sm) var(--space-xl);
+    background: var(--color-gold);
+    color: var(--color-black);
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    border-radius: var(--radius-sm);
+  }
+
+  .traces-modal__body .traces-form__status {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    min-height: 1.5em;
+  }
+
+  .traces-modal__body .traces-form__status[data-tone='error'] {
+    color: var(--color-live);
+  }
+
+  .traces-modal__body .traces-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .traces-modal__body .traces-list__item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-bg-elevated);
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .traces-modal__body .traces-list__item.is-highlighted {
+    border-color: var(--color-gold);
+  }
+
+  .traces-modal__body .traces-list__name {
+    font-family: var(--font-display);
+    color: var(--color-gold);
+  }
+
+  .traces-modal__body .traces-list__message {
+    color: var(--color-text);
+    flex: 1;
+  }
 </style>
 
 <script>
+  import { bandRotation } from '../utils/tracesRotation';
+  import { initBotId } from 'botid/client/core';
+
+  initBotId({
+    protect: [{ path: '/api/traces', method: 'POST' }],
+  });
+
   let liveInterval: ReturnType<typeof setInterval> | undefined;
 
   async function checkLiveStatus(): Promise<void> {
@@ -1949,6 +2204,268 @@ const codexTile = await getCodexTileData();
   }
 
 
+  interface TraceEntry {
+    id: number;
+    name: string;
+    message: string;
+  }
+
+  let tracesCycleTimer: number | undefined;
+  let tracesCycleIndex = 0;
+  let tracesCyclePaused = false;
+
+  // Auto-cycles the flyout among pills, ~2.5s apart, like the homepage
+  // Latest tile's excerpt cycling — a visitor who never touches the band
+  // still passively sees several messages. Hover/focus pauses on that
+  // pill; disabled entirely under prefers-reduced-motion (first pill's
+  // flyout shown statically instead, matching the Latest tile's own
+  // reduced-motion behavior).
+  function startTracesCycle(pills: HTMLElement[]): void {
+    clearInterval(tracesCycleTimer);
+    if (pills.length === 0) return;
+
+    const setActive = (i: number) => {
+      pills.forEach((p, idx) => p.classList.toggle('is-active', idx === i));
+    };
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setActive(0);
+      return;
+    }
+
+    setActive(tracesCycleIndex);
+    tracesCycleTimer = window.setInterval(() => {
+      if (tracesCyclePaused) return;
+      tracesCycleIndex = (tracesCycleIndex + 1) % pills.length;
+      setActive(tracesCycleIndex);
+    }, 2500);
+
+    pills.forEach((pill, idx) => {
+      pill.addEventListener('mouseenter', () => {
+        tracesCyclePaused = true;
+        tracesCycleIndex = idx;
+        setActive(idx);
+      });
+      pill.addEventListener('focus', () => {
+        tracesCyclePaused = true;
+        tracesCycleIndex = idx;
+        setActive(idx);
+      });
+      pill.addEventListener('mouseleave', () => { tracesCyclePaused = false; });
+      pill.addEventListener('blur', () => { tracesCyclePaused = false; });
+    });
+  }
+
+  function stopTracesCycle(): void {
+    clearInterval(tracesCycleTimer);
+    tracesCycleTimer = undefined;
+  }
+
+  async function initializeTracesBand(): Promise<void> {
+    const pillsEl = document.getElementById('traces-band-pills');
+    if (!pillsEl || pillsEl.dataset.bound === 'true') return;
+    pillsEl.dataset.bound = 'true';
+
+    let entries: TraceEntry[];
+    try {
+      const res = await fetch('/api/traces?limit=15');
+      if (!res.ok) return;
+      const data = await res.json() as { entries: TraceEntry[] };
+      entries = data.entries;
+    } catch {
+      return;
+    }
+
+    if (entries.length === 0) return;
+
+    const pills: HTMLElement[] = [];
+
+    for (const entry of entries) {
+      const pill = document.createElement('a');
+      pill.href = '/traces';
+      pill.className = 'traces-band__pill';
+      pill.dataset.traceId = String(entry.id);
+      pill.style.setProperty('--rot', `${bandRotation(entry.id)}deg`);
+      pill.textContent = entry.name;
+
+      const flyout = document.createElement('span');
+      flyout.className = 'traces-band__flyout';
+      flyout.textContent = entry.message;
+      pill.appendChild(flyout);
+
+      pill.addEventListener('click', (e) => {
+        // Modified clicks (new tab, etc.) pass through to the browser.
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+
+        if (window.matchMedia('(hover: none)').matches && !pill.classList.contains('is-revealed')) {
+          e.preventDefault();
+          document.querySelectorAll('.traces-band__pill.is-revealed')
+            .forEach(p => { if (p !== pill) p.classList.remove('is-revealed'); });
+          pill.classList.add('is-revealed');
+          return;
+        }
+
+        e.preventDefault();
+        openTracesModal(entry.id);
+      });
+
+      pillsEl.appendChild(pill);
+      pills.push(pill);
+    }
+
+    startTracesCycle(pills);
+  }
+
+  let tracesModalBound = false;
+  let tracesModalLoaded = false;
+
+  function bindTracesModal(): void {
+    if (tracesModalBound) return;
+    tracesModalBound = true;
+
+    const tab = document.getElementById('traces-tab');
+    const modal = document.getElementById('traces-modal') as HTMLDialogElement | null;
+    const closeBtn = document.getElementById('traces-modal-close');
+    if (!tab || !modal || !closeBtn) return;
+
+    tab.addEventListener('click', (e) => {
+      const evt = e as MouseEvent;
+      if (evt.metaKey || evt.ctrlKey || evt.shiftKey || evt.altKey || evt.button !== 0) return;
+      e.preventDefault();
+      openTracesModal();
+    });
+
+    closeBtn.addEventListener('click', () => modal.close());
+
+    // Click on the backdrop (the dialog element itself, outside its content box) closes it.
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.close();
+    });
+  }
+
+  async function openTracesModal(scrollToId?: number): Promise<void> {
+    const modal = document.getElementById('traces-modal') as HTMLDialogElement | null;
+    const body = document.getElementById('traces-modal-body');
+    if (!modal || !body) return;
+
+    modal.showModal();
+
+    if (!tracesModalLoaded) {
+      body.innerHTML = '<p class="traces-modal__loading">Loading…</p>';
+      try {
+        const res = await fetch('/api/traces');
+        const data = await res.json() as { entries: TraceEntry[] };
+        renderTracesModalBody(body, data.entries);
+        tracesModalLoaded = true;
+      } catch {
+        body.innerHTML = '<p class="traces-modal__loading">Couldn\'t load — try again.</p>';
+        return;
+      }
+    }
+
+    if (scrollToId !== undefined) {
+      const target = body.querySelector(`[data-trace-id="${scrollToId}"]`);
+      target?.scrollIntoView({ block: 'nearest' });
+      target?.classList.add('is-highlighted');
+    }
+  }
+
+  function renderTracesModalBody(body: HTMLElement, entries: TraceEntry[]): void {
+    body.innerHTML = `
+      <form id="traces-modal-form" class="traces-form">
+        <div class="traces-form__row">
+          <label for="tr-modal-name">Name</label>
+          <input id="tr-modal-name" name="name" type="text" maxlength="40" required />
+        </div>
+        <div class="traces-form__row">
+          <label for="tr-modal-message">Message</label>
+          <input id="tr-modal-message" name="message" type="text" maxlength="100" placeholder="leave your mark — one line" required />
+        </div>
+        <div class="traces-form__honeypot" aria-hidden="true">
+          <label for="tr-modal-website">Website</label>
+          <input id="tr-modal-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+        <button type="submit" class="traces-form__submit p4g-sweep"><span>Sign</span></button>
+        <p id="traces-modal-status" class="traces-form__status" role="status"></p>
+      </form>
+      <ul id="traces-modal-list" class="traces-list"></ul>
+    `;
+
+    const list = body.querySelector('#traces-modal-list') as HTMLElement;
+    for (const entry of entries) {
+      list.appendChild(buildTraceListItem(entry));
+    }
+    if (entries.length === 0) {
+      list.outerHTML = '<p class="empty-state">No one\'s signed yet — be the first.</p>';
+    }
+
+    const form = body.querySelector('#traces-modal-form') as HTMLFormElement;
+    const status = body.querySelector('#traces-modal-status') as HTMLElement;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+      const formData = new FormData(form);
+      const payload = {
+        name: formData.get('name'),
+        message: formData.get('message'),
+        website: formData.get('website'),
+      };
+
+      if (submitBtn) submitBtn.disabled = true;
+      status.textContent = '';
+      status.removeAttribute('data-tone');
+
+      try {
+        const res = await fetch('/api/traces', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          status.textContent = (data as { error?: string }).error || 'Something went wrong.';
+          status.dataset.tone = 'error';
+          return;
+        }
+
+        const entry = await res.json() as { id: number; name: string; message: string; createdAt: string };
+        const emptyState = body.querySelector('.empty-state');
+        let listEl = body.querySelector('#traces-modal-list') as HTMLElement | null;
+        if (emptyState && !listEl) {
+          listEl = document.createElement('ul');
+          listEl.id = 'traces-modal-list';
+          listEl.className = 'traces-list';
+          emptyState.replaceWith(listEl);
+        }
+        listEl?.prepend(buildTraceListItem(entry));
+
+        form.reset();
+        status.textContent = 'Signed — thanks for leaving your mark.';
+      } catch {
+        status.textContent = 'Network error — please try again.';
+        status.dataset.tone = 'error';
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    });
+  }
+
+  function buildTraceListItem(entry: { id: number; name: string; message: string }): HTMLLIElement {
+    const li = document.createElement('li');
+    li.className = 'traces-list__item';
+    li.dataset.traceId = String(entry.id);
+    const name = document.createElement('span');
+    name.className = 'traces-list__name';
+    name.textContent = entry.name;
+    const message = document.createElement('span');
+    message.className = 'traces-list__message';
+    message.textContent = entry.message;
+    li.append(name, message);
+    return li;
+  }
+
   // Run on initial page load
   initializeLatestTile();
   initializeCodexTile();
@@ -1957,6 +2474,8 @@ const codexTile = await getCodexTileData();
   initializeMailTile();
   initializeJournalTileNav();
   startLivePolling();
+  initializeTracesBand();
+  bindTracesModal();
 
   // Run after each view transition navigation
   document.addEventListener('astro:page-load', () => {
@@ -1967,6 +2486,8 @@ const codexTile = await getCodexTileData();
     initializeMailTile();
     initializeJournalTileNav();
     startLivePolling();
+    initializeTracesBand();
+    bindTracesModal();
   });
 
   // Clean up intervals before navigating away
@@ -1974,5 +2495,6 @@ const codexTile = await getCodexTileData();
     stopLivePolling();
     clearInterval(latestCycleTimer);
     clearInterval(codexCycleTimer);
+    stopTracesCycle();
   });
 </script>
