@@ -1,0 +1,281 @@
+---
+// src/pages/traces.astro
+export const prerender = false;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavPill from '../components/NavPill.astro';
+import { formatDate } from '../utils/dates';
+import { listMessages } from '../utils/tracesDb';
+import { NAME_MAX_LENGTH, MESSAGE_MAX_LENGTH } from '../utils/traces';
+
+const messages = await listMessages();
+---
+
+<BaseLayout title="Traces" description="Leave your mark.">
+  <NavPill />
+  <div class="container">
+    <header class="traces-header">
+      <span class="p4g-tab">Traces</span>
+      <h1 class="traces-title"><span class="p4g-heading">Leave your mark</span></h1>
+      <span class="p4g-underline" aria-hidden="true"></span>
+    </header>
+
+    <form id="traces-form" class="traces-form">
+      <div class="traces-form__row">
+        <label for="tr-name">Name</label>
+        <input id="tr-name" name="name" type="text" maxlength={NAME_MAX_LENGTH} required />
+      </div>
+      <div class="traces-form__row">
+        <label for="tr-message">Message</label>
+        <input
+          id="tr-message"
+          name="message"
+          type="text"
+          maxlength={MESSAGE_MAX_LENGTH}
+          placeholder="leave your mark — one line"
+          required
+        />
+      </div>
+      <!-- Honeypot: hidden from real visitors, off-screen rather than display:none
+           (some bots skip display:none fields specifically). -->
+      <div class="traces-form__honeypot" aria-hidden="true">
+        <label for="tr-website">Website</label>
+        <input id="tr-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+      <button type="submit" class="traces-form__submit p4g-sweep">
+        <span>Sign</span>
+      </button>
+      <p id="traces-form__status" class="traces-form__status" role="status"></p>
+    </form>
+
+    <ul id="traces-list" class="traces-list">
+      {messages.length > 0 ? (
+        messages.map((m) => (
+          <li id={`trace-${m.id}`} class="traces-list__item">
+            <span class="traces-list__name">{m.name}</span>
+            <span class="traces-list__message">{m.message}</span>
+            <span class="traces-list__date">{formatDate(new Date(m.created_at))}</span>
+          </li>
+        ))
+      ) : (
+        <p class="empty-state">No one's signed yet — be the first.</p>
+      )}
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .traces-header {
+    max-width: 60ch;
+    margin: 0 auto var(--space-2xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: var(--border-thick) solid var(--color-gold-dim);
+  }
+
+  .traces-header :global(.p4g-tab) {
+    margin-bottom: var(--space-xs);
+  }
+
+  .traces-title {
+    font-size: var(--text-page-title);
+    color: var(--color-gold);
+    margin-bottom: var(--space-xs);
+  }
+
+  .traces-form {
+    max-width: 60ch;
+    margin: 0 auto var(--space-2xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .traces-form__row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .traces-form__row label {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-text-muted);
+  }
+
+  .traces-form__row input {
+    min-height: 44px;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-bg-elevated);
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: var(--text-md);
+  }
+
+  .traces-form__row input:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+
+  .traces-form__honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .traces-form__submit {
+    align-self: flex-start;
+    min-height: 44px;
+    padding: var(--space-sm) var(--space-xl);
+    background: var(--color-gold);
+    color: var(--color-black);
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    border-radius: var(--radius-sm);
+  }
+
+  .traces-form__submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .traces-form__status {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    min-height: 1.5em;
+  }
+
+  .traces-form__status[data-tone='error'] {
+    color: var(--color-live);
+  }
+
+  .traces-list {
+    max-width: 60ch;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding-bottom: calc(var(--nav-clearance, 80px) + var(--space-md));
+  }
+
+  .traces-list__item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-bg-elevated);
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .traces-list__name {
+    font-family: var(--font-display);
+    color: var(--color-gold);
+  }
+
+  .traces-list__message {
+    color: var(--color-text);
+    flex: 1;
+  }
+
+  .traces-list__date {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .empty-state {
+    color: var(--color-text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: var(--space-xl);
+  }
+</style>
+
+<script>
+  import { initBotId } from 'botid/client/core';
+
+  initBotId({
+    protect: [{ path: '/api/traces', method: 'POST' }],
+  });
+
+  interface SubmitResponse {
+    id: number;
+    name: string;
+    message: string;
+    createdAt: string;
+  }
+
+  const form = document.getElementById('traces-form') as HTMLFormElement | null;
+  const list = document.getElementById('traces-list');
+  const status = document.getElementById('traces-form__status');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form || !status) return;
+
+    const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+    const formData = new FormData(form);
+    const payload = {
+      name: formData.get('name'),
+      message: formData.get('message'),
+      website: formData.get('website'),
+    };
+
+    if (submitBtn) submitBtn.disabled = true;
+    status.textContent = '';
+    status.removeAttribute('data-tone');
+
+    try {
+      const res = await fetch('/api/traces', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        status.textContent = (data as { error?: string }).error || 'Something went wrong.';
+        status.dataset.tone = 'error';
+        return;
+      }
+
+      const entry = await res.json() as SubmitResponse;
+
+      const emptyState = document.querySelector('.empty-state');
+      emptyState?.remove();
+
+      const li = document.createElement('li');
+      li.id = `trace-${entry.id}`;
+      li.className = 'traces-list__item';
+      li.innerHTML = `
+        <span class="traces-list__name"></span>
+        <span class="traces-list__message"></span>
+        <span class="traces-list__date"></span>
+      `;
+      li.querySelector('.traces-list__name')!.textContent = entry.name;
+      li.querySelector('.traces-list__message')!.textContent = entry.message;
+      li.querySelector('.traces-list__date')!.textContent = new Date(entry.createdAt).toLocaleDateString('en-US', {
+        timeZone: 'UTC',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
+      list?.prepend(li);
+
+      form.reset();
+      status.textContent = 'Signed — thanks for leaving your mark.';
+    } catch {
+      status.textContent = 'Network error — please try again.';
+      status.dataset.tone = 'error';
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  });
+</script>
