@@ -24,16 +24,16 @@ export async function insertMessage(name: string, message: string, ipHash: strin
     insert into traces_messages (name, message, ip_hash)
     values (${name}, ${message}, ${ipHash})
     returning id, name, message, created_at
-  ` as any[];
-  return rows[0] as TraceRow;
+  ` as unknown as TraceRow[];
+  return rows[0];
 }
 
 export async function listMessages(limit?: number): Promise<TraceRow[]> {
   const sql = getSql();
   const rows = limit
-    ? (await sql`select id, name, message, created_at from traces_messages order by created_at desc limit ${limit}` as any[])
-    : (await sql`select id, name, message, created_at from traces_messages order by created_at desc` as any[]);
-  return rows as TraceRow[];
+    ? (await sql`select id, name, message, created_at from traces_messages order by created_at desc limit ${limit}` as unknown as TraceRow[])
+    : (await sql`select id, name, message, created_at from traces_messages order by created_at desc` as unknown as TraceRow[]);
+  return rows;
 }
 
 export async function lastSubmissionByIpHash(ipHash: string): Promise<Date | null> {
@@ -43,12 +43,12 @@ export async function lastSubmissionByIpHash(ipHash: string): Promise<Date | nul
     where ip_hash = ${ipHash}
     order by created_at desc
     limit 1
-  ` as any[];
-  return rows[0] ? new Date(rows[0].created_at as string) : null;
+  ` as unknown as TraceRow[];
+  return rows[0] ? new Date(rows[0].created_at) : null;
 }
 
 export async function deleteMessage(id: number): Promise<boolean> {
   const sql = getSql();
-  const rows = await sql`delete from traces_messages where id = ${id} returning id` as any[];
+  const rows = await sql`delete from traces_messages where id = ${id} returning id` as unknown as TraceRow[];
   return rows.length > 0;
 }
