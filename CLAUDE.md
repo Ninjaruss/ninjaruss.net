@@ -14,9 +14,6 @@ npm run build     # Build static site to ./dist/
 npm run preview   # Preview production build locally
 npm run test      # Run vitest unit tests
 npm run astro     # Direct Astro CLI access
-npm run codex         # AI-condense site content into src/data/codex.json (claude CLI)
-npm run codex:export  # manual mode: write codex-prompt.txt for any chatbot
-npm run codex:import  # manual mode: validate codex-response.json → codex.json
 ```
 
 ## Architecture
@@ -61,7 +58,7 @@ All collections share a base schema (defined in `sharedSchema`):
 
 Collection-specific extensions:
 - **shelf**: adds `content_type: 'anime' | 'manga' | 'film' | 'series' | 'music' | 'book' | 'game' | 'character' | 'other'`, `isFavorite: boolean` (defaults to false), and `tags` (string array, defaults to []) — shelf is the only collection with tags
-- **notes**: uses sharedSchema without extensions (no tags — thematic grouping lives in /codex; relatedness via `collections`)
+- **notes**: uses sharedSchema without extensions (no tags; relatedness via `collections`)
 - **showcase**: uses sharedSchema without extensions
 - **now**: simplified schema with `title` (defaults to 'Now'), `publishedAt` (required), `updatedAt`, `draft`
 - **profile**: single entry backing `/about` — `hook` (required), `credentials[]`, `makes[]` (`{label, blurb, href}`), `makesMore` (`{text, href}`), `subjects[]` (`{group, items[]}`), `connect`, `links[]` (`{label, href, primary}`). Every string is `.min(1)` — a blank field is a build error, not a silently empty card. Schema is defined in `src/utils/profile.ts` and imported into `config.ts` (not inline) so it stays unit-testable. Body markdown is the ABOUT prose. Deliberately has **no** `draft` field: it's a singleton the author edits directly
@@ -71,13 +68,13 @@ Collection-specific extensions:
 | Layout | Purpose |
 |--------|---------|
 | `BaseLayout.astro` | Foundation wrapper with meta, styles, view transitions |
-| `SplitViewLayout.astro` | Three-panel list/detail/emblem interface with client-side navigation and emblem card sidebar. Optional `kicker` prop; renders the unified P4G section header (`p4g-tab` + `p4g-heading` + `p4g-underline`; the page title is the `<h1>` and the entry title in the detail panel is the `<h2>` beneath it, on the list route and the standalone detail routes alike) — the same header pattern is replicated on the Now, Now-archive, and Novel pages; optional `placeholderStats` prop renders a build-time stats `<dl>` in the no-selection placeholder (journal: notes/showcases/newest; codex: concepts/source entries); optional `placeholderCta` prop (`{ href, label }`) renders a link under the stats (journal → /codex); optional `showDraw` prop renders the draw-a-card deck in the placeholder + the mobile DRAW button (journal only) |
+| `SplitViewLayout.astro` | Three-panel list/detail/emblem interface with client-side navigation and emblem card sidebar. Optional `kicker` prop; renders the unified P4G section header (`p4g-tab` + `p4g-heading` + `p4g-underline`; the page title is the `<h1>` and the entry title in the detail panel is the `<h2>` beneath it, on the list route and the standalone detail routes alike) — the same header pattern is replicated on the Now, Now-archive, and Novel pages; optional `placeholderStats` prop renders a build-time stats `<dl>` in the no-selection placeholder (journal: notes/showcases/newest); optional `showDraw` prop renders the draw-a-card deck in the placeholder + the mobile DRAW button (journal only) |
 
 ## Component Inventory
 
 ### Structural
 - `BentoGrid.astro` / `BentoTile.astro` — Homepage grid system with visual hierarchy
-- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Journal/VN/Shelf/About/Now/Codex with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /about. (No longer the centered floating Home pill.) ≤768px: items wrap into two rows (4+3, 44px targets, hairlines via gap + gold-tinted inner background) and the back link takes a full-width third row (a folder title never fits a quarter-width cell); a small script publishes the nav's measured height as `--nav-clearance` on <html> (re-set on astro:page-load/resize), consumed by page bottom paddings (now pages, SplitViewLayout detail panel, novel.css) so the bar never covers content.
+- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Journal/VN/Shelf/About/Now with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /about. (No longer the centered floating Home pill.) ≤768px: items wrap into two rows (4+3, 44px targets, hairlines via gap + gold-tinted inner background) and the back link takes a full-width third row (a folder title never fits a quarter-width cell); a small script publishes the nav's measured height as `--nav-clearance` on <html> (re-set on astro:page-load/resize), consumed by page bottom paddings (now pages, SplitViewLayout detail panel, novel.css) so the bar never covers content.
 
 ### Bento Tile Hierarchy
 The homepage uses a visual hierarchy pattern:
@@ -99,9 +96,8 @@ Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--sp
 - Row 1: Title (4×1) + YouTube (1×1) + Now (1×1)
 - Rows 2-3: Journal (4×2, core) + Novel (1×2, rain gauge) + Stream (1×2)
 - Rows 4-5: Shelf/Media Log (2×2, core) + Latest (2×2) + MAL (1×1, row 4) + Spotify (1×1, row 4) + Email (2×1, row 5)
-- Row 6: Codex (2×1, cycling synthesis line)
 
-Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title-tile { grid-column: span 4 }`), not a span class.
+Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title-tile { grid-column: span 4 }`), not a span class. Below the grid (not a tile): the Traces band — see the Traces section.
 
 ### List/Detail
 - `ListItem.astro` — Left panel items in SplitViewLayout
@@ -188,7 +184,7 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 ## Pages & Routes
 
 ### Content Collection Pages
-- `/journal` — SplitViewLayout merging the `notes` + `showcase` collections into one date-sorted list ("notes & showcases" kicker). Filters are search + a segmented type control only (All / note / showcase, single-select with per-type counts, `?types=` URL param), plus a "visible / total" count and a compact ✕ clear-all beside search — no tag filtering (legacy `?tags=` params are ignored and scrubbed from the URL on first filter interaction, `urlState.ts`). Unknown `?types=` values — including the legacy `fragment`/`inquiry` — are dropped (fall back to All, enforced in `filterUI.populateTypes` + `filterEngine.applyFilters`). The no-selection placeholder shows build-time stats (`placeholderStats`), a "browse by theme — codex" CTA (`placeholderCta`), and the draw-a-card deck (`showDraw`). Draw-a-card: desktop = deck in the placeholder (one draw per visit; clicking the revealed face opens the entry through the normal selection path), mobile (≤900px) = a DRAW button that navigates to a random note; the pool respects active filters and contains notes only (pure logic in `splitView/drawCard.ts`). (The old featured strip linking `/novel` and `/status` (then `/stream`) was removed; those live in the NavPill now.)
+- `/journal` — SplitViewLayout merging the `notes` + `showcase` collections into one date-sorted list ("notes & showcases" kicker). Filters are search + a segmented type control only (All / note / showcase, single-select with per-type counts, `?types=` URL param), plus a "visible / total" count and a compact ✕ clear-all beside search — no tag filtering (legacy `?tags=` params are ignored and scrubbed from the URL on first filter interaction, `urlState.ts`). Unknown `?types=` values — including the legacy `fragment`/`inquiry` — are dropped (fall back to All, enforced in `filterUI.populateTypes` + `filterEngine.applyFilters`). The no-selection placeholder shows build-time stats (`placeholderStats`) and the draw-a-card deck (`showDraw`). Draw-a-card: desktop = deck in the placeholder (one draw per visit; clicking the revealed face opens the entry through the normal selection path), mobile (≤900px) = a DRAW button that navigates to a random note; the pool respects active filters and contains notes only (pure logic in `splitView/drawCard.ts`). (The old featured strip linking `/novel` and `/status` (then `/stream`) was removed; those live in the NavPill now.)
 - `/notes/[slug]` — Individual note detail pages (left panel shows the merged journal list, `section="journal"`)
 - `/showcase/[slug]` — Individual project detail pages (same merged list)
 - `/shelf` — Flat 'wall' collage of every entry (size = favorite/written/logged tier) with a sticky type-filter bar and inline quick-view panel. Progressive enhancement: cards link to `/shelf/[slug]` without JS; JS intercepts clicks to push `/shelf/[slug]` into history and open the panel instead (`?open=slug` supported for legacy links only).
@@ -274,25 +270,48 @@ Remember Rain is a **visual novel** in progress (the project committed to a VN-f
 - **Ordering (binder order)**: The Scrivener export carries no binder-order data (no `.scrivx`, no order field in the sidecars), so `buildNovelTree` orders siblings by a **leading numeric filename prefix** (`parseOrderPrefix`): `1 Rain intro.md`, `2 Claire and Roxana save Rain.md`, … render in that order, and the number is stripped from both the display title and the URL slug (→ "Rain intro", `/novel/manuscript/arc-1-fugitive/rain-intro`). Works on files and folders at every level. A 1–3 digit prefix + separator (space/`.`/`-`/`_`/`)`) is treated as order; 4-digit years stay part of the title. Un-prefixed siblings fall back to natural (numeric-aware) alphabetical order, so `Arc 2` precedes `Arc 10` without prefixes. Number the exported files to reproduce the Scrivener binder order.
 - **Adding content**: Drop `.md` files into the appropriate `src/content/novel/` subfolder. Scrivener MetaData.txt sidecars are auto-read if present (numbered sidecars like `1 Rain intro MetaData.txt` and prefix-stripped names both resolve); other `.txt` files are silently skipped.
 
-## Codex System (/codex second brain)
+## Traces
 
-`/codex` is an AI-condensed encyclopedia of the site's content and the site's
-official thematic map — notes/showcase carry no tags, so browsing by theme means
-browsing the codex (the /journal no-selection placeholder links here via its
-"browse by theme — codex" CTA). `src/data/codex.json`
-(committed, reviewed via git diff before commit) holds the interpretation: 6-12
-concepts, each with a second-person synthesis and entry refs like `notes/<slug>` /
-`novel/world/<slug>`. The build resolves all facts (titles, dates, excerpts, links)
-live from collections + the novel tree (`src/utils/codexContent.ts` → pure logic in
-`src/utils/codex/`), so a stale codex.json can never show wrong facts — staleness only
-means new entries sit in the "loose threads" tray on /codex (accumulation framing;
-never shows time-since-last-run — same no-shame invariant as the novel rain gauge).
-Missing/invalid codex.json → the build still succeeds and /codex renders an empty state.
-Concepts whose synthesis is empty render sources-only. Pages: /codex (SplitViewLayout,
-kicker "second brain") + /codex/[slug]. NavPill has a Codex item (7 items). Homepage
-has a 2×1 Codex tile cycling synthesis first-sentences with the latest-sweep pattern.
-Scripts live in scripts/codex/ (tsx); manual mode scratch files codex-prompt.txt /
-codex-response.json are gitignored. Tests: src/tests/codex.test.ts (pure modules only).
+A public guestbook: visitors leave a short name + one-line message. Neon
+Postgres-backed (`traces_messages` table, provisioned via the Vercel
+Marketplace `neon` integration — `DATABASE_URL` and the connection is
+lazy-initialized in `src/utils/tracesDb.ts` to stay build-safe). The site is
+otherwise fully static; only the Traces routes opt into on-demand rendering
+(`export const prerender = false`): `GET`/`POST /api/traces` (list, with an
+optional `?limit=`, and submit — both live in the same
+`src/pages/api/traces/index.ts`) and the admin-only `DELETE
+/api/traces/[id]` (gated by an `x-admin-key` header checked against
+`TRACES_ADMIN_KEY`). `/traces` (`src/pages/traces.astro`) is the canonical,
+no-JS-safe destination — full form + full list, server-rendered.
+
+**Anti-abuse (all invisible, no CAPTCHA)**: a honeypot field (`website`,
+silently no-ops rather than erroring), Vercel BotID (`checkBotId()`
+server-side, fails open on error — see `vercel.json`'s proxy rewrites and
+`initBotId()` client-side calls in both `traces.astro` and `index.astro`),
+a per-IP rate limit (`hashIp()`/`isRateLimited()` in `src/utils/traces.ts`,
+5 min window, `ip_hash` never stores the raw IP), a length cap (name 40 /
+message 100 chars), and a narrow, intentionally-not-general-purpose
+blocklist (`BLOCKED_TERMS` in the same file — self-harm-incitement phrases
+only; extend it directly rather than treating it as a profanity filter).
+
+**Homepage**: a band below the bento grid (not a tile) — a "Traces" tab
+plus recent-name pills in a ticket-stub style, their message flyouts
+auto-cycling (~2.5s, pauses on hover/focus, disabled under
+`prefers-reduced-motion`). Clicking the tab or a pill opens a native
+`<dialog>` modal with the full form + list, without navigating away; the
+tab degrades to a plain link to `/traces` with no JS. `bandRotation()`
+(`src/utils/tracesRotation.ts`, zero imports — bundled straight into the
+homepage `<script>`) gives each pill a deterministic tilt, same trick as
+the shelf wall's `wallRotation()`.
+
+**Gotcha**: Astro's scoped CSS only tags elements present in the
+server-rendered template. Anything built client-side via
+`document.createElement`/`innerHTML` — the band's pills, the modal's
+form/list, a page's own JS-appended list item — never gets the
+`data-astro-cid-*` attribute, so scoped rules silently never match it.
+Every such selector in `traces.astro` and `index.astro` is wrapped in
+`:global(...)` for exactly this reason; do the same for any new
+dynamically-created Traces markup.
 
 ## Sessions & the /about arc card
 
@@ -381,9 +400,11 @@ separate decision, not part of this page.
 | `src/utils/sessions.ts` | `STAT_ORDER`, `StatName`, `STAT_COLORS`, `hexToRgbTriplet()` | The shared stat vocabulary/colors — the only place the five stat hexes are written (`index.astro`'s homepage tile, `about.astro`'s arc card, and `scripts/transition.ts`'s page-transition card all read `STAT_COLORS`). Tallying/radar/donut/quest-parsing/level-curve logic that used to live here was deleted in the 2026-08 `/status` rebuild (see Sessions & the /about arc card above) |
 | `src/utils/protagonist.ts` | `parseProtagonist()`, `DEFAULT_PROTAGONIST` | Minimal frontmatter reader for `_protagonist.md` (name/epithet/portrait); missing file/fields degrade to defaults |
 | `src/utils/profile.ts` | `profileSchema`, `pickProfile()`, `nowLine()` | /about profile card data layer — Zod schema (from `astro/zod`, **not** `astro:content`, so vitest can load it), singleton entry selection, and the single live NOW line (returns null rather than a placeholder when there's nothing real to show) |
-| `src/utils/codexContent.ts` + `src/utils/codex/` | `getCodexPageData()`, `getCodexTileData()`; pure modules: schema, json, stabilize, resolve, corpus, prompt, pipeline | /codex data layer — see Codex System section |
 | `src/utils/shelfWall.ts` | `wallTier()`, `wallShape()`, `wallClass()`, `wallRotation()`, `sortWall()`, `resolveInitialFilter()` | /shelf wall logic — affection tiers, shape/span classes, slug-seeded rotation, ordering, filter-URL resolution |
 | `src/utils/splitView/` | (11 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
+| `src/utils/traces.ts` | `tracesMessageSchema`, `parseTracesInput()`, `sanitizeText()`, `hashIp()`, `isRateLimited()`, `containsBlockedTerm()`, `BLOCKED_TERMS`, `NAME_MAX_LENGTH`, `MESSAGE_MAX_LENGTH`, `RATE_LIMIT_WINDOW_MS` | Traces validation/hash/rate-limit/blocklist — see Traces section |
+| `src/utils/tracesDb.ts` | `insertMessage()`, `listMessages()`, `lastSubmissionByIpHash()`, `deleteMessage()`, `TraceRow` | Traces database access layer (Neon, lazy-initialized) |
+| `src/utils/tracesRotation.ts` | `bandRotation()` | Zero-import, id-seeded pill rotation for the homepage Traces band — bundled directly into `index.astro`'s client `<script>` |
 
 The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-pool logic, tested in `src/tests/drawCard.test.ts`), `emblemAnimation`, `eventBindings`, `filterEngine`, `filterUI`, `idleManager`, `mediaHandlers`, `proseImageTilt`, `types`, `urlState`.
 
@@ -401,7 +422,7 @@ The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-po
 
 ## Important Implementation Details
 
-1. **SplitViewLayout JavaScript**: Three-panel layout (list/detail/emblem) with client-side fetch for detail content, History API for navigation, search/tag/type filtering (Cmd/Ctrl+K to focus search), emblem card flipping on content selection, falls back gracefully without JS. `contentLoader.loadContent` fetches by each list item's own `href` (not the page section), so mixed-collection lists like `/journal` work. On load with no slug in the URL, auto-opens the newest visible entry — desktop layout only (detected via the applied grid columns, not viewport width) and without pushing history or moving focus; detection retries on a setTimeout loop (20 × 75ms then 20 × 250ms, ~6.5s total) because styles can land after init and rAF is suspended in background tabs, and is re-kicked once on window `load` and once when the `(min-width: 1200px)` media query flips true (embedded panes can report 0×0 at init), with a `splitView.isConnected` guard stopping stale timers after view-transition swaps (`src/utils/splitView/index.ts`; `loadContent` accepts `{ pushHistory, focusHeading }` options). Auto-open is skipped entirely when `showDraw` renders the draw deck — the journal lands on the placeholder (stats + codex CTA + draw) instead of auto-opening an entry.
+1. **SplitViewLayout JavaScript**: Three-panel layout (list/detail/emblem) with client-side fetch for detail content, History API for navigation, search/tag/type filtering (Cmd/Ctrl+K to focus search), emblem card flipping on content selection, falls back gracefully without JS. `contentLoader.loadContent` fetches by each list item's own `href` (not the page section), so mixed-collection lists like `/journal` work. On load with no slug in the URL, auto-opens the newest visible entry — desktop layout only (detected via the applied grid columns, not viewport width) and without pushing history or moving focus; detection retries on a setTimeout loop (20 × 75ms then 20 × 250ms, ~6.5s total) because styles can land after init and rAF is suspended in background tabs, and is re-kicked once on window `load` and once when the `(min-width: 1200px)` media query flips true (embedded panes can report 0×0 at init), with a `splitView.isConnected` guard stopping stale timers after view-transition swaps (`src/utils/splitView/index.ts`; `loadContent` accepts `{ pushHistory, focusHeading }` options). Auto-open is skipped entirely when `showDraw` renders the draw deck — the journal lands on the placeholder (stats + draw) instead of auto-opening an entry.
 
 1b. **SplitView mobile (≤900px) stacked layout**: the list panel flows at natural height (`.split-view__nav` has `max-height: none` — the page scrolls; an inner scroller left a dead band above the bottom nav) with `--nav-clearance` bottom padding, and the empty detail pane is `display: none` until a selection exists (`has-selection` is server-set on detail routes like `/notes/[slug]` and client-set on tap, so both flows show the detail). Auto-open remains desktop-only. The `.split-view__content .prose` right inset in that breakpoint exists to clear the fixed `.emblem-badge` (60px + its offset) — removing it puts the badge back on top of the text.
 
@@ -415,7 +436,7 @@ The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-po
 
 6. **Latest Tile**: Homepage 2×2 tile with an absolute date (`.latest-date`, formatted at build with `formatDate`, carried per entry in `data-entries` so it swaps with the cycle — never "days ago", per the no-shame invariant; `text-transform: lowercase` in CSS so it matches the journal tile's "aug 1" rows without touching `formatDate`) and excerpt; cycles client-side through the latest 2 notes and latest 1 showcase (interleaved note/showcase/note, 7s interval; each swap is a P4G gold sweep — a skewed gold panel (`.latest-tile__sweep`) sweeps across via the `latest-sweep` keyframes on `#latest-tile.is-cycling`, matching the journal-entry hover, with the entry swapped behind it mid-sweep; cycling skipped under `prefers-reduced-motion`). The emblem sits on a deeper-black angled field (`.latest-tile__emblem-wrap`, `clip-path` + negative-margin bleed) traced by a gold hairline (`::before`, skewX(-4deg) measured against the clip edge); ≤768px the field flattens to the tile's bottom edge and the hairline hides.
 
-6b. **NavPill**: 7 items — Home / Journal / VN / Shelf / About / Now / Codex — rendered on every non-home page including `/about` (whose sidebar "Ninjaruss" logo badge was removed back when this was `/status`; both `/status` and `/stream` now 301-redirect to `/about`). `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array.
+6b. **NavPill**: 6 items — Home / Journal / VN / Shelf / About / Now — rendered on every non-home page including `/about` (whose sidebar "Ninjaruss" logo badge was removed back when this was `/status`; both `/status` and `/stream` now 301-redirect to `/about`). `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array.
 
 7. **Shelf Wall**: `/shelf` is one flat dense-packed collage (not SplitViewLayout, no per-type sections) where an entry's size expresses affection — favorites large with a gold ring, written-about medium, bare logs small, nothing dimmed. See the Shelf Page Features section above for the full model.
 

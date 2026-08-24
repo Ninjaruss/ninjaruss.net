@@ -12,7 +12,6 @@ Top-level sections (the NavPill):
 - `/shelf` — Media log: anime, manga, film, series, music, games, characters
 - `/status` — Stream log as a P4G status screen (session stats, sessions, mailbox)
 - `/now` — Current focus snapshot (history at `/now/archive`)
-- `/codex` — AI-synthesized "second brain" of concepts drawn from the site's writing
 
 Also served: `/rss.xml` (excerpt-only journal feed) and `/about` (301 to the current
 identity note — no static About page by design).
@@ -28,7 +27,6 @@ npm run dev      # Start dev server at localhost:4321
 npm run build    # Build to ./dist/
 npm run preview  # Preview build locally
 npm run test     # Run vitest unit tests
-npm run codex    # AI-condense site content into src/data/codex.json
 ```
 
 Deploys to Vercel via the `@astrojs/vercel` adapter.

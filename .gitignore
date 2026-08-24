@@ -29,10 +29,6 @@ pnpm-debug.log*
 .vercel
 .env*
 
-# /codex manual-mode scratch files (workflow artifacts, never content)
-codex-prompt.txt
-codex-response.json
-
 # auto-installed by Vercel Marketplace CLI integrations (e.g. `vercel integration add`) —
 # vendor onboarding docs this repo doesn't want to keep committed
 .agents/skills/

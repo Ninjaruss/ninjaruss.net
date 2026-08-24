@@ -9,7 +9,6 @@ import { STAT_COLORS } from '../utils/sessions';
 import { parseCurrentArc } from '../utils/currentArc';
 import { stripMarkdown } from '../utils/content';
 import { formatDate } from '../utils/dates';
-import { getCodexTileData } from '../utils/codexContent';
 import { readFileSync } from 'fs';
 import { parseProtagonist, DEFAULT_PROTAGONIST } from '../utils/protagonist';
 
@@ -120,7 +119,6 @@ const latestEntries = latestPool.map(entry => ({
   excerpt: stripMarkdown(entry.body ?? '').slice(0, 140),
 }));
 
-const codexTile = await getCodexTileData();
 ---
 
 <BaseLayout title="Home" description="Notes, media, and showcases.">
@@ -411,35 +409,12 @@ const codexTile = await getCodexTileData();
         <p class="logo-tile__description">Connect with me directly.</p>
       </a>
 
-      <!-- Row 6: Codex (2×1) -->
-      <a
-        href="/codex"
-        id="codex-tile"
-        class="bento-tile bento-tile--interactive bento-tile--span-2x1 p3r-animate"
-        style="--stagger-delay: 240ms;"
-        data-lines={JSON.stringify(codexTile.lines)}
-      >
-        <span class="bento-tile__corner" aria-hidden="true"></span>
-        <div class="codex-tile__inner">
-          <div class="codex-tile__top">
-            <span class="p4g-tab">Codex</span>
-            <span class="codex-tile__count">
-              {codexTile.conceptCount > 0
-                ? `${codexTile.conceptCount} concepts`
-                : 'not yet condensed'}
-            </span>
-          </div>
-          <p class="codex-tile__line" id="codex-line">
-            {codexTile.lines[0] ?? 'no codex generated yet'}
-          </p>
-        </div>
-        <span class="codex-tile__sweep" aria-hidden="true"></span>
-      </a>
     </BentoGrid>
   </div>
 
   <section class="traces-band" id="traces-band" aria-label="Traces signatures">
     <a href="/traces" class="traces-band__label p4g-tab" id="traces-tab">Traces</a>
+    <span class="traces-band__hint">leave your mark</span>
     <div class="traces-band__pills" id="traces-band-pills"></div>
   </section>
 
@@ -1393,60 +1368,6 @@ const codexTile = await getCodexTileData();
     }
   }
 
-  /* Codex tile — rotating synthesis line with the P4G gold sweep */
-  .codex-tile__inner {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-    height: 100%;
-    justify-content: center;
-  }
-
-  .codex-tile__top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-sm);
-  }
-
-  .codex-tile__count {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-  }
-
-  .codex-tile__line {
-    margin: 0;
-    font-size: var(--text-sm);
-    line-height: 1.55;
-    color: var(--color-text);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .codex-tile__sweep {
-    position: absolute;
-    inset: -1px;
-    background: var(--color-gold);
-    transform: translateX(-115%) skewX(var(--skew-accent));
-    pointer-events: none;
-    z-index: 2;
-  }
-
-  #codex-tile.is-cycling .codex-tile__sweep {
-    animation: latest-sweep 760ms var(--animation-easing);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    #codex-tile.is-cycling .codex-tile__sweep {
-      animation: none;
-    }
-  }
-
   .latest-tile__text {
     display: flex;
     flex-direction: column;
@@ -1717,7 +1638,7 @@ const codexTile = await getCodexTileData();
       font-size: clamp(1.5rem, 6vw, 2rem);
     }
 
-    /* Single column: float owned content (Journal/Now/Novel/Latest/Codex…)
+    /* Single column: float owned content (Journal/Now/Novel/Latest…)
        above the external service tiles, and let the YouTube tile read as a
        signal rather than a full-height hero. Grid honors `order` for
        auto-placement just like flex. */
@@ -1742,10 +1663,23 @@ const codexTile = await getCodexTileData();
     padding: var(--space-md) var(--space-md) calc(var(--nav-clearance, 80px) + var(--space-md));
   }
 
+  .traces-band__hint {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    /* The tab alone reads as a static label at rest (same p4g-tab treatment
+       as non-interactive kickers like WATCHLIST/CONTACT elsewhere on the
+       page) — this line is what tells a visitor, mobile especially, that
+       it's tappable and what tapping it does. */
+  }
+
   .traces-band__pills {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-sm);
+    /* Own row: keeps the tab+hint from fighting pills for wrap space on
+       narrow viewports, and reads better once there are several pills. */
+    flex-basis: 100%;
   }
 
   /* Ticket-stub treatment: dashed gold border on black, mono caps, a small
@@ -2080,27 +2014,6 @@ const codexTile = await getCodexTileData();
         window.setTimeout(() => latestTile.classList.remove('is-cycling'), 800);
       }, 7000);
     }
-  }
-
-  // Codex tile — rotates one synthesis line at a time behind the gold sweep.
-  let codexCycleTimer: number | undefined;
-
-  function initializeCodexTile() {
-    clearInterval(codexCycleTimer);
-    const tile = document.getElementById('codex-tile');
-    if (!tile) return;
-    const lines: string[] = JSON.parse((tile as HTMLElement).dataset.lines || '[]');
-    const lineEl = document.getElementById('codex-line');
-    if (!lineEl || lines.length < 2) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    let index = 0;
-    codexCycleTimer = window.setInterval(() => {
-      index = (index + 1) % lines.length;
-      tile.classList.add('is-cycling');
-      window.setTimeout(() => { lineEl.textContent = lines[index]; }, 365);
-      window.setTimeout(() => tile.classList.remove('is-cycling'), 800);
-    }, 8000);
   }
 
   // Email tile — assemble the mailto only on first interaction so the
@@ -2485,7 +2398,6 @@ const codexTile = await getCodexTileData();
 
   // Run on initial page load
   initializeLatestTile();
-  initializeCodexTile();
   initializeNovelRain();
   initializeTilt();
   initializeMailTile();
@@ -2497,7 +2409,6 @@ const codexTile = await getCodexTileData();
   // Run after each view transition navigation
   document.addEventListener('astro:page-load', () => {
     initializeLatestTile();
-    initializeCodexTile();
     initializeNovelRain();
     initializeTilt();
     initializeMailTile();
@@ -2511,7 +2422,6 @@ const codexTile = await getCodexTileData();
   document.addEventListener('astro:before-preparation', () => {
     stopLivePolling();
     clearInterval(latestCycleTimer);
-    clearInterval(codexCycleTimer);
     stopTracesCycle();
   });
 </script>

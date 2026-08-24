@@ -108,7 +108,7 @@ export function initSplitView(): void {
     // No slug in the URL — auto-open the newest visible entry so visitors
     // land on content instead of the empty placeholder. Skipped when the
     // placeholder carries the draw-a-card deck (journal): there the
-    // placeholder IS the designed landing screen (stats, codex CTA, deck),
+    // placeholder IS the designed landing screen (stats, deck),
     // and auto-opening would hide it before it's ever seen. URL stays untouched
     // until the user actually selects something. Desktop only: in the
     // single-column layout .has-selection collapses the list panel, which

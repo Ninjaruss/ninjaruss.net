@@ -34,7 +34,7 @@ export const profileSchema = z.object({
     text: z.string().min(1),
     href: z.string().min(1),
   }).optional(),
-  /** SUBJECTS I EXPLORE, grouped. Plain text — thematic browsing lives at /codex. */
+  /** SUBJECTS I EXPLORE, grouped. Plain text, no thematic browsing/linking. */
   subjects: z.array(z.object({
     group: z.string().min(1),
     items: z.array(z.string().min(1)),
