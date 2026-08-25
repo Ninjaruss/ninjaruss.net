@@ -413,8 +413,9 @@ const latestEntries = latestPool.map(entry => ({
   </div>
 
   <section class="traces-band" id="traces-band" aria-label="Traces signatures">
-    <a href="/traces" class="traces-band__label p4g-tab" id="traces-tab">Traces</a>
-    <span class="traces-band__hint">leave your mark</span>
+    <a href="/traces" class="traces-band__cta" id="traces-tab">
+      <span aria-hidden="true">✎</span> Leave Your Mark
+    </a>
     <div class="traces-band__pills" id="traces-band-pills"></div>
   </section>
 
@@ -1663,14 +1664,30 @@ const latestEntries = latestPool.map(entry => ({
     padding: var(--space-md) var(--space-md) calc(var(--nav-clearance, 80px) + var(--space-md));
   }
 
-  .traces-band__hint {
-    font-family: var(--font-mono);
+  /* Solid-fill button, not the p4g-tab kicker treatment — a tab alone read
+     as a static label at rest (same look as non-interactive kickers like
+     WATCHLIST/CONTACT elsewhere on the page), giving no signal it was
+     tappable. Matches the SIGN button's weight on /traces itself. */
+  .traces-band__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    min-height: 44px;
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--color-gold);
+    color: var(--color-black);
+    font-family: var(--font-display);
     font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    /* The tab alone reads as a static label at rest (same p4g-tab treatment
-       as non-interactive kickers like WATCHLIST/CONTACT elsewhere on the
-       page) — this line is what tells a visitor, mobile especially, that
-       it's tappable and what tapping it does. */
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+  }
+
+  .traces-band__cta:hover,
+  .traces-band__cta:focus-visible {
+    background: var(--color-gold-orange);
   }
 
   .traces-band__pills {
