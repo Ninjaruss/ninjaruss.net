@@ -413,6 +413,7 @@ const latestEntries = latestPool.map(entry => ({
   </div>
 
   <section class="traces-band" id="traces-band" aria-label="Traces signatures">
+    <span class="p4g-tab">Traces</span>
     <a href="/traces" class="traces-band__cta" id="traces-tab">
       <span aria-hidden="true">✎</span> Leave Your Mark
     </a>
@@ -1654,14 +1655,19 @@ const latestEntries = latestPool.map(entry => ({
     }
   }
 
+  /* Same width/horizontal padding as .container (global.css) so the band's
+     content lines up with the bento grid's edges above it, not its own
+     independent measure. Column layout + a leading .p4g-tab matches every
+     other section's grammar on this page (JOURNAL, SHOWCASES, WATCHLIST,
+     LISTENING, CONTACT all lead with the same kicker-label pattern). */
   .traces-band {
     display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--space-sm) var(--space-md);
-    max-width: var(--content-max-width, 1200px);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    max-width: 1200px;
     margin: 0 auto;
-    padding: var(--space-md) var(--space-md) calc(var(--nav-clearance, 80px) + var(--space-md));
+    padding: var(--space-xl) var(--space-lg) calc(var(--nav-clearance, 80px) + var(--space-md));
   }
 
   /* Solid-fill button, not the p4g-tab kicker treatment — a tab alone read
@@ -1694,9 +1700,8 @@ const latestEntries = latestPool.map(entry => ({
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-sm);
-    /* Own row: keeps the tab+hint from fighting pills for wrap space on
-       narrow viewports, and reads better once there are several pills. */
-    flex-basis: 100%;
+    /* .traces-band is a column now, so pills already fall on their own
+       row below the button without needing a flex-basis hack. */
   }
 
   /* Ticket-stub treatment: dashed gold border on black, mono caps, a small
