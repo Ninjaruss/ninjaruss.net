@@ -4,7 +4,7 @@ export const prerender = false;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NavPill from '../components/NavPill.astro';
-import { formatDate } from '../utils/dates';
+import { formatTraceTimestamp } from '../utils/tracesFormat';
 import { listMessages } from '../utils/tracesDb';
 import { NAME_MAX_LENGTH, MESSAGE_MAX_LENGTH } from '../utils/traces';
 
@@ -53,7 +53,7 @@ const messages = await listMessages();
         <li id={`trace-${m.id}`} class="traces-list__item">
           <span class="traces-list__name">{m.name}</span>
           <span class="traces-list__message">{m.message}</span>
-          <span class="traces-list__date">{formatDate(new Date(m.created_at))}</span>
+          <span class="traces-list__date">{formatTraceTimestamp(m.created_at)}</span>
         </li>
       ))}
     </ul>
@@ -199,6 +199,7 @@ const messages = await listMessages();
 
 <script>
   import { initBotId } from 'botid/client/core';
+  import { formatTraceTimestamp } from '../utils/tracesFormat';
 
   interface SubmitResponse {
     id: number;
@@ -269,12 +270,7 @@ const messages = await listMessages();
         `;
         li.querySelector('.traces-list__name')!.textContent = entry.name;
         li.querySelector('.traces-list__message')!.textContent = entry.message;
-        li.querySelector('.traces-list__date')!.textContent = new Date(entry.createdAt).toLocaleDateString('en-US', {
-          timeZone: 'UTC',
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        });
+        li.querySelector('.traces-list__date')!.textContent = formatTraceTimestamp(entry.createdAt);
         list?.prepend(li);
 
         form.reset();

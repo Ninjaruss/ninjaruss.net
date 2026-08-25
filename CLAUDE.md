@@ -299,33 +299,54 @@ message 100 chars), and a narrow, intentionally-not-general-purpose
 blocklist (`BLOCKED_TERMS` in the same file — self-harm-incitement phrases
 only; extend it directly rather than treating it as a profanity filter).
 
-**Homepage**: `.traces-widget` — a small card fixed to the bottom-right
-viewport corner (not a bento tile, not in the page flow), so it stays
-reachable no matter how far the grid is scrolled without claiming a grid
-cell. Header is a "Traces" `p4g-tab` + the "Leave Your Mark" button
-(`.traces-band__cta`); below that, up to 3 recent-name pills
-(`?limit=3` — "a few at a glance," not a scrollable list) in a
-ticket-stub style. There's no per-pill popup: a single shared preview
-line (`.traces-widget__preview`, `#traces-widget-preview`) shows
-whichever pill is active, auto-cycling among them (~2.5s, pauses on
-hover/focus, disabled under `prefers-reduced-motion`) — a per-pill
-floating flyout was tried first and dropped, since in a small
-bottom-corner card there's no direction to pop one that doesn't either
-clip off the viewport edge or collide with the button above it. Clicking
-the tab or an already-active pill opens a native `<dialog>` modal with
-the full form + list, without navigating away; on touch, a first tap on
-a pill just activates it (updates the preview, pauses cycling) and a
-second tap opens the modal; the tab itself degrades to a plain link to
-`/traces` with no JS. `bandRotation()` (`src/utils/tracesRotation.ts`,
-zero imports — bundled straight into the homepage `<script>`) gives each
-pill a deterministic tilt, same trick as the shelf wall's
-`wallRotation()`. The widget's `z-index` sits above normal content but
-well under the cursor dot (9999) and native `<dialog>` top-layer
-rendering, so the modal still covers it correctly.
+**Homepage — the wall** (`.traces-wall`, three redesigns in: pills →
+fixed-corner ticker → this): a danmaku/bullet-comment strip living in
+normal page flow directly under the bento grid (`.container` class in
+markup, so it lines up with the grid's own width/padding — not fixed to
+the viewport like the two prior iterations). Header is a "Traces"
+`p4g-tab` + a plain "Leave your mark →" link (`#traces-tab`, opens the
+modal via JS, degrades to a real link to `/traces` with no JS). Below
+that, `.traces-wall__lanes` holds 3 horizontal lanes (2 on ≤768px —
+three lanes of readable-length messages start overlapping below that);
+JS (`initializeTracesWall`) fetches `?limit=30` and spawns each message
+as a `.traces-wall__bullet` — name, message, and a compact timestamp
+(`formatTraceTimestampCompact`, e.g. "aug 25 · 3:41pm") — that flies
+right-to-left via a CSS `translateX` keyframe, `--bullet-duration` scaled
+to message length (`tracesBulletDuration`), removed on `animationend`.
+Bullets loop continuously through the same fetched snapshot (schedule
+the queue once, reschedule after its total run time — same "loop a fixed
+set" approach as the Latest tile) rather than re-fetching.
+
+**Same-person grouping** (`buildTracesSpawnQueue`): names are free text,
+not accounts, so "same person" is approximated by trimmed
+case-insensitive name match. Each name-group's newest message is a
+"primary" bullet; older messages from that name become dimmer, smaller
+"echo" bullets (`.traces-wall__bullet--echo`) queued immediately after
+the primary with a tighter gap (`TRACES_ECHO_GAP_MS`, 900ms) than the gap
+between different people's primaries (`TRACES_BULLET_GAP_MS`, 2600ms) —
+so a person's history clusters together in the wall and their latest
+message is what surfaces first, instead of their old messages scattered
+evenly among everyone else's.
+
+Clicking a bullet (or the header link) opens the existing `<dialog>`
+modal with the full form + list, scrolled to and highlighting that exact
+entry (`data-trace-id`); the modal list and `/traces` itself both show
+the full formatted date **and time** per message
+(`formatTraceTimestamp`, e.g. "Aug 25, 2026 · 3:41 PM UTC") — traces
+are submission instants, not editorial content dates, so this
+intentionally departs from the sitewide date-only `formatDate()`
+convention (see `src/utils/tracesFormat.ts`'s doc comment).
+
+**Reduced motion**: flying, looping text is the entire point of a
+danmaku wall, so `prefers-reduced-motion` doesn't just slow it down —
+`initializeTracesWall` skips the animated spawn queue entirely and
+instead appends each name-group's primary bullet statically (no echoes,
+no motion) directly into `.traces-wall__lanes[data-static]`, which CSS
+switches to a plain wrapped flex row.
 
 **Gotcha**: Astro's scoped CSS only tags elements present in the
 server-rendered template. Anything built client-side via
-`document.createElement`/`innerHTML` — the band's pills, the modal's
+`document.createElement`/`innerHTML` — the wall's bullets, the modal's
 form/list, a page's own JS-appended list item — never gets the
 `data-astro-cid-*` attribute, so scoped rules silently never match it.
 Every such selector in `traces.astro` and `index.astro` is wrapped in
@@ -423,7 +444,7 @@ separate decision, not part of this page.
 | `src/utils/splitView/` | (11 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
 | `src/utils/traces.ts` | `tracesMessageSchema`, `parseTracesInput()`, `sanitizeText()`, `hashIp()`, `isRateLimited()`, `containsBlockedTerm()`, `BLOCKED_TERMS`, `NAME_MAX_LENGTH`, `MESSAGE_MAX_LENGTH`, `RATE_LIMIT_WINDOW_MS` | Traces validation/hash/rate-limit/blocklist — see Traces section |
 | `src/utils/tracesDb.ts` | `insertMessage()`, `listMessages()`, `lastSubmissionByIpHash()`, `deleteMessage()`, `TraceRow` | Traces database access layer (Neon, lazy-initialized) |
-| `src/utils/tracesRotation.ts` | `bandRotation()` | Zero-import, id-seeded pill rotation for the homepage Traces band — bundled directly into `index.astro`'s client `<script>` |
+| `src/utils/tracesFormat.ts` | `formatTraceTimestamp()`, `formatTraceTimestampCompact()` | Zero-import timestamp formatting shared by `traces.astro`'s list, the homepage modal list, and the wall bullets' compact date+time |
 
 The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-pool logic, tested in `src/tests/drawCard.test.ts`), `emblemAnimation`, `eventBindings`, `filterEngine`, `filterUI`, `idleManager`, `mediaHandlers`, `proseImageTilt`, `types`, `urlState`.
 

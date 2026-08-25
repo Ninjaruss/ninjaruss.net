@@ -25,7 +25,7 @@ export const GET: APIRoute = async ({ url }) => {
   // guestbook, whether the caller omits ?limit= or passes something huge.
   const effectiveLimit = limit && Number.isInteger(limit) && limit > 0 ? Math.min(limit, 200) : 200;
   const rows = await listMessages(effectiveLimit);
-  const entries = rows.map(r => ({ id: r.id, name: r.name, message: r.message }));
+  const entries = rows.map(r => ({ id: r.id, name: r.name, message: r.message, createdAt: r.created_at }));
 
   return json({ entries }, 200, { 'Cache-Control': 'no-store' });
 };

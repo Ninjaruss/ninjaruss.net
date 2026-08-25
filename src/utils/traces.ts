@@ -1,7 +1,7 @@
 /**
  * Traces validation/hash/rate-limit logic. Pure aside from node:crypto's
  * createHash, so this file must never be imported into a browser
- * <script> block (see tracesRotation.ts for the client-safe counterpart).
+ * <script> block.
  */
 import { z } from 'astro/zod';
 import { createHash } from 'node:crypto';
