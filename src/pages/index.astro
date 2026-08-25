@@ -1738,7 +1738,9 @@ const latestEntries = latestPool.map(entry => ({
 
   :global(.traces-band__flyout) {
     position: absolute;
-    bottom: calc(100% + var(--space-xs));
+    /* Below the pill, not above: the band's CTA is now a full button sitting
+       right above the pill row, and an above-positioned flyout overlapped it. */
+    top: calc(100% + var(--space-xs));
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;

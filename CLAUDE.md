@@ -283,6 +283,11 @@ optional `?limit=`, and submit — both live in the same
 /api/traces/[id]` (gated by an `x-admin-key` header checked against
 `TRACES_ADMIN_KEY`). `/traces` (`src/pages/traces.astro`) is the canonical,
 no-JS-safe destination — full form + full list, server-rendered.
+**Deleting via curl needs an explicit `-H "Content-Type: application/json"`**
+— Astro's default `security.checkOrigin` CSRF guard blocks `DELETE` requests
+whose Content-Type is form-like (including curl's default when none is set),
+with the generic error "Cross-site DELETE form submissions are forbidden";
+this only surfaces on the real deployment, not `astro dev`/`vercel dev`.
 
 **Anti-abuse (all invisible, no CAPTCHA)**: a honeypot field (`website`,
 silently no-ops rather than erroring), Vercel BotID (`checkBotId()`
