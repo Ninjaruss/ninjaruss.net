@@ -167,6 +167,21 @@ html.has-custom-cursor * {
   cursor: none !important;
 }
 
+/* An open <dialog> (e.g. the Traces modal) is promoted to the browser's
+   top layer, which renders above literally everything else regardless of
+   z-index — including the fixed-position cursor dot, which just vanished
+   underneath it. Restore the native cursor (and its text I-beam, also
+   force-hidden above) while any dialog is open, and hide the now-useless
+   dot; it can't render over top-layer content no matter where the mouse is. */
+html.has-custom-cursor:has(dialog[open]),
+html.has-custom-cursor:has(dialog[open]) * {
+  cursor: auto !important;
+}
+
+html.has-custom-cursor:has(dialog[open]) #cursor {
+  display: none;
+}
+
 /* ── Custom cursor ──────────────────────────────── */
 /* Dark contrast ring keeps the gold dot visible over gold-filled tiles */
 #cursor {
