@@ -412,13 +412,16 @@ const latestEntries = latestPool.map(entry => ({
     </BentoGrid>
   </div>
 
-  <section class="traces-band" id="traces-band" aria-label="Traces signatures">
-    <span class="p4g-tab">Traces</span>
-    <a href="/traces" class="traces-band__cta" id="traces-tab">
-      <span aria-hidden="true">✎</span> Leave Your Mark
-    </a>
+  <aside class="traces-widget" id="traces-band" aria-label="Traces signatures">
+    <div class="traces-widget__header">
+      <span class="p4g-tab">Traces</span>
+      <a href="/traces" class="traces-band__cta" id="traces-tab">
+        <span aria-hidden="true">✎</span> Leave Your Mark
+      </a>
+    </div>
     <div class="traces-band__pills" id="traces-band-pills"></div>
-  </section>
+    <p class="traces-widget__preview" id="traces-widget-preview"></p>
+  </aside>
 
   <dialog id="traces-modal" class="traces-modal">
     <div class="traces-modal__header">
@@ -1659,15 +1662,35 @@ const latestEntries = latestPool.map(entry => ({
      content lines up with the bento grid's edges above it, not its own
      independent measure. Column layout + a leading .p4g-tab matches every
      other section's grammar on this page (JOURNAL, SHOWCASES, WATCHLIST,
-     LISTENING, CONTACT all lead with the same kicker-label pattern). */
-  .traces-band {
+     LISTENING, CONTACT all lead with the same kicker-label pattern).
+
+     Fixed to the viewport corner rather than living in the page flow: it
+     stays reachable no matter how far down the grid someone has scrolled,
+     without claiming a bento cell of its own. z-index sits above normal
+     content but well under the cursor dot (9999) and native <dialog>
+     top-layer rendering, so the modal still covers it correctly. */
+  .traces-widget {
+    position: fixed;
+    right: var(--space-md);
+    bottom: var(--space-md);
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    width: 240px;
+    max-width: calc(100vw - 2 * var(--space-md));
+    padding: var(--space-md);
+    background: var(--color-bg-elevated);
+    border: var(--border-thin) solid var(--color-gold-dim);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  }
+
+  .traces-widget__header {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-sm);
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--space-xl) var(--space-lg) calc(var(--nav-clearance, 80px) + var(--space-md));
+    gap: var(--space-xs);
   }
 
   /* Solid-fill button, not the p4g-tab kicker treatment — a tab alone read
@@ -1675,18 +1698,20 @@ const latestEntries = latestPool.map(entry => ({
      WATCHLIST/CONTACT elsewhere on the page), giving no signal it was
      tappable. Matches the SIGN button's weight on /traces itself. */
   .traces-band__cta {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: var(--space-xs);
+    width: 100%;
     min-height: 44px;
-    padding: var(--space-sm) var(--space-lg);
+    padding: var(--space-sm) var(--space-md);
     background: var(--color-gold);
     color: var(--color-black);
     font-family: var(--font-display);
-    font-size: var(--text-sm);
+    font-size: var(--text-xs);
     text-transform: uppercase;
     letter-spacing: var(--tracking-label);
+    white-space: nowrap;
     border-radius: var(--radius-sm);
     transition: background-color var(--transition-fast);
   }
@@ -1699,9 +1724,7 @@ const latestEntries = latestPool.map(entry => ({
   .traces-band__pills {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-sm);
-    /* .traces-band is a column now, so pills already fall on their own
-       row below the button without needing a flex-basis hack. */
+    gap: var(--space-xs);
   }
 
   /* Ticket-stub treatment: dashed gold border on black, mono caps, a small
@@ -1735,46 +1758,62 @@ const latestEntries = latestPool.map(entry => ({
 
   :global(.traces-band__pill:hover),
   :global(.traces-band__pill:focus-visible),
-  :global(.traces-band__pill.is-revealed),
   :global(.traces-band__pill.is-active) {
     border-color: var(--color-gold-orange);
     background: rgba(var(--color-gold-rgb), 0.08);
   }
 
-  :global(.traces-band__flyout) {
-    position: absolute;
-    /* Below the pill, not above: the band's CTA is now a full button sitting
-       right above the pill row, and an above-positioned flyout overlapped it. */
-    top: calc(100% + var(--space-xs));
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    max-width: 60vw;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: var(--space-2xs) var(--space-sm);
-    background: var(--color-bg-elevated);
-    border: var(--border-hairline) solid var(--color-gold);
-    border-radius: var(--radius-sm);
-    color: var(--color-text);
+  /* One shared preview line instead of a per-pill popup: in a small fixed
+     corner card there's no reliable direction to pop a flyout that won't
+     either clip off the bottom of the viewport or collide with the button
+     above it. The active pill's message renders here instead. */
+  .traces-widget__preview {
+    margin: 0;
+    min-height: 1.4em;
+    color: var(--color-text-muted);
     font-size: var(--text-xs);
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity var(--transition-fast);
+    line-height: 1.4;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 
-  :global(.traces-band__pill:hover .traces-band__flyout),
-  :global(.traces-band__pill:focus-visible .traces-band__flyout),
-  :global(.traces-band__pill.is-revealed .traces-band__flyout),
-  :global(.traces-band__pill.is-active .traces-band__flyout) {
-    opacity: 1;
-    visibility: visible;
+  /* At 240px the widget is fine on desktop (a small fraction of the
+     viewport) but covers ~65% of a phone's width and, being fixed, stays
+     permanently over whatever content is scrolled beneath it. Collapse to
+     just the tab + button — still always visible (the whole point of the
+     fixed-widget approach), but the "see a few at a glance" pills/preview
+     become a tap away in the modal instead of eating the screen. */
+  @media (max-width: 480px) {
+    .traces-widget {
+      width: auto;
+      max-width: calc(100vw - 2 * var(--space-md));
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+    }
+
+    .traces-widget__header {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .traces-band__cta {
+      width: auto;
+      white-space: nowrap;
+    }
+
+    .traces-band__pills,
+    .traces-widget__preview {
+      display: none;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :global(.traces-band__pill),
-    :global(.traces-band__flyout) {
+    :global(.traces-band__pill) {
       transition: none;
     }
   }
@@ -2165,49 +2204,56 @@ const latestEntries = latestPool.map(entry => ({
     message: string;
   }
 
+  interface TracesPillEntry {
+    el: HTMLElement;
+    message: string;
+  }
+
   let tracesCycleTimer: number | undefined;
   let tracesCycleIndex = 0;
   let tracesCyclePaused = false;
 
-  // Auto-cycles the flyout among pills, ~2.5s apart, like the homepage
-  // Latest tile's excerpt cycling — a visitor who never touches the band
-  // still passively sees several messages. Hover/focus pauses on that
-  // pill; disabled entirely under prefers-reduced-motion (first pill's
-  // flyout shown statically instead, matching the Latest tile's own
-  // reduced-motion behavior).
-  function startTracesCycle(pills: HTMLElement[]): void {
-    clearInterval(tracesCycleTimer);
-    if (pills.length === 0) return;
+  function setActiveTracesPill(entries: TracesPillEntry[], i: number): void {
+    entries.forEach((entry, idx) => entry.el.classList.toggle('is-active', idx === i));
+    const preview = document.getElementById('traces-widget-preview');
+    if (preview) preview.textContent = entries[i]?.message ?? '';
+  }
 
-    const setActive = (i: number) => {
-      pills.forEach((p, idx) => p.classList.toggle('is-active', idx === i));
-    };
+  // Auto-cycles the shared preview line among pills, ~2.5s apart, like the
+  // homepage Latest tile's excerpt cycling — a visitor who never touches
+  // the widget still passively sees several messages. Hover/focus pauses
+  // on that pill; disabled entirely under prefers-reduced-motion (first
+  // pill's message shown statically instead, matching the Latest tile's
+  // own reduced-motion behavior).
+  function startTracesCycle(entries: TracesPillEntry[]): void {
+    clearInterval(tracesCycleTimer);
+    if (entries.length === 0) return;
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setActive(0);
+      setActiveTracesPill(entries, 0);
       return;
     }
 
-    setActive(tracesCycleIndex);
+    setActiveTracesPill(entries, tracesCycleIndex);
     tracesCycleTimer = window.setInterval(() => {
       if (tracesCyclePaused) return;
-      tracesCycleIndex = (tracesCycleIndex + 1) % pills.length;
-      setActive(tracesCycleIndex);
+      tracesCycleIndex = (tracesCycleIndex + 1) % entries.length;
+      setActiveTracesPill(entries, tracesCycleIndex);
     }, 2500);
 
-    pills.forEach((pill, idx) => {
-      pill.addEventListener('mouseenter', () => {
+    entries.forEach((entry, idx) => {
+      entry.el.addEventListener('mouseenter', () => {
         tracesCyclePaused = true;
         tracesCycleIndex = idx;
-        setActive(idx);
+        setActiveTracesPill(entries, idx);
       });
-      pill.addEventListener('focus', () => {
+      entry.el.addEventListener('focus', () => {
         tracesCyclePaused = true;
         tracesCycleIndex = idx;
-        setActive(idx);
+        setActiveTracesPill(entries, idx);
       });
-      pill.addEventListener('mouseleave', () => { tracesCyclePaused = false; });
-      pill.addEventListener('blur', () => { tracesCyclePaused = false; });
+      entry.el.addEventListener('mouseleave', () => { tracesCyclePaused = false; });
+      entry.el.addEventListener('blur', () => { tracesCyclePaused = false; });
     });
   }
 
@@ -2223,21 +2269,23 @@ const latestEntries = latestPool.map(entry => ({
     if (!pillsEl || pillsEl.dataset.bound === 'true') return;
     pillsEl.dataset.bound = 'true';
 
-    let entries: TraceEntry[];
+    let apiEntries: TraceEntry[];
     try {
-      const res = await fetch('/api/traces?limit=15');
+      // The widget is a compact corner card now, not a full-width band —
+      // 3 is "a few at a glance," not a scrollable list.
+      const res = await fetch('/api/traces?limit=3');
       if (!res.ok) return;
       const data = await res.json() as { entries: TraceEntry[] };
-      entries = data.entries;
+      apiEntries = data.entries;
     } catch {
       return;
     }
 
-    if (entries.length === 0) return;
+    if (apiEntries.length === 0) return;
 
-    const pills: HTMLElement[] = [];
+    const pillEntries: TracesPillEntry[] = [];
 
-    for (const entry of entries) {
+    for (const entry of apiEntries) {
       const pill = document.createElement('a');
       pill.href = '/traces';
       pill.className = 'traces-band__pill';
@@ -2245,20 +2293,18 @@ const latestEntries = latestPool.map(entry => ({
       pill.style.setProperty('--rot', `${bandRotation(entry.id)}deg`);
       pill.textContent = entry.name;
 
-      const flyout = document.createElement('span');
-      flyout.className = 'traces-band__flyout';
-      flyout.textContent = entry.message;
-      pill.appendChild(flyout);
-
       pill.addEventListener('click', (e) => {
         // Modified clicks (new tab, etc.) pass through to the browser.
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
 
-        if (window.matchMedia('(hover: none)').matches && !pill.classList.contains('is-revealed')) {
+        if (window.matchMedia('(hover: none)').matches && !pill.classList.contains('is-active')) {
           e.preventDefault();
-          document.querySelectorAll('.traces-band__pill.is-revealed')
-            .forEach(p => { if (p !== pill) p.classList.remove('is-revealed'); });
-          pill.classList.add('is-revealed');
+          tracesCyclePaused = true;
+          const idx = pillEntries.findIndex(pe => pe.el === pill);
+          if (idx !== -1) {
+            tracesCycleIndex = idx;
+            setActiveTracesPill(pillEntries, idx);
+          }
           return;
         }
 
@@ -2267,10 +2313,10 @@ const latestEntries = latestPool.map(entry => ({
       });
 
       pillsEl.appendChild(pill);
-      pills.push(pill);
+      pillEntries.push({ el: pill, message: entry.message });
     }
 
-    startTracesCycle(pills);
+    startTracesCycle(pillEntries);
   }
 
   function bindTracesModal(): void {

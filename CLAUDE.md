@@ -299,15 +299,29 @@ message 100 chars), and a narrow, intentionally-not-general-purpose
 blocklist (`BLOCKED_TERMS` in the same file — self-harm-incitement phrases
 only; extend it directly rather than treating it as a profanity filter).
 
-**Homepage**: a band below the bento grid (not a tile) — a "Traces" tab
-plus recent-name pills in a ticket-stub style, their message flyouts
-auto-cycling (~2.5s, pauses on hover/focus, disabled under
-`prefers-reduced-motion`). Clicking the tab or a pill opens a native
-`<dialog>` modal with the full form + list, without navigating away; the
-tab degrades to a plain link to `/traces` with no JS. `bandRotation()`
-(`src/utils/tracesRotation.ts`, zero imports — bundled straight into the
-homepage `<script>`) gives each pill a deterministic tilt, same trick as
-the shelf wall's `wallRotation()`.
+**Homepage**: `.traces-widget` — a small card fixed to the bottom-right
+viewport corner (not a bento tile, not in the page flow), so it stays
+reachable no matter how far the grid is scrolled without claiming a grid
+cell. Header is a "Traces" `p4g-tab` + the "Leave Your Mark" button
+(`.traces-band__cta`); below that, up to 3 recent-name pills
+(`?limit=3` — "a few at a glance," not a scrollable list) in a
+ticket-stub style. There's no per-pill popup: a single shared preview
+line (`.traces-widget__preview`, `#traces-widget-preview`) shows
+whichever pill is active, auto-cycling among them (~2.5s, pauses on
+hover/focus, disabled under `prefers-reduced-motion`) — a per-pill
+floating flyout was tried first and dropped, since in a small
+bottom-corner card there's no direction to pop one that doesn't either
+clip off the viewport edge or collide with the button above it. Clicking
+the tab or an already-active pill opens a native `<dialog>` modal with
+the full form + list, without navigating away; on touch, a first tap on
+a pill just activates it (updates the preview, pauses cycling) and a
+second tap opens the modal; the tab itself degrades to a plain link to
+`/traces` with no JS. `bandRotation()` (`src/utils/tracesRotation.ts`,
+zero imports — bundled straight into the homepage `<script>`) gives each
+pill a deterministic tilt, same trick as the shelf wall's
+`wallRotation()`. The widget's `z-index` sits above normal content but
+well under the cursor dot (9999) and native `<dialog>` top-layer
+rendering, so the modal still covers it correctly.
 
 **Gotcha**: Astro's scoped CSS only tags elements present in the
 server-rendered template. Anything built client-side via
