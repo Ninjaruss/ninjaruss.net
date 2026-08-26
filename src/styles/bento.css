@@ -8,38 +8,24 @@
   width: 100%;
 }
 
-/* Neighbor Dimming Effect — Dim non-hovered tiles when any tile is hovered */
-.bento-grid:has(.bento-tile:hover) .bento-tile:not(:hover),
-.bento-grid:has(.logo-tile:hover) .bento-tile:not(:hover),
-.bento-grid:has(.title-tile:hover) .bento-tile:not(:hover),
-.bento-grid:has(.image-tile:hover) .bento-tile:not(:hover),
-.bento-grid:has(.bento-tile:hover) .logo-tile:not(:hover),
-.bento-grid:has(.bento-tile:hover) .title-tile:not(:hover),
-.bento-grid:has(.bento-tile:hover) .image-tile:not(:hover),
-.bento-grid:has(.logo-tile:hover) .logo-tile:not(:hover),
-.bento-grid:has(.logo-tile:hover) .title-tile:not(:hover),
-.bento-grid:has(.logo-tile:hover) .image-tile:not(:hover),
-.bento-grid:has(.title-tile:hover) .bento-tile:not(:hover),
-.bento-grid:has(.title-tile:hover) .logo-tile:not(:hover),
-.bento-grid:has(.title-tile:hover) .title-tile:not(:hover),
-.bento-grid:has(.title-tile:hover) .image-tile:not(:hover),
-.bento-grid:has(.image-tile:hover) .bento-tile:not(:hover),
-.bento-grid:has(.image-tile:hover) .logo-tile:not(:hover),
-.bento-grid:has(.image-tile:hover) .title-tile:not(:hover),
-.bento-grid:has(.image-tile:hover) .image-tile:not(:hover) {
+/* Neighbor Dimming Effect — dim every non-hovered tile when any tile is
+   hovered. This was an 18-selector hand-written cross-product of
+   (.bento-tile|.logo-tile|.title-tile|.image-tile) x itself, which is exactly
+   the shape `:is()` exists for — and which had quietly left the Traces bar out
+   of the grid entirely: hovering it dimmed nothing, and it never dimmed. */
+.bento-grid:has(:is(.bento-tile, .logo-tile, .title-tile, .image-tile, .traces-bar):hover)
+  :is(.bento-tile, .logo-tile, .title-tile, .image-tile, .traces-bar):not(:hover) {
   opacity: 0.45;
   filter: brightness(0.75);
 }
 
-/* Keyboard parity for the dimming matrix. `:has()` cannot be nested inside
-   `:has()`, so this can't mirror the hover matrix tile-by-tile — instead the
-   grid asks "is anything keyboard-focused?" and each tile excludes itself
-   (focused itself, or holding a focused inner link, as on the journal/title
-   tiles whose focusables are children). */
-.bento-grid:has(:focus-visible) .bento-tile:not(:focus-visible):not(:has(:focus-visible)),
-.bento-grid:has(:focus-visible) .logo-tile:not(:focus-visible):not(:has(:focus-visible)),
-.bento-grid:has(:focus-visible) .title-tile:not(:focus-visible):not(:has(:focus-visible)),
-.bento-grid:has(:focus-visible) .image-tile:not(:focus-visible):not(:has(:focus-visible)) {
+/* Keyboard parity. `:has()` cannot be nested inside `:has()`, so this can't
+   mirror the hover rule tile-by-tile — instead the grid asks "is anything
+   keyboard-focused?" and each tile excludes itself (focused itself, or holding
+   a focused inner link, as on the journal/title tiles whose focusables are
+   children). */
+.bento-grid:has(:focus-visible)
+  :is(.bento-tile, .logo-tile, .title-tile, .image-tile, .traces-bar):not(:focus-visible):not(:has(:focus-visible)) {
   opacity: 0.45;
   filter: brightness(0.75);
 }
@@ -98,32 +84,13 @@
     filter var(--transition-base);
 }
 
-/* Gradient background glow */
-.bento-tile--interactive::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-orange) 50%, var(--color-gold) 100%);
-  border-radius: var(--radius-md);
-  opacity: 0;
-  z-index: -1;
-  transition: opacity var(--transition-base);
-  pointer-events: none;
-}
-
 .bento-tile--interactive:hover,
 .bento-tile--interactive:focus-visible {
-  transform: translate(-4px, -4px) rotate(-0.8deg) scale(1.015);
+  transform: translate(-4px, -4px);
   box-shadow:
     var(--shadow-hard-hover),
     0 0 40px rgba(var(--color-gold-rgb), 0.3);
   border-color: var(--color-gold);
-  filter: brightness(1.05);
-}
-
-.bento-tile--interactive:hover::before,
-.bento-tile--interactive:focus-visible::before {
-  opacity: 0.15;
 }
 
 .bento-tile--interactive:hover .bento-tile__title,
@@ -140,48 +107,19 @@
   .bento-tile--interactive:hover,
   .bento-tile--interactive:focus-visible {
     transform: translate(-2px, -2px);
-    filter: none;
-  }
-  .bento-tile--interactive::before {
-    display: none;
   }
 
-  /* Disable neighbor dimming/blur for reduced motion */
-  .bento-grid:has(.bento-tile:hover) .bento-tile:not(:hover),
-  .bento-grid:has(.logo-tile:hover) .bento-tile:not(:hover),
-  .bento-grid:has(.title-tile:hover) .bento-tile:not(:hover),
-  .bento-grid:has(.image-tile:hover) .bento-tile:not(:hover),
-  .bento-grid:has(.bento-tile:hover) .logo-tile:not(:hover),
-  .bento-grid:has(.bento-tile:hover) .title-tile:not(:hover),
-  .bento-grid:has(.bento-tile:hover) .image-tile:not(:hover),
-  .bento-grid:has(.logo-tile:hover) .logo-tile:not(:hover),
-  .bento-grid:has(.logo-tile:hover) .title-tile:not(:hover),
-  .bento-grid:has(.logo-tile:hover) .image-tile:not(:hover),
-  .bento-grid:has(.title-tile:hover) .bento-tile:not(:hover),
-  .bento-grid:has(.title-tile:hover) .logo-tile:not(:hover),
-  .bento-grid:has(.title-tile:hover) .title-tile:not(:hover),
-  .bento-grid:has(.title-tile:hover) .image-tile:not(:hover),
-  .bento-grid:has(.image-tile:hover) .bento-tile:not(:hover),
-  .bento-grid:has(.image-tile:hover) .logo-tile:not(:hover),
-  .bento-grid:has(.image-tile:hover) .title-tile:not(:hover),
-  .bento-grid:has(.image-tile:hover) .image-tile:not(:hover),
-  .bento-grid:has(:focus-visible) .bento-tile:not(:focus-visible):not(:has(:focus-visible)),
-  .bento-grid:has(:focus-visible) .logo-tile:not(:focus-visible):not(:has(:focus-visible)),
-  .bento-grid:has(:focus-visible) .title-tile:not(:focus-visible):not(:has(:focus-visible)),
-  .bento-grid:has(:focus-visible) .image-tile:not(:focus-visible):not(:has(:focus-visible)) {
+  /* Disable neighbor dimming for reduced motion */
+  .bento-grid:has(:is(.bento-tile, .logo-tile, .title-tile, .image-tile, .traces-bar):hover)
+    :is(.bento-tile, .logo-tile, .title-tile, .image-tile, .traces-bar):not(:hover),
+  .bento-grid:has(:focus-visible)
+    :is(.bento-tile, .logo-tile, .title-tile, .image-tile, .traces-bar):not(:focus-visible):not(:has(:focus-visible)) {
     opacity: 1;
     filter: none;
   }
 
-  /* Instant subtitle reveal (no delay) */
   .bento-tile__description {
-    transition: opacity 100ms ease-out 0ms;
-  }
-
-  .bento-tile:hover .bento-tile__description,
-  .bento-tile:focus-visible .bento-tile__description,
-  .bento-tile:has(:focus-visible) .bento-tile__description {
-    transition-delay: 0ms;
+    transition: none;
   }
 }
 
@@ -202,7 +140,7 @@
 
 .bento-tile--highlight .bento-tile__description {
   color: var(--color-text-on-gold);
-  opacity: 0; /* Override - start hidden */
+  opacity: 0.7; /* black-on-gold carries a touch more presence than 0.6 */
 }
 
 /* `:has(:focus-visible)` throughout the variant blocks below: the highlight/core
@@ -211,7 +149,7 @@
 .bento-tile--highlight:hover .bento-tile__description,
 .bento-tile--highlight:focus-visible .bento-tile__description,
 .bento-tile--highlight:has(:focus-visible) .bento-tile__description {
-  opacity: 0.85; /* Restore variant opacity on hover */
+  opacity: 1;
 }
 
 .bento-tile--highlight:hover,
@@ -373,13 +311,10 @@
   transform-origin: left bottom;
 }
 
-/* Mini kicker tabs for core tile labels */
+/* Core tiles invert to a gold tab (silhouette comes from the base rule) */
 .bento-tile--core .bento-tile__label {
   background: var(--color-gold);
   color: var(--color-black);
-  border-radius: 0;
-  clip-path: polygon(0 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
-  padding-right: calc(var(--space-sm) + var(--cut-sm));
 }
 
 /* Highlight tiles have a gold background — invert the kicker for contrast */
@@ -397,9 +332,13 @@
 /* Tile Content Layout */
 .bento-tile__header {
   margin-bottom: var(--space-xs);
+  /* Above .bento-tile__corner (z-index 3): the hover triangle is decoration
+     and must slide *behind* the kicker rather than clipping its last glyph. */
+  position: relative;
+  z-index: 4;
 }
 
-/* P4G Style Label — Black bg with rounded corners */
+/* P4G Style Label — angled black-on-gold tab (shape shared by all variants) */
 .bento-tile__label {
   display: inline-block;
   background: var(--color-black);
@@ -410,7 +349,11 @@
   text-transform: uppercase;
   letter-spacing: var(--tracking-label);
   margin-bottom: var(--space-xs);
-  border-radius: var(--radius-sm);
+  /* Angular by default — matches .p4g-tab. Every variant below only swaps
+     colours; the silhouette is shared so no tile shows a rounded kicker. */
+  border-radius: 0;
+  clip-path: polygon(0 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
+  padding-right: calc(var(--space-sm) + var(--cut-sm));
 }
 
 .bento-tile__title {
@@ -426,30 +369,25 @@
 }
 
 .bento-tile__description {
-  font-size: var(--text-sm);
+  /* --text-xs, matching .logo-tile__description / .st-teaser /
+     .latest-tile__excerpt — the base component was the lone --text-sm. */
+  font-size: var(--text-xs);
   color: var(--color-text-muted);
   margin-top: var(--space-xs);
   line-height: 1.4;
 
-  /* Hidden by default, revealed on hover with 400ms delay */
-  opacity: 0;
-  max-height: 0;
-  overflow: hidden;
-  transition:
-    opacity 200ms ease-out 400ms,
-    max-height 300ms ease-out 0ms;
+  /* Always visible, brightening on hover — the same treatment as
+     .logo-tile__description. This used to be opacity:0 / max-height:0 until
+     hover, which made the Now tile's subtitle the only tile copy on the grid
+     you could not read at rest. */
+  opacity: 0.6;
+  transition: opacity 200ms ease-out;
 }
 
 .bento-tile:hover .bento-tile__description,
 .bento-tile:focus-visible .bento-tile__description,
 .bento-tile:has(:focus-visible) .bento-tile__description {
   opacity: 1;
-  max-height: 200px;
-}
-
-/* Instant hide on mouse out / blur (remove delay) */
-.bento-tile:not(:hover):not(:focus-visible):not(:has(:focus-visible)) .bento-tile__description {
-  transition-delay: 0ms;
 }
 
 .bento-tile__footer {

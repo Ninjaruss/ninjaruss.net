@@ -78,7 +78,7 @@ Collection-specific extensions:
 
 ### Bento Tile Hierarchy
 The homepage uses a visual hierarchy pattern:
-- **Journal tile** (`.journal-tile`, 4×2, core, slash split): gold notes field / black showcases field separated by a diagonal `clip-path` seam (`::before` overlay; shifts ~2% left on hover, static under reduced motion; notes rows carry `padding-right` so dates clear the hovered seam). Root is a `div` (no nested anchors). Whole-tile navigation is JS (`initializeJournalTileNav`, `data-tile-href="/journal"`): a click handler on the tile routes any non-`<a>` click to the journal via `window.location.href` (a plain assignment on purpose — the view-transition router's trusted-event gating makes a stretched-link/`navigate()` approach unverifiable and it silently failed in testing); entry links keep their own view-transition nav. Left: JOURNAL tab + "Notes" heading linking to `/journal?types=note`, seven deep-link rows with right-aligned dates. Right: gold SHOWCASES tab linking to `/journal?types=showcase`, three showcase rows (42px emblem + visible title; gold border marks the most recent); the showcases column has `padding-left` so its content clears the seam and never straddles the diagonal. Corner hover triangle is gold (overrides the highlight-tile black — it sits on the black field). Below 1024px the fields stack and the black field is painted by `.journal-tile__showcases` itself (negative-margin bleed + 16px diagonal top clip) — tile-relative percentage seams can't track auto-sized content.
+- **Journal tile** (`.journal-tile`, 4×2, core, slash split): gold notes field / black showcases field separated by a diagonal `clip-path` seam (`::before` overlay; shifts ~2% left on hover, static under reduced motion; notes rows carry `padding-right: var(--space-xl)` so dates clear the hovered seam — the seam leans left as it descends (66%→58% at rest, 64%→56% on hover) so its encroachment *grows* down the list while the padding is constant, which is why the bottom row is the first to be crossed; the old `--space-md` left the last row's date 2px under the black field on hover at ≥1232px, and the date is black text, so it did not merely overlap, it vanished). Root is a `div` (no nested anchors). Whole-tile navigation is JS (`initializeJournalTileNav`, `data-tile-href="/journal"`): a click handler on the tile routes any non-`<a>` click to the journal via `window.location.href` (a plain assignment on purpose — the view-transition router's trusted-event gating makes a stretched-link/`navigate()` approach unverifiable and it silently failed in testing); entry links keep their own view-transition nav. Left: JOURNAL tab + "Notes" heading linking to `/journal?types=note`, seven deep-link rows with right-aligned dates. Right: gold SHOWCASES tab linking to `/journal?types=showcase`, three showcase rows (42px emblem + visible title; gold border marks the most recent); the showcases column has `padding-left` so its content clears the seam and never straddles the diagonal. Corner hover triangle is gold (overrides the highlight-tile black — it sits on the black field). Below 1024px the fields stack and the black field is painted by `.journal-tile__showcases` itself (negative-margin bleed + 16px diagonal top clip) — tile-relative percentage seams can't track auto-sized content.
 - **Core tiles** (`.bento-tile--core`): Journal and Shelf (Media Log) with elevated gold glow and larger typography. The homepage Shelf tile's 8-cover collage tucks under a diagonal top edge (`.tile-poster-strip` clip) — one cut, no new colors.
 - **Signal tiles**: Current activity indicators (Now, Latest) — Now shows the latest now-entry's title; Latest is 2×2 with a stripped-markdown excerpt, an absolute per-entry date (`.latest-date`, never time-since, rendered lowercase to match the journal tile's date rows), and cycles client-side through the latest 2 notes + latest 1 showcase (interleaved note/showcase/note, 7s interval; each swap is a P4G gold sweep — a skewed gold panel (`.latest-tile__sweep`, `skewX(--skew-accent)`, the same move as the journal-entry hover `.list-item::before`) sweeps across via the `latest-sweep` keyframes on `#latest-tile.is-cycling`: in to cover, entry swapped behind it at the midpoint, out to reveal; cycling is skipped entirely under `prefers-reduced-motion`, which also sets the sweep `animation: none`). The emblem sits on a deeper-black angled field (`.latest-tile__emblem-wrap`, `clip-path` + negative-margin bleed) traced by a gold hairline (`::before`, skewX(-4deg) measured against the clip edge); ≤768px the field flattens to the tile's bottom edge and the hairline hides.
 - **Novel tile** (`.novel-tile`, 1×2, rows 2-3): "rain gauge" — script words (Manuscript/ folder, big gold; labelled "script words" in the UI) vs outline words (other folders, small grey) from `computeNovelStats()`. Each rain drop is randomized per-visit (position/speed/delay/length/opacity) by `initializeNovelRain`. Client script (`initializeNovelRain`) reads `data-scene-modified`/`data-outline-modified` and sets `is-raining` (scene work ≤14 days, CSS rain animation scaled by `--rain-strength`), `is-misting` (outline-only work ≤14 days, sparse slow drizzle), or `is-waiting` (static "the rain waits." line); the rain spans the full tile (14 drops with varied lengths via `--len`, spread across the width). Design invariant: never red, never displays a count of absent days — the tile rewards accumulation, it does not shame absence.
@@ -89,7 +89,17 @@ The homepage uses a visual hierarchy pattern:
 Tile variants: `interactive` (default), `highlight` (gold bg), `dark`, `static`
 Sizes: `dominant` (2x2), `medium-wide` (2x1), `medium-tall` (1x2), `small` (1x1)
 
-**Hover signature**: the corner-cut triangle (`.bento-tile__corner` — gold triangle slides into the top-right on hover/focus) is the single hover signature for every interactive bento tile. Gold-background (`highlight`) tiles use a black triangle for contrast; `static` tiles hide it. Shelf cards have a matching `.shelf-card__corner`. BentoTile has no `accent` prop — the old `.bento-tile--accent` dot, corner-bracket `::after` decorations, and `.bento-tile--cyan` variant were all removed.
+**Hover signature**: the corner-cut triangle (`.bento-tile__corner` — gold triangle slides into the top-right on hover/focus) is the single hover signature for every interactive bento tile, paired with a lift (`translate(-4px,-4px)`), a shadow step to `--shadow-hard-hover`, and a gold border. Gold-background (`highlight`) tiles use a black triangle for contrast; `static` tiles hide it. Shelf cards have a matching `.shelf-card__corner`. BentoTile has no `accent` prop — the old `.bento-tile--accent` dot, corner-bracket `::after` decorations, and `.bento-tile--cyan` variant were all removed. The `--interactive` variant no longer declares a `rotate`/`scale`/`brightness` hover or a gradient `::before` bloom: every homepage tile is also `--dark`/`--highlight`, whose later equal-specificity `:hover` reset the transform, and the bloom sat at `z-index: -1` behind an opaque tile background — none of it rendered anywhere.
+
+`.bento-tile__header` sits at `z-index: 4`, one above the corner triangle's `3`: the triangle is `aria-hidden` decoration and must slide *behind* the kicker, not clip its last glyph (it ate 6px of "Visual Novel" on the 1×2 Novel tile at 1025–1100px).
+
+**Kickers are one silhouette.** `.bento-tile__label` carries the parallelogram `clip-path` in its *base* rule; every variant below only swaps colours (`--dark`/`--core` → black text on gold, `--highlight` and `--highlight.--core` → gold text on black). Before this the cut lived only on the `--core` rule, so the three `--dark` tiles (Novel, About, Latest) rendered rounded rectangles beside cut ones.
+
+**Tile subtitles are always visible** (`opacity: .6`, `1` on hover — `.7`/`1` on gold `--highlight` grounds), matching `.logo-tile__description`/`.st-teaser`/`.latest-tile__excerpt`. `.bento-tile__description` used to be `opacity: 0; max-height: 0` until hover, which made the Now tile's subtitle the only tile copy on the grid you could not read at rest. It also sits at `--text-xs` like every other tile's prose (it was the lone `--text-sm`).
+
+**The 3D mouse-tilt binds to every tile**, via `SELECTOR = '.bento-tile, .logo-tile, .image-tile, .title-tile'` in `initializeTilt()`. It used to lead with `.bento-tile--interactive`, but `BentoTile` defaults to `variant="interactive"` while every homepage tile passes `dark`/`highlight` instead — so Journal, Now, Media Log and Latest (both `--core` tiles among them) silently never tilted, and hovering Novel tilted in 3D while the Journal tile beside it stayed flat. The tilt writes an inline `transform`, which outranks the CSS hover transform on any tile it covers.
+
+**Neighbour dimming** is one `:is()` pair in `bento.css`, not the old 18-selector hand-written cross-product, and it now includes `.traces-bar` — which had been left out of the grid entirely (hovering it dimmed nothing, and it never dimmed).
 Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--span-2x2`, `.bento-tile--span-2x1`, `.bento-tile--span-1x2`
 
 **Current Homepage Grid Pattern:**
@@ -161,6 +171,10 @@ the same gotcha as the client-built Traces markup, for a different reason.
 
 /* Animation */
 --animation-easing: cubic-bezier(0.16, 1, 0.3, 1);
+
+/* Micro-caps tracking — two steps only, nothing in between */
+--tracking-label: 0.05em;   /* ordinary micro-caps */
+--tracking-wide:  0.12em;   /* CTAs, status badges, the hero tagline */
 --animation-base: 400ms;
 ```
 
@@ -651,6 +665,14 @@ All placeholder emblems share the same card template (dark card, gold gradient f
   in `STAT_COLORS` (`src/utils/sessions.ts`)
 - `aria-current` is `"page"` or absent — never `"false"` (AT reads the attribute's
   presence, and `"false"` is a token, not an absence)
+- Micro-caps letter-spacing is `--tracking-label` or `--tracking-wide` — nothing
+  else. The homepage previously carried eight ad-hoc values
+  (.06/.08/.1/.12/.14/.16/.18em) on what is visually one thing: a small
+  uppercase mono chip
+- There is exactly one LIVE badge treatment (`.st-live-badge, .yt-tile__live-badge`
+  — solid `--color-live` plate, white mono caps, one `live-badge-breathe`
+  keyframe). The About tile and the YouTube tile can be live in the same moment
+  and used to disagree about what "live" looked like
 - Follow stagger animation pattern (50ms-100ms increments) for lists and grids
 - Keep components minimal and composable
 - Use `collections` field for cross-referencing content (enables RelatedContent component)

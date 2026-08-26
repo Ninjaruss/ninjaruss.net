@@ -92,8 +92,12 @@
   --shadow-glow: 0 0 20px rgba(var(--color-gold-rgb), 0.15);
   --shadow-soft: 0 4px 12px rgba(0, 0, 0, var(--opacity-heavy));
 
-  /* Standardized letter-spacing for labels */
+  /* Standardized letter-spacing for labels. Two steps only: --tracking-label
+     for ordinary micro-caps, --tracking-wide for the deliberately airy ones
+     (CTAs, status badges, the hero tagline). These replaced eight ad-hoc
+     values (.06/.08/.1/.12/.14/.16/.18em) scattered across the homepage. */
   --tracking-label: 0.05em;
+  --tracking-wide: 0.12em;
 
   /* Two-tier heading scale — every surface picks one of these two, nothing
      in between. Page title: the one h1 naming the surface (/shelf, /now,

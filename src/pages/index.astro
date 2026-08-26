@@ -523,10 +523,10 @@ const latestEntries = latestPool.map(entry => ({
        "aug 1" rows set the pattern); formatDate's own output is untouched. */
     text-transform: lowercase;
     color: var(--color-gold-dim);
-    letter-spacing: 0.06em;
+    letter-spacing: var(--tracking-label);
     white-space: nowrap;
-    border-left: 2px solid var(--color-gold-dim);
-    padding-left: 6px;
+    border-left: var(--border-thin) solid var(--color-gold-dim);
+    padding-left: var(--space-sm);
     transition: color var(--transition-fast), border-color var(--transition-fast);
   }
 
@@ -546,7 +546,7 @@ const latestEntries = latestPool.map(entry => ({
     /* extra top padding clears the corner tab so centered content never sits under it */
     padding: calc(var(--space-md) + 1.5rem) var(--space-md) var(--space-md);
     background: var(--color-bg-elevated);
-    border: var(--border-medium) solid var(--color-border);
+    border: var(--border-thick) solid var(--color-border);
     text-decoration: none;
     transition: all var(--transition-base);
     min-height: 80px;
@@ -655,7 +655,7 @@ const latestEntries = latestPool.map(entry => ({
     background-image: radial-gradient(circle, rgba(var(--color-gold-rgb), 0.07) 1px, transparent 1px);
     background-size: 22px 22px;
     border: var(--border-thick) solid var(--color-gold);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     padding: var(--space-md);
     grid-column: span 4;
     grid-row: span 1;
@@ -735,14 +735,15 @@ const latestEntries = latestPool.map(entry => ({
     line-height: 1.4;
     text-align: center;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: var(--tracking-wide);
     opacity: 0.45;
     transition: opacity 300ms ease-out;
   }
 
-  /* Container tile: the only focusable is the "About" link inside it. */
-  .title-tile:hover .title-tile__description,
-  .title-tile:has(:focus-visible) .title-tile__description {
+  /* Non-interactive wordmark: no focusable children, so hover only.
+     (The `:has(:focus-visible)` half was dead once the About button moved
+     out of this tile and into the nav.) */
+  .title-tile:hover .title-tile__description {
     opacity: 1;
   }
 
@@ -814,7 +815,7 @@ const latestEntries = latestPool.map(entry => ({
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    padding: 0 12px;
+    padding: 0 var(--space-md);
     background-image: linear-gradient(var(--color-gold), var(--color-gold));
     background-repeat: no-repeat;
     background-position: center;
@@ -918,12 +919,19 @@ const latestEntries = latestPool.map(entry => ({
     text-decoration-thickness: 3px;
   }
 
+  /* Clearance for the diagonal seam. The seam leans left as it descends
+     (66%->58% at rest, 64%->56% on hover), so its encroachment into this
+     column GROWS down the list while the padding is constant — the bottom row
+     is the first to be crossed. A flat --space-md left the last row's date 2px
+     under the black field on hover at >=1232px viewports, and the date is
+     black text, so it did not just overlap: it vanished. --space-xl clears the
+     worst case with ~13px to spare at every desktop width. */
   .journal-tile__list {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0;
-    padding-right: var(--space-md);
+    padding-right: var(--space-xl);
   }
 
   .journal-tile__row {
@@ -991,7 +999,7 @@ const latestEntries = latestPool.map(entry => ({
   .tile-poster {
     aspect-ratio: 2/3;
     overflow: hidden;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     background: var(--color-bg-elevated);
   }
 
@@ -1013,7 +1021,7 @@ const latestEntries = latestPool.map(entry => ({
   .now-date {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-sm);
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-black);
@@ -1087,7 +1095,9 @@ const latestEntries = latestPool.map(entry => ({
   .stream-tile:hover,
   .stream-tile:focus-visible {
     border-color: var(--color-gold);
-    box-shadow: var(--shadow-hard);
+    /* was --shadow-hard, i.e. identical to the resting state — the one tile
+       on the grid whose shadow did not grow on hover. */
+    box-shadow: var(--shadow-hard-hover);
     transform: translate(-4px, -4px);
   }
 
@@ -1180,7 +1190,7 @@ const latestEntries = latestPool.map(entry => ({
   .st-arc {
     font-family: var(--font-mono);
     font-size: var(--text-floor);
-    letter-spacing: .12em;
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--st-lead);
     padding-bottom: var(--space-2xs);
@@ -1207,11 +1217,11 @@ const latestEntries = latestPool.map(entry => ({
   }
 
   .st-footer {
-    padding: 7px 11px;
-    border-top: 1px solid var(--color-surface-1);
+    padding: var(--space-sm) var(--space-md);
+    border-top: var(--border-hairline) solid var(--color-surface-1);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-sm);
     flex-shrink: 0;
     background: var(--color-black);
   }
@@ -1219,7 +1229,7 @@ const latestEntries = latestPool.map(entry => ({
   .st-cta {
     margin-left: auto;
     font-size: var(--text-floor);
-    letter-spacing: .16em;
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: rgba(var(--color-gold-rgb), .55);
     font-family: var(--font-mono);
@@ -1231,29 +1241,38 @@ const latestEntries = latestPool.map(entry => ({
     color: rgba(var(--color-gold-rgb), .75);
   }
 
-  .st-live-badge {
+  /* Shared LIVE plate. The About tile and the YouTube tile can be live in the
+     same moment and used to disagree about what a LIVE badge looks like — one
+     an outlined red-text chip, the other a solid red plate, on different
+     letter-spacings and two near-identical keyframes. One treatment now: the
+     solid plate, which is also the only version legible over the YT preview
+     photo. */
+  .st-live-badge,
+  .yt-tile__live-badge {
+    font-family: var(--font-mono);
     font-size: var(--text-floor);
-    letter-spacing: .18em;
+    font-weight: 700;
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
-    color: var(--color-live);
-    border: 1px solid rgba(var(--color-live-rgb), .4);
-    border-radius: 3px;
-    padding: 2px 5px;
-    animation: st-badge-breathe 1.5s ease-in-out infinite;
+    color: var(--color-white);
+    background: var(--color-live);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2xs) var(--space-xs);
+    animation: live-badge-breathe 1.5s ease-in-out infinite;
   }
 
   .st-live-badge[hidden] { display: none; }
 
-  @keyframes st-badge-breathe {
+  @keyframes live-badge-breathe {
     0%, 100% { opacity: 1; }
-    50%       { opacity: .45; }
+    50%      { opacity: .5; }
   }
 
   /* ─── YouTube / Live Tile ────────────────────────────── */
   .image-tile--youtube {
     grid-column: span 1;
     grid-row: span 1;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     overflow: hidden;
     border: var(--border-thick) solid var(--color-border-strong);
     background: var(--color-bg-elevated);
@@ -1303,7 +1322,7 @@ const latestEntries = latestPool.map(entry => ({
     font-size: var(--text-floor);
     text-transform: uppercase;
     letter-spacing: var(--tracking-label);
-    clip-path: polygon(0 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
+    clip-path: polygon(0 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
   }
 
   /* Red tint overlay on hover */
@@ -1327,11 +1346,11 @@ const latestEntries = latestPool.map(entry => ({
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 10px 12px 11px;
+    padding: var(--space-sm) var(--space-md);
     background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.6) 70%, transparent 100%);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-sm);
     transform: translateY(100%);
     transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 2;
@@ -1367,7 +1386,7 @@ const latestEntries = latestPool.map(entry => ({
     font-size: var(--text-xs);
     font-weight: 700;
     color: #fff;
-    letter-spacing: .1em;
+    letter-spacing: var(--tracking-label);
     text-transform: uppercase;
     line-height: 1.2;
   }
@@ -1375,7 +1394,7 @@ const latestEntries = latestPool.map(entry => ({
     font-family: var(--font-mono);
     font-size: var(--text-floor);
     color: #aaa;
-    letter-spacing: .08em;
+    letter-spacing: var(--tracking-label);
     text-transform: uppercase;
   }
   .yt-tile__strip--live .yt-tile__strip-sub {
@@ -1405,24 +1424,11 @@ const latestEntries = latestPool.map(entry => ({
     display: block;
   }
 
+  /* Position only — the plate itself is the shared .st-live-badge rule. */
   .yt-tile__live-badge {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    background: var(--color-live);
-    color: #fff;
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    font-weight: 700;
-    letter-spacing: .14em;
-    padding: 3px 7px;
-    border-radius: 3px;
-    animation: yt-live-pulse 1.5s ease-in-out infinite;
-  }
-
-  @keyframes yt-live-pulse {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: .5; }
+    top: var(--space-sm);
+    left: var(--space-sm);
   }
 
   /* Latest tile — flex row for text + emblem layout */
@@ -1605,7 +1611,7 @@ const latestEntries = latestPool.map(entry => ({
     font-size: var(--text-floor);
     color: var(--color-gold-dim);
     text-transform: lowercase;
-    letter-spacing: 0.06em;
+    letter-spacing: var(--tracking-label);
   }
 
   .novel-tile__outline {
@@ -1627,8 +1633,8 @@ const latestEntries = latestPool.map(entry => ({
 
   .novel-tile__recent {
     margin: 0;
-    font-size: 0.7rem;
-    color: var(--color-text-muted, rgba(245, 245, 245, 0.45));
+    font-size: var(--text-floor);
+    color: var(--color-text-muted);
     display: flex;
     align-items: center;
     gap: 0.3em;
@@ -1676,9 +1682,9 @@ const latestEntries = latestPool.map(entry => ({
 
     .stream-tile.is-live    { animation: none; }
     .stream-tile::after     { transition: none; }
-    .st-live-badge          { animation: none; }
+    .st-live-badge,
+    .yt-tile__live-badge    { animation: none; }
     .container.is-live::before  { animation: none; background-position: 0% 0%; }
-    .yt-tile__live-badge { animation: none; }
     .image-tile--youtube { transition: none; }
     .yt-tile__strip { transition: none; }
     .yt-tile__tint  { transition: none; }
@@ -1970,6 +1976,12 @@ const latestEntries = latestPool.map(entry => ({
       padding-right: 0;
       border-right: 0;
     }
+
+    /* The bar is a link, so on touch it owes the same 44px floor every other
+       tap target on the page keeps. Desktop stays at the 40px chrome height. */
+    .traces-bar {
+      min-height: 44px;
+    }
   }
 
   /* Flying text is the one thing this feature cannot do under reduced
@@ -2011,7 +2023,7 @@ const latestEntries = latestPool.map(entry => ({
     padding-left: var(--space-sm);
     font-family: var(--font-mono);
     font-size: var(--text-floor);
-    letter-spacing: .12em;
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--color-text-muted);
   }
@@ -2351,7 +2363,13 @@ const latestEntries = latestPool.map(entry => ({
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     if (!window.matchMedia('(hover: hover)').matches) return;
 
-    const SELECTOR = '.bento-tile--interactive, .logo-tile, .image-tile, .title-tile';
+    // Every tile on the grid, not just the `--interactive` ones. BentoTile
+    // defaults to variant="interactive" but every homepage tile passes
+    // dark/highlight instead, so the old selector bound Title, YouTube, Novel,
+    // About and the three logo tiles — and silently skipped Journal, Now,
+    // Media Log and Latest, i.e. both --core tiles. Hovering Novel tilted in
+    // 3D while the Journal tile beside it stayed flat.
+    const SELECTOR = '.bento-tile, .logo-tile, .image-tile, .title-tile';
     const MAX_TILT = 6;
 
     document.querySelectorAll<HTMLElement>(SELECTOR).forEach(tile => {
