@@ -99,6 +99,16 @@ Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--sp
 
 Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title-tile { grid-column: span 4 }`), not a span class. Below the grid (not a tile): the Traces band — see the Traces section.
 
+Row 1 has to be re-balanced twice on the way down, because the title's span is
+fixed at 4 while the grid's column count is not. At 769–1024px the grid is 4
+columns, so the title fills its own row and YouTube + Now must each `span 2` to
+fill the next one; at ≤768px (2 columns) they each go full-width. Both rules live
+in `index.astro`'s scoped CSS and **must** be placed after the base
+`.image-tile--youtube { grid-column: span 1 }` declaration to outrank it.
+`.home-now-tile` is the root of a `<BentoTile>` component, so Astro never stamps
+the scope attribute on it and its rules **must** be wrapped in `:global(...)` —
+the same gotcha as the client-built Traces markup, for a different reason.
+
 ### List/Detail
 - `ListItem.astro` — Left panel items in SplitViewLayout
 - `EntryHeader.astro` — Entry title, dates, emblem trigger (`data-page-emblem` attr signals SplitView to flip card); no tag row (notes/showcase have no tags)
@@ -435,7 +445,12 @@ many sessions has Russ logged."
 quest-file parsing, the log-scale level curve) was deleted with the pause
 menu. `STAT_COLORS` is still consumed by `scripts/transition.ts`'s per-route
 page-transition card effect (a static route→stat color mapping, unrelated to
-session tallies) and by the arc card above.
+session tallies) and by the arc card above. It is **not** used by the homepage's
+About tile any more: the stat hue was the only non-gold accent on that page and
+`Expression`'s `#a855f7` measured 4.40:1 against the tile ground at 11px, under
+AA. That tile's `--st-lead` (arc label, its hairline, and the portrait ring) is
+hard-wired to `var(--color-gold)`; the stat colour still identifies the arc on
+`/about`, where the card is the subject and carries the stat emblem.
 
 The homepage's Stream tile (`#stream-tile`, dark 1×2, links to `/about`) shows
 the same live-now indicator as before (`/api/live-status.ts`, unchanged) plus
@@ -456,7 +471,7 @@ separate decision, not part of this page.
 | `src/utils/journalMerge.ts` | pure merge/sort logic (no astro imports) | Unit-testable core of journal.ts (vitest can't resolve `astro:content`) |
 | `src/utils/dates.ts` | `formatDate()`, `shouldShowUpdatedDate()` | Date formatting and update-date display logic |
 | `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `parseOrderPrefix()`, `unescapeScrivenerMarkdown()`, `stripSceneLabel()`, `countWords()`, `computeNovelStats()`, `flattenFolderFiles()`, `findRecentFiles()`, `findSynopsisDoc()`, `findFirstScene()` | Scrivener-backed novel content loader + rain-gauge stats + desk recency/intro helpers |
-| `src/utils/sessions.ts` | `STAT_ORDER`, `StatName`, `STAT_COLORS`, `hexToRgbTriplet()` | The shared stat vocabulary/colors — the only place the five stat hexes are written (`index.astro`'s homepage tile, `about.astro`'s arc card, and `scripts/transition.ts`'s page-transition card all read `STAT_COLORS`). Tallying/radar/donut/quest-parsing/level-curve logic that used to live here was deleted in the 2026-08 `/status` rebuild (see Sessions & the /about arc card above) |
+| `src/utils/sessions.ts` | `STAT_ORDER`, `StatName`, `STAT_COLORS`, `hexToRgbTriplet()` | The shared stat vocabulary/colors — the only place the five stat hexes are written (`about.astro`'s arc card and `scripts/transition.ts`'s page-transition card read `STAT_COLORS`; the homepage About tile deliberately does **not** — see below). Tallying/radar/donut/quest-parsing/level-curve logic that used to live here was deleted in the 2026-08 `/status` rebuild (see Sessions & the /about arc card above) |
 | `src/utils/protagonist.ts` | `parseProtagonist()`, `DEFAULT_PROTAGONIST` | Minimal frontmatter reader for `_protagonist.md` (name/epithet/portrait); missing file/fields degrade to defaults |
 | `src/utils/profile.ts` | `profileSchema`, `pickProfile()`, `nowLine()` | /about profile card data layer — Zod schema (from `astro/zod`, **not** `astro:content`, so vitest can load it), singleton entry selection, and the single live NOW line (returns null rather than a placeholder when there's nothing real to show) |
 | `src/utils/shelfWall.ts` | `wallTier()`, `wallShape()`, `wallClass()`, `wallRotation()`, `sortWall()`, `resolveInitialFilter()` | /shelf wall logic — affection tiers, shape/span classes, slug-seeded rotation, ordering, filter-URL resolution |

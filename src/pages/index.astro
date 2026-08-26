@@ -5,16 +5,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 import BentoTile from '../components/BentoTile.astro';
 import { buildNovelTree, computeNovelStats, flattenFolderFiles } from '../utils/novel';
-import { STAT_COLORS } from '../utils/sessions';
 import { parseCurrentArc } from '../utils/currentArc';
 import { stripMarkdown } from '../utils/content';
 import { formatDate } from '../utils/dates';
 import { readFileSync } from 'fs';
 import { parseProtagonist, DEFAULT_PROTAGONIST } from '../utils/protagonist';
 
-// Query all content collections for items with publishedAt dates
+// Query all content collections. Notes/showcase are dated feeds; shelf is not.
 const notes = await getCollection('notes', ({ data }) => !data.draft && data.publishedAt);
-const media = await getCollection('shelf', ({ data }) => !data.draft && data.publishedAt);
+// The collage is a sample of the shelf, not a dated feed — requiring
+// `publishedAt` here hid 25 of 29 entries and left the tile 4 covers wide.
+// `effectiveDate` already sorts undated entries last.
+const media = await getCollection('shelf', ({ data }) => !data.draft);
 const showcase = await getCollection('showcase', ({ data }) => !data.draft && data.publishedAt);
 
 // Query now collection for latest entry
@@ -44,8 +46,7 @@ const recentShowcase = showcase
   .slice(0, 3)
   .map(e => ({ href: `/showcase/${e.slug}`, emblem: e.data.emblem ?? DEFAULT_EMBLEM, title: e.data.title }));
 
-const recentMedia = media
-  .filter(e => e.data.publishedAt)
+const recentMedia = [...media]
   .sort((a, b) => effectiveDate(b) - effectiveDate(a))
   .slice(0, 8)
   .map(e => ({ href: `/shelf/${e.slug}`, emblem: e.data.emblem ?? DEFAULT_EMBLEM, title: e.data.title }));
@@ -98,7 +99,10 @@ try {
   questsRaw = readFileSync(join(process.cwd(), 'src/content/sessions/_quests.md'), 'utf-8');
 } catch { /* missing file → no teaser */ }
 const currentArc = parseCurrentArc(questsRaw);
-const arcColor = currentArc?.stat ? STAT_COLORS[currentArc.stat] : 'var(--color-gold)';
+// The arc's stat colour stays on /about, where the arc card is the subject
+// and carries the stat emblem. Here it was the only non-gold accent on the
+// page and #a855f7 measured 4.40:1 at 11px — under AA. Gold on both counts.
+const arcColor = 'var(--color-gold)';
 
 /* Name for the About tile — same source /about reads. */
 let protagonist = DEFAULT_PROTAGONIST;
@@ -159,7 +163,7 @@ const latestEntries = latestPool.map(entry => ({
           class="yt-tile__avatar"
           src="/images/logos/yt-avatar-640.jpg"
           srcset="/images/logos/yt-avatar-640.jpg 640w, /images/logos/yt-avatar-1024.jpg 1024w"
-          sizes="(max-width: 800px) 100vw, 177px"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 177px"
           alt="Ninjaruss YouTube channel"
         />
         <span class="yt-tile__chip" aria-hidden="true">YouTube</span>
@@ -1674,6 +1678,18 @@ const latestEntries = latestPool.map(entry => ({
     .yt-tile__tint  { transition: none; }
   }
 
+  /* 769–1024px is the only range where the grid is 4 columns but the title
+     still spans 4 — it filled its own row and left YouTube + Now sitting in
+     2 of the next row's 4 cells, half the row empty. Widen the pair instead
+     of shrinking the title, so the wordmark keeps its full-bleed hero row.
+     (≤768px already handles itself in the 2-column block below.) */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .image-tile--youtube,
+    :global(.home-now-tile) {
+      grid-column: span 2;
+    }
+  }
+
   @media (max-width: 768px) {
     .title-tile {
       grid-column: span 2;
@@ -1691,7 +1707,7 @@ const latestEntries = latestPool.map(entry => ({
 
     /* Now fills the rest of its row so the following span-2 Journal tile
        doesn't wrap and leave a blank cell beside it. */
-    .home-now-tile {
+    :global(.home-now-tile) {
       grid-column: span 2;
     }
 
