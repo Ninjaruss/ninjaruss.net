@@ -309,38 +309,78 @@ message 100 chars), and a narrow, intentionally-not-general-purpose
 blocklist (`BLOCKED_TERMS` in the same file — self-harm-incitement phrases
 only; extend it directly rather than treating it as a profanity filter).
 
-**Homepage — danmaku over the hero** (`.traces-sky`; four redesigns in:
-pills → fixed-corner ticker → full-width wall → this). Comments fly
-right-to-left **across the hero row itself** rather than living in a strip
-of their own — overlaying content is what makes danmaku read as danmaku.
-`.traces-sky` is absolutely positioned over row 1 inside `.container`,
-`pointer-events: none` so the tiles stay clickable (each bullet re-enables
-it for itself). Its top/height come from the title tile via
-`syncTracesSkyHeight()`, which publishes `--traces-sky-top`/`--traces-sky-h`
-— the same "measure and publish a CSS var" pattern as the NavPill's
-`--nav-clearance`. **Measure with `offsetTop`/`offsetHeight`, never
-`getBoundingClientRect()`**: the title tile runs a translate/scale entrance
-animation (`p3r-entrance-scale`) and a rect captured mid-flight bakes that
-transform into the sky's position.
+**Homepage — the bar is the lane** (`.traces-lane`; five redesigns in:
+pills → fixed-corner ticker → full-width wall → danmaku over the hero →
+this). Comments fly right-to-left through the traces bar's own ~32px lane.
+The previous version flew them **across the hero row**, over the wordmark,
+on the reasoning that overlaying content is what makes danmaku read as
+danmaku. That reasoning doesn't survive the specifics: danmaku is native on
+bilibili because the surface underneath is *video* — continuously moving
+already — and because the comments are *about* it, time-synced. Here the
+surface was a static identity mark that is also the page's `<h1>`, the
+messages have no relationship to it, and the hero is the first two seconds
+of the page, when a visitor is actively scanning. The instinct behind the
+overlay was still right — the corner-widget versions failed because they
+read as a bolted-on module — but the thing to inhabit is the bar, not the
+title. Nothing gets covered, and it is where bilibili puts its comment
+chrome anyway.
+
+This also retired `.traces-sky`, `syncTracesSkyHeight()`, and the
+`--traces-sky-top`/`--traces-sky-h` vars: the lane is an ordinary in-flow
+element, so there is nothing to measure and publish (and no leaked `resize`
+listener, which the old sync installed and never removed).
+
+**One lane means separating bullets in time, not space.** The overlay
+scattered them across ~80% of the hero's height with a random `top`; a
+single lane has to keep them apart along the only axis it has.
+`pumpTracesLane`/`queueTracesBullet` are a strictly serial queue: each
+spawn publishes the moment its trailing edge clears the right edge
+(`width / (laneWidth + width) × duration`) into `tracesLaneFreeAt`, and the
+next bullet waits for that plus `TRACES_BULLET_GAP_MS`. A fixed stagger
+cannot work — duration is length-scaled, so it would overlap exactly the
+longest, hardest-to-read messages. The hover stream polls the same gate and
+keeps at most one item queued ahead, so a long hover can't build a backlog
+that keeps firing after the pointer leaves.
+
+**Bullets enter at `left: 100%`, not `left: 0`.** The old rule paired
+`left: 0` with a `translateX(100%)` start keyframe — but a percentage
+translate resolves against **the element's own width**, so a 313px bullet
+started 313px from the lane's left edge and popped into view mid-lane
+instead of flying in from off-screen. The tall sky and random vertical
+lanes disguised it; one lane stacks every bullet at the same x and makes it
+obvious. The keyframe now travels `--lane-width + --bullet-width`, both
+published at spawn.
+
+**Bullets are `<span>`s, not `<button>`s.** The lane lives inside the bar's
+`<a>`, and nesting an interactive element in an anchor is invalid; they were
+already `tabIndex = -1` and unreachable by keyboard. Clicking one now just
+clicks the bar, which opens the modal at the parked message — a moving
+click target was never a good affordance.
 
 **Motion is bounded, not ambient.** One burst on arrival
-(`runTracesBurst`, ≤4 bullets), then it settles and only the parked line
+(`runTracesBurst`, ≤3 bullets), then it settles and only the parked line
 remains. The homepage already spends a lot of its motion budget (novel
-rain, Latest cycling every 7s, the live pulse), so a permanently looping
-overlay was too much on top of that — and unlike those, this one moves
-*across* content people are trying to read. The burst fires at most once
+rain, Latest cycling every 7s, the live pulse). The burst fires at most once
 per session (`sessionStorage`) so hopping home from `/journal` doesn't
 replay it, and an `IntersectionObserver` cancels the remainder if the
-visitor scrolls past the hero mid-burst.
+visitor scrolls past the bar mid-burst.
 
-**Resting state — the parked line** (`.traces-park`): one message pinned
-bottom-left of the hero, cross-fading to the next every ~7s. This is where
-the backlog is actually surfaced. It only ever changes *opacity in place*:
-peripheral vision is tuned to translation, not opacity, which is why this
-can rotate through everything without reading as a busy page (same reason
-the Latest tile can cycle). **Hover the hero to pull the flight back** —
-danmaku becomes something you summon, and anyone hovering the nameplate
-has already stopped scanning.
+**Resting state — the parked line** (`.traces-park`): what sits in the lane
+between flights, cross-fading to the next message every ~7s. This is where
+the backlog is actually surfaced. Park and flight take turns — the lane
+carries `data-flying` while any bullet is in it and the parked line drops to
+`opacity: 0` rather than sitting underneath one. It only ever changes
+*opacity in place*: peripheral vision is tuned to translation, not opacity,
+which is why this can rotate through everything without reading as a busy
+page (same reason the Latest tile can cycle). **Hover the bar to pull the
+flight back** — pointing at it is an explicit "show me these".
+
+**Flight is desktop-only** (`tracesFlightAllowed`, ≥769px). A bullet
+crossing a ~250px lane is frantic rather than ambient, and the compact bar
+has no room to read one mid-flight — below that the lane just cross-fades
+the parked line. That is also the first time mobile has shown any trace
+content at all; the previous versions hid the parked line entirely there and
+left only the invitation to add more.
 
 **Same-person grouping** (`buildTracesSpawnQueue`): names are free text,
 not accounts, so "same person" is approximated by trimmed
@@ -350,18 +390,29 @@ is consumed in that order by the burst, the hover stream, and the parked
 rotation alike, so a person's history stays together everywhere.
 
 **The bar** (`.traces-bar`, `#traces-tab`): player-chrome strip flush under
-the hero — live count + "Leave a trace" + Sign. This is the affordance the
-pure-overlay versions lacked; on bilibili the input bar is what invites the
-comment in the first place. Clicking it opens the `<dialog>` modal at
-whichever message is currently parked. The count comes from the API's
-`total` (a real `countMessages()`, not the page size). **Layout gotcha**:
-the bar needs to be ~40px but `.bento-grid`'s implicit rows are
-`minmax(100px, auto)`, so it can't just be another row — row 1 and the bar
-are wrapped in `.hero-band` (one full-width grid item) whose inner element
-reuses the `.bento-grid` class to inherit the 6/4/2/1-column responsive
-steps. `.hero-band` sets `animation: none` because `.bento-grid > *`
-carries the entrance stagger and the band would otherwise scale while its
-own tiles scale inside it.
+the hero — lane + Sign. This is the affordance the pure-overlay versions
+lacked; on bilibili the input bar is what invites the comment in the first
+place. Clicking it opens the `<dialog>` modal at whichever message is
+currently parked. `.traces-bar__field` ("Leave a trace — one line") is the
+server-rendered **empty state**, so it is also the no-JS and pre-fetch
+state; `renderTracesPark` hides it once real content lands.
+
+**The count lives in the modal header**, not the bar. It reads as a detail
+you want once the full list is open rather than as bar chrome. It still
+comes from the API's `total` (a real `countMessages()`, not the page size),
+held in `tracesTotal` at fetch time and written into `#traces-modal-count`
+on open. **The bar therefore needs an explicit `aria-label`**: the lane is
+`aria-hidden` (its text rotates every few seconds, which would otherwise
+rename the link continuously), leaving "Sign" as the only text in the
+anchor.
+
+**Layout gotcha**: the bar needs to be ~40px but `.bento-grid`'s implicit
+rows are `minmax(100px, auto)`, so it can't just be another row — row 1 and
+the bar are wrapped in `.hero-band` (one full-width grid item) whose inner
+element reuses the `.bento-grid` class to inherit the 6/4/2/1-column
+responsive steps. `.hero-band` sets `animation: none` because
+`.bento-grid > *` carries the entrance stagger and the band would otherwise
+scale while its own tiles scale inside it.
 
 **Timestamps**: the modal list and `/traces` show full date **and time**
 (`formatTraceTimestamp`, "Aug 25, 2026 · 3:41 PM UTC"); bullets and the
@@ -370,8 +421,9 @@ instants, not editorial content dates, so this intentionally departs from
 the sitewide date-only `formatDate()` (see `src/utils/tracesFormat.ts`).
 
 **Reduced motion**: flying text is the one thing this feature cannot do, so
-JS skips the burst and the hover stream entirely and leaves the parked line
-static on the newest message.
+`tracesFlightAllowed()` is false, JS skips the burst and the hover stream
+entirely, and the parked line stays static on the newest message (the
+rotation timer is never started).
 
 **Gotcha**: Astro's scoped CSS only tags elements present in the
 server-rendered template. Anything built client-side via

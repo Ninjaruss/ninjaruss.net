@@ -225,9 +225,19 @@ const latestEntries = latestPool.map(entry => ({
       {/* Player-style bar flush under the hero row: the count doubles as the
           "there is something here" signal and the whole bar is the affordance
           to add one. Spans the full grid width as its own auto-placed row. */}
-      <a href="/traces" class="traces-bar" id="traces-tab">
-        <span class="traces-bar__count" id="traces-bar-count">Traces</span>
-        <span class="traces-bar__field">Leave a trace — one line</span>
+      <a
+        href="/traces"
+        class="traces-bar"
+        id="traces-tab"
+        aria-label="Traces — read the guestbook or leave a message"
+      >
+        {/* aria-hidden: the lane's text rotates every few seconds, and inside
+            the anchor that would rename the link continuously. The real list
+            lives at the href. */}
+        <span class="traces-lane" id="traces-lane" aria-hidden="true">
+          <span class="traces-bar__field" id="traces-empty">Leave a trace — one line</span>
+          <span class="traces-park" id="traces-park" hidden></span>
+        </span>
         <span class="traces-bar__send">Sign</span>
       </a>
       </div>
@@ -448,17 +458,12 @@ const latestEntries = latestPool.map(entry => ({
 
     </BentoGrid>
 
-    {/* Danmaku overlay — absolutely positioned over the hero row only (its
-        height is synced to the title tile by JS). pointer-events: none so the
-        tiles underneath stay fully clickable; individual bullets re-enable it
-        for themselves. Sits inside .container, which is already relative. */}
-    <div class="traces-sky" id="traces-sky" aria-hidden="true"></div>
-    <p class="traces-park" id="traces-park" hidden></p>
   </div>
 
   <dialog id="traces-modal" class="traces-modal">
     <div class="traces-modal__header">
       <span class="p4g-tab">Traces</span>
+      <span class="traces-modal__count" id="traces-modal-count"></span>
       <button type="button" class="traces-modal__close" id="traces-modal-close" aria-label="Close">✕</button>
     </div>
     <div class="traces-modal__body" id="traces-modal-body">
@@ -1777,16 +1782,21 @@ const latestEntries = latestPool.map(entry => ({
     animation: none;
   }
 
-  .traces-sky {
-    position: absolute;
-    top: var(--traces-sky-top, 0);
-    left: var(--space-lg);
-    right: var(--space-lg);
-    height: var(--traces-sky-h, 0);
+  /* The lane. Comments used to fly across the hero, which meant moving text
+     over the wordmark — the one element that has to read instantly, and the
+     page's <h1>. Danmaku reads as native on bilibili because the surface
+     underneath is video; a static identity mark is the opposite case, and
+     guestbook messages have no relationship to the title they were crossing.
+     The bar is the one strip on the page whose whole job is Traces, so
+     nothing gets covered — and it is where bilibili puts its comment chrome
+     anyway. Being an in-flow element, it also retires the measure-the-title-
+     tile-and-publish-CSS-vars machinery the overlay needed. */
+  .traces-lane {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    align-self: stretch;
     overflow: hidden;
-    pointer-events: none;
-    z-index: 3;
-    border-radius: var(--radius-lg);
   }
 
   /* Created client-side, so :global() — these never receive Astro's scoped
@@ -1794,28 +1804,33 @@ const latestEntries = latestPool.map(entry => ({
      signature and it is load-bearing here, not decoration: a bullet has to
      stay legible crossing from the black title tile onto the solid-gold Now
      tile in the same pass. */
+  /* top/bottom + align-items rather than translateY: the fly keyframe owns
+     `transform`, so a centring transform here would be overwritten by it. */
+  /* left: 100% parks it just past the lane's right edge, so it enters from
+     off-screen. The old rule used `left: 0` with a `translateX(100%)` start
+     keyframe — but a percentage translate resolves against the element's OWN
+     width, so a 313px bullet started 313px from the left edge, popping into
+     view mid-lane instead of flying in. A tall sky with random vertical lanes
+     hid that; a single lane stacks every bullet at the same x. */
   :global(.traces-bullet) {
     position: absolute;
-    left: 0;
+    left: 100%;
+    top: 0;
+    bottom: 0;
     white-space: nowrap;
     display: inline-flex;
-    align-items: baseline;
+    align-items: center;
     gap: 0.5em;
-    padding: 0;
-    background: none;
-    border: 0;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    color: var(--color-white, #fff);
-    text-shadow: 0 0 3px #000, 1px 1px 0 #000, -1px 1px 0 #000, 0 -1px 0 #000;
-    cursor: pointer;
-    pointer-events: auto;
+    color: var(--color-text);
+    pointer-events: none;
     animation: traces-fly var(--bullet-duration, 12s) linear 1 both;
   }
 
   @keyframes traces-fly {
-    from { transform: translateX(100%); }
-    to   { transform: translateX(calc(-1 * var(--bullet-width, 400px))); }
+    from { transform: translateX(0); }
+    to   { transform: translateX(calc(-1 * (var(--lane-width, 1000px) + var(--bullet-width, 400px)))); }
   }
 
   :global(.traces-bullet__name) {
@@ -1835,31 +1850,39 @@ const latestEntries = latestPool.map(entry => ({
     opacity: 0.62;
   }
 
-  /* The resting state. After the burst settles this is the only Traces
-     motion left, and it only ever cross-fades in place — peripheral vision
-     is tuned to translation, not opacity, which is why this can rotate
-     through the whole backlog without reading as a busy page (same reason
-     the Latest tile can cycle every 7s). */
-  .traces-park {
+  /* What is resting in the lane. Cross-fades in place and never translates —
+     peripheral vision is tuned to translation, not opacity, which is why this
+     can rotate through the whole backlog without reading as a busy page (same
+     reason the Latest tile can cycle every 7s). A block box, not a flex one,
+     so `text-overflow: ellipsis` still applies to its inline spans. */
+  .traces-park,
+  .traces-bar__field {
     position: absolute;
-    left: calc(var(--space-lg) + var(--space-md));
-    top: calc(var(--traces-sky-top, 0px) + var(--traces-sky-h, 0px) - 1.9em);
-    z-index: 4;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
     margin: 0;
-    max-width: min(48ch, calc(100% - 2 * var(--space-lg) - var(--space-2xl)));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    padding-left: var(--space-xs);
-    border-left: 2px solid var(--color-gold);
     font-family: var(--font-mono);
     font-size: var(--text-xs);
+  }
+
+  .traces-park {
     color: var(--color-text-muted);
-    text-shadow: 0 0 4px #000, 0 0 2px #000;
     transition: opacity 450ms ease;
   }
 
-  .traces-park[hidden] { display: none; }
+  /* Park and flight take turns: the lane is flagged while any bullet is in
+     it, and the resting line steps aside rather than sitting under one. */
+  .traces-lane[data-flying] .traces-park {
+    opacity: 0;
+  }
+
+  .traces-park[hidden],
+  .traces-bar__field[hidden] { display: none; }
 
   /* :global() — the park's spans are built client-side in renderTracesPark,
      so they never receive Astro's scoped data-astro-cid-* attribute and a
@@ -1902,25 +1925,9 @@ const latestEntries = latestPool.map(entry => ({
     background: var(--color-surface-2);
   }
 
-  .traces-bar__count {
-    flex-shrink: 0;
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: var(--color-gold);
-    padding-right: var(--space-sm);
-    border-right: 1px solid var(--color-surface-3);
-  }
-
+  /* The empty state — server-rendered, so it is also the no-JS and
+     pre-fetch state. JS hides it once the first parked message lands. */
   .traces-bar__field {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
     color: var(--color-text-subtle);
   }
 
@@ -1939,17 +1946,6 @@ const latestEntries = latestPool.map(entry => ({
   .traces-bar:hover .traces-bar__send,
   .traces-bar:focus-visible .traces-bar__send {
     background: var(--color-gold-orange);
-  }
-
-  @media (max-width: 768px) {
-    .traces-bar__field {
-      display: none;
-    }
-
-    .traces-bar__count {
-      flex: 1;
-      border-right: 0;
-    }
   }
 
   /* Flying text is the one thing this feature cannot do under reduced
@@ -1982,6 +1978,18 @@ const latestEntries = latestPool.map(entry => ({
     justify-content: space-between;
     padding: var(--space-md) var(--space-lg);
     border-bottom: var(--border-thin) solid var(--color-border);
+  }
+
+  /* margin-right: auto parks it beside the tab rather than letting
+     space-between fling it to the middle. */
+  .traces-modal__count {
+    margin-right: auto;
+    padding-left: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-floor);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
   }
 
   .traces-modal__close {
@@ -2360,9 +2368,9 @@ const latestEntries = latestPool.map(entry => ({
   }
 
   const TRACES_FETCH_LIMIT = 30;
-  const TRACES_BURST_MAX = 4;          // bullets in the arrival burst
-  const TRACES_BURST_GAP_MS = 1100;    // stagger between them
-  const TRACES_HOVER_GAP_MS = 1500;    // cadence while hovering the hero
+  const TRACES_BURST_MAX = 3;          // bullets in the arrival burst
+  const TRACES_HOVER_POLL_MS = 400;    // how often hover re-checks the gate
+  const TRACES_BULLET_GAP_MS = 600;    // clear air between consecutive bullets
   const TRACES_PARK_ROTATE_MS = 7000;  // parked-line cross-fade interval
   const TRACES_PARK_FADE_MS = 450;
   const TRACES_BULLET_MIN_MS = 8000;
@@ -2374,10 +2382,25 @@ const latestEntries = latestPool.map(entry => ({
   let tracesHoverTimer: number | undefined;
   let tracesParkIndex = 0;
   let tracesHoverIndex = 0;
-  let tracesSkyObserver: ResizeObserver | undefined;
+  let tracesTotal = 0;
+  // Timestamp the lane is next free to be entered. The overlay could stack
+  // bullets because it had ~80% of the hero's height to scatter them across;
+  // a single 32px lane has to separate them in time instead, or they pile up
+  // into an unreadable smear.
+  let tracesLaneFreeAt = 0;
+  let tracesPending: TracesSpawnItem[] = [];
+  let tracesPumping = false;
 
   function tracesReduceMotion(): boolean {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  // Flight is desktop-only. A bullet crossing a ~350px lane is frantic rather
+  // than ambient, and the compact bar has no room to read one mid-flight —
+  // below 769px the lane just cross-fades through the parked line, which is
+  // also the first time mobile has shown any trace content at all.
+  function tracesFlightAllowed(): boolean {
+    return !tracesReduceMotion() && window.matchMedia('(min-width: 769px)').matches;
   }
 
   // Groups by (trimmed, lowercased) name — "same person" can only be
@@ -2408,14 +2431,15 @@ const latestEntries = latestPool.map(entry => ({
   }
 
   function spawnTracesBullet(item: TracesSpawnItem): void {
-    const sky = document.getElementById('traces-sky');
-    if (!sky) return;
+    const lane = document.getElementById('traces-lane');
+    if (!lane) return;
 
-    const bullet = document.createElement('button');
-    bullet.type = 'button';
+    // A span, not a button: the lane lives inside the bar's <a>, and nesting
+    // an interactive element in an anchor is invalid and unreachable by
+    // keyboard anyway (these were already tabIndex -1). Clicking a bullet now
+    // just clicks the bar, which opens the modal at the parked message.
+    const bullet = document.createElement('span');
     bullet.className = 'traces-bullet' + (item.isEcho ? ' traces-bullet--echo' : '');
-    bullet.tabIndex = -1;   // the bar and the modal are the keyboard path in
-    bullet.dataset.traceId = String(item.entry.id);
 
     const nameEl = document.createElement('span');
     nameEl.className = 'traces-bullet__name';
@@ -2427,26 +2451,62 @@ const latestEntries = latestPool.map(entry => ({
     timeEl.textContent = formatTraceTimestampCompact(item.entry.createdAt);
     bullet.append(nameEl, msgEl, timeEl);
 
-    // Random lane + length-scaled duration, so a burst never looks like a
-    // queue draining at a fixed rate.
-    bullet.style.top = `${(6 + Math.random() * 74).toFixed(1)}%`;
+    // Length-scaled duration, so a burst never looks like a queue draining at
+    // a fixed rate. There is only one lane now, so no vertical randomisation.
     const duration = Math.max(
       TRACES_BULLET_MIN_MS,
       item.entry.message.length * TRACES_BULLET_MS_PER_CHAR,
     );
     bullet.style.setProperty('--bullet-duration', `${duration}ms`);
-    bullet.addEventListener('click', () => openTracesModal(item.entry.id));
-    bullet.addEventListener('animationend', () => bullet.remove());
+    bullet.addEventListener('animationend', () => {
+      bullet.remove();
+      if (!lane.querySelector('.traces-bullet')) lane.removeAttribute('data-flying');
+    });
 
-    sky.appendChild(bullet);
+    lane.setAttribute('data-flying', 'true');
+    lane.appendChild(bullet);
     // The fly keyframe ends at -1 × the bullet's own width, which is only
     // measurable once it is in the DOM.
-    bullet.style.setProperty('--bullet-width', `${bullet.offsetWidth}px`);
+    const width = bullet.offsetWidth;
+    const laneWidth = lane.offsetWidth || 1;
+    bullet.style.setProperty('--bullet-width', `${width}px`);
+    bullet.style.setProperty('--lane-width', `${laneWidth}px`);
+
+    // It travels (laneWidth + width) over `duration`, so its trailing edge
+    // clears the right edge after it has covered its own width. Reserve the
+    // lane until then, plus a beat of clear air.
+    const clearMs = (width / (laneWidth + width)) * duration;
+    tracesLaneFreeAt = performance.now() + clearMs + TRACES_BULLET_GAP_MS;
+  }
+
+  // Strictly serial: one bullet enters, and the next waits for the lane to
+  // actually clear. A long message holds the lane longer than a short one, so
+  // anything precomputed from a fixed stagger overlaps exactly the bullets
+  // that are hardest to read — each spawn publishes its own clear time and
+  // the pump reads it back.
+  function pumpTracesLane(): void {
+    if (tracesPumping) return;
+    const next = tracesPending.shift();
+    if (!next) return;
+    tracesPumping = true;
+    const wait = Math.max(0, tracesLaneFreeAt - performance.now());
+    tracesBurstTimers.push(window.setTimeout(() => {
+      tracesPumping = false;
+      spawnTracesBullet(next);
+      pumpTracesLane();
+    }, wait));
+  }
+
+  function queueTracesBullet(item: TracesSpawnItem): void {
+    tracesPending.push(item);
+    pumpTracesLane();
   }
 
   function renderTracesPark(item: TracesSpawnItem): void {
     const park = document.getElementById('traces-park');
     if (!park) return;
+    // Real content has arrived — the invitation is no longer the lane's job.
+    document.getElementById('traces-empty')?.setAttribute('hidden', '');
     park.replaceChildren();
     const nameEl = document.createElement('span');
     nameEl.className = 'traces-park__name';
@@ -2489,76 +2549,49 @@ const latestEntries = latestPool.map(entry => ({
   // behind them — and fired at most once per session so hopping home from
   // /journal does not replay it every time.
   function runTracesBurst(): void {
-    if (tracesReduceMotion()) return;
+    if (!tracesFlightAllowed()) return;
     try {
       if (sessionStorage.getItem('traces-burst') === 'done') return;
       sessionStorage.setItem('traces-burst', 'done');
     } catch { /* private mode — just play it */ }
 
     const count = Math.min(TRACES_BURST_MAX, tracesQueue.length);
-    for (let i = 0; i < count; i++) {
-      tracesBurstTimers.push(window.setTimeout(() => spawnTracesBullet(tracesQueue[i]), i * TRACES_BURST_GAP_MS));
-    }
+    for (let i = 0; i < count; i++) queueTracesBullet(tracesQueue[i]);
 
-    const sky = document.getElementById('traces-sky');
-    if (sky && 'IntersectionObserver' in window) {
+    const bar = document.getElementById('traces-tab');
+    if (bar && 'IntersectionObserver' in window) {
       const io = new IntersectionObserver(entries => {
         if (!entries[0].isIntersecting) { stopTracesBurst(); io.disconnect(); }
       });
-      io.observe(sky);
+      io.observe(bar);
     }
   }
 
-  // Hovering the hero pulls the flight back on demand — anyone hovering the
-  // nameplate has stopped scanning the page, so it is the one moment dense
-  // motion is welcome rather than intrusive.
+  // Hovering the bar pulls the flight back on demand — pointing at the bar is
+  // an explicit "show me these", so it is the one moment dense motion is
+  // welcome rather than intrusive.
   function bindTracesHover(): void {
-    const hero = document.getElementById('traces-sky')?.parentElement;
-    if (!hero || tracesReduceMotion()) return;
+    const bar = document.getElementById('traces-tab');
+    if (!bar || !tracesFlightAllowed()) return;
 
-    hero.addEventListener('mouseenter', () => {
+    bar.addEventListener('mouseenter', () => {
       if (tracesHoverTimer || tracesQueue.length === 0) return;
-      const tick = () => spawnTracesBullet(tracesQueue[tracesHoverIndex++ % tracesQueue.length]);
+      // Polls the same gate rather than running its own cadence, so hovering
+      // never stacks a bullet on top of one already in the lane.
+      // At most one queued ahead, so a long hover doesn't build a backlog
+      // that keeps firing after the pointer has left.
+      const tick = () => {
+        if (tracesPending.length === 0) {
+          queueTracesBullet(tracesQueue[tracesHoverIndex++ % tracesQueue.length]);
+        }
+      };
       tick();
-      tracesHoverTimer = window.setInterval(tick, TRACES_HOVER_GAP_MS);
+      tracesHoverTimer = window.setInterval(tick, TRACES_HOVER_POLL_MS);
     });
-    hero.addEventListener('mouseleave', () => {
+    bar.addEventListener('mouseleave', () => {
       clearInterval(tracesHoverTimer);
       tracesHoverTimer = undefined;
     });
-  }
-
-  // The sky is absolutely positioned and has to cover exactly the hero row,
-  // whose height is content-driven — so it is measured from the title tile
-  // rather than guessed. Same "publish a measured height as a CSS var"
-  // pattern the NavPill uses for --nav-clearance.
-  function syncTracesSkyHeight(): void {
-    const title = document.querySelector<HTMLElement>('.title-tile');
-    const container = document.getElementById('page-container');
-    if (!title || !container) return;
-    // offsetTop/offsetHeight, NOT getBoundingClientRect: the title tile runs
-    // a translate-based entrance animation (.p3r-animate-left) and a rect
-    // measured mid-flight bakes that transform into the sky's position.
-    // Both offset* values are transform-immune, and offsetTop is already
-    // relative to .container (the nearest positioned ancestor) measured from
-    // the same padding edge that `top` resolves against.
-    const apply = () => {
-      container.style.setProperty('--traces-sky-top', `${title.offsetTop}px`);
-      container.style.setProperty('--traces-sky-h', `${title.offsetHeight}px`);
-    };
-    apply();
-    tracesSkyObserver?.disconnect();
-    if ('ResizeObserver' in window) {
-      tracesSkyObserver = new ResizeObserver(apply);
-      tracesSkyObserver.observe(title);
-      tracesSkyObserver.observe(container);
-    }
-    // The first measurement runs before webfonts land, which changes the
-    // tile's height — re-measure once each settles rather than trusting the
-    // observer alone to catch it.
-    window.addEventListener('load', apply, { once: true });
-    window.addEventListener('resize', apply);
-    document.fonts?.ready.then(apply).catch(() => {});
   }
 
   function stopTracesHero(): void {
@@ -2570,17 +2603,17 @@ const latestEntries = latestPool.map(entry => ({
     tracesParkIndex = 0;
     tracesHoverIndex = 0;
     tracesQueue = [];
-    tracesSkyObserver?.disconnect();
-    tracesSkyObserver = undefined;
+    tracesPending = [];
+    tracesPumping = false;
+    tracesLaneFreeAt = 0;
     document.querySelectorAll('.traces-bullet').forEach(b => b.remove());
+    document.getElementById('traces-lane')?.removeAttribute('data-flying');
   }
 
   async function initializeTracesHero(): Promise<void> {
-    const sky = document.getElementById('traces-sky');
-    if (!sky || sky.dataset.bound === 'true') return;
-    sky.dataset.bound = 'true';
-
-    syncTracesSkyHeight();
+    const lane = document.getElementById('traces-lane');
+    if (!lane || lane.dataset.bound === 'true') return;
+    lane.dataset.bound = 'true';
 
     let entries: TraceEntry[];
     let total = 0;
@@ -2594,8 +2627,9 @@ const latestEntries = latestPool.map(entry => ({
       return;
     }
 
-    const countEl = document.getElementById('traces-bar-count');
-    if (countEl) countEl.textContent = total === 1 ? '1 trace' : `${total} traces`;
+    // The count reads as a detail you want once the full list is open, not
+    // as bar chrome — so it is held here and rendered into the modal header.
+    tracesTotal = total;
 
     if (entries.length === 0) return;
 
@@ -2637,6 +2671,11 @@ const latestEntries = latestPool.map(entry => ({
     if (!modal || !body) return;
 
     modal.showModal();
+
+    const countEl = document.getElementById('traces-modal-count');
+    if (countEl && tracesTotal > 0) {
+      countEl.textContent = tracesTotal === 1 ? '1 trace' : `${tracesTotal} traces`;
+    }
 
     if (body.dataset.loaded !== 'true') {
       body.innerHTML = '<p class="traces-modal__loading">Loading…</p>';
