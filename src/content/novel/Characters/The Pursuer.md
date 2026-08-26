@@ -22,6 +22,16 @@ He is the extreme case on the ask axis: a man who wanted enormously, never once 
 
 **Why the reader forgives him.** He understands his situation completely and stays courteous inside it, and he never hurts anyone he doesn't have to — round one, he loses only the exit and does not pursue.
 
+### The thematic meaning
+
+**His unique territory is sunk-cost identity.** The Pursuer mistakes endurance for proof that continuing is who he is. Once continuity becomes selfhood, stopping does not look like a new choice; it looks like retroactively invalidating the man who spent thirty years arriving here.
+
+**Rain is his strongest foil; Vesper is his institutional opposite.** Rain fears killing possible future selves and cannot begin. The Pursuer fears killing the accumulated past self and cannot end. Vesper responds to stagnant systems by seizing control over people; the Pursuer surrenders control to the institution and processes its verb. One directs everyone else's becoming. One abdicates direction of his own.
+
+**His deeper question:** *can changing direction honour the person who endured rather than betray him?* Motion alone cannot answer it. He already knows how to proceed. What he never learned is how to wander — to spend a moment in a direction nobody supplied and no outcome justifies.
+
+**Drafting test.** Does the final stop read as something he takes as his, even though emptying makes it physically possible? Do not add an alliance or a redemptive turn to prove it. His participation lives in accepting the unanswered question and leaving the last act unrecorded: for once, the record does not supply the self.
+
 ### The archetype
 
 *The juggernaut.* The reader expects him defeated in a final clash, or converted.
@@ -64,7 +74,7 @@ Two, one per audience. For Rain: **he walks** — never runs, at any speed anyon
 
 And the small one on top: **he completes the record. He signs.** His signature at the bottom of a dead man's intake; his own disposal date in his own handwriting. He is the only character in this book who documents, in a story whose villain's crimes delete their own evidence.
 
-**Breaks exactly.** His last act is unrecorded — he stops walking and files nothing. Thirty years of completed paperwork, and the one thing he ever authored has no entry.
+**Breaks exactly.** His last act is unrecorded — he stops walking and files nothing. Thirty years of completed paperwork, and the one act he finally takes as his has no entry.
 
 ### How it reaches the page
 
@@ -92,7 +102,7 @@ And the small one on top: **he completes the record. He signs.** His signature a
 
 ### Guards
 
-- **The coat never comes off as the fix.** Stopping is authored at empty, not unlocked by an object.
+- **The coat never comes off as the fix.** Stopping is chosen at empty, not unlocked by an object.
 
 - **He never allies.** No intel, no joining, no redemption scene. The gate simply stops being manned.
 

@@ -24,6 +24,16 @@ His question: *if I become one thing, what happens to everyone else I could have
 
 **Why the reader stays with him.** His mistakes are always made forward. He never fails by hiding or protecting himself; he fails by reaching at the wrong thing.
 
+### The thematic meaning
+
+**His unique territory is finitude, sharpened by measurement.** Rain mistakes unrealised potential for proof of a self: as long as nothing reaches a second line, he can remain someone capable of anything. Action does not merely risk failure. It replaces the exceptional person he imagines with finite evidence that may be ordinary.
+
+**His strongest foil is the Pursuer; his deepest ideological enemy is Vesper.** The Pursuer has stored selfhood in the accumulated past and cannot stop; Rain stores it in possible futures and cannot start. Vesper offers Rain the most seductive answer available — one finished, painless self without the slow risk of participating in what he becomes — and therefore turns Rain's private avoidance into a philosophy imposed on everyone.
+
+**His deeper question:** *can I still respect myself after reality has replaced fantasy with evidence?* The answer is not one extraordinary act that proves him forever. It is the smaller foundation: *I have acted before. I can act again.*
+
+**Drafting test.** Would he make this choice if nobody — including him — could read it as proof that he is special? If yes, it is probably genuine participation. If the choice preserves a beautiful interpretation of Rain while sending the cost elsewhere, it is probably the Clone in another form.
+
 ### The archetype
 
 *The nobody who gets a power.* The reader expects the ability to arrive and for him to grow into being capable.

@@ -1,0 +1,8 @@
+[mcp_servers.matryoshka]
+command = "npx"
+args = [
+    "-y",
+    "--package",
+    "matryoshka-rlm",
+    "rlm-mcp",
+]

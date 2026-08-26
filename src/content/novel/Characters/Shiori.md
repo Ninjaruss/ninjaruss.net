@@ -26,6 +26,16 @@ The story still never treats her original request as a sin. She was right to ask
 
 **Why the reader stays with her.** She boards to accuse Rain and her own machines exonerate him, publicly, instantly — and she stays, takes it on the chin, and is back at work in the same scene.
 
+### The thematic meaning
+
+**Her unique territory is distributed permanence.** Shiori does not prove that records do not matter; she proves that they are not the self. She mistakes the surviving copy for insurance that she will remain continuous, while her actual continuity has already escaped the archive into tools, habits, people and consequences she may never trace. Nothing remains intact, but nothing fully disappears either.
+
+**Vesper is her clearest contrast; Rain is her opposite temperature.** When something breaks, Vesper corrects the source into a cleaner form while Shiori patches the particular thing and accepts the seam. Rain preserves possibility by refusing the second line; Shiori signs weekend jank and lets the making be evidence enough. But she is not his cure: her making is also the shape her refusal to ask has taken.
+
+**Her deeper question:** *if I cannot preserve the thing itself, can I trust what it changed?* The maker's mark does not mean *I will remain.* It means *I entered the chain.* Her coda wagers that participation leaves consequences without a complete receipt.
+
+**Drafting test.** Would she still make the thing if nobody remembered it — including her? The answer may be yes, but it must cost her. If she appears serenely comfortable with impermanence, the bracing and the archive of her life have stopped meaning anything.
+
 ### The archetype
 
 *The quirky gadget girl with amnesia.* The reader expects the lost memory to be recovered and to restore her.

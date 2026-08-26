@@ -18,7 +18,7 @@ Rain is the thing that falls. "I am Rain." and "Now I fall." are the same senten
 
 ### The cast
 
-Everyone has outsourced their authorship, and each is a version of Rain further down a different road — which is why he idealises them. He is admiring more advanced cases of his own disease.
+Everyone has displaced responsibility for participating in their becoming, and each is a version of Rain further down a different road — which is why he idealises them. He is admiring more advanced cases of his own disease.
 
 | | Outsourced to | Their daily act | What Rain reaches for | What it actually is |
 |---|---|---|---|---|
@@ -35,7 +35,7 @@ Each daily act breaks in the arc where the outsourcing is named, and is replaced
 
 ### The Guardian
 
-There isn't one. No wise figure guides Rain toward the goal — Roxana trains him toward being Aster, Claire supplies certainty he has to stop borrowing, Vesper is the false guardian the book exists to refuse, and the only thing in the slot is the Ghost: wordless, granting commitment and never competence. A story about ending outsourced authorship cannot have a mentor telling the protagonist what to do.
+There isn't one. No wise figure guides Rain toward the goal — Roxana trains him toward being Aster, Claire supplies certainty he has to stop borrowing, Vesper is the false guardian the book exists to refuse, and the only thing in the slot is the Ghost: wordless, granting commitment and never competence. A story about reclaiming participation in becoming cannot have a mentor telling the protagonist what to do.
 
 **It is a vacancy with a name on it.** Aster is the Guardian this cast should have had — the investigator who hunted Vesper, dead before page one. Three living characters hold three relationships to him: **Roxana is trying to rebuild him out of a stranger**, **Vesper is wearing him** (the shard, the fighting style, tell #1 — the Shadow captured the Guardian), and **Claire is following his trail for the wrong reason.** Nobody ever says *he would have known what to do*, and nobody eulogises him as a mentor. It is built entirely out of those three relationships.
 

@@ -24,6 +24,16 @@ Her question: *how do I act when I can't be sure?*
 
 **Why the reader stays with her.** She never lies, including about her own motive. She comes back and argues honestly for the man who will hollow her, at full strength, and says plainly that she wants to sleep. There is nothing to catch her in.
 
+### The thematic meaning
+
+**Her unique territory is responsibility without control.** Claire mistakes a correct model for proof that the self making the decision is safe from blame. What she cannot tolerate is not merely being wrong; it is understanding as well as anyone could, choosing responsibly, and discovering that contingency can still destroy something.
+
+**Roxana is her immediate contrast; Vesper is her dangerous mirror.** In a crisis Claire diagnoses, models and tries to close the variables while Roxana acts on visible need. Both approaches are necessary and both can become avoidance. Vesper is the farther version of Claire's gift: he does not merely reduce uncertainty enough to act, but removes the independent variable — the other person's participation — altogether.
+
+**Her deeper question:** *can I make the most responsible choice available while accepting in advance that I may regret it?* Evidence should carry her to the edge. It can never close the final distance.
+
+**Drafting test.** Can she distinguish *I cannot justify this completely* from *this is irrational*? Her growth is not intuition defeating reason. It is reason reaching its honest limit and handing the remaining decision back.
+
 ### The archetype
 
 *The cold tactician who will thaw.* The reader expects competence validated and ice melted, probably romantically.

@@ -239,6 +239,55 @@ The finale is the hardest, most concrete prose in the book. **The mismatch betwe
 
 **Roxana, Shiori and the Pursuer are single-rooted** and need no resolution. One open question: whether Roxana's fire is her **origin** or her **debt** — guilt appears nowhere in her design, and the armour-against-being-known reading is the more distinctive one.
 
+#### The six-character thematic map
+
+*Refined 2026-08-26. The cast is not six separate topics. It is six answers to one problem: **what counts as proof that a self exists, and when does that proof become another way to stop participating in what one becomes?***
+
+| Character | What they preserve | What they mistake for proof | The distortion | Deeper question |
+|---|---|---|---|---|
+| **Rain** | possibility | unrealised potential | deferral | **Can I still respect myself after reality replaces fantasy with evidence?** |
+| **Claire** | intelligibility | a correct model | certainty | **Can I choose responsibly without guaranteeing the result?** |
+| **Roxana** | belonging | indispensability | self-erasure | **Can I trust my worth when nobody needs what I provide?** |
+| **The Pursuer** | continuity | endurance | momentum | **Can changing direction honour the self who endured, rather than erase him?** |
+| **Vesper** | relief | successful outcomes | intervention | **Can I accept a person becoming well in a way I did not cause or choose?** |
+| **Shiori** | traces | the surviving record | defensive self-reliance | **If I cannot preserve the thing itself, can I trust what it changed?** |
+
+The healthy answer is not that evidence is worthless. **Past commitments can become evidence that a person may trust themselves to commit again.** The corruption begins when evidence must settle the self permanently: Rain protects proof he has not tested; Claire waits for proof that cannot exist; Roxana produces proof compulsively; the Pursuer obeys thirty years of proof that he can continue; Vesper manufactures outcomes that prove he was necessary; Shiori loses the proof and keeps making. A self is never proven once. It is continually formed, and a person may repeatedly return to participating in that formation.
+
+This creates six distinct territories around the same argument: **choice, uncertainty, worth, persistence, agency, and impermanence.** None is the complete answer. The thesis exists in the pressure between them.
+
+#### The contrast network
+
+**Primary contrasts — structural.** These pairings should disagree through behaviour before either character explains a belief.
+
+- **Rain / The Pursuer — future inventory against accumulated past.** Rain cannot start because choosing kills possible selves; the Pursuer cannot stop because stopping appears to invalidate the self who continued. One wants without acting. One acts without wanting.
+
+- **Rain / Vesper — participation against imposed becoming.** Rain preserves even his worst possibility of choosing later; Vesper loses faith that another person can surprise him and substitutes the better outcome he can already see. Rain's slowness is real harm. Vesper's shortcut abolishes the faculty that could object.
+
+- **Claire / Roxana — diagnosis against embodied care.** Claire meets crisis by making it legible; Roxana meets visible pain by acting on it. Claire risks arriving perfectly after the moment has passed. Roxana risks making herself indispensable before anyone can ask what she wants.
+
+- **Claire / Vesper — responsibility without control against control disguised as responsibility.** Both reduce uncertainty and intervene before being asked. Claire's victory is handing a decision back while accepting regret; Vesper cannot leave the result in another person's hands.
+
+- **Roxana / Vesper — giving yourself against taking another's agency.** Both are genuinely kind and both need their intervention to matter. Roxana's care consumes her and leaves the other person intact; Vesper preserves himself by making the other person easier to save.
+
+- **Rain / Claire — preserving possibility against preserving certainty.** Both can prepare forever. Rain delays because an act makes him finite; Claire delays because an act makes her responsible for an unknowable result.
+
+**Secondary contrasts — enriching.** These do not need equal plot weight, but they should produce recognisably different choices under pressure.
+
+- **Shiori / Rain — make anyway against preserve possibility.** He stops before the second line can measure him. She leaves a mark on weekend jank and lets the making be enough.
+
+- **Shiori / Vesper — adaptation against correction.** When something breaks, she patches the particular thing and accepts the ugly seam; he replaces the source of breakage with a cleaner person.
+
+- **Shiori / Roxana — accompaniment against usefulness.** Both give through making and providing, and neither can ask. Roxana needs her absence to matter; Shiori's wager is trusting that what she changed can continue without her record of it.
+
+- **The Pursuer / Claire — certainty that cannot move against motion that cannot choose.** Claire waits for the model to close; he accepts the supplied heading and never reopens it. Her good crossing is action without certainty. His would be direction without an order.
+
+- **The Pursuer / Vesper — obedience against control.** One surrenders participation by processing the institution's verb; the other directs everyone else's becoming because institutions and people move too slowly. Neither permits surprise to change his course.
+
+**Resemblance is part of every important opposition.** Claire is Vesper's dangerous mirror because both want uncertainty reduced. Roxana is Vesper's darker mirror because both intervene through real care. Shiori is not Rain's cure but his opposite temperature: her making is also a way not to ask. The Pursuer is not merely Rain with the direction reversed; each has stored selfhood in a different tense.
+
+**Drafting test.** For any contrast that matters, the pair must be able to solve the same immediate problem differently without discussing the theme. Claire diagnoses while Roxana tends the visible wound. Vesper replaces what failed while Shiori patches it. Rain hesitates at an open road while the Pursuer follows the existing heading. If the difference exists only in explanation, it is not yet dramatic.
+
 #### Three scales of self-surveillance
 
 The panopticon in this story is the **empty** one — the tower unmanned and the discipline continuing anyway. That is the mechanism behind *nothing is chasing you*, and it runs at three scales.

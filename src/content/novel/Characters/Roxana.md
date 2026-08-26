@@ -20,6 +20,16 @@ Her question: *who am I when nobody needs me?*
 
 **Why the reader stays with her.** She gave a hunted stranger a home before asking one question about the charge. The reader is kept by her before they learn what she's using him for, and the using never cancels the giving — it explains it.
 
+### The thematic meaning
+
+**Her unique territory is worth beyond indispensability.** Roxana does not only want to help. She needs her absence to matter, because usefulness is the evidence by which she permits herself to belong. A room full of people who genuinely need her looks like love and is, at the same time, the perfect cage.
+
+**Claire is her immediate contrast; Vesper is her darker mirror.** Claire meets need by understanding it before acting; Roxana acts before understanding can leave somebody hurting. Vesper shares her compulsion to intervene and his kindness is equally real. The difference is where the cost lands: Roxana erases herself to preserve the other; Vesper erases part of the other to preserve the successful intervention.
+
+**Her deeper question:** *can I trust my worth when I am not actively producing evidence for it?* The most exposing possibility is not abandonment. It is that people might love her perfectly well without needing her.
+
+**Drafting test.** Can she remain in the room while someone else cooks, protects, decides or carries — and neither leave nor invent a new task? Receiving help matters, but replaceability is the sharper test: somebody else can provide what she provides, and she still belongs.
+
 ### The archetype
 
 *The warm mentor — and specifically the disabled sage.* The reader expects her to teach, dispense wisdom, and be spared an arc of her own.

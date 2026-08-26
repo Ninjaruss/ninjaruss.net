@@ -20,6 +20,16 @@ His question: *how long am I supposed to watch?*
 
 **The anti-chip.** *Never once refused* is the opposite of having something to prove, which is exactly why being told *not yet* costs him something visible.
 
+### The thematic meaning
+
+**His unique territory is agency at the point where care becomes control.** Vesper mistakes successful outcomes for proof that his intervention was necessary. If suffering ends by his method, the result appears to vindicate both the cure and the man who supplied it; the subscription quietly arranges a world in which the vindication never has to end.
+
+**Rain is his deepest enemy, while Claire and Roxana are his dangerous mirrors.** Rain keeps becoming in ways Vesper did not direct, which is why waiting for him is intolerable. Claire shares the desire to collapse uncertainty, but her victory is accepting responsibility without control. Roxana also intervenes through real care, but her giving consumes her while leaving the recipient's faculty of choice intact. Vesper's mercy preserves the helper and simplifies the helped.
+
+**His deeper question:** *can I accept someone becoming well in a way I did not cause, cannot predict, and would not have chosen for them?* More brutal still: *how much agency should be respected in someone who is plainly failing to exercise it?* The story must grant the force of that question without granting him ownership of the answer.
+
+**Drafting test.** Can he witness successful change he did not cause without recasting it as unstable, incomplete or lucky? If not, that is his ego — never announced, always wearing concern.
+
 ### The archetype
 
 *The affable villain.* The reader expects the mask to drop.
@@ -84,7 +94,7 @@ Through memory — so everything he can do is a record, moved.
 
 Its shadow, in every scene: his own wound stays untouched while he fixes yours. He never turns the gesture around. Play it as a visible constant, never as commentary.
 
-**It never breaks.** Everyone else's compulsion becomes an authored act; his doesn't. That is why he ends holding the prism.
+**It never breaks.** Everyone else's compulsion is deliberately re-chosen once; his isn't. That is why he ends holding the prism.
 
 ### How it reaches the page
 
