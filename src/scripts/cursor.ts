@@ -1,5 +1,5 @@
 const TILE_SELECTOR =
-  '.bento-tile--interactive, .logo-tile, .image-tile, .title-tile, .traces-band__cta, .traces-band__pill, .traces-modal__close';
+  '.bento-tile--interactive, .logo-tile, .image-tile, .title-tile, .traces-bar, .traces-bullet, .traces-modal__close';
 
 // Only take over the cursor on hover-capable (pointer) devices, and only once
 // JS is confirmed running. CSS hides the native cursor via

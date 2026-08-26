@@ -11,12 +11,12 @@ import { NAME_MAX_LENGTH, MESSAGE_MAX_LENGTH } from '../utils/traces';
 const messages = await listMessages();
 ---
 
-<BaseLayout title="Traces" description="Leave your mark.">
+<BaseLayout title="Traces" description="Leave a trace.">
   <NavPill />
   <div class="container">
     <header class="traces-header">
       <span class="p4g-tab">Traces</span>
-      <h1 class="traces-title"><span class="p4g-heading">Leave your mark</span></h1>
+      <h1 class="traces-title"><span class="p4g-heading">Leave a trace</span></h1>
       <span class="p4g-underline" aria-hidden="true"></span>
     </header>
 
@@ -32,7 +32,7 @@ const messages = await listMessages();
           name="message"
           type="text"
           maxlength={MESSAGE_MAX_LENGTH}
-          placeholder="leave your mark — one line"
+          placeholder="leave a trace — one line"
           required
         />
       </div>
@@ -274,7 +274,7 @@ const messages = await listMessages();
         list?.prepend(li);
 
         form.reset();
-        status.textContent = 'Signed — thanks for leaving your mark.';
+        status.textContent = 'Signed — thanks for leaving a trace.';
       } catch {
         status.textContent = 'Network error — please try again.';
         status.dataset.tone = 'error';

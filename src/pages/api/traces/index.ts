@@ -9,7 +9,7 @@ import {
   MESSAGE_MAX_LENGTH,
   NAME_MAX_LENGTH,
 } from '../../../utils/traces';
-import { insertMessage, lastSubmissionByIpHash, listMessages } from '../../../utils/tracesDb';
+import { countMessages, insertMessage, lastSubmissionByIpHash, listMessages } from '../../../utils/tracesDb';
 
 function json(body: unknown, status: number, extraHeaders?: Record<string, string>): Response {
   return new Response(JSON.stringify(body), {
@@ -24,10 +24,10 @@ export const GET: APIRoute = async ({ url }) => {
   // Always cap the query — 200 is a reasonable ceiling for a personal-site
   // guestbook, whether the caller omits ?limit= or passes something huge.
   const effectiveLimit = limit && Number.isInteger(limit) && limit > 0 ? Math.min(limit, 200) : 200;
-  const rows = await listMessages(effectiveLimit);
+  const [rows, total] = await Promise.all([listMessages(effectiveLimit), countMessages()]);
   const entries = rows.map(r => ({ id: r.id, name: r.name, message: r.message, createdAt: r.created_at }));
 
-  return json({ entries }, 200, { 'Cache-Control': 'no-store' });
+  return json({ entries, total }, 200, { 'Cache-Control': 'no-store' });
 };
 
 export const POST: APIRoute = async (context: APIContext) => {

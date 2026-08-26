@@ -36,6 +36,15 @@ export async function listMessages(limit?: number): Promise<TraceRow[]> {
   return rows;
 }
 
+// Total row count, independent of any ?limit= the caller asked for — the
+// homepage bar advertises "N traces" and would otherwise report the page
+// size (30) rather than the real total.
+export async function countMessages(): Promise<number> {
+  const sql = getSql();
+  const rows = await sql`select count(*)::int as n from traces_messages` as unknown as { n: number }[];
+  return rows[0]?.n ?? 0;
+}
+
 export async function lastSubmissionByIpHash(ipHash: string): Promise<Date | null> {
   const sql = getSql();
   const rows = await sql`

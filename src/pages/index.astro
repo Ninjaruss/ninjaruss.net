@@ -59,7 +59,7 @@ const recentJournal: JournalRow[] = [
   ...showcase.map(e => ({ href: `/showcase/${e.slug}`, title: e.data.title, type: 'showcase' as const, d: effectiveDate(e) })),
 ]
   .sort((a, b) => b.d - a.d)
-  .slice(0, 7)
+  .slice(0, 5)
   .map(({ href, title, type, d }) => ({ href, title, type, date: shortDate(d) }));
 
 // Latest tile pool — the latest 2 notes and latest 1 showcase, interleaved
@@ -124,6 +124,14 @@ const latestEntries = latestPool.map(entry => ({
 <BaseLayout title="Home" description="Notes, media, and showcases.">
   <div class="container" id="page-container">
     <BentoGrid>
+      {/* Hero band — the row-1 tiles plus the Traces bar, wrapped as one
+          full-width grid item. The bar needs to be ~40px tall, but the bento
+          grid's implicit rows are minmax(100px, auto), so it can't simply be
+          another row of the outer grid. The inner element reuses the
+          .bento-grid class so it inherits the same 6/4/2/1-column responsive
+          steps rather than duplicating those breakpoints. */}
+      <div class="hero-band">
+      <div class="bento-grid">
       <!-- Row 1: Title (4×1) + YouTube (1×1) + Now (1×1) -->
       <div class="title-tile p3r-animate-left">
         <div class="title-tile__inner">
@@ -208,6 +216,18 @@ const latestEntries = latestPool.map(entry => ({
         </span>
       </BentoTile>
 
+      </div>
+
+      {/* Player-style bar flush under the hero row: the count doubles as the
+          "there is something here" signal and the whole bar is the affordance
+          to add one. Spans the full grid width as its own auto-placed row. */}
+      <a href="/traces" class="traces-bar" id="traces-tab">
+        <span class="traces-bar__count" id="traces-bar-count">Traces</span>
+        <span class="traces-bar__field">Leave a trace — one line</span>
+        <span class="traces-bar__send">Sign</span>
+      </a>
+      </div>
+
       <!-- Rows 2-3: Journal (4×2, slash split) + Novel (1×2) + Stream (1×2) -->
       <div class="bento-tile bento-tile--full bento-tile--highlight bento-tile--core bento-tile--span-4x2 journal-tile" data-tile-href="/journal">
         <div class="journal-tile__notes">
@@ -287,23 +307,36 @@ const latestEntries = latestPool.map(entry => ({
         style={`--st-lead: ${arcColor};`}
       >
         {/* Reads as a profile card first — a stranger should learn there is a
-            person here, with the current arc underneath as evidence. */}
+            person here (face, name, epithet), with the current arc underneath
+            as evidence. The stat colour accents the arc's rule and label only;
+            it used to tint the decision prose itself, which put an off-palette
+            purple/green paragraph in the middle of a gold-and-black page. */}
         <div class="bento-tile__header">
           <span class="bento-tile__label">About</span>
-          <h3 class="bento-tile__title">{protagonist.name}</h3>
+        </div>
+
+        <div class="st-id">
+          {protagonist.portrait && (
+            <img class="st-portrait" src={protagonist.portrait} alt="" loading="lazy" width="64" height="64" />
+          )}
+          <h3 class="st-name">{protagonist.name}</h3>
+          {protagonist.epithet && <p class="st-epithet">{protagonist.epithet}</p>}
         </div>
 
         <div class="st-body">
           {currentArc ? (
-            <p class="st-teaser">{currentArc.decision}</p>
+            <>
+              <span class="st-arc">{currentArc.arc}</span>
+              <p class="st-teaser">{currentArc.decision}</p>
+            </>
           ) : (
             <p class="st-teaser st-teaser--empty">The story hasn't started yet.</p>
           )}
         </div>
 
         <div class="st-footer">
-          <span class="st-cta">► load</span>
           <span id="st-live-badge" class="st-live-badge" hidden>LIVE</span>
+          <span class="st-cta">About<span aria-hidden="true"> →</span></span>
         </div>
         <span class="bento-tile__corner" aria-hidden="true"></span>
       </a>
@@ -410,20 +443,14 @@ const latestEntries = latestPool.map(entry => ({
       </a>
 
     </BentoGrid>
-  </div>
 
-  <section class="traces-wall container" aria-label="Traces — recent messages">
-    <div class="traces-wall__header">
-      <span class="p4g-tab">Traces</span>
-      <a href="/traces" class="traces-wall__link" id="traces-tab">Leave your mark →</a>
-    </div>
-    <div class="traces-wall__lanes" id="traces-wall-lanes" hidden>
-      <div class="traces-wall__lane" data-lane="0"></div>
-      <div class="traces-wall__lane" data-lane="1"></div>
-      <div class="traces-wall__lane" data-lane="2"></div>
-    </div>
-    <p class="traces-wall__empty" id="traces-wall-empty" hidden>No one's signed yet — be the first.</p>
-  </section>
+    {/* Danmaku overlay — absolutely positioned over the hero row only (its
+        height is synced to the title tile by JS). pointer-events: none so the
+        tiles underneath stay fully clickable; individual bullets re-enable it
+        for themselves. Sits inside .container, which is already relative. */}
+    <div class="traces-sky" id="traces-sky" aria-hidden="true"></div>
+    <p class="traces-park" id="traces-park" hidden></p>
+  </div>
 
   <dialog id="traces-modal" class="traces-modal">
     <div class="traces-modal__header">
@@ -1087,13 +1114,68 @@ const latestEntries = latestPool.map(entry => ({
     box-shadow: inset 0 0 22px rgba(var(--color-live-rgb), 0.1);
   }
 
+  /* Identity block — face first, then name, then epithet. A profile card
+     with no face was the weakest thing about the old tile: it was a kicker,
+     a name and a floating paragraph. */
+  .st-id {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2xs);
+    padding: var(--space-xs) var(--space-sm) 0;
+    text-align: center;
+  }
+
+  .st-portrait {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    border: var(--border-thin) solid var(--st-lead);
+    background: var(--color-surface-2);
+    margin-bottom: var(--space-2xs);
+  }
+
+  .st-name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    line-height: 1.1;
+    color: var(--color-gold);
+    letter-spacing: 0.03em;
+  }
+
+  .st-epithet {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-floor);
+    line-height: 1.35;
+    color: var(--color-text-subtle);
+    text-wrap: balance;
+  }
+
   .st-body {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 14px 14px 8px;
+    gap: var(--space-2xs);
+    padding: var(--space-sm) var(--space-sm) var(--space-xs);
+  }
+
+  /* The stat colour lives here — a short label over a hairline — instead of
+     tinting the paragraph below it. */
+  .st-arc {
+    font-family: var(--font-mono);
+    font-size: var(--text-floor);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--st-lead);
+    padding-bottom: var(--space-2xs);
+    border-bottom: 1px solid color-mix(in srgb, var(--st-lead) 45%, transparent);
+    text-align: center;
   }
 
   .st-teaser {
@@ -1101,9 +1183,8 @@ const latestEntries = latestPool.map(entry => ({
     text-align: center;
     font-size: var(--text-xs);
     line-height: 1.5;
-    color: var(--st-lead);
-    font-family: var(--font-mono);
-    letter-spacing: 0.02em;
+    color: var(--color-text-muted);
+    letter-spacing: 0.01em;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
@@ -1117,12 +1198,12 @@ const latestEntries = latestPool.map(entry => ({
 
   .st-footer {
     padding: 7px 11px;
-    border-top: 1px solid #181826;
+    border-top: 1px solid var(--color-surface-1);
     display: flex;
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
-    background: #09090f;
+    background: var(--color-black);
   }
 
   .st-cta {
@@ -1130,7 +1211,7 @@ const latestEntries = latestPool.map(entry => ({
     font-size: var(--text-floor);
     letter-spacing: .16em;
     text-transform: uppercase;
-    color: rgba(var(--color-gold-rgb), .4);
+    color: rgba(var(--color-gold-rgb), .55);
     font-family: var(--font-mono);
     transition: color var(--transition-fast);
   }
@@ -1660,155 +1741,207 @@ const latestEntries = latestPool.map(entry => ({
     }
   }
 
-  /* A danmaku-style ("bullet comment") wall: name + message + timestamp
-     bullets drift right-to-left across a few lanes, looping continuously
-     through the fetched snapshot. Lives in normal page flow directly under
-     the bento grid (not fixed to the viewport) — the .container class
-     (applied in markup) matches the grid's own width/padding so this reads
-     as the next section, not a separate floating feature. */
-  .traces-wall {
-    margin-top: var(--space-2xl);
-    padding-bottom: calc(var(--nav-clearance, 80px) + var(--space-lg));
-  }
-
-  .traces-wall__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-md);
-    margin-bottom: var(--space-md);
-  }
-
-  .traces-wall__link {
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    text-decoration: none;
-    transition: color var(--transition-fast);
-  }
-
-  .traces-wall__link:hover,
-  .traces-wall__link:focus-visible {
-    color: var(--color-gold);
-  }
-
-  .traces-wall__lanes {
-    position: relative;
+  /* ── Traces: danmaku over the hero ────────────────────────
+     Comments fly right-to-left across the hero row itself rather than
+     living in a strip of their own — that overlay-on-content behaviour is
+     what makes danmaku read as danmaku. Motion is deliberately BOUNDED:
+     one burst on arrival, then it settles and only the parked line remains
+     (see initializeTracesHero). The homepage already spends a lot of its
+     motion budget (novel rain, Latest cycling, live pulse), so a
+     permanently looping overlay was too much on top of that. */
+  .hero-band {
+    grid-column: 1 / -1;
     display: flex;
     flex-direction: column;
-    gap: var(--space-2xs);
-    background: var(--color-bg-elevated);
-    border: var(--border-thin) solid var(--color-gold-dim);
-    border-radius: var(--radius-md);
-    padding: var(--space-sm) 0;
-    overflow: hidden;
-    /* Fade the lane edges so bullets don't hard-cut in/out of view. */
-    mask-image: linear-gradient(to right, transparent 0, black 32px, black calc(100% - 32px), transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0, black 32px, black calc(100% - 32px), transparent 100%);
-  }
-
-  .traces-wall__lane {
-    position: relative;
-    height: 2.4em;
-    overflow: hidden;
-  }
-
-  /* One flying bullet — created client-side, so :global() (never receives
-     Astro's scoped data-astro-cid-* attribute). Duration is set per-bullet
-     via --bullet-duration (message length dependent); delay is applied by
-     JS delaying when the element is appended, not via animation-delay, so
-     idle bullets don't sit invisibly mid-lane waiting to start. */
-  :global(.traces-wall__bullet) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-xs);
-    white-space: nowrap;
-    padding: var(--space-2xs) var(--space-sm);
-    background: var(--color-black);
-    border: var(--border-hairline) dashed var(--color-gold);
-    border-radius: var(--radius-sm);
-    color: inherit;
-    font: inherit;
-    cursor: pointer;
-    transform: translateX(100vw);
-    animation: traces-bullet-fly var(--bullet-duration, 12s) linear 1 both;
-  }
-
-  @keyframes traces-bullet-fly {
-    from { transform: translateX(100vw); }
-    to { transform: translateX(-100%); }
-  }
-
-  :global(.traces-wall__bullet-name) {
-    color: var(--color-gold);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    font-weight: 700;
-  }
-
-  :global(.traces-wall__bullet-message) {
-    color: var(--color-text);
-    font-size: var(--text-sm);
-  }
-
-  :global(.traces-wall__bullet-time) {
-    color: var(--color-text-subtle);
-    font-family: var(--font-mono);
-    font-size: var(--text-floor, 10px);
-  }
-
-  /* An "echo" bullet — an older message from someone who has since posted
-     again. Smaller/dimmer than the primary bullet so it never competes
-     with whoever's newest, and (via buildTracesSpawnQueue) scheduled right
-     after their primary bullet rather than spread randomly through the
-     wall — grouping a person's history close together. */
-  :global(.traces-wall__bullet--echo) {
-    opacity: 0.55;
-  }
-
-  :global(.traces-wall__bullet--echo .traces-wall__bullet-message) {
-    font-size: var(--text-xs);
-  }
-
-  .traces-wall__empty {
-    color: var(--color-text-muted);
-    font-style: italic;
-    text-align: center;
-    padding: var(--space-lg);
-  }
-
-  /* Under reduced motion, JS renders a plain wrapped row of each person's
-     latest message directly into .traces-wall__lanes instead of scheduling
-     flying bullets — the three lane tracks go unused and are hidden. */
-  .traces-wall__lanes[data-static] {
-    flex-direction: row;
-    flex-wrap: wrap;
-    height: auto;
-    padding: var(--space-sm) var(--space-md);
-    gap: var(--space-xs);
-    overflow: visible;
-    mask-image: none;
-    -webkit-mask-image: none;
-  }
-
-  .traces-wall__lanes[data-static] .traces-wall__lane {
-    display: none;
-  }
-
-  :global(.traces-wall__lanes[data-static] .traces-wall__bullet) {
-    position: static;
-    transform: none;
+    gap: var(--space-sm);
+    /* `.bento-grid > *` carries the p3r-entrance-scale stagger, and this band
+       is both a child of the outer grid and the parent of an inner one — so
+       without this the tiles scale inside a band that is itself scaling, and
+       the two transforms compound. The tiles keep their own entrance. */
     animation: none;
   }
 
-  /* Three lanes of readable-length messages get cramped and start
-     overlapping badly below tablet width — drop to two. */
+  .traces-sky {
+    position: absolute;
+    top: var(--traces-sky-top, 0);
+    left: var(--space-lg);
+    right: var(--space-lg);
+    height: var(--traces-sky-h, 0);
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 3;
+    border-radius: var(--radius-lg);
+  }
+
+  /* Created client-side, so :global() — these never receive Astro's scoped
+     data-astro-cid-* attribute. The heavy text-shadow is the danmaku
+     signature and it is load-bearing here, not decoration: a bullet has to
+     stay legible crossing from the black title tile onto the solid-gold Now
+     tile in the same pass. */
+  :global(.traces-bullet) {
+    position: absolute;
+    left: 0;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5em;
+    padding: 0;
+    background: none;
+    border: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-white, #fff);
+    text-shadow: 0 0 3px #000, 1px 1px 0 #000, -1px 1px 0 #000, 0 -1px 0 #000;
+    cursor: pointer;
+    pointer-events: auto;
+    animation: traces-fly var(--bullet-duration, 12s) linear 1 both;
+  }
+
+  @keyframes traces-fly {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(calc(-1 * var(--bullet-width, 400px))); }
+  }
+
+  :global(.traces-bullet__name) {
+    color: var(--color-gold);
+    font-weight: 700;
+  }
+
+  :global(.traces-bullet__time) {
+    font-size: var(--text-floor);
+    opacity: 0.65;
+  }
+
+  /* An older message from someone who has posted since — smaller and
+     dimmer, so age is legible at a glance. */
+  :global(.traces-bullet--echo) {
+    font-size: var(--text-floor);
+    opacity: 0.62;
+  }
+
+  /* The resting state. After the burst settles this is the only Traces
+     motion left, and it only ever cross-fades in place — peripheral vision
+     is tuned to translation, not opacity, which is why this can rotate
+     through the whole backlog without reading as a busy page (same reason
+     the Latest tile can cycle every 7s). */
+  .traces-park {
+    position: absolute;
+    left: calc(var(--space-lg) + var(--space-md));
+    top: calc(var(--traces-sky-top, 0px) + var(--traces-sky-h, 0px) - 1.9em);
+    z-index: 4;
+    margin: 0;
+    max-width: min(48ch, calc(100% - 2 * var(--space-lg) - var(--space-2xl)));
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-left: var(--space-xs);
+    border-left: 2px solid var(--color-gold);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    text-shadow: 0 0 4px #000, 0 0 2px #000;
+    transition: opacity 450ms ease;
+  }
+
+  .traces-park[hidden] { display: none; }
+
+  /* :global() — the park's spans are built client-side in renderTracesPark,
+     so they never receive Astro's scoped data-astro-cid-* attribute and a
+     scoped selector silently never matches them. */
+  :global(.traces-park__name) {
+    color: var(--color-gold);
+    font-weight: 700;
+    /* em, not --space-2xs (2px): at this size that read as no gap at all
+       and ran the name straight into the message. */
+    margin-right: 0.5em;
+  }
+
+  :global(.traces-park__time) {
+    font-size: var(--text-floor);
+    opacity: 0.6;
+    margin-left: 0.6em;
+  }
+
+  /* Player-chrome bar, flush under the hero. Auto-placed as its own grid
+     row spanning all six columns. This is the affordance the pure-overlay
+     versions lacked — on bilibili the input bar is what invites the
+     comment in the first place. */
+  .traces-bar {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-height: 40px;
+    padding: var(--space-2xs) var(--space-2xs) var(--space-2xs) var(--space-md);
+    background: var(--color-bg-elevated);
+    border: var(--border-thin) solid var(--color-surface-3);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .traces-bar:hover,
+  .traces-bar:focus-visible {
+    border-color: var(--color-gold-dim);
+    background: var(--color-surface-2);
+  }
+
+  .traces-bar__count {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-floor);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    padding-right: var(--space-sm);
+    border-right: 1px solid var(--color-surface-3);
+  }
+
+  .traces-bar__field {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-subtle);
+  }
+
+  .traces-bar__send {
+    flex-shrink: 0;
+    padding: var(--space-2xs) var(--space-md);
+    background: var(--color-gold);
+    color: var(--color-black);
+    font-family: var(--font-display);
+    font-size: var(--text-floor);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+  }
+
+  .traces-bar:hover .traces-bar__send,
+  .traces-bar:focus-visible .traces-bar__send {
+    background: var(--color-gold-orange);
+  }
+
   @media (max-width: 768px) {
-    .traces-wall__lane[data-lane="2"] {
+    .traces-bar__field {
       display: none;
+    }
+
+    .traces-bar__count {
+      flex: 1;
+      border-right: 0;
+    }
+  }
+
+  /* Flying text is the one thing this feature cannot do under reduced
+     motion, so JS skips the burst and the rotation entirely and leaves the
+     parked line static on the newest message. */
+  @media (prefers-reduced-motion: reduce) {
+    .traces-park {
+      transition: none;
     }
   }
 
@@ -2210,28 +2343,32 @@ const latestEntries = latestPool.map(entry => ({
     isEcho: boolean;
   }
 
-  const TRACES_WALL_FETCH_LIMIT = 30;
-  const TRACES_LANE_COUNT_DESKTOP = 3;
-  const TRACES_LANE_COUNT_MOBILE = 2;
-  // Gap between consecutive spawns in the queue: tight for a person's own
-  // echoes (their older messages, right after their newest) so they read
-  // as a cluster; wider between different people's primary messages.
-  const TRACES_BULLET_GAP_MS = 2600;
-  const TRACES_ECHO_GAP_MS = 900;
-  const TRACES_BULLET_MIN_DURATION_MS = 10000;
-  const TRACES_BULLET_MS_PER_CHAR = 220;
-  const TRACES_LOOP_PAUSE_MS = 4000;
+  const TRACES_FETCH_LIMIT = 30;
+  const TRACES_BURST_MAX = 4;          // bullets in the arrival burst
+  const TRACES_BURST_GAP_MS = 1100;    // stagger between them
+  const TRACES_HOVER_GAP_MS = 1500;    // cadence while hovering the hero
+  const TRACES_PARK_ROTATE_MS = 7000;  // parked-line cross-fade interval
+  const TRACES_PARK_FADE_MS = 450;
+  const TRACES_BULLET_MIN_MS = 8000;
+  const TRACES_BULLET_MS_PER_CHAR = 90;
 
-  let tracesWallLaneIndex = 0;
-  let tracesWallTimers: number[] = [];
+  let tracesQueue: TracesSpawnItem[] = [];
+  let tracesBurstTimers: number[] = [];
+  let tracesParkTimer: number | undefined;
+  let tracesHoverTimer: number | undefined;
+  let tracesParkIndex = 0;
+  let tracesHoverIndex = 0;
+  let tracesSkyObserver: ResizeObserver | undefined;
 
-  // Groups entries by (trimmed, lowercased) name — "same person" can only
-  // be approximated this way since names are free text, not accounts. Each
-  // group's newest message becomes its "primary" spawn; older messages from
-  // the same name become "echo" spawns queued immediately after it, so a
-  // person's history clusters together and reads as "surface the latest,
-  // cycle the rest nearby" instead of scattering their old messages evenly
-  // among everyone else's.
+  function tracesReduceMotion(): boolean {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  // Groups by (trimmed, lowercased) name — "same person" can only be
+  // approximated that way since names are free text, not accounts. Each
+  // group's newest message is a "primary"; their older ones follow as
+  // "echoes", so a person's history stays together wherever this queue is
+  // consumed (the burst, the hover stream, the parked rotation).
   function buildTracesSpawnQueue(entries: TraceEntry[]): TracesSpawnItem[] {
     const groups = new Map<string, TraceEntry[]>();
     for (const entry of entries) {
@@ -2242,125 +2379,214 @@ const latestEntries = latestPool.map(entry => ({
 
     const byNewest = (a: TraceEntry, b: TraceEntry) =>
       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    const orderedGroups = [...groups.values()]
+    const ordered = [...groups.values()]
       .map(list => [...list].sort(byNewest))
       .sort((a, b) => byNewest(a[0], b[0]));
 
     const queue: TracesSpawnItem[] = [];
-    for (const group of orderedGroups) {
+    for (const group of ordered) {
       queue.push({ entry: group[0], isEcho: false });
       for (const echo of group.slice(1)) queue.push({ entry: echo, isEcho: true });
     }
     return queue;
   }
 
-  function tracesBulletDuration(message: string): number {
-    return Math.max(TRACES_BULLET_MIN_DURATION_MS, message.length * TRACES_BULLET_MS_PER_CHAR);
-  }
+  function spawnTracesBullet(item: TracesSpawnItem): void {
+    const sky = document.getElementById('traces-sky');
+    if (!sky) return;
 
-  function buildTracesBulletElement(item: TracesSpawnItem): HTMLButtonElement {
     const bullet = document.createElement('button');
     bullet.type = 'button';
-    bullet.className = 'traces-wall__bullet' + (item.isEcho ? ' traces-wall__bullet--echo' : '');
+    bullet.className = 'traces-bullet' + (item.isEcho ? ' traces-bullet--echo' : '');
+    bullet.tabIndex = -1;   // the bar and the modal are the keyboard path in
     bullet.dataset.traceId = String(item.entry.id);
 
     const nameEl = document.createElement('span');
-    nameEl.className = 'traces-wall__bullet-name';
+    nameEl.className = 'traces-bullet__name';
     nameEl.textContent = item.entry.name;
-
     const msgEl = document.createElement('span');
-    msgEl.className = 'traces-wall__bullet-message';
     msgEl.textContent = item.entry.message;
-
     const timeEl = document.createElement('span');
-    timeEl.className = 'traces-wall__bullet-time';
+    timeEl.className = 'traces-bullet__time';
     timeEl.textContent = formatTraceTimestampCompact(item.entry.createdAt);
-
     bullet.append(nameEl, msgEl, timeEl);
-    bullet.addEventListener('click', () => openTracesModal(item.entry.id));
-    return bullet;
-  }
 
-  // Spawns one flying bullet into a round-robin lane after `delayMs`, sized
-  // to the message length so longer messages get more time to read.
-  function spawnTracesBullet(item: TracesSpawnItem, delayMs: number, laneCount: number): void {
-    const lanes = document.querySelectorAll<HTMLElement>('.traces-wall__lane');
-    const lane = lanes[tracesWallLaneIndex % laneCount];
-    tracesWallLaneIndex++;
-    if (!lane) return;
-
-    const timer = window.setTimeout(() => {
-      const bullet = buildTracesBulletElement(item);
-      bullet.style.setProperty('--bullet-duration', `${tracesBulletDuration(item.entry.message)}ms`);
-      bullet.addEventListener('animationend', () => bullet.remove());
-      lane.appendChild(bullet);
-    }, delayMs);
-    tracesWallTimers.push(timer);
-  }
-
-  // Schedules the whole spawn queue once, then reschedules itself after the
-  // queue's total run time so the wall loops continuously through the same
-  // fetched snapshot — same "loop a fixed set" approach as the Latest tile.
-  function scheduleTracesWallQueue(queue: TracesSpawnItem[], laneCount: number): void {
-    let cumulativeDelay = 0;
-    for (const item of queue) {
-      spawnTracesBullet(item, cumulativeDelay, laneCount);
-      cumulativeDelay += item.isEcho ? TRACES_ECHO_GAP_MS : TRACES_BULLET_GAP_MS;
-    }
-    const loopTimer = window.setTimeout(
-      () => scheduleTracesWallQueue(queue, laneCount),
-      cumulativeDelay + TRACES_LOOP_PAUSE_MS,
+    // Random lane + length-scaled duration, so a burst never looks like a
+    // queue draining at a fixed rate.
+    bullet.style.top = `${(6 + Math.random() * 74).toFixed(1)}%`;
+    const duration = Math.max(
+      TRACES_BULLET_MIN_MS,
+      item.entry.message.length * TRACES_BULLET_MS_PER_CHAR,
     );
-    tracesWallTimers.push(loopTimer);
+    bullet.style.setProperty('--bullet-duration', `${duration}ms`);
+    bullet.addEventListener('click', () => openTracesModal(item.entry.id));
+    bullet.addEventListener('animationend', () => bullet.remove());
+
+    sky.appendChild(bullet);
+    // The fly keyframe ends at -1 × the bullet's own width, which is only
+    // measurable once it is in the DOM.
+    bullet.style.setProperty('--bullet-width', `${bullet.offsetWidth}px`);
   }
 
-  function stopTracesWall(): void {
-    tracesWallTimers.forEach(t => clearTimeout(t));
-    tracesWallTimers = [];
-    tracesWallLaneIndex = 0;
-    document.querySelectorAll('.traces-wall__bullet').forEach(b => b.remove());
+  function renderTracesPark(item: TracesSpawnItem): void {
+    const park = document.getElementById('traces-park');
+    if (!park) return;
+    park.replaceChildren();
+    const nameEl = document.createElement('span');
+    nameEl.className = 'traces-park__name';
+    nameEl.textContent = item.entry.name;
+    const msgEl = document.createElement('span');
+    msgEl.textContent = item.entry.message;
+    const timeEl = document.createElement('span');
+    timeEl.className = 'traces-park__time';
+    timeEl.textContent = formatTraceTimestampCompact(item.entry.createdAt);
+    park.append(nameEl, msgEl, timeEl);
+    park.dataset.traceId = String(item.entry.id);
+    park.removeAttribute('hidden');
   }
 
-  async function initializeTracesWall(): Promise<void> {
-    const lanesEl = document.getElementById('traces-wall-lanes');
-    const emptyEl = document.getElementById('traces-wall-empty');
-    if (!lanesEl || lanesEl.dataset.bound === 'true') return;
-    lanesEl.dataset.bound = 'true';
+  function startTracesParkRotation(): void {
+    clearInterval(tracesParkTimer);
+    if (tracesQueue.length === 0) return;
+    renderTracesPark(tracesQueue[0]);
+    if (tracesQueue.length <= 1 || tracesReduceMotion()) return;
 
-    let apiEntries: TraceEntry[];
+    tracesParkTimer = window.setInterval(() => {
+      const park = document.getElementById('traces-park');
+      if (!park) return;
+      park.style.opacity = '0';
+      window.setTimeout(() => {
+        tracesParkIndex = (tracesParkIndex + 1) % tracesQueue.length;
+        renderTracesPark(tracesQueue[tracesParkIndex]);
+        park.style.opacity = '1';
+      }, TRACES_PARK_FADE_MS);
+    }, TRACES_PARK_ROTATE_MS);
+  }
+
+  function stopTracesBurst(): void {
+    tracesBurstTimers.forEach(t => clearTimeout(t));
+    tracesBurstTimers = [];
+  }
+
+  // One bounded wave on arrival. Cancelled if the visitor scrolls past the
+  // hero mid-burst — they have moved on, so finishing it is just noise
+  // behind them — and fired at most once per session so hopping home from
+  // /journal does not replay it every time.
+  function runTracesBurst(): void {
+    if (tracesReduceMotion()) return;
     try {
-      const res = await fetch(`/api/traces?limit=${TRACES_WALL_FETCH_LIMIT}`);
+      if (sessionStorage.getItem('traces-burst') === 'done') return;
+      sessionStorage.setItem('traces-burst', 'done');
+    } catch { /* private mode — just play it */ }
+
+    const count = Math.min(TRACES_BURST_MAX, tracesQueue.length);
+    for (let i = 0; i < count; i++) {
+      tracesBurstTimers.push(window.setTimeout(() => spawnTracesBullet(tracesQueue[i]), i * TRACES_BURST_GAP_MS));
+    }
+
+    const sky = document.getElementById('traces-sky');
+    if (sky && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting) { stopTracesBurst(); io.disconnect(); }
+      });
+      io.observe(sky);
+    }
+  }
+
+  // Hovering the hero pulls the flight back on demand — anyone hovering the
+  // nameplate has stopped scanning the page, so it is the one moment dense
+  // motion is welcome rather than intrusive.
+  function bindTracesHover(): void {
+    const hero = document.getElementById('traces-sky')?.parentElement;
+    if (!hero || tracesReduceMotion()) return;
+
+    hero.addEventListener('mouseenter', () => {
+      if (tracesHoverTimer || tracesQueue.length === 0) return;
+      const tick = () => spawnTracesBullet(tracesQueue[tracesHoverIndex++ % tracesQueue.length]);
+      tick();
+      tracesHoverTimer = window.setInterval(tick, TRACES_HOVER_GAP_MS);
+    });
+    hero.addEventListener('mouseleave', () => {
+      clearInterval(tracesHoverTimer);
+      tracesHoverTimer = undefined;
+    });
+  }
+
+  // The sky is absolutely positioned and has to cover exactly the hero row,
+  // whose height is content-driven — so it is measured from the title tile
+  // rather than guessed. Same "publish a measured height as a CSS var"
+  // pattern the NavPill uses for --nav-clearance.
+  function syncTracesSkyHeight(): void {
+    const title = document.querySelector<HTMLElement>('.title-tile');
+    const container = document.getElementById('page-container');
+    if (!title || !container) return;
+    // offsetTop/offsetHeight, NOT getBoundingClientRect: the title tile runs
+    // a translate-based entrance animation (.p3r-animate-left) and a rect
+    // measured mid-flight bakes that transform into the sky's position.
+    // Both offset* values are transform-immune, and offsetTop is already
+    // relative to .container (the nearest positioned ancestor) measured from
+    // the same padding edge that `top` resolves against.
+    const apply = () => {
+      container.style.setProperty('--traces-sky-top', `${title.offsetTop}px`);
+      container.style.setProperty('--traces-sky-h', `${title.offsetHeight}px`);
+    };
+    apply();
+    tracesSkyObserver?.disconnect();
+    if ('ResizeObserver' in window) {
+      tracesSkyObserver = new ResizeObserver(apply);
+      tracesSkyObserver.observe(title);
+      tracesSkyObserver.observe(container);
+    }
+    // The first measurement runs before webfonts land, which changes the
+    // tile's height — re-measure once each settles rather than trusting the
+    // observer alone to catch it.
+    window.addEventListener('load', apply, { once: true });
+    window.addEventListener('resize', apply);
+    document.fonts?.ready.then(apply).catch(() => {});
+  }
+
+  function stopTracesHero(): void {
+    stopTracesBurst();
+    clearInterval(tracesParkTimer);
+    clearInterval(tracesHoverTimer);
+    tracesParkTimer = undefined;
+    tracesHoverTimer = undefined;
+    tracesParkIndex = 0;
+    tracesHoverIndex = 0;
+    tracesQueue = [];
+    tracesSkyObserver?.disconnect();
+    tracesSkyObserver = undefined;
+    document.querySelectorAll('.traces-bullet').forEach(b => b.remove());
+  }
+
+  async function initializeTracesHero(): Promise<void> {
+    const sky = document.getElementById('traces-sky');
+    if (!sky || sky.dataset.bound === 'true') return;
+    sky.dataset.bound = 'true';
+
+    syncTracesSkyHeight();
+
+    let entries: TraceEntry[];
+    let total = 0;
+    try {
+      const res = await fetch(`/api/traces?limit=${TRACES_FETCH_LIMIT}`);
       if (!res.ok) return;
-      const data = await res.json() as { entries: TraceEntry[] };
-      apiEntries = data.entries;
+      const data = await res.json() as { entries: TraceEntry[]; total?: number };
+      entries = data.entries;
+      total = data.total ?? data.entries.length;
     } catch {
       return;
     }
 
-    if (apiEntries.length === 0) {
-      emptyEl?.removeAttribute('hidden');
-      return;
-    }
+    const countEl = document.getElementById('traces-bar-count');
+    if (countEl) countEl.textContent = total === 1 ? '1 trace' : `${total} traces`;
 
-    lanesEl.removeAttribute('hidden');
-    const queue = buildTracesSpawnQueue(apiEntries);
+    if (entries.length === 0) return;
 
-    // Flying, looping text is the whole point of a danmaku wall — under
-    // reduced motion, don't just slow it down, replace it with a plain
-    // static wrapped row of each person's latest message (no animation, no
-    // echoes to cycle through).
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      lanesEl.dataset.static = 'true';
-      for (const item of queue.filter(i => !i.isEcho)) {
-        lanesEl.appendChild(buildTracesBulletElement(item));
-      }
-      return;
-    }
-
-    const laneCount = window.matchMedia('(max-width: 768px)').matches
-      ? TRACES_LANE_COUNT_MOBILE
-      : TRACES_LANE_COUNT_DESKTOP;
-    scheduleTracesWallQueue(queue, laneCount);
+    tracesQueue = buildTracesSpawnQueue(entries);
+    startTracesParkRotation();
+    bindTracesHover();
+    runTracesBurst();
   }
 
   function bindTracesModal(): void {
@@ -2375,7 +2601,10 @@ const latestEntries = latestPool.map(entry => ({
       const evt = e as MouseEvent;
       if (evt.metaKey || evt.ctrlKey || evt.shiftKey || evt.altKey || evt.button !== 0) return;
       e.preventDefault();
-      openTracesModal();
+      // Land on whichever message the parked line is currently showing, so
+      // opening the modal continues from what the visitor was just reading.
+      const parkedId = Number(document.getElementById('traces-park')?.dataset.traceId);
+      openTracesModal(Number.isNaN(parkedId) ? undefined : parkedId);
     });
 
     closeBtn.addEventListener('click', () => modal.close());
@@ -2423,7 +2652,7 @@ const latestEntries = latestPool.map(entry => ({
         </div>
         <div class="traces-form__row">
           <label for="tr-modal-message">Message</label>
-          <input id="tr-modal-message" name="message" type="text" maxlength="100" placeholder="leave your mark — one line" required />
+          <input id="tr-modal-message" name="message" type="text" maxlength="100" placeholder="leave a trace — one line" required />
         </div>
         <div class="traces-form__honeypot" aria-hidden="true">
           <label for="tr-modal-website">Website</label>
@@ -2486,7 +2715,7 @@ const latestEntries = latestPool.map(entry => ({
         listEl?.prepend(buildTraceListItem(entry));
 
         form.reset();
-        status.textContent = 'Signed — thanks for leaving your mark.';
+        status.textContent = 'Signed — thanks for leaving a trace.';
       } catch {
         status.textContent = 'Network error — please try again.';
         status.dataset.tone = 'error';
@@ -2520,7 +2749,7 @@ const latestEntries = latestPool.map(entry => ({
   initializeMailTile();
   initializeJournalTileNav();
   startLivePolling();
-  initializeTracesWall();
+  initializeTracesHero();
   bindTracesModal();
 
   // Run after each view transition navigation
@@ -2531,7 +2760,7 @@ const latestEntries = latestPool.map(entry => ({
     initializeMailTile();
     initializeJournalTileNav();
     startLivePolling();
-    initializeTracesWall();
+    initializeTracesHero();
     bindTracesModal();
   });
 
@@ -2539,6 +2768,6 @@ const latestEntries = latestPool.map(entry => ({
   document.addEventListener('astro:before-preparation', () => {
     stopLivePolling();
     clearInterval(latestCycleTimer);
-    stopTracesWall();
+    stopTracesHero();
   });
 </script>

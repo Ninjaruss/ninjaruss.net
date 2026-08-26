@@ -299,59 +299,78 @@ message 100 chars), and a narrow, intentionally-not-general-purpose
 blocklist (`BLOCKED_TERMS` in the same file — self-harm-incitement phrases
 only; extend it directly rather than treating it as a profanity filter).
 
-**Homepage — the wall** (`.traces-wall`, three redesigns in: pills →
-fixed-corner ticker → this): a danmaku/bullet-comment strip living in
-normal page flow directly under the bento grid (`.container` class in
-markup, so it lines up with the grid's own width/padding — not fixed to
-the viewport like the two prior iterations). Header is a "Traces"
-`p4g-tab` + a plain "Leave your mark →" link (`#traces-tab`, opens the
-modal via JS, degrades to a real link to `/traces` with no JS). Below
-that, `.traces-wall__lanes` holds 3 horizontal lanes (2 on ≤768px —
-three lanes of readable-length messages start overlapping below that);
-JS (`initializeTracesWall`) fetches `?limit=30` and spawns each message
-as a `.traces-wall__bullet` — name, message, and a compact timestamp
-(`formatTraceTimestampCompact`, e.g. "aug 25 · 3:41pm") — that flies
-right-to-left via a CSS `translateX` keyframe, `--bullet-duration` scaled
-to message length (`tracesBulletDuration`), removed on `animationend`.
-Bullets loop continuously through the same fetched snapshot (schedule
-the queue once, reschedule after its total run time — same "loop a fixed
-set" approach as the Latest tile) rather than re-fetching.
+**Homepage — danmaku over the hero** (`.traces-sky`; four redesigns in:
+pills → fixed-corner ticker → full-width wall → this). Comments fly
+right-to-left **across the hero row itself** rather than living in a strip
+of their own — overlaying content is what makes danmaku read as danmaku.
+`.traces-sky` is absolutely positioned over row 1 inside `.container`,
+`pointer-events: none` so the tiles stay clickable (each bullet re-enables
+it for itself). Its top/height come from the title tile via
+`syncTracesSkyHeight()`, which publishes `--traces-sky-top`/`--traces-sky-h`
+— the same "measure and publish a CSS var" pattern as the NavPill's
+`--nav-clearance`. **Measure with `offsetTop`/`offsetHeight`, never
+`getBoundingClientRect()`**: the title tile runs a translate/scale entrance
+animation (`p3r-entrance-scale`) and a rect captured mid-flight bakes that
+transform into the sky's position.
+
+**Motion is bounded, not ambient.** One burst on arrival
+(`runTracesBurst`, ≤4 bullets), then it settles and only the parked line
+remains. The homepage already spends a lot of its motion budget (novel
+rain, Latest cycling every 7s, the live pulse), so a permanently looping
+overlay was too much on top of that — and unlike those, this one moves
+*across* content people are trying to read. The burst fires at most once
+per session (`sessionStorage`) so hopping home from `/journal` doesn't
+replay it, and an `IntersectionObserver` cancels the remainder if the
+visitor scrolls past the hero mid-burst.
+
+**Resting state — the parked line** (`.traces-park`): one message pinned
+bottom-left of the hero, cross-fading to the next every ~7s. This is where
+the backlog is actually surfaced. It only ever changes *opacity in place*:
+peripheral vision is tuned to translation, not opacity, which is why this
+can rotate through everything without reading as a busy page (same reason
+the Latest tile can cycle). **Hover the hero to pull the flight back** —
+danmaku becomes something you summon, and anyone hovering the nameplate
+has already stopped scanning.
 
 **Same-person grouping** (`buildTracesSpawnQueue`): names are free text,
 not accounts, so "same person" is approximated by trimmed
-case-insensitive name match. Each name-group's newest message is a
-"primary" bullet; older messages from that name become dimmer, smaller
-"echo" bullets (`.traces-wall__bullet--echo`) queued immediately after
-the primary with a tighter gap (`TRACES_ECHO_GAP_MS`, 900ms) than the gap
-between different people's primaries (`TRACES_BULLET_GAP_MS`, 2600ms) —
-so a person's history clusters together in the wall and their latest
-message is what surfaces first, instead of their old messages scattered
-evenly among everyone else's.
+case-insensitive name match. Each group's newest message is a "primary";
+their older ones follow as `--echo` bullets (smaller, dimmer). The queue
+is consumed in that order by the burst, the hover stream, and the parked
+rotation alike, so a person's history stays together everywhere.
 
-Clicking a bullet (or the header link) opens the existing `<dialog>`
-modal with the full form + list, scrolled to and highlighting that exact
-entry (`data-trace-id`); the modal list and `/traces` itself both show
-the full formatted date **and time** per message
-(`formatTraceTimestamp`, e.g. "Aug 25, 2026 · 3:41 PM UTC") — traces
-are submission instants, not editorial content dates, so this
-intentionally departs from the sitewide date-only `formatDate()`
-convention (see `src/utils/tracesFormat.ts`'s doc comment).
+**The bar** (`.traces-bar`, `#traces-tab`): player-chrome strip flush under
+the hero — live count + "Leave a trace" + Sign. This is the affordance the
+pure-overlay versions lacked; on bilibili the input bar is what invites the
+comment in the first place. Clicking it opens the `<dialog>` modal at
+whichever message is currently parked. The count comes from the API's
+`total` (a real `countMessages()`, not the page size). **Layout gotcha**:
+the bar needs to be ~40px but `.bento-grid`'s implicit rows are
+`minmax(100px, auto)`, so it can't just be another row — row 1 and the bar
+are wrapped in `.hero-band` (one full-width grid item) whose inner element
+reuses the `.bento-grid` class to inherit the 6/4/2/1-column responsive
+steps. `.hero-band` sets `animation: none` because `.bento-grid > *`
+carries the entrance stagger and the band would otherwise scale while its
+own tiles scale inside it.
 
-**Reduced motion**: flying, looping text is the entire point of a
-danmaku wall, so `prefers-reduced-motion` doesn't just slow it down —
-`initializeTracesWall` skips the animated spawn queue entirely and
-instead appends each name-group's primary bullet statically (no echoes,
-no motion) directly into `.traces-wall__lanes[data-static]`, which CSS
-switches to a plain wrapped flex row.
+**Timestamps**: the modal list and `/traces` show full date **and time**
+(`formatTraceTimestamp`, "Aug 25, 2026 · 3:41 PM UTC"); bullets and the
+parked line use the compact form ("aug 25 · 3:41pm"). Traces are submission
+instants, not editorial content dates, so this intentionally departs from
+the sitewide date-only `formatDate()` (see `src/utils/tracesFormat.ts`).
+
+**Reduced motion**: flying text is the one thing this feature cannot do, so
+JS skips the burst and the hover stream entirely and leaves the parked line
+static on the newest message.
 
 **Gotcha**: Astro's scoped CSS only tags elements present in the
 server-rendered template. Anything built client-side via
-`document.createElement`/`innerHTML` — the wall's bullets, the modal's
-form/list, a page's own JS-appended list item — never gets the
-`data-astro-cid-*` attribute, so scoped rules silently never match it.
-Every such selector in `traces.astro` and `index.astro` is wrapped in
-`:global(...)` for exactly this reason; do the same for any new
-dynamically-created Traces markup.
+`document.createElement`/`innerHTML` — the bullets, the parked line's own
+spans, the modal's form/list — never gets the `data-astro-cid-*` attribute,
+so scoped rules silently never match. Every such selector in
+`traces.astro` and `index.astro` is wrapped in `:global(...)`; do the same
+for any new dynamically-created Traces markup. (`.traces-park` itself is in
+the template and stays scoped; its `__name`/`__time` children are not.)
 
 ## Sessions & the /about arc card
 
@@ -443,7 +462,7 @@ separate decision, not part of this page.
 | `src/utils/shelfWall.ts` | `wallTier()`, `wallShape()`, `wallClass()`, `wallRotation()`, `sortWall()`, `resolveInitialFilter()` | /shelf wall logic — affection tiers, shape/span classes, slug-seeded rotation, ordering, filter-URL resolution |
 | `src/utils/splitView/` | (11 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
 | `src/utils/traces.ts` | `tracesMessageSchema`, `parseTracesInput()`, `sanitizeText()`, `hashIp()`, `isRateLimited()`, `containsBlockedTerm()`, `BLOCKED_TERMS`, `NAME_MAX_LENGTH`, `MESSAGE_MAX_LENGTH`, `RATE_LIMIT_WINDOW_MS` | Traces validation/hash/rate-limit/blocklist — see Traces section |
-| `src/utils/tracesDb.ts` | `insertMessage()`, `listMessages()`, `lastSubmissionByIpHash()`, `deleteMessage()`, `TraceRow` | Traces database access layer (Neon, lazy-initialized) |
+| `src/utils/tracesDb.ts` | `insertMessage()`, `listMessages()`, `countMessages()`, `lastSubmissionByIpHash()`, `deleteMessage()`, `TraceRow` | Traces database access layer (Neon, lazy-initialized) |
 | `src/utils/tracesFormat.ts` | `formatTraceTimestamp()`, `formatTraceTimestampCompact()` | Zero-import timestamp formatting shared by `traces.astro`'s list, the homepage modal list, and the wall bullets' compact date+time |
 
 The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-pool logic, tested in `src/tests/drawCard.test.ts`), `emblemAnimation`, `eventBindings`, `filterEngine`, `filterUI`, `idleManager`, `mediaHandlers`, `proseImageTilt`, `types`, `urlState`.
