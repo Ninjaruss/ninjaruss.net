@@ -234,10 +234,11 @@ const latestEntries = latestPool.map(entry => ({
         {/* aria-hidden: the lane's text rotates every few seconds, and inside
             the anchor that would rename the link continuously. The real list
             lives at the href. */}
-        <span class="traces-lane" id="traces-lane" aria-hidden="true">
+        <span class="traces-current" aria-hidden="true">
           <span class="traces-bar__field" id="traces-empty">Leave a trace — one line</span>
           <span class="traces-park" id="traces-park" hidden></span>
         </span>
+        <span class="traces-lane" id="traces-lane" aria-hidden="true"></span>
         <span class="traces-bar__send">Sign</span>
       </a>
       </div>
@@ -1791,9 +1792,26 @@ const latestEntries = latestPool.map(entry => ({
      nothing gets covered — and it is where bilibili puts its comment chrome
      anyway. Being an in-flow element, it also retires the measure-the-title-
      tile-and-publish-CSS-vars machinery the overlay needed. */
+  /* The current comment holds its own slot rather than sharing the lane with
+     the flight. Sharing meant taking turns, and taking turns meant the parked
+     line vanished for the whole burst — the one thing on the bar that is
+     actually readable. Two zones also make the overlap structurally
+     impossible instead of timing-dependent. */
+  .traces-current {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 0 1 auto;
+    max-width: 42%;
+    min-width: 0;
+    align-self: stretch;
+    padding-right: var(--space-sm);
+    border-right: 1px solid var(--color-surface-3);
+  }
+
   .traces-lane {
     position: relative;
-    flex: 1;
+    flex: 1 1 auto;
     min-width: 0;
     align-self: stretch;
     overflow: hidden;
@@ -1855,13 +1873,12 @@ const latestEntries = latestPool.map(entry => ({
      can rotate through the whole backlog without reading as a busy page (same
      reason the Latest tile can cycle every 7s). A block box, not a flex one,
      so `text-overflow: ellipsis` still applies to its inline spans. */
+  /* Flex children of .traces-current, so min-width: 0 is what actually lets
+     `text-overflow: ellipsis` engage inside a flex container. */
   .traces-park,
   .traces-bar__field {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    flex: 1;
+    min-width: 0;
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1873,12 +1890,6 @@ const latestEntries = latestPool.map(entry => ({
   .traces-park {
     color: var(--color-text-muted);
     transition: opacity 450ms ease;
-  }
-
-  /* Park and flight take turns: the lane is flagged while any bullet is in
-     it, and the resting line steps aside rather than sitting under one. */
-  .traces-lane[data-flying] .traces-park {
-    opacity: 0;
   }
 
   .traces-park[hidden],
@@ -1946,6 +1957,19 @@ const latestEntries = latestPool.map(entry => ({
   .traces-bar:hover .traces-bar__send,
   .traces-bar:focus-visible .traces-bar__send {
     background: var(--color-gold-orange);
+  }
+
+  @media (max-width: 768px) {
+    .traces-lane {
+      display: none;
+    }
+
+    .traces-current {
+      max-width: none;
+      flex: 1;
+      padding-right: 0;
+      border-right: 0;
+    }
   }
 
   /* Flying text is the one thing this feature cannot do under reduced
@@ -2370,7 +2394,13 @@ const latestEntries = latestPool.map(entry => ({
   const TRACES_FETCH_LIMIT = 30;
   const TRACES_BURST_MAX = 3;          // bullets in the arrival burst
   const TRACES_HOVER_POLL_MS = 400;    // how often hover re-checks the gate
-  const TRACES_BULLET_GAP_MS = 600;    // clear air between consecutive bullets
+  // Clear air between consecutive bullets, sampled per gap. A single fixed
+  // value makes arrivals metronomic, which is the tell that a "stream" is
+  // really a queue draining — the spread is what makes it read as people
+  // turning up rather than a ticker.
+  const TRACES_GAP_MIN_MS = 900;
+  const TRACES_GAP_MAX_MS = 3200;
+  const TRACES_SPEED_JITTER = 0.28;    // ±% on each bullet's crossing time
   const TRACES_PARK_ROTATE_MS = 7000;  // parked-line cross-fade interval
   const TRACES_PARK_FADE_MS = 450;
   const TRACES_BULLET_MIN_MS = 8000;
@@ -2446,24 +2476,23 @@ const latestEntries = latestPool.map(entry => ({
     nameEl.textContent = item.entry.name;
     const msgEl = document.createElement('span');
     msgEl.textContent = item.entry.message;
-    const timeEl = document.createElement('span');
-    timeEl.className = 'traces-bullet__time';
-    timeEl.textContent = formatTraceTimestampCompact(item.entry.createdAt);
-    bullet.append(nameEl, msgEl, timeEl);
+    // Name + message only. A timestamp on a moving target is unreadable
+    // noise, and it made every bullet ~25% wider, which is width the lane
+    // spends on spacing. The current comment is static and carries it there
+    // instead — the two zones say different things on purpose.
+    bullet.append(nameEl, msgEl);
 
-    // Length-scaled duration, so a burst never looks like a queue draining at
-    // a fixed rate. There is only one lane now, so no vertical randomisation.
+    // Length-scaled, then jittered: without the jitter every message short
+    // enough to hit the floor crosses at exactly the same speed, so a burst
+    // of short ones marches in lockstep.
+    const jitter = 1 + (Math.random() * 2 - 1) * TRACES_SPEED_JITTER;
     const duration = Math.max(
       TRACES_BULLET_MIN_MS,
       item.entry.message.length * TRACES_BULLET_MS_PER_CHAR,
-    );
+    ) * jitter;
     bullet.style.setProperty('--bullet-duration', `${duration}ms`);
-    bullet.addEventListener('animationend', () => {
-      bullet.remove();
-      if (!lane.querySelector('.traces-bullet')) lane.removeAttribute('data-flying');
-    });
+    bullet.addEventListener('animationend', () => bullet.remove());
 
-    lane.setAttribute('data-flying', 'true');
     lane.appendChild(bullet);
     // The fly keyframe ends at -1 × the bullet's own width, which is only
     // measurable once it is in the DOM.
@@ -2476,7 +2505,8 @@ const latestEntries = latestPool.map(entry => ({
     // clears the right edge after it has covered its own width. Reserve the
     // lane until then, plus a beat of clear air.
     const clearMs = (width / (laneWidth + width)) * duration;
-    tracesLaneFreeAt = performance.now() + clearMs + TRACES_BULLET_GAP_MS;
+    const gap = TRACES_GAP_MIN_MS + Math.random() * (TRACES_GAP_MAX_MS - TRACES_GAP_MIN_MS);
+    tracesLaneFreeAt = performance.now() + clearMs + gap;
   }
 
   // Strictly serial: one bullet enters, and the next waits for the lane to
@@ -2607,7 +2637,6 @@ const latestEntries = latestPool.map(entry => ({
     tracesPumping = false;
     tracesLaneFreeAt = 0;
     document.querySelectorAll('.traces-bullet').forEach(b => b.remove());
-    document.getElementById('traces-lane')?.removeAttribute('data-flying');
   }
 
   async function initializeTracesHero(): Promise<void> {

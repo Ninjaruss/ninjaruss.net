@@ -330,17 +330,36 @@ This also retired `.traces-sky`, `syncTracesSkyHeight()`, and the
 element, so there is nothing to measure and publish (and no leaked `resize`
 listener, which the old sync installed and never removed).
 
-**One lane means separating bullets in time, not space.** The overlay
-scattered them across ~80% of the hero's height with a random `top`; a
-single lane has to keep them apart along the only axis it has.
+**Two zones, not one lane taking turns.** The bar splits into
+`.traces-current` (fixed slot, ≤42%, hairline divider) and `.traces-lane`
+(the rest). The first version had them share one lane and alternate — the
+parked line dropped to `opacity: 0` whenever a bullet was in flight — which
+meant the only readable thing on the bar vanished for the whole burst. It
+was also quietly broken: `startTracesParkRotation` sets `park.style.opacity
+= '1'` inline when it cross-fades, and an inline style outranks the
+`[data-flying]` rule, so every rotation that landed mid-burst (every 7s,
+against a ~13s burst) forced the parked line back on top of the bullets.
+Separate zones make the collision structurally impossible rather than
+timing-dependent.
+
+**Separating bullets in time, not space.** The overlay scattered them
+across ~80% of the hero's height with a random `top`; one lane has to keep
+them apart along the only axis it has.
 `pumpTracesLane`/`queueTracesBullet` are a strictly serial queue: each
 spawn publishes the moment its trailing edge clears the right edge
 (`width / (laneWidth + width) × duration`) into `tracesLaneFreeAt`, and the
-next bullet waits for that plus `TRACES_BULLET_GAP_MS`. A fixed stagger
-cannot work — duration is length-scaled, so it would overlap exactly the
-longest, hardest-to-read messages. The hover stream polls the same gate and
-keeps at most one item queued ahead, so a long hover can't build a backlog
-that keeps firing after the pointer leaves.
+next bullet waits for that plus a gap. A fixed stagger cannot work —
+duration is length-scaled, so it would overlap exactly the longest,
+hardest-to-read messages. The hover stream polls the same gate and keeps at
+most one item queued ahead, so a long hover can't build a backlog that
+keeps firing after the pointer leaves.
+
+**Both intervals are sampled, not constant.** The gap is drawn per bullet
+from `TRACES_GAP_MIN_MS`–`TRACES_GAP_MAX_MS` (0.9–3.2s) and the crossing
+time carries ±`TRACES_SPEED_JITTER` (28%). Without the speed jitter every
+message short enough to hit the `TRACES_BULLET_MIN_MS` floor crosses at
+exactly the same rate, so a burst of short ones marches in lockstep; a
+single fixed gap is the tell that a "stream" is really a queue draining.
 
 **Bullets enter at `left: 100%`, not `left: 0`.** The old rule paired
 `left: 0` with a `translateX(100%)` start keyframe — but a percentage
@@ -365,15 +384,19 @@ per session (`sessionStorage`) so hopping home from `/journal` doesn't
 replay it, and an `IntersectionObserver` cancels the remainder if the
 visitor scrolls past the bar mid-burst.
 
-**Resting state — the parked line** (`.traces-park`): what sits in the lane
-between flights, cross-fading to the next message every ~7s. This is where
-the backlog is actually surfaced. Park and flight take turns — the lane
-carries `data-flying` while any bullet is in it and the parked line drops to
-`opacity: 0` rather than sitting underneath one. It only ever changes
-*opacity in place*: peripheral vision is tuned to translation, not opacity,
-which is why this can rotate through everything without reading as a busy
-page (same reason the Latest tile can cycle). **Hover the bar to pull the
-flight back** — pointing at it is an explicit "show me these".
+**The current comment** (`.traces-park`, inside `.traces-current`):
+cross-fades to the next message every ~7s, independent of the flight. This
+is where the backlog is actually surfaced. It only ever changes *opacity in
+place*: peripheral vision is tuned to translation, not opacity, which is why
+this can rotate through everything without reading as a busy page (same
+reason the Latest tile can cycle). **Hover the bar to pull the flight back**
+— pointing at it is an explicit "show me these".
+
+**The two zones deliberately show different things.** The current comment is
+static and has a reserved slot, so it carries name + message + timestamp.
+Bullets are moving, so they carry name + message only — a timestamp on a
+moving target is unreadable noise, and dropping it makes each bullet ~25%
+narrower, which is width the lane gets to spend on spacing instead.
 
 **Flight is desktop-only** (`tracesFlightAllowed`, ≥769px). A bullet
 crossing a ~250px lane is frantic rather than ambient, and the compact bar
@@ -415,8 +438,9 @@ responsive steps. `.hero-band` sets `animation: none` because
 scale while its own tiles scale inside it.
 
 **Timestamps**: the modal list and `/traces` show full date **and time**
-(`formatTraceTimestamp`, "Aug 25, 2026 · 3:41 PM UTC"); bullets and the
-parked line use the compact form ("aug 25 · 3:41pm"). Traces are submission
+(`formatTraceTimestamp`, "Aug 25, 2026 · 3:41 PM UTC"); the homepage's
+current comment uses the compact form ("aug 25 · 3:41pm") and bullets carry
+no timestamp at all. Traces are submission
 instants, not editorial content dates, so this intentionally departs from
 the sitewide date-only `formatDate()` (see `src/utils/tracesFormat.ts`).
 
