@@ -12,6 +12,8 @@ She can give almost anything and cannot receive without feeling exposed.
 
 Roxana uses usefulness as evidence that she belongs. Her care is sincere; its force also keeps other people from seeing what she wants.
 
+A childhood fire killed her family and scarred her arms while she tried to save both parents. Aster later became her father figure and trainer. After he disappeared, she took his surname as a vow and kept his empty lighter. Whether the fire created her need to provide or became a debt she uses to justify that need remains open.
+
 ### On the page
 
 - Warm, direct, tactile, and physically immediate.

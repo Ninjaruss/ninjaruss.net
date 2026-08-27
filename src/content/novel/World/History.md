@@ -28,6 +28,8 @@ The asylum exists during this period, but its origin and Vesper's exact institut
 
 Five years after the Flare, the water loop is weakening and the correction is spreading.
 
+The correction advances through accepted relief, not resistance. The state processes demand rather than escalating in response to opposition. Rain affects its spread only through withdrawal: after he refuses the amnesty, the corrected boundary eventually takes the anchor station; at the end, breaking the apparatus stops the loop itself.
+
 - Rain is 23.
 - Claire is 21–22.
 - Roxana is 27–28.

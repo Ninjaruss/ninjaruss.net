@@ -12,6 +12,8 @@ A tinkerer who made one very good thing, lost it to the state, and kept making i
 
 Shiori asked Vesper for help once and was damaged by an early, imprecise extraction. She never remembers making that request. Since then, she has trusted machines rather than people to hold her place.
 
+Stress worsens her memory condition; calm routines help stabilize it. Her narration, deployed tools, backups, and repeated work habits are accommodations rather than decorative eccentricities.
+
 ### On the page
 
 - Fast, cheerful, kinetic, and always using her hands.
@@ -28,6 +30,8 @@ Her maker's marks are playful. Her survival system is not. Keep that gap visible
 Shiori is not trying to recover a lost past. She is defending a future self against another disappearance. Building is also how she avoids asking what she actually needs.
 
 She will not ask a person to remember for her. Her Arc 5 wager is small: she closes something without marking her place and trusts she can return.
+
+What she would not admit is that she wants accompaniment without having to earn it through usefulness. Keep this beneath her connection with Rain; it is not a romance endpoint or a cure.
 
 The story never treats her original request as wrong. She asked the one person for whom asking was dangerous.
 

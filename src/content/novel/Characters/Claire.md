@@ -27,6 +27,10 @@ She never lies. She says she wants evidence, vindication, and a world that belie
 
 Claire's passive, the Static, is the intrusive memory and noise of a building collapse she predicted but could not prove. The Click is the instant of silence that arrives with a completed model.
 
+Claire was one of the younger children in a large family of prestigious architects. At the public debut of the family's grand building, the Static stopped and left her certain that something was wrong. She warned them without proof and with little tact; they dismissed her. The building later collapsed from an overlooked flaw and killed hundreds. To protect the family name, they blamed Claire.
+
+She was right without being able to make herself credible, and her own certainty arrived without the humility that might have helped others hear her. Supplying certainty outward now feels safer than asking anyone to receive something she cannot prove.
+
 Her lens and calculations turn an auditory wound into something visual and legible. She delays action not because she has no answer, but because no answer can protect her from responsibility for contingency.
 
 Her arc is not intuition defeating reason. Evidence carries her as far as it honestly can. She must make the remaining decision herself and accept that a responsible choice may still end badly.

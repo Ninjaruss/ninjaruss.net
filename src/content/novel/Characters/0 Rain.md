@@ -12,6 +12,8 @@ A young man with a notebook full of first lines and no second ones.
 
 Rain preserves possibility because committing to one life would make him finite. Beneath that fear is a more private one: a finished attempt may prove he is ordinary. He never says this. He speaks honestly about the lives a choice would close.
 
+Rain grew up praised for potential and steered away from risking it. His hardworking parents equate safety with love: his father tends to decide what Rain means before listening, while his mother offers sincere encouragement without understanding the specific dream. Rain learned to deflect rather than explain himself. Their concern is real, but being supported and being seen have never felt identical to him.
+
 ### On the page
 
 Rain is agreeable, self-deprecating, and easy company. He often seems a fraction absent from his own body.
