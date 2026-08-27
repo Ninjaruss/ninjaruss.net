@@ -184,9 +184,12 @@ const latestEntries = latestPool.map(entry => ({
 
         <!-- Live overlay: shown via .is-twitch-live class -->
         <div class="yt-tile__live-overlay" aria-hidden="true">
+          {/* src is set by applyLiveState() only once Twitch actually reports
+              live. In the template it was a third-party request fired on every
+              single homepage load for an image that is invisible almost always. */}
           <img
             class="yt-tile__preview"
-            src="https://static-cdn.jtvnw.net/previews-ttv/live_user_ninjaruss_-440x248.jpg"
+            data-src="https://static-cdn.jtvnw.net/previews-ttv/live_user_ninjaruss_-440x248.jpg"
             alt="Live stream preview"
           />
           <div class="yt-tile__live-badge">LIVE</div>
@@ -597,11 +600,48 @@ const latestEntries = latestPool.map(entry => ({
   }
 
   .logo-tile--mail {
-    color: var(--color-gold-dim);
+    background: var(--color-gold);
+    border-color: var(--color-gold-deep);
+    color: var(--color-black);
   }
 
-  .logo-tile--mail:hover,
-  .logo-tile--mail:focus-visible {
+  /* Reverse sweep: the shared .p4g-sweep panel is gold, which is invisible on
+     a gold ground — so this one sweeps BLACK and flips the text to gold. Same
+     move as the journal tile's note rows, which invert the identical way. */
+  .logo-tile--mail.p4g-sweep::before {
+    background: var(--color-black);
+  }
+
+  .logo-tile--mail.p4g-sweep:hover,
+  .logo-tile--mail.p4g-sweep:focus-visible {
+    color: var(--color-gold);
+  }
+
+  /* Kicker inverts on a gold ground, exactly as .bento-tile--highlight does */
+  .logo-tile--mail .logo-tile__kicker {
+    background: var(--color-black);
+    color: var(--color-gold);
+  }
+
+  .logo-tile--mail .logo-tile__label {
+    color: var(--color-black);
+  }
+
+  .logo-tile--mail .logo-tile__description {
+    color: var(--color-text-on-gold);
+    opacity: 0.7;
+  }
+
+  .logo-tile--mail:hover .logo-tile__label,
+  .logo-tile--mail:focus-visible .logo-tile__label,
+  .logo-tile--mail:hover .logo-tile__description,
+  .logo-tile--mail:focus-visible .logo-tile__description {
+    color: var(--color-gold);
+  }
+
+  .logo-tile--mail:hover .logo-tile__kicker,
+  .logo-tile--mail:focus-visible .logo-tile__kicker {
+    background: var(--color-gold);
     color: var(--color-black);
   }
 
@@ -1039,30 +1079,10 @@ const latestEntries = latestPool.map(entry => ({
     background: var(--color-black);
   }
 
-  /* Two expanding rings for radar ping effect */
-  .now-dot::before,
-  .now-dot::after {
-    content: '';
-    position: absolute;
-    inset: -3px;
-    border-radius: 50%;
-    border: 1.5px solid var(--color-black);
-    opacity: 0;
-  }
-
   @media (prefers-reduced-motion: no-preference) {
     .now-dot {
       animation: dot-breathe 2s ease-in-out infinite;
     }
-
-    .now-dot::before {
-      animation: radar-ping 2.4s ease-out 0.2s infinite;
-    }
-
-    .now-dot::after {
-      animation: radar-ping 2.4s ease-out 1.2s infinite;
-    }
-
   }
 
   @keyframes dot-breathe {
@@ -1160,7 +1180,10 @@ const latestEntries = latestPool.map(entry => ({
   .st-name {
     margin: 0;
     font-family: var(--font-display);
-    font-size: var(--text-base);
+    /* --text-xl, matching the Novel tile beside it — this was --text-base,
+       the only tile heading on the grid under 20px, on the tile a stranger
+       most needs to read. */
+    font-size: var(--text-xl);
     line-height: 1.1;
     color: var(--color-gold);
     letter-spacing: 0.03em;
@@ -1258,6 +1281,10 @@ const latestEntries = latestPool.map(entry => ({
     background: var(--color-live);
     border-radius: var(--radius-sm);
     padding: var(--space-2xs) var(--space-xs);
+  }
+
+  .st-live-badge:not([hidden]),
+  .image-tile--youtube.is-twitch-live .yt-tile__live-badge {
     animation: live-badge-breathe 1.5s ease-in-out infinite;
   }
 
@@ -1948,16 +1975,19 @@ const latestEntries = latestPool.map(entry => ({
     color: var(--color-text-subtle);
   }
 
+  /* Cut, not rounded: unifying the tile kickers left this as the only
+     rounded gold chip on the page. */
   .traces-bar__send {
     flex-shrink: 0;
-    padding: var(--space-2xs) var(--space-md);
+    padding: var(--space-2xs) calc(var(--space-md) + var(--cut-sm)) var(--space-2xs) var(--space-md);
     background: var(--color-gold);
     color: var(--color-black);
     font-family: var(--font-display);
     font-size: var(--text-floor);
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
-    border-radius: var(--radius-sm);
+    border-radius: 0;
+    clip-path: polygon(0 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
   }
 
   .traces-bar:hover .traces-bar__send,
@@ -2207,6 +2237,11 @@ const latestEntries = latestPool.map(entry => ({
     if (liveBadge) liveBadge.hidden = !isLive;
 
     if (ytTile) {
+      // Pull the preview only when it is about to be seen (and only once).
+      if (twitchLive) {
+        const preview = ytTile.querySelector<HTMLImageElement>('.yt-tile__preview');
+        if (preview && !preview.src && preview.dataset.src) preview.src = preview.dataset.src;
+      }
       ytTile.classList.toggle('is-twitch-live', twitchLive);
       ytTile.href = twitchLive
         ? 'https://twitch.tv/ninjaruss_'
@@ -2268,7 +2303,11 @@ const latestEntries = latestPool.map(entry => ({
         latestTile.classList.add('is-cycling');
         window.setTimeout(() => render(entries[index]), 365);
         window.setTimeout(() => latestTile.classList.remove('is-cycling'), 800);
-      }, 7000);
+        // 11s, not 7s. A full-height gold panel crossing a 2x2 tile is the
+        // highest-contrast event on an otherwise still page, and at 7s it also
+        // shared a period with the Traces park rotation — two unsynchronised
+        // 7s timers meant something on the page changed every ~3.5s on average.
+      }, 11000);
     }
   }
 
