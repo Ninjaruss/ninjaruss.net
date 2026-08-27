@@ -1,104 +1,117 @@
-### Magic System
+## Magic System
 
+Current canon. The system should stay legible through objects, bodily costs, and repeated behavior rather than exposition.
 
-*Provenance: rebuilt 2026-08-10 during the planning pass. The mechanics are the author's original system; the laws and terminology below were settled in that process and are recorded as working notes.*
+### The Flare
 
-#### The Flare
+The Flare happened once, five years before the story. Its energy permanently changed the world so suitable substrates could retain resonance from irreversible transitions.
 
-A global phenomenon: for an instant, an unseen energy passed over the world. It did not affect most people. It clung to those who, at that moment, were in the middle of an irreversible change — motion that breaks its own loop. Commitment is the human name for that condition; the Flare only measured the physics of a threshold crossed. Those who were stagnant, and content to be, were not marked.
+The exact threshold varies by substrate, but it must be an irreversible transition rather than ordinary motion. People, objects, living things, water, and other materials retain or express resonance differently according to what they are.
 
-**The Flare was a census of an instant, not a judgement of capacity.** Stagnation guaranteed nothing clung — but the absence of a mark proves nothing about a person. Plenty of people capable of the threshold simply weren't standing on one that day.
+The Flare does not recur. Present-day magic comes from the world's altered capacity to retain new resonance.
 
-**It is not a class system. It is a category the state invented out of an accident and then enforced.** The System treats contact with the marked as pre-crime, calls those people deviants, and warehouses their effects. Sorting people by a coincidence and calling it a kind is the manufacture of nothing, applied to persons. Nothing in the story should ever present the state's reading as true.
+Resonance is not a moral judgment or a measure of human worth. The state turned an uneven physical phenomenon into a class of people called deviants.
 
-The water's amplification persists as long as it circulates through a living system — one whose inhabitants keep generating the kind of irreversible internal motion the Flare responds to. When the population sinks into stasis, the resonance fades and the loop begins to die.
+### Passive → pull → Deviation
 
-#### The two substrates
+**Passive.** A person may retain resonance as an uncontrolled, private phenomenon shaped by a core internal conflict. The owner is the only person who directly perceives it. There is no public technical term inside the story; names such as the Ghost and Static are personal.
 
-**The Flare recorded commitment in two places.**
+**Pull.** A strongly resonant Imprint creates an unmistakable attraction in a compatible person. The pull indicates resonance, not instructions or guaranteed safety.
 
-- **In people it left a Deviation** — live, usable, yours.
+**Deviation.** Contact and continued resonance with the Imprint make that person's deliberate ability accessible. The Imprint does not contain a preset power. The Deviation belongs to the person and is unique to how they process what happened to them.
 
-- **In objects it left an Imprint** — fixed, finished, someone else's.
+The relationship is:
 
-Same phenomenon, two states. Everything else in this system follows from that sentence.
+> passive → resonant pull → unique Deviation
 
-*Deviation* is the state's own clinical word, adopted: its pods exist to pacify "deviants." A bureaucracy naming a soul. It is also, exactly, what Rain does in the first scene — he deviates from his commute.
+### Imprints
 
-People say **Imprints**. The state says **effects**.
+An Imprint is an object that retained resonance from an irreversible transition. It carries the completed shape of what happened around it, not an ability waiting to be collected.
 
-#### Passive and Active
+Resonance is strongest when the Imprint's completed transition and the person's unresolved one share an emotional or behavioral shape. An Imprint can accumulate more than one layer of resonance over time.
 
-The energy left everyone it marked with a **passive**: a permanent, uncontrollable quirk growing out of that person's deepest internal conflict, manifesting without conscious control.
+A bonded Imprint is required for deliberate use of a Deviation. Lose it and the person returns to passive-only expression until it is recovered or another object resonates strongly enough to form a bond.
 
-**Only the person themselves can perceive their own passive** — which is why there is no public word for them, and why there never can be. Nobody can coin a term for a thing one person can see. Passives are named privately, by their owners, if they are named at all: the Ghost, the Static, the Split, the Bearing Flame. **Never invent a public term.
+Under extreme emotional or physical pressure, a passive may briefly break into the world without an Imprint. This is uncontrolled, difficult to repeat, and severely costly. Roxana's spark in the prison is the main example.
 
-Deviations** are the deliberate abilities, awakened when the user encounters an Imprint that resonates with their core being. Generally: the passive is an extended psychological burden, the Deviation a tool or skill that takes a physiological toll.
+### Costs
 
-Every power in this system is a form of internal processing.
+Every Deviation pays through the same system the user employs:
 
-#### Principles
+- Rain spends perception, wanting, and felt ownership.
+- Claire spends neurological processing.
+- Roxana spends body heat.
+- The Pursuer burns the wanting that once drove him.
+- Vesper works through memory and the consequences of removing it.
 
-1. All powers are sourced from how each character internally processes their core psychological wound — Rain from his own perception of himself, Roxana from her body heat, Claire from her brain's calculations, Vesper from memory.
+Cost scales with use and cannot be bypassed. Advanced forms may transform a cost, but do not erase it.
 
-2. There is a self-affecting physiological cost to using a Deviation.
+Deviations do not permanently rewrite the physical world. Vesper's alteration of memory and identity is the exception.
 
-3. Passives are the same internal processing, in a rawer and more unfocused form.
+### Claire: neurological overload
 
-4. The Imprint does not grant a new power; it channels the existing passive into a more intentional form.
+Claire's Visual Calculus and Still Point perform impossible computation on biological hardware.
 
-5. No permanent physical change is made to the world. Memory and identity are the exception.
+Load increases with:
 
-6. Tied to the core wound of the character.
+- the number and complexity of variables;
+- how long she maintains the model;
+- the cost of executing a prediction through her own body;
+- repeated use before adequate recovery.
 
-7. Advanced Deviations transform their cost, reflecting the character's growth or descent — or refine the ability while keeping the original cost.
+Light use produces fatigue and neurological symptoms. Heavy use causes tremor, slowed processing, weakness, disorientation, or collapse. Extreme overuse can leave her helpless and unconscious, with each severe episode risking a longer coma.
 
-**The register law.** Each character's cost is paid in the currency they process with. A cost that feels flat is usually in the wrong register: the test is not *is this painful enough* but *is this their pain.*
+Seeing is cheaper than executing. This gives her a mechanical reason to direct other people, but calculation alone never wins a fight.
 
-**The compass rule.** A passive can grant commitment; it never grants competence. Rain's Ghost points at what he wants. It never tells him how, and it is never right about method — only about wanting.
+### Vesper: extraction and glass
 
-#### Imprints
+Vesper extracts a coherent autobiographical memory or connected memory-network through direct contact. There is no one-extraction-per-person limit. Repeated extractions become harder to isolate because memories share context and identity.
 
-Imprints are ordinary objects that witnessed an irreversible human commitment during the Flare. The energy marked them not because they were in motion but because they were present for a decisive act — someone running toward danger, reaching to save, staying when others fled. The object carries the memory of that moment.
+His precision determines whether he removes the intended network cleanly or damages related function. Shiori is an early imprecise case. Later patients can retain flawless function while losing the wants and associations that made those functions personal.
 
-**Resonance is a finished departure meeting an unfinished one.** An Imprint fits you when its completed commitment and your incomplete one share a recognisable emotional shape. You are borrowing somebody else's finished act to power your own unfinished one. That shape is intuitive — you know it when you feel it. Using another person's Imprint is possible but rare, and the cost rises as the alignment worsens.
+#### Intact shard and archive
 
-An Imprint can witness multiple irreversible acts over time, layering its record. This isn't a separate mechanic; it's the natural consequence of what an Imprint is.
+An intact shard is external memory storage.
 
-**A Deviation cannot be accessed without its Imprint.** Not weakly, not partially — not at all. The Imprint is not a training wheel; it is the instrument. Lose it and the user reverts to passive only until it is recovered or a new resonant object is bonded.
+- The original owner cannot access the extracted memory.
+- Vesper can consciously access its context, chronology, emotion, and learned information.
+- The memory remains separate from him and can be restored.
+- The archive protects shards from accidental or deliberate shattering.
 
-*Exception:* in moments of extraordinary emotional or physical extremity, a raw expression of the passive may briefly manifest without an Imprint. Uncontrolled, not repeatable, and severely costly — see Roxana's prison spark. The Imprint remains essential for all deliberate use.
+Intact shards give Vesper understanding. He may reproduce something a record teaches him, but it remains a conscious use of external evidence.
 
-An Imprint may deepen in attunement over time, but is never made obsolete.
+#### Shatter
 
-#### Costs and advanced Deviations
+Shattering a shard returns the memory to its original owner. Vesper permanently loses access to that record.
 
-All Deviations cost the user physically, and the cost is a metaphor for the emotional toll of the wound being channelled. It scales with use. Recovery is possible but not instant. It cannot be bypassed — only endured, or transformed.
+#### Melt
 
-Advanced Deviations transform the cost rather than removing it, and the transformation reflects growth or descent. Rain's base Clone causes acute sensory deprivation; his Perfect Clone removes that and introduces a deferred psychological cost instead. The cost changes form; it does not disappear.
+Melt destroys the autobiographical memory for both the original owner and Vesper. It cannot be restored.
 
-Some advanced forms are additions (Vesper can still shatter or melt). Others are irreversible transformations — Rain's Clone becomes the Perfect Clone and cannot revert.
+What may remain in Vesper is involuntary procedural or behavioral residue:
 
-#### The memory exception
+- habits and reflexes;
+- practiced movement;
+- speech rhythms;
+- instinctive reactions;
+- bodily preferences or mannerisms.
 
-No ability causes permanent physical change to the world. Memory and identity are the sole exception, and only one person can reach them.
+He remembers performing the Melt and can infer where a foreign behavior came from. He cannot recover the destroyed memory that explains it. Melt does not transfer the original emotion, relationship, worldview, Deviation, or lived meaning.
 
-Vesper extracts memory into glass. Shattering a shard returns the memory to its owner; melting one erases it permanently. That is the only irreversible alteration in this system, and it is thematically central: memory is the record of the self, so destroying it destroys the evidence of commitment.
+Vesper cannot choose the exact residue with certainty. Deep repetition and emotional intensity make a behavior more likely to survive, but the result is partly unknowable.
 
-**The extraction law.** Wanting is sustained by the record of not-having. Vesper cannot extract a want — a want is not a memory. He extracts the *memories that generate* it. You cannot ache for what you don't remember failing at. Take the record and the reaching stops. This is why hollowing isn't a side effect of memory theft; it is what memory theft *is*, and why none of the patients can say what they want to make.
+Melt trades understanding and reversibility for permanent embodied residue. That is why it is rare rather than a superior form of archiving.
 
-**Precision is the horror.** Early and imprecise, he broke function and left the self intact — Shiori forgets, and is entirely herself. Late and precise, he leaves function intact and removes the self — the patients have flawless memories and nobody home. He got better by learning to stop breaking things, and the better he got, the worse the outcome.
+### Vesper's three Melts
 
-**And the correction to the motif:** the record is *evidence* of the self, not the substance of it. The self is the reaching; memory is its receipt. Vesper's precise error is treating the record as editable inventory — remove the bad entries, keep the person. But entries are accumulated reaching, and removing them doesn't produce a happier person. It produces one who no longer reaches.
+1. **His mother:** the first Melt, accidental or not yet understood. It teaches him that behavior can survive after the record is gone.
+2. **Unknown person:** a deliberate experiment proving the first result was not an accident.
+3. **Roxana:** a mature, intentional use. He sincerely believes he is removing a source of continual pain while also wanting the unyielding behavior encoded in it.
 
-#### How the world and the record behave
+The exact memories involved, and the precise residue each leaves, remain open until required by a scene.
 
-*Decided 2026-08-12.*
+### Memory and wanting
 
-**The world arc.** The correction advances on **accepted relief, never on resistance.** The state never reacts to being fought; it processes demand — so the people moving the world arc are the patients, the Widower, and every citizen who made a reasonable request, while the group's resistance moves nothing. The city's weather is the measure: heavy at the start, thinning as the correction spreads, stopped in corrected districts, clean at the end. **Exactly two beats move because of Rain, and both are withdrawals, never retaliation** — the boundary takes the anchor station hours after he refuses, and the loop breaks at the end.
+Vesper cannot extract a want as a separate object. He removes the memories and associations that sustain it. Repeated removal can leave function intact while making the person unable to say what they want to do with that function.
 
-**The record without a reader.** The apparatus preserves everything and nobody looks. That is why Arc 4's exoneration works: the camera kept recording while no one watched the feed — the record existed, the attention did not, and the only person who ever looks is the girl who built it.
-
-Which completes a pair with the testimony rule. **Vesper's crimes delete their own evidence. The state's machinery keeps all of it and reads none.** Two ways evidence fails — one active, one indifferent — and between them, nobody has ever been stopped. Neither is ever explained on the page; both are demonstrated.
-
-**Never build the tower.** No camera walls, no checkpoints, nobody who feels observed. The machinery is old gear still running in rooms nobody visits. The moment the apparatus is visible the story acquires a regime, evil raises its voice, and Arc 4 stops hurting.
+The record is evidence of a life, not the whole person. Vesper's error is treating finished evidence as complete enough to edit the person through it.
