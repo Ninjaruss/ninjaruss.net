@@ -12,7 +12,7 @@ The Flare happened once, five years before the story. Its energy permanently cha
 
 The exact threshold varies by substrate, but the transition must be irreversible rather than ordinary motion. People, objects, living things, water, and other materials retain or express resonance differently according to what they are.
 
-The city's volcanic water retains an unusually high concentration of resonance because the Sacred Water loop circulates through a largely closed natural system.
+The city's volcanic water retains an unusually high concentration of resonance because the Sacred Water loop circulates through a largely closed natural system. Circulation through a population undergoing irreversible transitions keeps that resonance active; as the correction creates stasis, the loop weakens.
 
 The Flare does not recur. Present-day magic comes from the world's altered capacity to retain new resonance.
 
@@ -20,7 +20,7 @@ Resonance is not a moral judgment or a measure of human worth. The state turned 
 
 ### Passive, Pull, and Deviation
 
-**Passive.** A person may produce resonance or experience a private pull. Its expression is uncontrolled and personal; the owner is the only person who directly perceives it. There is no public technical term inside the story, so names such as the Ghost and Static are personal.
+**Passive.** A person may produce resonance or experience a private pull. Its ordinary expression is uncontrolled and personal; the owner is the only person who directly perceives it. There is no public technical term inside the story, so names such as the Ghost and Static are personal.
 
 **Pull.** A strongly resonant Imprint creates an unmistakable attraction in a compatible person. The pull indicates resonance, not instructions or guaranteed safety.
 
@@ -100,12 +100,6 @@ Magic is not a collectible power set. It is a record of irreversible transition,
 Factual access and felt ownership remain distinct. Accurate access to a completed record does not automatically make it feel personally inhabited, and loss of ownership does not make the record inaccurate.
 
 Vesper cannot extract a want as a separate object. He removes the memories and associations that sustain it. Repeated removal can leave function intact while making a person unable to say what they want to do with that function.
-
-### Still Flexible
-
-- The exact threshold by which each substrate retains or expresses resonance.
-- The exact memories involved in Vesper's three Melts and the precise residue each leaves.
-- The final state of Rain's prism, provided intact-shard access, restoration, shatter, and Melt rules remain consistent.
 
 ### Constraints
 

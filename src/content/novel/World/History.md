@@ -32,12 +32,6 @@ Five years after the Flare, the Sacred Water loop is weakening and the correctio
 
 The city begins the story with five years of supernatural administration behind it. Water policy, corporate maintenance, custody, forms, and ordinary infrastructure all carry that history. The crisis is a consequence of the altered world and its institutions, not evidence that the Flare is recurring.
 
-### Still Flexible
-
-- Exact dates within the five years after the Flare.
-- The order of Vesper's early Melts, Shiori's extraction, Aster's death, and the Widower's treatments.
-- The asylum's origin and Vesper's exact institutional role.
-
 ### Constraints
 
 - The Flare was one event, five years before the story; it does not recur.

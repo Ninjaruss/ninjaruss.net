@@ -51,7 +51,7 @@ Shiori enters with pressure independent of the central conflict: her work was st
 
 ### Work, Tools, Records, and Cost
 
-Shiori has no passive, Imprint, or Deviation. That absence is not a measure of human capacity or worth.
+Shiori has no passive, bonded Imprint, or Deviation of her own. That absence is not a measure of human capacity or worth.
 
 - Her first major project was an external recording system built after her injury. The state confiscated and scaled it into unattended surveillance infrastructure. The same system later preserves evidence everyone else ignored.
 - The goggles are her work. Rain wears her decisions from Arc 1 onward before knowing who made them.
