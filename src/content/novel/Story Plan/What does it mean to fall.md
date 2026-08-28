@@ -1,20 +1,22 @@
 ## What Does It Mean to Fall?
 
-Authorial source. This explains the personal pressure behind the story; it is not world canon or dialogue.
+Falling is the decision to enter consequence before certainty arrives. It lets one possible life become real enough to change what remains possible, even when the result may be failure, ordinariness, regret, or a changed direction. This is an authorial drafting model, not world canon or dialogue.
 
-I keep encountering the same friction whenever I try to change: I can make a large decision and still coast inside it. Moving, learning Japanese, writing a meaningful story, changing work, or making art does not create a new self all at once. Change often appears only as a slightly greater chance that I will make the next decision in the direction I chose.
+### Change after the choice
 
-That slowness can feel dishonest. I know what I say I want, yet I still return to games, projects, routines, safety, preparation, and the search for a validated model. I have support available and still experience the final decision as something nobody else can make for me.
+A large decision does not create a new self all at once. Change may appear only as a slightly greater chance that the next decision will follow the same direction. The importance of a choice can remain invisible for months or years.
 
-The choices that changed me most often began with fear and incomplete preparation: making a video essay, traveling to a convention, accepting work an earlier version of me would have rejected, or preparing to move to another country. Their importance became visible months or years later.
+Progress is therefore neither a permanent personality change nor proof that later choices will be easy. A person can choose, coast inside the choice, relapse, accept help, rest, or turn elsewhere and still remain responsible for what comes next.
 
-**Falling** is the decision to enter that delay and consequence before certainty arrives. It is allowing one possible life to become real enough to change what remains possible. Parts of an old life may have to end, and the result may be failure, ordinariness, or regret.
+### What falling is not
 
-The story must not turn this into a command to stay in motion forever. Rest, help, grief, dependence, and changed direction can all be deliberate responses. The opposite of falling is not stillness. It is keeping every possibility untouched so that nothing can answer back.
+Falling is not compulsory motion, self-sufficiency, or a demand to endure. Rest, help, grief, dependence, refusal, and changed direction can all be deliberate responses. The opposite of falling is not stillness; it is keeping every possibility untouched so that nothing can answer back.
+
+### Fiction and lived proof
 
 *Remember Rain* also applies this distinction to fiction itself. Writing or playing a story can matter, reveal something, and change the likelihood of a later choice without becoming lived proof that its creator or audience has made that choice. Rain ends knowing the completed story of his own adventure without feeling that he inhabited it. Like an author facing life after the final page, he still has to test his limits through choices the story cannot make for him.
 
-### Drafting use
+### Drafting Use
 
 - Meaningful choices can look small when made and become irreversible later.
 - Progress should increase the chance of another choice, not permanently transform personality.

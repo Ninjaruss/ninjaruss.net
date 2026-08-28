@@ -1,6 +1,6 @@
 ## Open Questions
 
-These points are intentionally unresolved. Do not treat earlier speculative wording as canon.
+Only questions without a usable current answer belong here. Do not treat earlier speculative wording as canon.
 
 ### Vesper and the five-year history
 
@@ -33,5 +33,3 @@ These points are intentionally unresolved. Do not treat earlier speculative word
 - After Vesper fully extracts Rain, how does Rain regain factual access to the memories while an intact shard remains inaccessible to its owner? What state is the prism in when Vesper ends holding it?
 - What exact first destination has Rain chosen on the outbound train?
 - Which public account leaves Rain a fugitive after the correction apparatus is broken?
-
-The endpoint is locked even while those details remain open: the train is the final scene, Rain is still publicly a fugitive, and he leaves toward a new adventure because he has chosen to begin taking steps toward his dreams.

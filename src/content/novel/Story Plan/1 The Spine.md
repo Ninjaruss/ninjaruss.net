@@ -1,24 +1,10 @@
 ## The Spine
 
-The authoritative whole-story sequence. Draft scenes from this file; use the other Story Plan documents for interaction rules, motifs, and unresolved questions.
-
-### Story movement
-
-Rain begins by waiting for an external event to change him. The plot gives him one, then repeatedly offers safer people, systems, and abilities that can make decisions in his place.
-
-The story does not prove that trying works. It asks whether Rain will keep participating after certainty, public vindication, and even felt ownership of his past are unavailable.
-
-The true ending is not Vesper's defeat. It is Rain, still a fugitive, choosing to board an outbound train toward the next step of a life he has begun directing.
-
----
+The chronological owner for the whole story. Keep scene order, indispensable causal links, choice pressure, and convergence here. `Arc Structure.md` owns arc function; `Choice Points.md` owns interaction behavior and false-ending rules.
 
 ### Arc 1 · The Fugitive
 
-**Question:** Can you take one irreversible step before you feel ready?
-
-**Pitfall:** Go home. Rain turns himself in, admits wrongs he did not commit, and resumes the commute.
-
-**End:** First sight of the asylum, pleasant and open-doored.
+**Choice pressure:** Rain can let hiding close into another commute or follow the Ghost before he feels ready. Continuing connects the accusation to the asylum.
 
 - **0 · Rain intro** — Establish Rain's dreams, self-awareness, and hope that something external will fix him. Use the exact selected opening line in the manuscript. The Ghost appears and guides his attention away from the commute.
 
@@ -42,11 +28,7 @@ The true ending is not Vesper's defeat. It is Rain, still a fugitive, choosing t
 
 ### Arc 2 · The Mirror
 
-**Question:** Can you keep wanting when wanting is what hurts?
-
-**Pitfall:** Become a patient and let Vesper take the Split.
-
-**End:** Rain and Roxana are transferred to the state after Vesper's referral.
+**Choice pressure:** Vesper offers effective, voluntary relief from wanting. Rain's *not yet* keeps the route moving until Roxana's Melt and Claire's referral place Rain and Roxana in state custody.
 
 - **1 · The open door** — Begin inside the asylum. It is calm, useful, and voluntary. Rain recognizes missing people and believes their presence may clear him. Residents complete assigned tasks but initiate little of their own.
 
@@ -72,11 +54,7 @@ The true ending is not Vesper's defeat. It is Rain, still a fugitive, choosing t
 
 ### Arc 3 · The Prisoner
 
-**Question:** Can you end every life you could have lived, including the happy one?
-
-**Pitfall:** Stay in a potential life and let it become the only life.
-
-**End:** Rain carries Roxana out toward the Circuit Line.
+**Choice pressure:** Rain can remain inside a possible life with no outside consequences or end even the beloved life. His choice sends the Ghost toward Roxana, whose acceptance of help creates the escape.
 
 - **1 · Intake** — The Pursuer completes forms while Rain's goggles, notebook, and Roxana's lighter are logged into a tray. Roxana is lowered into a pod. Rain goes last. The tank, not a guard, is the lock.
 
@@ -86,7 +64,7 @@ The true ending is not Vesper's defeat. It is Rain, still a fugitive, choosing t
 
   - **A life · 1–3** — Optional, self-contained lives. They reveal Rain and cannot contain plot facts required by the spine.
 
-- **4 · The mountain** — The beloved life comes last and lasts longest. Rain ends it. The mountain of his bodies is the cost of preserving and then renouncing every possibility. Commitment expels the Ghost toward Roxana while Rain remains unaware. The Split receives its first distinct mark.
+- **4 · The mountain** — The beloved life comes last and lasts longest. Rain ends it. The mountain holds the bodies of the possibilities he preserved and then renounced. The Ghost is expelled toward Roxana while Rain remains unaware. The Split receives its first distinct mark.
 
 - **5 · The hand** — The only external POV cut. The Pursuer reviews Aster's record outside Roxana's pod. When hope has collapsed, the Ghost offers an open hand that asks nothing. Roxana accepts. A raw spark passes through the scars and burns through both seals.
 
@@ -96,11 +74,7 @@ The true ending is not Vesper's defeat. It is Rain, still a fugitive, choosing t
 
 ### Arc 4 · The Witness
 
-**Question:** Can you choose when nothing is chasing you?
-
-**Pitfall:** Let the amnesty expire and accept a tolerated life on the loop.
-
-**End:** The Perfect Clone appears as beautiful false progress.
+**Choice pressure:** The Circuit Line gives Rain time to answer while the amnesty remains live. He refuses before it expires, then mistakes the apparently costless Perfect Clone for progress and carries that relapse toward the caldera.
 
 - **1 · Out of the chute** — Escape into a smoother city. Rain and Roxana board the Circuit Line and recover the goggles and lighter.
 
@@ -124,11 +98,7 @@ The true ending is not Vesper's defeat. It is Rain, still a fugitive, choosing t
 
 ### Arc 5 · The Proof
 
-**Question:** What remains capable of choosing after Vesper removes the accumulated evidence?
-
-**Pitfall:** None.
-
-**End:** The outbound train. No scene follows it.
+**Convergence:** There is no pitfall. Shiori's network, Claire's refusal and overwatch, and Roxana's rearguard clear the path toward Vesper. Extraction must fully succeed before the void, return, refusal, clean-rain actions, and outbound train.
 
 - **1 · The summit road** — The group climbs toward the caldera while the correction advances below. Rain is already relying on the Perfect Clone. Shiori's distributed feeds open the route and keep every front visible.
 
@@ -148,21 +118,4 @@ The true ending is not Vesper's defeat. It is Rain, still a fugitive, choosing t
 
 - **9 · The clean rain** — Keep the aftermath brief. Shiori turns the cameras off and closes something without marking her place. Claire abandons the appointment she no longer intends to keep. Roxana burns Aster's shard and fills the lighter with her own flame. The clean rain follows the physical collapse of the apparatus and water loop.
 
-- **10 · The outbound train** — Final scene. Rain remains publicly a fugitive and accepts that the city has not cleared his name. Leaving is partly necessary but not merely exile: he chooses a first destination and a new adventure because he has decided to take the next step toward his dreams. He is still afraid, uncertain, and unable to feel ownership of what he survived. Nothing suggests that connection is beginning to return. The departure is the first choice beyond the completed story, not a reward for having recovered from it. The notebook contains two lines and many blank pages. End with the exact selected callback:
-
-  > I dreamed and dreamed. Now I fall.
-  >
-  > In spite of it all, I am Rain.
-
----
-
-### Dead ends
-
-Every pitfall ends on the notebook with one line written and the book closed. The narrator drains from the prose without accusation or punishment.
-
-- **Go home · Arc 1** — Rain admits to crimes he did not commit and returns to schedule.
-- **The patient · Arc 2** — Rain lets Vesper remove the Split and remains at the asylum.
-- **The beloved life · Arc 3** — Rain never ends the riskless life and ages without consequence.
-- **The commute · Arc 4** — The offer expires unanswered and the loop becomes his world.
-
-The true ending is the only place the second line appears.
+- **10 · The outbound train** — Final scene. Rain remains publicly a fugitive and accepts that the city has not cleared his name. Leaving is partly necessary but not merely exile: he chooses a first destination and a new adventure as the next step toward his dreams. He remains afraid, uncertain, and unable to feel ownership of what he survived; nothing suggests that connection is beginning to return. The notebook contains two lines and many blank pages. End with the exact selected callback from `Manuscript/Arc 1 - Fugitive/0 Rain intro.md`. No scene follows it.

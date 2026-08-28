@@ -1,8 +1,8 @@
 ## Choice Points
 
-Interaction rules for the visual novel. `1 The Spine.md` remains the authority for scene order.
+Interaction rules for the visual novel. `1 The Spine.md` owns scene order; protected story events remain Rain's or another character's actions rather than player branches.
 
-### One route, four pitfalls
+### Choice Rules
 
 There is one true ending and four comfortable ways to stop reaching it.
 
@@ -11,15 +11,13 @@ There is one true ending and four comfortable ways to stop reaching it.
 - A pitfall is not punishment. It is a livable loop in which the story stops advancing.
 - The outbound train is the fixed final scene of the true route.
 
-### Interface law
-
 > Retreat is a labeled button. Commitment is not.
 
 The comfortable action can be offered directly: go home, stay, wait, let the offer expire. Leaving a pitfall begins through the Ghost, shown without a label or explanation.
 
 The player does not select a heroic ending from a menu. They reach it by continuing through each loop.
 
-### Pitfall rhythm
+### Pitfalls
 
 1. Rain enters through an ordinary, defensible choice.
 2. Each cycle contains genuinely new material, but the world becomes smaller.
@@ -29,8 +27,6 @@ The player does not select a heroic ending from a menu. They reach it by continu
 
 Comfort matters. A pitfall that is merely boring or obviously wrong cannot tempt the player or respect the character choosing it.
 
-### The four pitfalls
-
 | Arc | Pitfall | Entry | Spine continuation | Ending |
 |---|---|---|---|---|
 | **1** | **Go home** | The drift | The follow | Rain admits wrongs he did not commit and resumes the commute. |
@@ -38,7 +34,7 @@ Comfort matters. A pitfall that is merely boring or obviously wrong cannot tempt
 | **3** | **Stay in the life** | The lives | The mountain | Rain never ends the beloved life. |
 | **4** | **Let it expire** | The amnesty | The unsigned offer | The offer dies unanswered and the Circuit Line closes around him. |
 
-### Trap-ending prose
+### False Endings
 
 The surface remains pleasant. Rain's interior voice gradually loses specificity and first-person presence until schedule, weather, and routine are all that remain.
 
@@ -57,7 +53,7 @@ Leaving a pitfall returns to the next spine scene.
 
 Optional material may reveal Rain or another character, but one attentive playthrough must contain the complete plot.
 
-### Arc 3 lives
+### Arc 3 Lives
 
 The lives are both optional-content space and the Arc 3 pitfall.
 
@@ -68,15 +64,16 @@ The lives are both optional-content space and the Arc 3 pitfall.
 
 The dream register cannot introduce plot facts required by the spine. It can reveal emotional truth.
 
-### Arc 5 void
+### Arc 5 Void
 
-The void contains non-branching acts of commitment while memory, interface, and music return. There is no retreat option and no wrong answer because the external systems that normally offer safety have been stripped away.
+The void contains non-branching acts of commitment while memory, interface, and music return. There is no retreat option, wrong answer, or hidden branch.
 
 Rain's refusal of Vesper is not a player choice. Neither is the final train departure. These belong to Rain after the player has helped him reach them.
 
-### Protected non-choices
+### Protected Non-Choices
 
 - Rain misreads the target during Roxana's Melt. Do not offer the correct tactical option.
 - Rain ends the beloved life himself. Do not make the player click to kill her.
 - Claire refuses Vesper before Rain arrives. Her decision is not available to him or the player.
+- Rain refuses removal of the Split. Do not convert the refusal into an ending branch.
 - The outbound train is the final scene, not an ending selector.

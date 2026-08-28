@@ -1,23 +1,19 @@
 ## Arc Structure
 
-Quick reference only. `1 The Spine.md` is the authority for scene order and content.
+This file records what each arc does to the story. `1 The Spine.md` owns scene order and causal detail; `Choice Points.md` owns pitfall behavior.
 
-| Arc | Owner | Question | Pitfall | Main turn | Ending |
-|---|---|---|---|---|---|
-| **1 · Fugitive** | Rain | Can you take one irreversible step before you feel ready? | Go home | Rain follows the Ghost from safety into the disappearance trail. | The asylum appears pleasant and open-doored. |
-| **2 · Mirror** | Vesper | Can you keep wanting when wanting is what hurts? | Become a patient | Vesper's real kindness is re-read as intervention without informed consent. | Rain and Roxana are referred to the state. |
-| **3 · Prisoner** | Rain's interior / Roxana's action | Can you end every life you could have lived, including the happy one? | Stay in the life | Rain ends the beloved life; Roxana accepts an offered hand and produces the prison spark. | Rain carries Roxana toward the Circuit Line. |
-| **4 · Witness** | Claire | Can you choose when nothing is chasing you? | Let the amnesty expire | Rain refuses while the offer remains live; Claire's certainty is answered without being dismissed. | The Perfect Clone appears as false progress. |
-| **5 · Proof** | Rain, with the ensemble clearing the path | What remains capable of choosing after Vesper removes the accumulated evidence? | None | Vesper's extraction fully succeeds. Rain still generates a new response. | Still a fugitive, Rain boards an outbound train by choice. |
+### Arc Function
 
-### Arc 5 convergence
+| Arc | Primary lens | Structural job | Choice pressure | Handoff |
+|---|---|---|---|---|
+| **1 · Fugitive** | Rain | Break the commute, make Rain's impulsive theft consequential, assemble the first group, and connect the accusation to the asylum. | Take one irreversible step before feeling ready, or go home. | The apparent refuge is pleasant and open-doored. |
+| **2 · Mirror** | Vesper | Establish relief that works, then reframe Vesper's genuine care as intervention without informed consent. | Keep wanting when wanting hurts, or become a patient. | Rain and Roxana are referred to the state. |
+| **3 · Prisoner** | Rain's interior / Roxana's action | Separate possibility from consequence: Rain ends the beloved life while Roxana accepts help and breaks the prison seal. | End lives that feel real, or remain in one. | Rain carries Roxana toward the Circuit Line. |
+| **4 · Witness** | Claire | Remove immediate pursuit long enough for Rain to answer Claire's evidence without asking her to decide, expose the correction's cost, and turn apparent growth into relapse. | Choose before the amnesty expires, or let the loop become home. | The Perfect Clone carries the group toward the caldera under false progress. |
+| **5 · Proof** | Ensemble into Rain | Spend the cast's established strengths to clear a path, let extraction fully succeed, and test whether a new response remains possible without accumulated proof. | No pitfall and no ending selector. | Rain remains a fugitive and boards the outbound train by choice. |
 
-The ensemble tests occur before or during Vesper's access to Rain, not as a separate climax followed by another thematic ending.
+### Arc 5 Convergence
 
-1. Roxana re-enters until the Pursuer empties.
-2. Claire reaches the limit of her model and still says *Go*.
-3. Shiori keeps the fronts connected while spending her rig.
-4. Vesper extracts Rain completely.
-5. Rain returns, refuses removal of the Split, and breaks the apparatus.
-6. Brief clean-rain codas resolve the immediate cast actions.
-7. The outbound train is the final scene.
+Arc 5 is one convergence, not an ensemble climax followed by a second ending. Roxana, Claire, and Shiori are tested while clearing and maintaining the path toward Vesper; their actions make Rain's extraction possible rather than preventing it.
+
+Extraction is the hinge. It is followed, in order, by the void, Rain's return, his refusal to remove the Split, the apparatus breaking, and brief clean-rain actions for the ensemble. The outbound train remains the final scene; nothing follows it.
