@@ -6,7 +6,7 @@ The asylum's longest-standing patient and the case that proves Vesper can be rig
 
 After his wife's death, one specific memory loop replayed uncontrollably for months. He could not sleep, work, or be present with his children. Vesper removed that loop. The treatment worked. He slept that night, and the story never reveals the first extraction to have been a mistake.
 
-### The pattern
+### Recurring pattern
 
 Because the first treatment worked, he returned eight more times over the next few years. Each new target was smaller and less clearly disabling. Every extraction could be defended in isolation; the loss is visible only in accumulation.
 
@@ -16,9 +16,8 @@ He runs the asylum kitchen, remembers everyone's name, and offers steady practic
 
 Rain notices. Nobody explains the discomfort.
 
-### Guards
+### Do Not Flatten
 
-- Keep him warm, competent, content, and unaware that he is an argument.
-- Do not make him miserable, degraded, or secretly desperate to recover what was removed.
-- No character points at him as a cautionary example.
-- His first extraction remains right. The problem is not relief itself but a successful intervention becoming a subscription.
+- He is warm, competent, content, and unaware that he is an argument—not miserable, degraded, or secretly desperate to recover what was removed.
+- No character points to him as a cautionary example.
+- His first extraction remains right. The problem is a successful intervention becoming a subscription, not relief itself.

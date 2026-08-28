@@ -1,13 +1,19 @@
 ## The Gamer
 
-An asylum patient who collects games and spends most of his life inside virtual worlds.
+An asylum patient who collects games and lives mostly in virtual worlds.
 
 ### On the page
 
-He speaks with real enthusiasm about places visited, systems mastered, and stories experienced. The pleasure is genuine. What is missing is not intelligence or feeling, but any project, relationship, or risk that carries those experiences back into his own life.
+At the Arc 2 lunch, he speaks with real enthusiasm about places visited, systems mastered, and stories experienced. The pleasure is genuine. What is missing is not intelligence or feeling, but a project, relationship, or risk that carries those experiences back into his own life.
 
-Do not frame gaming as worthless. A game can teach a skill, alter a life, or guide someone toward honest connection. It cannot substitute for every connection and experience outside it.
+### Scene function
 
-### Function
+He establishes the asylum's comfortable enclosure: a life can be rich in consumed experience and still remain sealed from consequence. Keep the scene observational, not a lecture about technology.
 
-He helps establish the asylum's temptation: a life can be comfortable, rich in consumed experience, and still remain sealed from consequence. Keep the scene observational rather than turning him into a lecture about technology.
+### Still Flexible
+
+- Vesper has extracted something from him; decide the specific memory and the ordinary asylum task that makes its loss visible before drafting the scene.
+
+### Do Not Flatten
+
+- Gaming can teach a skill, alter a life, or guide someone toward honest connection. It cannot substitute for every connection and experience outside it.
