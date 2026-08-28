@@ -67,11 +67,6 @@ Only three Melts are intended: his mother; one unknown person used as deliberate
 
 Vesper is slight, young, composed, and physically non-threatening. He should invite trust rather than advertise danger. Stillness, tidy caretaker movements, and stored glass matter more than exact clothing. Foreign gestures may briefly interrupt that control. Avoid gothic styling, villain cues, or making him look older than eighteen.
 
-### Still Flexible
-
-- Whether his mother's Melt was accidental or simply not yet understood.
-- The identity of the unknown deliberate Melt and the exact residue left by all three Melts.
-
 ### Do Not Flatten
 
 - No villain-mask-drop scene. His kindness remains real before and after the reveal.

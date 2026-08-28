@@ -64,10 +64,6 @@ Vesper Melts a memory-network tied to her trauma, pain, and refusal to stop. Rox
 
 Roxana is compact and physically forceful. Burn scars on her arms are essential. Her warmth should come through posture, touch, practical hands, anger, and workwear rather than delicacy. The chair and lighter are key objects. When the Bearing Flame stands her, movement remains costly rather than becoming a graceful restoration fantasy.
 
-### Still Flexible
-
-- Whether the childhood fire created her need to provide or became a debt she uses to justify a need that was already present.
-
 ### Do Not Flatten
 
 - Do not reduce her to a woman waiting to be retrieved.
