@@ -1,7 +1,13 @@
-#### The Gamer (Asylum Patient)
+## The Gamer
 
-- A alternate version of me who turned into a full NEET. He collects all of the games he’s played and fully enjoys the act of going into VR and experiencing all of these different worlds. However, the tragedy I want to impart is that all of these things he seems to experience aren’t fully his. That he never creates any of these things, but merely makes the illusion that he has done these things.
+An asylum patient who collects games and spends most of his life inside virtual worlds.
 
-- While there are games that truly give you skill or impart a compelling story that can fundamentally change your life (i.e. Persona 4 Golden), they can never replace a true honest connection or experience, but guide you towards one.
+### On the page
 
-- I don’t want to say that all the time I spent in gaming was for naught (even the inefficient times of wasting time on making up builds or waiting), but similar to the asylum itself, it is a mere small and minuscule slice of life and the infinite beauty of the world.
+He speaks with real enthusiasm about places visited, systems mastered, and stories experienced. The pleasure is genuine. What is missing is not intelligence or feeling, but any project, relationship, or risk that carries those experiences back into his own life.
+
+Do not frame gaming as worthless. A game can teach a skill, alter a life, or guide someone toward honest connection. It cannot substitute for every connection and experience outside it.
+
+### Function
+
+He helps establish the asylum's temptation: a life can be comfortable, rich in consumed experience, and still remain sealed from consequence. Keep the scene observational rather than turning him into a lecture about technology.

@@ -1,149 +1,90 @@
 ## Rain
 
-A young man with a notebook full of things he started, and not one second line under any of them.
+A young man with a notebook full of first lines and no second ones.
 
-### The contradiction
+### Snapshot
 
-**He wants more than anyone in this story and does less than anyone in it.**
+- **Age:** 23
+- **Height:** 5'7"
+- **Role:** protagonist; the Paralyzed Dreamer
+- **Contradiction:** he wants more than anyone in the story and does less than anyone in it.
+- **Question:** *Can I still respect myself after reality replaces fantasy with evidence?*
 
-His question: *if I become one thing, what happens to everyone else I could have been?*
+Rain preserves possibility because committing to one life would make him finite. Beneath that fear is a more private one: a finished attempt may prove he is ordinary. He never says this. He speaks honestly about the lives a choice would close.
 
-**Heart · 23 · the Paralyzed Dreamer.** Main trait: **Suspended** — held mid-air, not falling. Passive trait: **Yearning** — a want that is stored rather than spent.
+Rain grew up praised for potential and steered away from risking it. His hardworking parents equate safety with love: his father tends to decide what Rain means before listening, while his mother offers sincere encouragement without understanding the specific dream. Rain learned to deflect rather than explain himself. Their concern is real, but being supported and being seen have never felt identical to him.
 
-**Both dark, and that is the character.** He is one-note on brightness: he wants more than anyone in this story and does less than anyone in it, so the wanting costs nothing, risks nothing and enters no conflict. **Every volatile thing he does arrives as scene modulation** — an emergency pulls him bright and he never gets there from inside, which is why he moves instantly in a crisis and has nothing in a quiet room. It also makes the Arc 5 refusal the largest moment in the book: the one time he goes bright with nothing chasing him. His range lives entirely on the transparency axis.
+### On the page
 
-**Refusing to ask *is* the avoidance.** Asking requires naming what you want, out loud, in front of a witness who might say no. It makes the thing real and creates an expectation — it is a fall, and a man protecting an unspent inventory of possible selves cannot afford one. **His solitude and his paralysis are one trait, not two.** He does not outsource to people; he outsources to *potential*, and refusing help is how he keeps the inventory unspent.
+Rain is agreeable, self-deprecating, and easy company. He often seems a fraction absent from his own body.
 
-**What he is actually afraid of.** Committing produces evidence, and evidence can be ordinary. His worth is kept in his potential rather than in anything he has done. He would never put it that way — he says the other true thing, that choosing one path kills every other version of himself and he can feel them dying. Both are real. **Only one of them explains why he cannot finish anything, however small.**
+- He spins a pen and almost never writes.
+- He looks at ceilings and cloud cover rather than open sky.
+- His notebook contains ideas stopped after one line. The second line would be evidence.
+- In quiet rooms he struggles to answer. In emergencies he moves with sudden commitment.
+- He permits help but does not request it.
+- He asks other people what they need and never states what he needs.
+- His posture is slightly suspended, as though his weight has not committed to the next step. Under pressure that softness snaps into decisive motion.
 
-**The impossible decision.** He wants to matter and he wants to stay possible, and every act of mattering deletes possibility. Arc 3 makes the arithmetic literal; the notebook is a man refusing to spend his inventory.
+His generosity is real. His avoidance is not laziness or indifference; it is the method by which he protects an untested image of himself.
 
-**The line he won't cross — and does.** He will not send someone else in his place. It is why the Clone is deception-only and why its cost is the Ghost. Arc 4's last stop is him crossing it and being rewarded for it. He keeps the Perfect Clone forever: the line is never restored as a rule, only re-chosen as a morning. **What crossing it actually is:** choosing the version of himself that costs nothing over the one that does. He has been making that choice his entire life without a mechanic to name it; Arc 4 gives it a name, a cost, and a reward, and rewards it anyway.
+### Relationships and contrasts
 
-**His relationship to change.** Ignorant of it. He is changing continuously and is the last to know — which is why he never perceives his own shine, and why the finale's cost is that he changed completely and cannot feel it.
+- **The Pursuer:** Rain cannot start because he protects possible futures. The Pursuer cannot stop because he protects an accumulated past.
+- **Vesper:** Rain is slow, uncertain, and still capable of surprising himself. Vesper decides what a person is from finished evidence and intervenes before they can become otherwise.
+- **Claire:** Rain lets her take decisions from him. Arc 4 requires him to answer her in a quiet room instead.
+- **Roxana:** he mistakes her usefulness for effortless strength. She initially trains him toward Aster without saying so.
+- **Shiori:** she makes imperfect things and lets them exist. Rain admires this without identifying it as the answer to his notebook.
 
-**Why the reader stays with him.** His mistakes are always made forward. He never fails by hiding or protecting himself; he fails by reaching at the wrong thing.
+### Passive, Deviation, and cost
 
-### The thematic meaning
+**The Ghost:** Rain's private passive. A faded-gold figure with an open, upward palm. It points toward what he wants, never toward a correct method. It grants commitment, not competence, and remains interpretable as hallucination.
 
-**His unique territory is finitude, sharpened by measurement.** Rain mistakes unrealised potential for proof of a self: as long as nothing reaches a second line, he can remain someone capable of anything. Action does not merely risk failure. It replaces the exceptional person he imagines with finite evidence that may be ordinary.
+**The Clone:** accessed through Shiori's goggles. An intangible projection used for deception. It is a possible Rain sent to be seen instead of the real one. No use of the Clone should solve a scene by itself.
 
-**His strongest foil is the Pursuer; his deepest ideological enemy is Vesper.** The Pursuer has stored selfhood in the accumulated past and cannot stop; Rain stores it in possible futures and cannot start. Vesper offers Rain the most seductive answer available — one finished, painless self without the slow risk of participating in what he becomes — and therefore turns Rain's private avoidance into a philosophy imposed on everyone.
+**The Perfect Clone:** solid gold and apparently improved. Creating it burns through the Ghost and changes the cost rather than removing it. Rain gets hours of relief in which wanting and accomplishment carry no weight. Movement becomes half-committed because the inner signal that says *go* has been spent.
 
-**His deeper question:** *can I still respect myself after reality has replaced fantasy with evidence?* The answer is not one extraordinary act that proves him forever. It is the smaller foundation: *I have acted before. I can act again.*
+**The Split:** Rain's record of past failure in his own voice. It is unmarked at first and later italicized. Never decide whether it is another entity or only Rain.
 
-**Drafting test.** Would he make this choice if nobody — including him — could read it as proof that he is special? If yes, it is probably genuine participation. If the choice preserves a beautiful interpretation of Rain while sending the cost elsewhere, it is probably the Clone in another form.
+The final extraction leaves Rain with complete recall and no felt ownership of his past. He can state what happened precisely but cannot feel that he was the person who did it.
 
-### The archetype
+Those memories read like a story he knows is true and can recount in full, but cannot inhabit from the first person. The train does not begin restoring that connection. What remains open is Rain's ability to create new consequences through present choices, not whether the completed adventure can finally certify him.
 
-*The nobody who gets a power.* The reader expects the ability to arrive and for him to grow into being capable.
+### Arc
 
-**Where it's spent.** The Ghost is a compass, not a radar — it grants commitment and never competence — and his own kit stays dark until Arc 3.
+1. He follows the Ghost off his commute and steals the goggles.
+2. Vesper offers relief from wanting; Rain answers *not yet*.
+3. He lives and ends his possible lives, including the beloved one.
+4. He refuses the amnesty while it is still available, then relapses through the Perfect Clone.
+5. Vesper successfully extracts everything. Rain returns without proof that his past belongs to him.
+6. Rain refuses Vesper's offer to remove the Split and takes the real blow himself instead of sending the Clone.
+7. Still publicly a fugitive, he chooses to leave the city by train toward a new adventure and the next step toward his dreams.
 
-**Guard.** No ability of Rain's ever solves a scene. The moment one does, the story is about acquiring power instead of spending it.
+### Visual anchors
 
-### Three layers
+Rain should look ordinary and approachable rather than visibly heroic. Keep the notebook, pen, and later goggles. His visual distinction comes from the contrast between hesitant everyday posture and sudden emergency movement. Avoid making him physically dominant or unusually stylized at the beginning.
 
-**What you see.** Easy company. Agreeable, self-deprecating, genuinely likeable, and slightly not-there.
+### Locked callback lines
 
-- *Tell:* the pen. He spins it constantly and writes with it exactly twice, both times on the last page of the story.
+Opening:
 
-- *Tell:* he looks up. At ceilings, at cloud cover, at anything that isn't sky.
+> I am Rain. I dreamed and dreamed, yearning for the ceiling to collapse, while outside the rain poured and poured. Yet I could not fall.
 
-**What's underneath.** Not laziness — dread. Choosing one thing means killing every other version of himself, and he can feel them dying.
+Ending:
 
-- *Tell:* **the notebook holds first lines, not abandoned epics.** Grief for unlived selves would leave small things easy — abandoning a small idea costs almost nothing. He stops at exactly one line every time because the second one is evidence.
+> I dreamed and dreamed. Now I fall.
+>
+> In spite of it all, I am Rain.
 
-- *Tell:* he cannot answer in a quiet room. Give him an emergency and he moves instantly; give him a question and a chair and he has nothing.
-
-- *Tell:* he **permits**, he never asks. Claire solves a small problem, he lets her, and neither of them remarks on it. He would not have requested it. Permitting costs him nothing and commits him to nothing, which is exactly why he allows it.
-
-- *Tell:* **he asks everyone what they need and never once says what he needs.** The older brother's disease.
-
-**What he doesn't know.** His effect on people already outruns his command of himself. He believes he's a passenger in his own life while visibly changing everyone he meets.
-
-### How he processes
-
-Through his own perception of himself — so everything he can do is a self, seen.
-
-- **Passive — the Ghost.** Faded gold, palm upward. A compass, never a radar: it tells him *to go*, never how, and it only ever points at what he actually wants. Read as hallucination for a whole arc; never explained.
-
-- **Deviation — the Clone**, through the goggles. Intangible, deception only. **This is potential, embodied.** Not a decoy that happens to resemble him — a version of Rain that doesn't exist, sent to be seen instead of him. Every use is the same transaction his whole character runs on: risk nothing, spend nothing, keep the inventory unspent.
-
-- **The Perfect Clone** costs the Ghost, burned live. During: commitment fails, movement goes half-committed. After: wantless hours. The tell is that the silence feels like *relief*. **This is the trade made literal:** the feels-good ephemeral self stands in for him, and what he gets back is relief with no weight in it — because nothing that wasn't risked can be felt as accomplished. Potential was never neutral. It was training him not to feel his own wins.
-
-- **The Split.** His own ledger of past failure, in his own voice. Unmarked at first; one italic line at the awakening; permanent after that.
-
-### The daily act
-
-**The behaviour, in one word: deferral.** It is what *Suspended* looks like from outside.
-
-**He asks people the question nobody has asked them.** Never therapeutic, never the subject of a scene — a half-beat of curiosity aimed at the wrong person at the wrong time, dropped the moment someone changes the subject. He asks Roxana what she needs. He asks Claire what she'd do after the quiet. He asks the Pursuer whether it's too late. He does not count any of it as doing anything, and it is the reason five people in this book turn around.
-
-The pen is its visible twin: the story shows you the pen he never writes with, and hides the questions.
-
-**Breaks in Arc 4, at the voice** — he stops asking and answers, in a quiet room, at the one moment this doc says he has nothing. Everything he says there he learned from answers people gave him when he asked.
-
-**Guard.** Nobody ever remarks on it. The instant someone says *you're good at that*, it becomes a skill, and a skill is a capacity.
-
-### How it reaches the page
-
-**Layer 1 — immediate · dark / transparent.** Easy company, agreeable, self-deprecating. The pen spun and never used. Low volatility, and everyone can read it.
-
-**Layer 2 — situational · bright (scene-driven) / obscure.** Give him an emergency and he moves instantly. He follows a light into an alley, charges a man three feet short, takes the road less travelled. He makes volatile situations and nobody can predict them — which is exactly why Claire cannot calculate him, and why she keeps him.
-
-**Layer 3 — setting and concept · dark / very obscure.** The Ghost, the Split, the notebook, the charge, the name. Enormous stored want, none of it spent, hidden from everyone including him.
-
-**Tonic: layer 1.** He reads as agreeable and not-there, and the story drifts toward layer 3 across five arcs.
-
-**Where main and passive meet: the notebook.** A bright want written down, and a dark refusal to continue it, in one object.
-
-### The ladder
-
-1. Takes the road less traveled, and it costs him everything.
-
-2. Is offered relief from the wanting and says *not yet*.
-
-3. Lives a thousand lives, ends every one, and is still there.
-
-4. Finds his voice, ends the outsourcing, and refuses.
-
-5. Is emptied completely — and there is still someone in the room.
-
-6. Writes the second line.
+These lines remain exactly as selected in the manuscript source.
 
 ### Guards
 
-- Never resolve whether the Split is another entity or only him. Pattern, not explanation — same discipline as the Ghost.
-
-- Never stage him frozen while other people resolve the scene. Internal struggle lives in the voice; the body keeps acting.
-
-- **He never perceives his own shine.** It is shown once, from outside, at the refusal. That is the story's one camera break.
-
-- He keeps every memory at the end. He simply cannot feel that any of it was him.
-
-- **Never write him as a different man.** He does not change. A latent layer 3 surfaces and he re-chooses it every morning — which is why the last image is a train and blank pages rather than an arrival.
-
-- **He idealises five people and is wrong about four.** Shiori is the one where the thing he admires is real, cost her nothing to have, and is the answer to his question — and he never identifies it. He learns it from the mountain instead, at full price. Never let anyone point at this.
-
-- **He never states it as ego.** He would say the finitude version, and he believes it — it is the dignified frame and it is also true. The reader assembles the rest from the notebook and from what he does. The moment he says *I'm afraid I'm ordinary*, he has diagnosed himself, and a man who can diagnose it could act on it.
-
-- **The ego must never make him unlikeable.** The origin carries it: praised for a gift, steered away from using it. And his generosity is real — he asks everyone what they need. Ego-wounded and kind is a person; ego alone is a type.
-
-- **Nobody ever names the Clone as potential, on the page or off it in dialogue.** The equation lives in this doc so every scene using the ability is written with it in mind — not so a character can explain it. The moment anyone says the ability *is* his potential, it becomes a metaphor being pointed at instead of a mechanic being lived inside, and the finale's cost stops landing as discovery and starts reading as a callback.
-
----
-
-*— design notes below: skip while drafting —*
-
-### Where it comes from
-
-**The history.** Gifted praise, discouraged dreams, waiting for permission.
-
-**The lie he believes.** *My worth comes from my infinite potential, not from anything I actually do. The moment I commit to one path, I become finite — and finite means I might fail.*
-
-**The fear.** That choosing one finite path will prove he isn't special, and will kill all his other potential selves. **The fix:** avoid commitment by staying in preparation mode, seeking perfect certainty, and using proxies to act at a distance.
-
-**The parents.** Not villains — hardworking, fearful people who equate security with love. His father makes assumptions and doesn't listen. His mother worries constantly and offers support that feels generic: *you can do it*, without understanding what "it" is. **They want him to be safe. He wants to be seen. These are not the same thing.** He learned to deflect because deflecting was safer than explaining himself to people who couldn't hear him. They reach him by phone call and text — which is what makes their silence in Arc 4 land.
-
-**The two fears are sequenced, and the book already does it.** Arc 3 answers finitude — he lives every potential life whole, ends each one, and survives standing on a mountain of everyone he spent a lifetime being. Arc 5 answers the deeper one: emptied completely, achieving nothing legible, he writes two lines. Not a masterpiece, not proof of talent. A second line. **The cruellest available ending was never failure — it is succeeding and being unable to feel it.**
+- Rain's abilities complicate or expose his choices; they do not make him competent enough to bypass them.
+- Keep his body acting while the Split argues. Do not freeze him so other characters can resolve the scene.
+- He never perceives his own shine. It is shown once from outside.
+- He does not discover a true or final self. He remains hesitant, unfinished, and capable of relapse.
+- Do not let Rain diagnose his fear as *I am afraid I am ordinary*. The notebook supplies that evidence for the reader.
+- His final departure is not public vindication or exile presented as freedom. The fugitive condition remains; choosing a direction within it is the change.
+- Do not imply that boarding the train restores felt ownership. The choice matters because he makes it without that reward.
+- The outbound train is the final scene. Nothing follows the ending callback.
