@@ -4,7 +4,7 @@ Current canon. The system should stay legible through objects, bodily costs, and
 
 ### The Short Version
 
-The Flare changed the world so suitable substrates can retain resonance from irreversible transitions. A person may express resonance as a passive or pull; a distinctive relationship to that pull can become a unique Deviation. Imprints and glass preserve records of completed transitions, while every deliberate use exacts a material cost.
+The Flare changed the world so suitable substrates can retain resonance from irreversible transitions. A person's passive expresses involuntary personal resonance. When that resonance meets a compatible Imprint, it creates a pull; bonding through that pull can make a unique Deviation deliberately accessible. Imprints and glass preserve records of completed transitions, while every deliberate use exacts a material cost.
 
 ### The Flare
 
@@ -20,15 +20,15 @@ Resonance is not a moral judgment or a measure of human worth. The state turned 
 
 ### Passive, Pull, and Deviation
 
-**Passive.** A person may produce resonance or experience a private pull. Its ordinary expression is uncontrolled and personal; the owner is the only person who directly perceives it. There is no public technical term inside the story, so names such as the Ghost and Static are personal.
+**Passive.** A person's involuntary, uncontrolled resonance. Its ordinary expression is personal; the owner is the only person who directly perceives it. There is no public technical term inside the story, so names such as the Ghost and Static are personal.
 
-**Pull.** A strongly resonant Imprint creates an unmistakable attraction in a compatible person. The pull indicates resonance, not instructions or guaranteed safety.
+**Pull.** When a person's passive resonance meets a compatible, strongly resonant Imprint, the interaction creates an unmistakable attraction. The pull indicates compatibility, not instructions or guaranteed safety.
 
-**Deviation.** Contact and continued resonance with an Imprint can make a person's deliberate ability accessible. The Imprint does not contain a preset power. The Deviation belongs to the person and is unique to that person's relationship with the pull.
+**Deviation.** Bonding with an Imprint through its pull can make a person's deliberate ability accessible. The Imprint does not contain a preset power. The Deviation belongs to the person and is unique to that bonded relationship.
 
 The relationship is:
 
-> passive → resonant pull → unique Deviation
+> passive resonance → compatible-Imprint pull → bonded unique Deviation
 
 ### Imprints
 
@@ -105,7 +105,7 @@ Vesper cannot extract a want as a separate object. He removes the memories and a
 
 - The Flare was one event; it does not recur or distribute a fixed set of powers.
 - Resonance requires an irreversible transition; ordinary motion is insufficient.
-- A passive produces resonance or pull. A unique Deviation arises from a person's distinctive relationship to that pull, not from a preset ability inside an Imprint.
+- A passive expresses involuntary personal resonance. When that resonance meets a compatible Imprint, the interaction creates a pull; bonding through that pull makes the person's unique Deviation accessible. The ability is not preset inside the Imprint.
 - A bonded Imprint is required for deliberate Deviation use, except for rare uncontrolled and costly passive breakouts.
 - Imprints and shards are physically ordinary unless a specified effect changes them.
 - Costs are real, scale with use, and cannot be bypassed.

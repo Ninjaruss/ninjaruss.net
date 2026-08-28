@@ -69,7 +69,7 @@ No character is the thesis. Preserve the value inside each distortion.
 
 **Forms:** Intact glass stores context, chronology, access, and reversibility. Shattering returns a memory. Melt destroys the record while behavior may remain without provenance.
 
-**Progression:** The archive first appears as evidence of transparent, reversible care. Aster's shard makes preservation personal. Roxana's Melt exposes the cost of destroying context. Rain's extraction produces a prism whose exact final state remains open, while Rain's relation to the completed record has changed.
+**Progression:** The archive first appears as evidence of transparent, reversible care. Aster's shard makes preservation personal. Roxana's Melt exposes the cost of destroying context. Rain's extraction produces a prism while changing his relation to the completed record.
 
 **Carriers:** Vesper's archive and prism, the extracted owners, Aster's shard, and Rain's emotionally flat factual recall.
 

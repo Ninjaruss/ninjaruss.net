@@ -1,7 +1,5 @@
 ## History
 
-Current canon. Exact dates not listed here remain open rather than assumed.
-
 ### The Short Version
 
 The Flare was one event, five years before the story. It permanently altered the world's capacity to retain resonance from irreversible transitions. The city already had its water infrastructure and institutions; in the five years after the Flare, the Water Ministry and Nimbus Co. turned an uneven physical phenomenon into an administered civic system.
@@ -22,7 +20,7 @@ The Flare crossed the world once. It did not distribute a fixed set of powers. I
 
 The city discovered that its water amplified resonant motion. The Water Ministry expanded from managing circulation to managing the people and objects that affected it. *Deviation* became an administrative category. Nimbus built or adapted the Imprint Vault and sensory-deprivation pods under Ministry contracts.
 
-Known extractions, Melts, investigations, and institutional cases fall within these five years, but their exact ordering remains open unless a scene requires it.
+Known extractions, Melts, investigations, and institutional cases fall within these five years.
 
 #### Present day
 
