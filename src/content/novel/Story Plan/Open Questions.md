@@ -30,6 +30,7 @@ These points are intentionally unresolved. Do not treat earlier speculative word
 ### Scene content
 
 - Which optional lives appear in Arc 3, and which one is the beloved life?
+- After Vesper fully extracts Rain, how does Rain regain factual access to the memories while an intact shard remains inaccessible to its owner? What state is the prism in when Vesper ends holding it?
 - What exact first destination has Rain chosen on the outbound train?
 - Which public account leaves Rain a fugitive after the correction apparatus is broken?
 

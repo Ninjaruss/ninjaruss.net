@@ -48,6 +48,8 @@ His generosity is real. His avoidance is not laziness or indifference; it is the
 
 The final extraction leaves Rain with complete recall and no felt ownership of his past. He can state what happened precisely but cannot feel that he was the person who did it.
 
+Those memories read like a story he knows is true and can recount in full, but cannot inhabit from the first person. The train does not begin restoring that connection. What remains open is Rain's ability to create new consequences through present choices, not whether the completed adventure can finally certify him.
+
 ### Arc
 
 1. He follows the Ghost off his commute and steals the goggles.
@@ -84,4 +86,5 @@ These lines remain exactly as selected in the manuscript source.
 - He does not discover a true or final self. He remains hesitant, unfinished, and capable of relapse.
 - Do not let Rain diagnose his fear as *I am afraid I am ordinary*. The notebook supplies that evidence for the reader.
 - His final departure is not public vindication or exile presented as freedom. The fugitive condition remains; choosing a direction within it is the change.
+- Do not imply that boarding the train restores felt ownership. The choice matters because he makes it without that reward.
 - The outbound train is the final scene. Nothing follows the ending callback.

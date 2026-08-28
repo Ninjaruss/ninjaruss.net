@@ -12,10 +12,13 @@ The choices that changed me most often began with fear and incomplete preparatio
 
 The story must not turn this into a command to stay in motion forever. Rest, help, grief, dependence, and changed direction can all be deliberate responses. The opposite of falling is not stillness. It is keeping every possibility untouched so that nothing can answer back.
 
+*Remember Rain* also applies this distinction to fiction itself. Writing or playing a story can matter, reveal something, and change the likelihood of a later choice without becoming lived proof that its creator or audience has made that choice. Rain ends knowing the completed story of his own adventure without feeling that he inhabited it. Like an author facing life after the final page, he still has to test his limits through choices the story cannot make for him.
+
 ### Drafting use
 
 - Meaningful choices can look small when made and become irreversible later.
 - Progress should increase the chance of another choice, not permanently transform personality.
+- Fiction can influence the next choice; it cannot substitute for making it.
 - Good choices may hurt; avoid immediate moral reward.
 - Comfortable avoidance must remain genuinely tempting.
 - Rain's final act is departure without certainty, not arrival as a completed person.

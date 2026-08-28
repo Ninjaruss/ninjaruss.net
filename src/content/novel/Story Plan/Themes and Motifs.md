@@ -144,4 +144,6 @@ Live gold moves. Dead gold holds still. Gold tracks the relation to commitment, 
 - Missing speeches are preferable to translated symbolism. Let Claire remove the lens, Roxana accept care, the Pursuer stop, Shiori put away the tool, and Rain board the train without a thematic debrief.
 - Do not reward every good choice immediately or punish avoidance immediately.
 - Keep the final prose concrete. Rain's recall is precise; only felt ownership is absent.
+- His past should feel like fiction he knows intimately, not like missing information. The train does not begin reconnecting him to it.
+- Leave the future open through new choices and consequences, not through a promised recovery of the old emotional connection.
 - The ending remains wounded and open: charges unresolved, destination partial, dreams followed by a next step rather than a victory lap.

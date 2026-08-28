@@ -140,7 +140,7 @@ The true ending is not Vesper's defeat. It is Rain, still a fugitive, choosing t
 
 - **5 · The extraction** — Vesper reads Rain through Roxana's finished record. Rain slips. Direct contact succeeds and the UI, music, and world are removed with his memories. Claire and Roxana arrive spent. Do not interrupt or soften the extraction: Vesper takes everything.
 
-- **6 · The void** — Only *you* remains. Memories return as complete but emotionally flat facts. Non-branching choices attach present commitment to them without restoring felt ownership. The interface and music rebuild through continued response, not discovery of an underlying completed identity.
+- **6 · The void** — Only *you* remains. The completed story becomes available as accurate but emotionally flat fact: Rain knows it intimately without feeling that he inhabited it. Non-branching choices create present consequences without restoring ownership of the past. The interface and music rebuild through continued response, not discovery of an underlying completed identity.
 
 - **7 · The return** — Rain returns capable of responding, not newly completed. He sets out the Clone as the expected target. Vesper passes through the intangible copy; the injured real Rain takes the blow and catches him himself.
 
@@ -148,7 +148,7 @@ The true ending is not Vesper's defeat. It is Rain, still a fugitive, choosing t
 
 - **9 · The clean rain** — Keep the aftermath brief. Shiori turns the cameras off and closes something without marking her place. Claire abandons the appointment she no longer intends to keep. Roxana burns Aster's shard and fills the lighter with her own flame. The clean rain follows the physical collapse of the apparatus and water loop.
 
-- **10 · The outbound train** — Final scene. Rain remains publicly a fugitive and accepts that the city has not cleared his name. Leaving is partly necessary but not merely exile: he chooses a first destination and a new adventure because he has decided to take the next step toward his dreams. He is still afraid, uncertain, and unable to feel ownership of what he survived. The notebook contains two lines and many blank pages. End with the exact selected callback:
+- **10 · The outbound train** — Final scene. Rain remains publicly a fugitive and accepts that the city has not cleared his name. Leaving is partly necessary but not merely exile: he chooses a first destination and a new adventure because he has decided to take the next step toward his dreams. He is still afraid, uncertain, and unable to feel ownership of what he survived. Nothing suggests that connection is beginning to return. The departure is the first choice beyond the completed story, not a reward for having recovered from it. The notebook contains two lines and many blank pages. End with the exact selected callback:
 
   > I dreamed and dreamed. Now I fall.
   >
