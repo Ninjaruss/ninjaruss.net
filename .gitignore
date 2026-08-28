@@ -26,6 +26,7 @@ pnpm-debug.log*
 
 # superpowers brainstorm sessions
 .superpowers/
+.worktrees/
 .vercel
 .env*
 
