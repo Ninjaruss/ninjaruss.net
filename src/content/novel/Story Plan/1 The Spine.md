@@ -10,7 +10,7 @@ The chronological owner for the whole story. Keep scene order, indispensable cau
 
 - **1 · The road less traveled** — Rain walks his usual route. The Ghost turns into an alley. He argues for routine, says *fuck it*, and follows. End as he enters the dark.
 
-- **2 · The vault** — The alley opens into Nimbus's confiscated-Imprint vault, already breached by someone else. Shiori is present but unnamed, recovering her work. The goggles pull Rain; he takes them and leaves as a thief. She remembers his nervous laugh.
+- **2 · The vault** — The alley opens into Nimbus's confiscated-Imprint vault, already breached by someone else. Shiori is present but unnamed, recovering her work. The goggles call Rain; he takes them and leaves as a thief. She remembers his nervous laugh.
 
 - **3 · The charge lands** — By morning, the disappearances are publicly blamed on Rain. Official numbers and a plausible theory spread. Family and friends call and message, asking him to explain or surrender. He half-believes explanation can restore the old life.
 

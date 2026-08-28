@@ -6,9 +6,13 @@ Use these as scene anchors, not as a complete geography.
 
 The story takes place in a rain-soaked island city built around a dormant volcano. Its civic water loop connects the volcanic caldera, public infrastructure, and the institutions that regulate everyday life. The city remains beautiful and functional even as its systems become quieter, cleaner, and more over-managed.
 
+### Still Flexible
+
+The city's visual-reference palette may draw from Las Vegas, an intact futuristic Atlantis, and Japan, but it should not resolve into a recognizable real-world culture.
+
 ### The City
 
-An island city under near-constant rain, built around a dormant volcano. It survives through excess, engineering, and a water system that appears improbably sustainable. Its texture may draw from Las Vegas, an intact futuristic Atlantis, and Japan, but it should not resolve into a recognizable real-world culture.
+An island city under near-constant rain, built around a dormant volcano. It survives through excess, engineering, and a water system that appears improbably sustainable.
 
 Its decline appears as cleaner schedules, quieter districts, thinner weather, and fewer disruptions. Avoid overt dystopian spectacle.
 
