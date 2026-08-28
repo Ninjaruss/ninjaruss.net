@@ -14,6 +14,11 @@ This file records what each arc does to the story. `1 The Spine.md` owns scene o
 
 ### Arc 5 Convergence
 
+<<<<<<< HEAD
+Arc 5 is one convergence, not an ensemble climax followed by a second ending. Roxana, Claire, and Shiori are tested while clearing and maintaining the path toward Vesper; their actions make Rain's extraction possible rather than preventing it.
+
+Extraction is the hinge. It is followed, in order, by the void, Rain's return, his refusal to remove the Split, the apparatus breaking, and brief clean-rain actions for the ensemble. The outbound train remains the final scene; nothing follows it.
+=======
 - **Central Question:** Can you take one irreversible step before feeling ready?
 
 - **Thematic development:** Action produces consequence. Rain finally does something and it makes his life substantially worse, immediately rejecting risk as an automatic route to reward. His safe life must retain genuine value so leaving it costs something.
@@ -141,3 +146,4 @@ The Devil's Bargain is the state's amnesty with Rain's goggles on the manifest: 
 - Rain slips and gives Vesper direct contact. Vesper extracts the complete autobiographical target. The void that follows contains exact semantic knowledge without lived ownership and asks only for small present acts after the record ends.
 
 - The void does not reveal a buried self, restore an old one, or let Rain listen to a soul that escaped extraction. Small non-branching acts create new consequences after the finished record. He returns recognizably hesitant, soft, afraid, and unfinished; Vesper predicts the Clone correctly, while the real Rain accepts the blow and catches him himself.
+>>>>>>> cafd512 (About update and Remember Rain specifics exploration.)
