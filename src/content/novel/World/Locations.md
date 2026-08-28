@@ -2,23 +2,27 @@
 
 Use these as scene anchors, not as a complete geography.
 
-### The city
+### The Short Version
 
-An island city built around a dormant volcano under near-constant rain. It survives through excess, engineering, and a water system that should not be sustainable but is. Its texture may draw from Las Vegas, an intact futuristic Atlantis, and Japan, but it should not resolve into a recognizable real-world culture.
+The story takes place in a rain-soaked island city built around a dormant volcano. Its civic water loop connects the volcanic caldera, public infrastructure, and the institutions that regulate everyday life. The city remains beautiful and functional even as its systems become quieter, cleaner, and more over-managed.
 
-The city is beautiful, functional, and increasingly over-managed. Its decline appears as cleaner schedules, quieter districts, thinner weather, and fewer disruptions. Avoid overt dystopian spectacle.
+### The City
 
-### The dormant volcano and caldera
+An island city under near-constant rain, built around a dormant volcano. It survives through excess, engineering, and a water system that appears improbably sustainable. Its texture may draw from Las Vegas, an intact futuristic Atlantis, and Japan, but it should not resolve into a recognizable real-world culture.
 
-The volcano contains the water system's strongest natural reservoir of resonance. The caldera and Central Circulation Hub are the site of Arc 5. The eruption and clean rain are physical consequences of breaking the correction apparatus and water loop, not the universe approving Rain's choice.
+Its decline appears as cleaner schedules, quieter districts, thinner weather, and fewer disruptions. Avoid overt dystopian spectacle.
 
-### The Sacred Water loop
+### The Dormant Volcano and Caldera
 
-Volcanic water retained a high concentration of Flare resonance. Circulation through a population undergoing irreversible transitions keeps that resonance active. As the city becomes more static, the loop weakens and the rain thins.
+The volcano anchors the city's water system. Its caldera contains the Central Circulation Hub, the strongest natural reservoir in the loop, and the Arc 5 setting. When the correction apparatus and water loop break, the eruption and clean rain are physical consequences rather than the universe approving Rain's choice.
+
+### The Sacred Water Loop
+
+The Sacred Water loop carries volcanic water through the city and back through its largely closed natural system. It is both civic infrastructure and the physical route that links the city to the caldera. Its weakening becomes visible in thinning rain and an increasingly static city.
 
 ### The Water Ministry
 
-The governing bureaucracy officially administers water, not people. Deviants are managed as a consequence of resource stability.
+The governing bureaucracy officially administers water, not people. Its public function is circulation, access, maintenance, and resource stability; management of Deviants follows from that function.
 
 Its language is ordinary civic utility:
 
@@ -34,15 +38,28 @@ Never give the Ministry a single villainous face. It appears through offices, fo
 
 A private contractor that builds and maintains Ministry infrastructure. Nimbus constructed the Imprint Vault's containment system and the prison's sensory-deprivation pods.
 
-The goggles Rain steals are Shiori's work, confiscated and logged as Nimbus property on loan to the state. Their recovery appears on the Arc 4 amnesty manifest as corporate asset recovery dressed as clemency.
-
 Nimbus appears through logos, crates, maintenance schedules, and equipment. No executive or named corporate antagonist is needed.
 
-### Key locations
+### Commute Streets and Alley
 
-- **Commute streets and alley:** Rain's ordinary route and first deviation from it.
-- **Nimbus Imprint Vault:** restricted corporate-secured room holding confiscated Imprints and Shiori's equipment.
-- **Abandoned asylum:** Vesper's sanctuary and treatment space; pleasant, open-doored, and task-oriented.
-- **Sensory-deprivation prison:** Nimbus-built pods used to pacify deviants and political problems.
-- **Circuit Line:** looping freight train where Arc 4 measures the correction one station at a time.
-- **Caldera rim / Central Circulation Hub:** the last gate, Vesper's chamber, and the breaking point of the water loop.
+Rain's ordinary route and the first route he leaves. The alley gives the story its first compressed transition from familiar public movement to the restricted Nimbus space.
+
+### Nimbus Imprint Vault
+
+A restricted, corporate-secured room for confiscated Imprints and Shiori's equipment. The goggles are logged as Nimbus property on loan to the state; their later recovery appears on the Arc 4 amnesty manifest as corporate asset recovery dressed as clemency.
+
+### Abandoned Asylum
+
+Vesper's sanctuary and treatment space: pleasant, open-doored, and task-oriented. It should feel like a place that offers care and enclosure at the same time.
+
+### Sensory-Deprivation Prison
+
+A Nimbus-built custody site whose pods pacify Deviants and political problems. The tank, rather than a guard, makes confinement feel infrastructural.
+
+### Circuit Line
+
+A looping freight train. Arc 4 uses its repeating stations to measure the correction's advance and hold the amnesty's pressure in motion.
+
+### Caldera Rim and Central Circulation Hub
+
+The final ascent and the hub at the center of the volcanic system. Together they provide the last gate, Vesper's chamber, and the physical breaking point of the water loop.

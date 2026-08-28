@@ -2,39 +2,45 @@
 
 Current canon. Exact dates not listed here remain open rather than assumed.
 
-### Before the Flare
+### The Short Version
 
-The island city, dormant volcano, water infrastructure, Circuit Line, Water Ministry, Nimbus Co., and the Pursuer's career all predate the supernatural. The Ministry originally administered water. Nimbus built civic infrastructure under contract. The Pursuer had already spent most of his working life in institutional service.
+The Flare was one event, five years before the story. It permanently altered the world's capacity to retain resonance from irreversible transitions. The city already had its water infrastructure and institutions; in the five years after the Flare, the Water Ministry and Nimbus Co. turned an uneven physical phenomenon into an administered civic system.
 
-### Five years before the story
+The present crisis is not a second Flare. The Sacred Water loop is weakening as the correction spreads through accepted relief and increasing stasis.
 
-The Flare crossed the world once. It did not hand out a fixed set of powers. It changed the world so suitable substrates could retain resonance from irreversible transitions.
+### Timeline
 
-People began developing private passives. Objects, living things, water, and other materials retained resonance in different ways. The city's volcanic water held an unusually high concentration because it circulated through a largely closed natural system.
+#### Before the Flare
 
-Vesper was thirteen.
+The island city, its dormant volcano, the water infrastructure, the Circuit Line, the Water Ministry, and Nimbus Co. all predate the supernatural. The Ministry administered water; Nimbus built civic infrastructure under contract. The Pursuer's long institutional career also predates the Flare.
 
-### The following years
+#### Five years before the story: the Flare
 
-The city discovered that its water amplified resonant motion. The Water Ministry expanded from managing circulation to managing the people and objects that affected it. “Deviation” became an administrative category. Nimbus built or adapted the Imprint Vault and sensory-deprivation pods under Ministry contracts.
+The Flare crossed the world once. It did not distribute a fixed set of powers. Instead, suitable substrates became able to retain resonance from irreversible transitions.
 
-The Pursuer's supernatural condition belongs to these five years, not his entire career. His thirty years of service explain the institution's hold on him; the Flare gave that endurance a physical form.
+#### The five years after the Flare
 
-Vesper moved from his first extraction and accidental Melt to deliberate experimentation and increasingly precise treatment. His perfect memory accounts for the speed of that development. Shiori was an early, imprecise case. The Widower received nine increasingly narrow extractions after an initially successful treatment. Aster investigated Vesper and died before the story begins.
+The city discovered that its water amplified resonant motion. The Water Ministry expanded from managing circulation to managing the people and objects that affected it. *Deviation* became an administrative category. Nimbus built or adapted the Imprint Vault and sensory-deprivation pods under Ministry contracts.
 
-The asylum exists during this period, but its origin and Vesper's exact institutional role are not yet settled.
+Known extractions, Melts, investigations, and institutional cases fall within these five years, but their exact ordering remains open unless a scene requires it.
 
-### Present day
+#### Present day
 
-Five years after the Flare, the water loop is weakening and the correction is spreading.
+Five years after the Flare, the Sacred Water loop is weakening and the correction is spreading. State processes offer or process relief rather than escalating in response to resistance. The correction advances through accepted relief; it reaches an anchor station only after the amnesty is refused, and breaking the apparatus stops the loop itself.
 
-The correction advances through accepted relief, not resistance. The state processes demand rather than escalating in response to opposition. Rain affects its spread only through withdrawal: after he refuses the amnesty, the corrected boundary eventually takes the anchor station; at the end, breaking the apparatus stops the loop itself.
+### What This Changes
 
-- Rain is 23.
-- Claire is 21–22.
-- Roxana is 27–28.
-- Shiori is 25–26.
-- Vesper is 18.
-- The Pursuer is roughly 50–55.
+The city begins the story with five years of supernatural administration behind it. Water policy, corporate maintenance, custody, forms, and ordinary infrastructure all carry that history. The crisis is a consequence of the altered world and its institutions, not evidence that the Flare is recurring.
 
-Rain leaves his commute, follows the Ghost, and steals Shiori's goggles from the Nimbus vault.
+### Still Flexible
+
+- Exact dates within the five years after the Flare.
+- The order of Vesper's early Melts, Shiori's extraction, Aster's death, and the Widower's treatments.
+- The asylum's origin and Vesper's exact institutional role.
+
+### Constraints
+
+- The Flare was one event, five years before the story; it does not recur.
+- The Water Ministry's institutional power grows from water administration and resonance management, not from a separate supernatural government.
+- Nimbus remains a contractor operating through Ministry contracts rather than a replacement state.
+- Keep locations, shared mechanics, and character arcs in their respective references.
