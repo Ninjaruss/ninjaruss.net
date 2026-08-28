@@ -1,18 +1,65 @@
 ## The Spine
 
-The chronological owner for the whole story. Keep scene order, indispensable causal links, choice pressure, and convergence here. `Arc Structure.md` owns arc function; `Choice Points.md` owns interaction behavior and false-ending rules.
+*A whole-story overview. Generated 2026-08-11 from the first-draft map: the argument, the shape, all fifty cards, and the threads that run through them. Read it when you've lost the plot; draft from the cards.*
 
-### Arc 1 · The Fugitive
+### The argument
 
-**Choice pressure:** Rain can let hiding close into another commute or follow the Ghost before he feels ready. Continuing connects the accusation to the asylum.
+To remember Rain is to continuously rebuild yourself through small, committed acts of falling — accumulating and integrating every experience, painful and joyful — until the falling is no longer something you force yourself to do, but something you are.
 
-- **0 · Rain intro** — Establish Rain's dreams, self-awareness, and hope that something external will fix him. Use the exact selected opening line in the manuscript. The Ghost appears and guides his attention away from the commute.
+In short: in spite of it all, you can choose to try to become a person who commits. Pessimism of strength. The story never promises it works. It only claims it is worth doing.
 
-- **1 · The road less traveled** — Rain walks his usual route. The Ghost turns into an alley. He argues for routine, says *fuck it*, and follows. End as he enters the dark.
+Rain is the thing that falls. "I am Rain." and "Now I fall." are the same sentence by the end — one an identity, the other an act, and the book is the distance between them closing.
 
-- **2 · The vault** — The alley opens into Nimbus's confiscated-Imprint vault, already breached by someone else. Shiori is present but unnamed, recovering her work. The goggles call Rain; he takes them and leaves as a thief. She remembers his nervous laugh.
+**The antithesis.** Vesper agrees that the world hurts and guarantees nothing, and concludes: stop wanting. He does not remove pain, he removes the wanting, and he does it kindly, on request, with consent. If he wins, the world becomes the infinite commute — nothing catches, nobody reaches, decay rendered as improvement, and evil never once raises its voice.
 
-- **3 · The charge lands** — By morning, the disappearances are publicly blamed on Rain. Official numbers and a plausible theory spread. Family and friends call and message, asking him to explain or surrender. He half-believes explanation can restore the old life.
+**The test the story applies.** Relief that gives you back your capacity to act is medicine. Relief that removes your reason to act is subtraction. The tell: a cure that worked would not need repeating — and the asylum is a subscription. This is why the story is not against help. The Widower was right the first time. Shiori was right to ask. The wrong lives in the habit.
+
+**The true evil.** Not motion versus stillness — unauthored existence. The manufacture of nothing. Whatever caps the number of times you get to try again.
+
+### The cast
+
+Everyone has displaced responsibility for participating in their becoming, and each is a version of Rain further down a different road — which is why he idealises them. He is admiring more advanced cases of his own disease.
+
+| | Outsourced to | Their daily act | What Rain reaches for | What it actually is |
+|---|---|---|---|---|
+| **Rain** | potential | he asks the question nobody asked them | — | — |
+| **Roxana** | other people's need | she hands you a task | a home that asks nothing | her armour |
+| **Claire** | certainty | she takes the decision off your hands | certainty he can borrow | her cage |
+| **Vesper** | the past | he fixes a small thing before anyone asks | permission to be one finite thing | subtraction wearing the face of resolution |
+| **The Pursuer** | the institution | he completes the record. he signs | proof that a man can simply act | a corpse that walks |
+| **Shiori** | the record | she backs it up | freedom from his own record | **exactly what he thinks it is** |
+
+Four of the five reaches are wrong. **Shiori is the one he's right about, and he never notices** — he learns it from the mountain instead, at full price. Nobody points at this.
+
+Each daily act breaks in the arc where the outsourcing is named, and is replaced by the same act performed once, deliberately: Rain answers in a quiet room; Roxana asks for something; Claire hands a decision back; Shiori keeps one thing without notes; the Pursuer's last act is unrecorded. **Vesper is the control. His never breaks.**
+
+### The Guardian
+
+There isn't one. No wise figure guides Rain toward the goal — Roxana trains him toward being Aster, Claire supplies certainty he has to stop borrowing, Vesper is the false guardian the book exists to refuse, and the only thing in the slot is the Ghost: wordless, granting commitment and never competence. A story about reclaiming participation in becoming cannot have a mentor telling the protagonist what to do.
+
+**It is a vacancy with a name on it.** Aster is the Guardian this cast should have had — the investigator who hunted Vesper, dead before page one. Three living characters hold three relationships to him: **Roxana is trying to rebuild him out of a stranger**, **Vesper is wearing him** (the shard, the fighting style, tell #1 — the Shadow captured the Guardian), and **Claire is following his trail for the wrong reason.** Nobody ever says *he would have known what to do*, and nobody eulogises him as a mentor. It is built entirely out of those three relationships.
+
+The finale's three parallel fights are the abstract roles: Roxana is Body, Claire is Mind, Rain is will.
+
+### The shape
+
+Five arcs. Each asks one question. Each of the first four contains one comfortable loop that answers it wrongly — a pitfall you can rest in, where the story stops advancing and nothing bad happens.
+
+The exit from every pitfall is the Ghost: faded, palm upward, never labelled. Each cycle it comes later and dimmer. When it stops coming, the loop closes and you get that pitfall's ending. Retreat is always a button. Commitment never is.
+
+One true ending. Four trap endings. Five in total, and only one of them has a second line in the notebook.
+
+---
+
+### Arc One · The Fugitive
+
+**The question.** Can you take one irreversible step, even if you don't feel ready?
+
+**The pitfall. Go home** — the calls, the admission, the commute resuming. Card 4, exits to card 5.
+
+*Ends on the asylum threshold: pleasant, open-doored.*
+
+- **0 Rain intro** — Introduction to Rain as a character. Establish he is a dreamer who is aware that he keeps procrastinating and wishes to find something that will fix his behaviors. At the end of the chapter, an unexpected appearance of Rain’s passive ability (ghost suggestion) guides him to a subtley dangerous situation.
 
 - **4 · The drift** — Pitfall entry. Hiding becomes a workable routine and starts closing into another commute. The Ghost appears once and is ignored. Steam and a distant figure give the pursuit a face.
 
@@ -28,11 +75,15 @@ The chronological owner for the whole story. Keep scene order, indispensable cau
 
 ### Arc 2 · The Mirror
 
-**Choice pressure:** Vesper offers effective, voluntary relief from wanting. Rain's *not yet* keeps the route moving until Roxana's Melt and Claire's referral place Rain and Roxana in state custody.
+**The question.** Can you keep wanting something, even when the wanting is what hurts?
 
-- **1 · The open door** — Begin inside the asylum. It is calm, useful, and voluntary. Rain recognizes missing people and believes their presence may clear him. Residents complete assigned tasks but initiate little of their own.
+**The pitfall. Put it down** — stay a resident, let Vesper take the Split. Card 6, exits to card 7.
 
-- **2 · The demonstration** — Show Vesper's kindness rather than asserting it. During a courtyard spar, Claire predicts every move and still loses to Roxana's embodied response. Vesper corrects Roxana using Aster's fighting style.
+*Ends with Rain kneeling, and a kind word.*
+
+- **1 The open door** — Opens inside; no journey card. The pleasantness, the tasks, Rain recognizing faces of the missing ("this clears me" ignites). The Unburdening used comfortably, defined by nobody. group, patients | asylum, first day
+
+- **2 The demonstration** — Vesper's kindness shown, not asserted. Courtyard spar: Roxana vs Claire — Claire predicts everything and loses anyway. TELL 1 mid-bout: Vesper corrects Roxana in a style that isn't his. Training canon begins. group, Vesper | courtyard
 
 - **3 · The Gamer and the Widower** — At lunch, let the Gamer establish the asylum's comfortable enclosure. The Widower describes the first extraction that genuinely helped him and the later returns that followed. Rain asks, *What about the second?* The question does not land.
 
@@ -54,29 +105,41 @@ The chronological owner for the whole story. Keep scene order, indispensable cau
 
 ### Arc 3 · The Prisoner
 
-**Choice pressure:** Rain can remain inside a possible life with no outside consequences or end even the beloved life. His choice sends the Ghost toward Roxana, whose acceptance of help creates the escape.
+**The question.** Can you end every life you could have lived, even the one where you were happy?
 
-- **1 · Intake** — The Pursuer completes forms while Rain's goggles, notebook, and Roxana's lighter are logged into a tray. Roxana is lowered into a pod. Rain goes last. The tank, not a guard, is the lock.
+**The pitfall. Stay in the life** — the long movie. Card 3, exits to card 4.
 
-- **2 · True silence** — Sensory deprivation removes time, gravity, and orientation as lived experiences. Rain enters the white void and meets the suit-self that calls him a coward.
+*Ends on first sight of the circuit line.*
 
-- **3 · The lives** — Time dilation lets Rain live possible lives whole. The first is fully rendered; later lives compress from scenes to paragraphs to lines. They feel real but cannot acquire consequences outside themselves.
+- **1 Intake** — The Pursuer at the desk, all forms. Goggles, lighter and notebook logged into a System tray — the third vault, watched by the player. Plant: the tank is the lock. Pods close, Roxana lowered paralyzed, Rain last. Rain, Roxana, Pursuer | prison intake
 
-  - **A life · 1–3** — Optional, self-contained lives. They reveal Rain and cannot contain plot facts required by the spine.
+- **2 True silence** — Existing prose as spine: deprivation onset, time becomes a word, the white void, the suit-self — first glimpse of what the tank does, gone before Rain can answer. "Coward." Rain, suit-self | the void
 
-- **4 · The mountain** — The beloved life comes last and lasts longest. Rain ends it. The mountain holds the bodies of the possibilities he preserved and then renounced. The Ghost is expelled toward Roxana while Rain remains unaware. The Split receives its first distinct mark.
+- **3 The lives** — PITFALL — stay in the life. Also the optional-content vault. Dilation opens: the first life lived whole, ended on screen, terrible. Then lives compress to paragraphs, then lines. Aging without growing. Rain, the selves | the void (lifetimes)
 
-- **5 · The hand** — The only external POV cut. The Pursuer reviews Aster's record outside Roxana's pod. When hope has collapsed, the Ghost offers an open hand that asks nothing. Roxana accepts. A raw spark passes through the scars and burns through both seals.
+  - **1 A life** — Optional lingerable life. A life Rain could plausibly have had; riskless; nothing compounds. Content is a drafting call.
 
-- **6 · The carry** — Rain's pod opens as Roxana collapses. They recover the Imprints from intake. Rain carries her out of Aster's grave. Real rain and the Circuit Line wait outside.
+  - **2 A life** — Optional lingerable life. As above.
+
+  - **3 A life** — Optional lingerable life. As above.
+
+- **4 The mountain** — The beloved life last, lived longest, ended. Bloodied atop the bodies of everyone he spent a lifetime being. The realization enacted, not thought; the commitment expels the Ghost; Rain never notices. One italicized Split line. NO audience, no reward — protect that. Rain | the mountain
+
+- **5 The hand** — POV cut, outside her pod only. The Pursuer's procedural review: the signature, the dates. Hope collapses. Then warmth through the scars, an open hand asking nothing. She accepts. The spark stands her up; fire burns underwater through both seals; the gutter. Roxana, Pursuer, the Ghost | her pod to his
+
+- **6 The carry** — His pod opens on her collapsing. Both Imprints off the intake tray; the alarm is a work order. He carries her out of her father's grave; she tells him about the hand only now. Real rain. Ends on first sight of the circuit line. Rain, Roxana | prison to the open
 
 ---
 
 ### Arc 4 · The Witness
 
-**Choice pressure:** The Circuit Line gives Rain time to answer while the amnesty remains live. He refuses before it expires, then mistakes the apparently costless Perfect Clone for progress and carries that relapse toward the caldera.
+**The question.** Can you keep choosing it when nothing is chasing you?
 
-- **1 · Out of the chute** — Escape into a smoother city. Rain and Roxana board the Circuit Line and recover the goggles and lighter.
+**The pitfall. Let it expire** — the tolerated life on the loop. Card 7, exits to card 8.
+
+*Ends on false gold: the reader knows something Rain doesn't.*
+
+- **1 Out of the chute** — Escape aftermath; shock-cut to a smoother city. Boarding the loop; the uncorrected zone as cover; Imprints back in two pairs of hands. Rain, Roxana | city edge to circuit line
 
 - **2 · The boundary** — A full lap makes the correction measurable. The same stations appear twice; the boundary moves between passes. Rain thins in corrected districts. Roxana begins the drills needed to use the Bearing Flame.
 
@@ -98,24 +161,253 @@ The chronological owner for the whole story. Keep scene order, indispensable cau
 
 ### Arc 5 · The Proof
 
-**Convergence:** There is no pitfall. Shiori's network, Claire's refusal and overwatch, and Roxana's rearguard clear the path toward Vesper. Extraction must fully succeed before the void, return, refusal, clean-rain actions, and outbound train.
+**The question.** In spite of all of it, can you choose to be yourself?
 
-- **1 · The summit road** — The group climbs toward the caldera while the correction advances below. Rain is already relying on the Perfect Clone. Shiori's distributed feeds open the route and keep every front visible.
+**The pitfall.** None. This is where the loops break.
 
-- **2 · The room with Claire in it** — Claire has reached Vesper first. He offers extraction directly; she refuses without Rain witnessing it. She rejoins on her own terms.
+*Ends on a train, a notebook, two lines, and blank pages.*
+
+- **1 The summit road** — Ascent to the caldera; the Clone already running, Arc 4's false gold still warm; Shiori's front opens the way unseen; the correction's rollout ticking below. group | caldera approach
+
+- **2 The room with Claire in it** — Claire found already there. The threshold refusal: the extraction offered for real, declined, unwitnessed by Rain. Re-entry on her own terms. Claire, Vesper, then the group | the antechamber
 
 - **3 · The rearguard** — Roxana holds the last gate against the Pursuer. She loses exchanges, reaches the choice to stop, and re-enters. He can only continue the old burn. He spends ahead of schedule, empties, and stops walking. He does not ally; the gate is simply no longer manned.
 
 - **4 · The overwatch** — Claire coordinates through Shiori's feeds until complexity, duration, execution, and repeated use overwhelm her. The ribbon dies, range collapses, and the lens comes off. At contact range, without a complete model, she says *Go*.
 
-- **5 · The extraction** — Vesper reads Rain through Roxana's finished record. Rain slips. Direct contact succeeds and the UI, music, and world are removed with his memories. Claire and Roxana arrive spent. Do not interrupt or soften the extraction: Vesper takes everything.
+- **5 The extraction** — Vesper reads Rain through Roxana's core memory; Rain slips; extraction begins; the UI strips from the screen. Claire and Roxana arrive spent. NOTE: the extraction must fully succeed — he takes everything and gets nothing. Rain, Vesper, Claire, Roxana | the chamber
 
-- **6 · The void** — Only *you* remains. The completed story becomes available as accurate but emotionally flat fact: Rain knows it intimately without feeling that he inhabited it. Non-branching choices create present consequences without restoring ownership of the past. The interface and music rebuild through continued response, not discovery of an underlying completed identity.
+- **6 The void** — Only "you" remains; second person. THE RE-WEIGHTING: memories return as flat facts, and each choice reattaches weight to one. Meaning is re-committed to, not recovered. Choices here do not branch. UI and music rebuild. you | nowhere
 
-- **7 · The return** — Rain returns capable of responding, not newly completed. He sets out the Clone as the expected target. Vesper passes through the intangible copy; the injured real Rain takes the blow and catches him himself.
+- **7 The return** — Rain back with a newfound self; Vesper's last assault; the Clone set out as bait — the grab passes through the intangible copy while the injured Rain takes the hit as himself and catches him. The signature gesture, used without summoning. Rain, Vesper, witnesses | the chamber
 
-- **8 · The refusal** — Vesper offers to remove the Split. Rain refuses. He uses the open-hand gesture without summoning the Ghost and breaks the correction apparatus. Vesper is left with the prism and an event his finished records could not predict.
+- **8 The refusal** — Vesper offers to remove the Split; refused. The notebook: first line, the whisper, second line. Controlled eruption; the water loop breaks; first clean rain. Vesper left with the prism, philosophy cracked. Rain, Vesper, the Split | the chamber / the sky
 
-- **9 · The clean rain** — Keep the aftermath brief. Shiori turns the cameras off and closes something without marking her place. Claire abandons the appointment she no longer intends to keep. Roxana burns Aster's shard and fills the lighter with her own flame. The clean rain follows the physical collapse of the apparatus and water loop.
+- **9 The clean rain** — Codas in rings: Shiori (cameras off, remembering without notes as a wager), then Claire (the appointment she no longer keeps), then Roxana (Aster's shard burned — the echo, the goodbye — then the lighter filled with her own flame). the group | the caldera rim, rain falling clean
 
-- **10 · The outbound train** — Final scene. Rain remains publicly a fugitive and accepts that the city has not cleared his name. Leaving is partly necessary but not merely exile: he chooses a first destination and a new adventure as the next step toward his dreams. He remains afraid, uncertain, and unable to feel ownership of what he survived; nothing suggests that connection is beginning to return. The notebook contains two lines and many blank pages. End with the exact selected callback from `Manuscript/Arc 1 - Fugitive/0 Rain intro.md`. No scene follows it.
+- **10 The outbound train** — Rain alone; notebook open; two lines; the rest blank. He remembers everything and cannot feel that it was him. In spite of it all, I choose to be Rain. Rain | the train out
+
+---
+
+### Dead Ends
+
+*Four trap endings. Same closing image every time: the notebook, one line, closed.*
+
+- **1 Go home** — Arc 1 trap ending. He turns himself in and admits wrongs he didn't commit. ~400-600 words. The voice thins to schedule and weather; nothing bad happens the whole way down. Ends: the notebook, one line, closed.
+
+- **2 The patient** — Arc 2 trap ending. He becomes a patient; the Split is taken. ~400-600 words. Ends: the notebook, one line, closed.
+
+- **3 The beloved life** — Arc 3 trap ending — THE LONG MOVIE, the full-length degradation sequence. He never ends the life. Aging without growth, rendered on the prose itself. Ends: the notebook, one line, closed.
+
+- **4 The commute** — Arc 4 trap ending. The offer dies unanswered; the commute closes over him. ~400-600 words. Ends: the notebook, one line, closed.
+
+---
+
+### The throughlines
+
+Sixteen threads, and where each one touches down.
+
+**The rain** — the world arc
+
+- the correction advances on accepted relief, never on resistance. the state processes demand; it does not react to being fought
+
+- **A1** heavy and constant. a city where everyone is still reaching
+
+- **A2–3** thinning, as the correction spreads
+
+- **A4** stopped, in corrected districts
+
+- **A5** clean, when the loop breaks
+
+- *never stated. nobody remarks that the rain is thinner. it is weather, described accurately.*
+
+
+**The notebook** — a graveyard of n = 1
+
+- **A1** carried everywhere, never remarked on; half-finished ideas, none continued
+
+- **A3** logged among his possessions at intake, on screen
+
+- **A4** returned in the intake tray on the way out
+
+- **A5** first line. the whisper. second line — the only second line there has ever been
+
+- *Nobody in the story ever mentions it.*
+
+**The Ghost** — compass, never radar
+
+- **A1** a light he follows like a tired man taking an excuse; read as hallucination
+
+- **A2** opens its hand toward the shard, and he saves the body instead
+
+- **A3** expelled by his commitment mid-trial; it reaches Roxana while he is busy dying
+
+- **A4** thinned by the Perfect Clone; the wantless hours begin
+
+- **A5** spent
+
+- *It grants commitment, never competence. It tells him to go, never how.*
+
+**The Split** — the ledger of past failure
+
+- **A1–2** unmarked inside his interior voice; you cannot tell it from him
+
+- **A3** one italicised line at the awakening. the mark never leaves again
+
+- **A4** reasonable counsel. the relapse is agreement, not deafness
+
+- **A5** he writes past it
+
+- *Never resolved whether it is another entity or only him.*
+
+**Hands** — offered, taken, refused
+
+- **A1** Claire solves a small problem and he lets her
+
+- **A2** Roxana takes Vesper's hand, the one time she ever accepts one, and loses her legs
+
+- **A2** Claire offers hers in a quiet room and he cannot answer
+
+- **A3** the Ghost offers one that asks nothing, and she takes it
+
+- **A5** his own hand, open, pointing at what he chose
+
+**Roxana's fire** — her own heat, always
+
+- **A1** at full capability; the last time
+
+- **A2** the melt takes the memory of standing
+
+- **A3** the raw spark at maximum cost — she stands anyway, in fire
+
+- **A4** the drills; the Bearing Flame proper, ignited by care accepted
+
+- **A5** she fills Aster's empty lighter with her own flame
+
+- *He took the memory of standing. He could not take heat.*
+
+**Claire's certainty** — the Click she chases
+
+- **A1** she calculates the exit and wins it
+
+- **A2** she predicts every move of the spar and loses anyway
+
+- **A4** she argues Vesper's case honestly, at full strength, and leaves shaken
+
+- **A5** the ribbon dies, the range collapses, the lens comes off, and she says "go"
+
+- *Calculated · predicted and lost · decided without knowing.*
+
+**Shiori** — the unmarked one
+
+- **A1** ninety seconds in the vault, stealing her own confiscated work back
+
+- **A2–3** her handiwork is everywhere and nobody knows it is hers
+
+- **A4** boards as an accuser; her own machines exonerate the man she came to expose
+
+- **A5** the fourth front; her feeds are the camera; then she turns them off
+
+- *She has the least equipment in the story and the most light.*
+
+**The Pursuer** — the man who acts without wanting
+
+- **A1** glimpsed in the drift; then round one, where he loses only the exit
+
+- **A2** round two: he wins without raising a hand
+
+- **A3** his signature at the bottom of Aster's page
+
+- **A4** the ledger on the table, with his own disposal date in his own handwriting
+
+- **A5** round three. he empties. he stops walking. steam condenses on wet wool
+
+- *Rain cannot start. He cannot stop.*
+
+**Vesper's tells** — four, in order
+
+- **A2** a fighting style that is not his (it is Aster's)
+
+- **A2** the gap: he reacts to something he was never told
+
+- **A2** the loadout, at breakfast, unremarked
+
+- **A4** Claire quotes him, and the phrase turns out to be Shiori's
+
+- *He is wearing people, and does not always know whose year he speaks from.*
+
+**The vaults** — four rooms that hold what was taken
+
+- **A1** the state's, full of confiscated Imprints. he takes one back out
+
+- **A2** Vesper's archive, full of stored light. he is offered a place in it
+
+- **A3** the intake tray. he watches his own things logged, then takes them back
+
+- **A4** the manifest — his goggles listed, and burning them is the price of amnesty
+
+- *The state does to objects what Vesper does to memories.*
+
+**The silence ladder** — four quiets, one question
+
+- **A2** the patients, content and hollow
+
+- **A3** the tank
+
+- **A4** the parents' phone, after the boundary takes their district
+
+- **A4** the Perfect Clone, whose silence feels like relief
+
+- *Peace, or subtraction? He misreads every rung.*
+
+**The gold** — six states, one closed set
+
+- `faded` the Ghost, a promise not yet claimed
+
+- `flicker` the Clone, borrowed motion
+
+- `solid` the Perfect Clone, beautiful and still
+
+- `shine` someone overcoming, right now
+
+- `unlit` the wanting removed — a patient, a district, and finally Rain
+
+- `stored` shards: someone else's light, held in glass
+
+- *Live gold moves. Dead gold holds still. That is the whole tell.*
+
+**The parents** — never on screen
+
+- **A1** calls and messages, begging him to admit what he did not do
+
+- **A2–3** accumulating, specific, unanswered
+
+- **A4** the boundary takes their district and the calls stop
+
+- **A4** at the anchor station he does the arithmetic and understands
+
+- *The cruellest beat in the story is a phone that does not ring.*
+
+**Aster** — dead before page one
+
+- **A1–2** a trail two women are following for opposite reasons
+
+- **A2** his shard exists. nobody says that shards imply anything
+
+- **A3** a procedural review, a signature, a disposal date
+
+- **A5** burned. one last moment of him, and then gone from the world
+
+- *The story's highest-leverage unknown: one small specific thing he did.*
+
+**The two hard cases** — the story's own best counter-arguments
+
+- **A2** the Ruined One committed once, was destroyed, and stopped
+
+- **A4** the Pursuer committed once and never stopped, and was hollowed
+
+- *Both answered by the same thing, and it is the smallest possible answer: you get to try again. Not a thousand times. Twice.*
+
+---
+
+*Fifty cards. Forty-three on the spine, four dead ends, three optional lives. The floor is forty thousand words, and the floor is not a target.*

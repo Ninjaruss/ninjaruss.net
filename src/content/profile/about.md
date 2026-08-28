@@ -1,65 +1,76 @@
 ---
 hook: "I'm killing my potential, on purpose, where backing out costs something. This is the evidence."
-# EXPIRES OCTOBER 2026: the grocery-floor line below and "I'm moving to Japan"
-# in the prose both go stale on arrival. Nothing else on this card drifts — the
-# NOW line is the only live element — so these two are the ones to revisit.
+
+# EXPIRES OCTOBER 2026: the grocery-floor line below and the Japan paragraph
+# in the prose both go stale on arrival.
+
 credentials:
   - "B.S. Computer Science, 2021"
-  - "four years at a desk, then I quit to see how things fall — now on a grocery floor, on purpose"
+  - "four years at a insurance desk, then I quit — now on a grocery floor, on purpose"
+
 makes:
   - label: "Remember Rain"
-    blurb: "The visual novel — people who cross a point of no return. The thing I'm actually trying to get good enough to make."
+    blurb: "The visual novel I actually want to make. A story about people reaching points of no return — falling into choices they can't completely undo and discovering who they become afterward."
     href: "/novel"
   - label: "Ninjaruss"
-    blurb: "Yap videos on life, Japanese learning live, and whatever I decide to explore next."
-    href: "https://www.youtube.com/@Ninjaruss_"
+    blurb: "Videos and livestreams about whatever I'm currently trying to understand: life, Japanese, anime, making things, wasting time, and occasionally realizing I've been wrong."
+    href: "https://www.youtube.com/@Ninjaruss"
   - label: "Things I build"
-    blurb: "Utasync (learn Japanese through music), L-file (the Usogui database that didn't exist), and this site."
+    blurb: "Utasync, L-file, ninjaruss.net, and other things that usually begin with: why doesn't this already exist?"
     href: "/journal?types=showcase"
-makesMore:
-  text: "plus a video essay, a Roblox ninja clan, and whatever's next"
-  href: "/journal?types=showcase"
+
 subjects:
-  - group: "the self"
+  - group: "choice & the self"
     items:
-      - "Commitment as the thing that builds a self; killing potential on purpose"
-      - "Avoidance, backsliding, and the coward reflex"
-      - "Progress you can only see in hindsight"
-      - "Determinism vs. the individual's agency"
-      - "Gratitude, the life lottery, and the guilt under it"
+      - "Knowing what to do and still not doing it"
+      - "Commitment, avoidance, backsliding, and killing potential on purpose"
+      - "Progress you only notice in hindsight"
+      - "Agency inside circumstances you didn't choose"
   - group: "Japan & language"
     items:
-      - "Learning Japanese by immersion — anime, songs, flashcards, \"vibe learning\""
-      - "Moving to Japan as a refusal of the comfortable path"
-      - "What being a \"real weeb\" actually obligates you to"
+      - "Learning Japanese through immersion, anime, songs, and weird associations"
+      - "Moving to Japan and finding out which ideas survive actually living there"
+      - "What being a real weeb actually means to me"
   - group: "making things"
     items:
-      - "Writing a visual novel in public, badly, on purpose"
-      - "Vibe coding niche apps for an audience of one"
+      - "Trying to become good enough to make Remember Rain"
+      - "Building niche software because I want it to exist"
       - "Live streaming as thinking out loud"
-      - "Anime and manga as mirrors — Gurren Lagann, Usogui, 5D's, Code Geass"
+      - "Anime and manga as mirrors — Gurren Lagann, Usogui, Persona, 5D's, Code Geass"
+
 connect: "Open to collaborating on stories, niche apps, JP-learning tools — whatever's weeb-adjacent enough to hook me."
+
 links:
   - label: "YouTube"
-    href: "https://www.youtube.com/@Ninjaruss_"
+    href: "https://www.youtube.com/@Ninjaruss"
     primary: true
   - label: "Read the journal"
     href: "/journal"
     primary: true
   - label: "Twitch"
-    href: "https://twitch.tv/ninjaruss_"
+    href: "https://twitch.tv/ninjaruss"
   - label: "MyAnimeList"
     href: "https://myanimelist.net/animelist/Ninjaruss_?status=7&order=4&order2=0"
   - label: "Spotify"
     href: "https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD"
 ---
 
-What I actually want is to be a writer. Remember Rain is the visual novel I'm trying to get good enough to make — the kind of person who can put something like it into the world is who I'm aiming to become. Everything else here is practice, or scaffolding for that.
+What I actually want is to be a writer.
 
-Software's the interest that pays its way. I build small stuff for myself — a Japanese-learning app because nothing like it existed, a database for a manga almost nobody's read, this site. A tech job will probably be what buys me the stability to do the rest. It was never the actual goal.
+**Remember Rain** is the thing I'm trying to become good enough to make. A lot of what I do — the notes, streams, Japanese, even some of the software — eventually loops back into that.
 
-The thread through all of it is killing my potential on purpose. Staying comfortable and infinitely capable is a slow way to erase yourself, so instead I make the choice out loud, somewhere backing out actually costs something, and then I document the falling forward — the notes, the streams, the months I lose and (eventually) get back.
+I have a bad habit of understanding myself instead of changing anything. I can explain why I'm avoiding something, where the habit came from, what I should probably do next, and then continue doing exactly the same thing.
 
-I'm moving to Japan. Everything on this site is either me getting ready for that or proof I can actually follow through.
+So I've been trying something simpler: make choices that are real enough to have consequences.
+
+That's what I mean by **killing my potential**. As long as everything stays hypothetical, I can be anything. Choosing one direction means losing others. I'm becoming more okay with that.
+
+Software sits somewhere in the middle. It can pay the bills, but I also genuinely like making weird little things for myself. L-file, Utasync, this site — most of them started because I wanted something that didn't exist.
+
+I'm moving to Japan soon. I don't expect it to fix me. If anything, that's part of why I'm going. I want to see what happens when I stop waiting for the right version of myself to show up first.
+
+This site is mostly the evidence.
+
+**In spite of it all, I am Ninjaruss.**
 
 [The full declaration →](/notes/i-am-ninjaruss)

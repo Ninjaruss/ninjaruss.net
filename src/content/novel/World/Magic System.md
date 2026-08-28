@@ -95,14 +95,25 @@ Vesper cannot choose the exact residue with certainty. Deep repetition and emoti
 
 ### What This Changes
 
+<<<<<<< HEAD
 Magic is not a collectible power set. It is a record of irreversible transition, a person's relationship to that record, and a cost paid through the system being used.
+=======
+Vesper extracts **coherent autobiographical memories or connected autobiographical memory-networks** into glass. His target is the record of living an event as part of one's own life, not every kind of information the brain contains about it. An intact shard preserves the network's context, chronology, emotion, associations, and learned information, while the original owner can no longer access it autobiographically. Shattering a shard returns that network; melting one erases it permanently. This is the system's only irreversible alteration.
+>>>>>>> cafd512 (About update and Remember Rain specifics exploration.)
 
 Factual access and felt ownership remain distinct. Accurate access to a completed record does not automatically make it feel personally inhabited, and loss of ownership does not make the record inaccurate.
 
+<<<<<<< HEAD
 Vesper cannot extract a want as a separate object. He removes the memories and associations that sustain it. Repeated removal can leave function intact while making a person unable to say what they want to do with that function.
+=======
+**The consequence law.** Removing the autobiographical record does not necessarily remove every consequence that living it produced elsewhere in the person. Depending on precision, function, habits, associations, learned behavior, and procedural residue may remain. Melt demonstrates the precedent most clearly: autobiographical material can be destroyed while movement, phrasing, and practiced behavior survive. Factual access and felt ownership are not the same thing.
+
+**Precision is the horror.** Early and imprecise, he broke function and left the person recognizably themselves — Shiori forgets and keeps making. Late and precise, he preserves more downstream function while removing the autobiographical networks that sustain wanting — the patients can state facts and perform routines while nobody reaches beyond them. He got better by learning to stop breaking function, and the better he got, the worse the outcome.
+>>>>>>> cafd512 (About update and Remember Rain specifics exploration.)
 
 ### Constraints
 
+<<<<<<< HEAD
 - The Flare was one event; it does not recur or distribute a fixed set of powers.
 - Resonance requires an irreversible transition; ordinary motion is insufficient.
 - A passive expresses involuntary personal resonance. When that resonance meets a compatible Imprint, the interaction creates a pull; bonding through that pull makes the person's unique Deviation accessible. The ability is not preset inside the Imprint.
@@ -111,3 +122,26 @@ Vesper cannot extract a want as a separate object. He removes the memories and a
 - Costs are real, scale with use, and cannot be bypassed.
 - An intact shard is reversible external storage; shatter returns the record; Melt destroys it for both people and leaves no recoverable lived meaning.
 - Keep emotional or arc interpretation in Character and Story Plan references.
+=======
+#### Rain's final extraction
+
+Vesper succeeds completely. There is no shield, hidden soul, secret autobiographical fragment, incomplete contact, or protagonist immunity. He extracts **100% of the autobiographical target**: Ghost, Roxana, Claire, asylum, prison, mountain, amnesty, fear, relationships, emotional context, and everything Rain lived up to contact. Vesper's shard contains that finished past in full.
+
+Rain is unusual because Arc 3 trained his mind through repeated cycles of **life → completion → life subsequently understood as story**. He became abnormally practiced at separating *I lived this* from *this happened*. Arc 4's Perfect Clone deepened the same fracture by spending felt ownership: action and accurate knowledge could remain while accomplishment returned without weight.
+
+Those experiences independently encoded an unusually complete semantic/narrative record outside Vesper's autobiographical target. After extraction, “I remember meeting Roxana” is gone. What remains is closer to “Rain met Roxana.” He can recount the adventure accurately and cannot inhabit it as something that happened to him. This is not resistance to Vesper's mechanics; it is a downstream consequence of the extracted experiences, analogous in structure to procedural residue after Melt but semantic rather than primarily procedural.
+
+**Final guard.** Vesper wins the extraction. Rain does not regain ownership of his past, and the small non-branching acts in the void do not reconstruct an old identity. They create new consequences after the finished record ends. Vesper's defeat is therefore not factual misunderstanding and not proof of an unknowable essence: he possesses the best completed evidence of Rain available, and finished evidence still cannot determine the next response. A completed account is necessarily behind the present.
+
+#### How the world and the record behave
+
+*Decided 2026-08-12.*
+
+**The world arc.** The correction advances on **accepted relief, never on resistance.** The state never reacts to being fought; it processes demand — so the people moving the world arc are the patients, the Widower, and every citizen who made a reasonable request, while the group's resistance moves nothing. The city's weather is the measure: heavy at the start, thinning as the correction spreads, stopped in corrected districts, clean at the end. **Exactly two beats move because of Rain, and both are withdrawals, never retaliation** — the boundary takes the anchor station hours after he refuses, and the loop breaks at the end.
+
+**The record without a reader.** The apparatus preserves everything and nobody looks. That is why Arc 4's exoneration works: the camera kept recording while no one watched the feed — the record existed, the attention did not, and the only person who ever looks is the girl who built it.
+
+Which completes a pair with the testimony rule. **Vesper's crimes delete their own evidence. The state's machinery keeps all of it and reads none.** Two ways evidence fails — one active, one indifferent — and between them, nobody has ever been stopped. Neither is ever explained on the page; both are demonstrated.
+
+**Never build the tower.** No camera walls, no checkpoints, nobody who feels observed. The machinery is old gear still running in rooms nobody visits. The moment the apparatus is visible the story acquires a regime, evil raises its voice, and Arc 4 stops hurting.
+>>>>>>> cafd512 (About update and Remember Rain specifics exploration.)
