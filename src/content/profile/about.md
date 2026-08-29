@@ -1,5 +1,5 @@
 ---
-hook: "I'm killing my potential, on purpose, where backing out costs something. This is the evidence."
+hook: "Potential man must die. It starts with taking one fall at a time."
 
 # EXPIRES OCTOBER 2026: the grocery-floor line below and the Japan paragraph
 # in the prose both go stale on arrival.
