@@ -7,18 +7,19 @@ The youngest major character, physically unthreatening, and already convinced he
 - **Age:** 18
 - **Height:** 5'6"
 - **Role:** antagonist; caregiver, extractor, and architect of the correction
+- **Traits:** **Gentle Certainty** / **Controlling Impatience**
 - **Contradiction:** he cannot bear to watch anyone suffer slowly, so he takes their suffering and keeps his own.
 - **Question:** *Can I accept someone becoming well in a way I did not cause or choose?*
 
 Vesper is not secretly cruel. His warmth, patience of manner, and desire to relieve suffering are real. His coercion comes from certainty: he trusts the successful result he can produce more than another person's unfinished ability to revise, refuse, or become otherwise.
 
-**Mid-to-late forties.** Main trait: **Gentle Certainty** — real kindness delivered with the calm conviction that the correct outcome can be known. Passive trait: **Controlling Impatience** — the pressure beneath that gentleness, unable to tolerate the time in which another person might arrive somewhere he did not choose. The passive modulates the certainty; it never exposes a hidden cruel personality.
+He was thirteen when the Flare happened. Five years of perfect recall, experimentation, and escalating success have made his conclusions feel complete because he reached them quickly and has forgotten none of the evidence.
 
 ### On the Page
 
 - Warm, composed, and unusually still for his age.
 - Never raises his voice or indulges in menace.
-- Asks permission every time and means it, while withholding the possible accumulation, identity loss, and Melt that would make consent informed.
+- Asks permission every time and means it. He treats consent in the present as sufficient even when the intervention changes the future person who might reconsider it; incomplete disclosure sharpens this problem but does not exhaust it.
 - Shows the extraction mechanism rather than hiding it.
 - Fixes small problems before anyone asks: a latch, a chair, a memory, a city.
 - Covers the single visible flicker caused by *not yet* almost immediately.
@@ -30,9 +31,11 @@ The reveal changes the reader's understanding of his role; it is not a mask drop
 
 Vesper wants suffering to become solvable and relief to arrive before another person wastes years inside pain. His mother was full of potential, unstable, and slow to change. He learned that waiting for another person wastes both lives, while a private fear of resembling her sits beneath his impatience. She remains absent, and he never compares Rain to her aloud.
 
-His crime is removing the need to ask. Asking would require a person to name what they want and risk refusal; Vesper supplies relief before that act becomes necessary.
+**Vesper's throughline is premature completion.** His failure is not simply that he refuses to ask. He genuinely values consent, but treats successful present intervention and present consent as sufficient authority to close another person's future revision. Asking matters to him only at the point of treatment; he does not preserve the future capacity to revisit what was authorized.
 
 His failure is not a lack of understanding. An intact record can let him understand a person with extraordinary accuracy. He mistakes that understanding for authority to author the person's future.
+
+He mistakes knowing the destination for authority to close the route.
 
 1. The asylum establishes him as genuinely helpful and technically open.
 2. Borrowed behavior appears before its source is understood.
@@ -40,7 +43,7 @@ His failure is not a lack of understanding. An intact record can let him underst
 4. He Melts Roxana's shard, believing he is ending a real source of pain while taking something useful from it.
 5. He hands the group to the state as a referral, not a betrayal speech.
 6. The correction scales his ordinary fixing gesture to the city.
-7. He fully extracts Rain and proves the technique works.
+7. He fully extracts Rain's autobiographical memory and receives the finished past in full.
 8. Rain produces a response no finished record contained. Vesper ends holding the prism, his model cracked but not replaced.
 
 ### With Others
@@ -72,7 +75,7 @@ Vesper is slight, young, composed, and physically non-threatening. He should inv
 - No villain-mask-drop scene. His kindness remains real before and after the reveal.
 - No relish, cruelty for pleasure, raised voice, or hidden cackle.
 - He must be right sometimes. The Widower's first extraction remains a successful treatment.
-- Consent without disclosure is the failure; do not make him casually violate the permission rule.
+- Do not reduce his failure to never asking or to disclosure alone. His consent is genuine but present-bound: he assumes today's authorization can settle a future whose ability to revise may be changed by the treatment itself.
 - His mother never appears in flashback, and Vesper never explains Rain through her.
 - Do not portray five years of development as decades of authority. His danger is premature completion, aided by perfect memory.
 - Understanding a person does not entitle him to author their future. Keep the distinction active in what he does, not as a speech he loses.

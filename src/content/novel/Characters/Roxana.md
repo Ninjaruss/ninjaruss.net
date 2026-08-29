@@ -7,12 +7,13 @@ She can give almost anything and cannot receive without feeling exposed.
 - **Age:** 27–28
 - **Height:** 5'5"
 - **Role:** fighter, caretaker, and Rain's first home after the charge
+- **Traits:** **Forceful Warmth** / **Guarded Neediness**
 - **Contradiction:** she can give anything and cannot receive.
 - **Question:** *Can I trust my worth when nobody needs what I provide?*
 
 Roxana uses usefulness as evidence that she belongs. Her care is sincere; its force also keeps other people from seeing what she wants. She takes responsibility for the immediate body, hunger, wound, or threat in front of her, then turns that response into protection, work, and physical action.
 
-**Body · 27–28.** Main trait: **Forceful Warmth** — immediate, physical care that enters the room already acting. Passive trait: **Guarded Neediness** — a need to be necessary and to belong that remains protected even while she gives everything away. The guard modulates the warmth through tasks, provision, and refusal to receive; it never makes the warmth false.
+### On the Page
 
 - Warm, direct, tactile, and physically immediate.
 - Feeds people and decides quickly that they are hers to protect.

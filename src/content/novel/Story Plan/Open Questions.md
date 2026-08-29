@@ -21,6 +21,13 @@ Only questions without a usable current answer belong here. Do not treat earlier
 - What single specific act by Aster should define the person Roxana is trying to rebuild and Vesper is trying to use?
 - What did Vesper remove from the Gamer, and what ordinary asylum task makes the loss visible without explanation?
 
+### Shiori's working direction
+
+The bookmark formulation is developed but not locked. Its current test is whether evidence-as-re-entry clarifies Shiori without making her a healthy midpoint between Rain and Vesper.
+
+- Does the Arc 5 no-bookmark action remain legible as a wager that an unrecorded moment mattered, without implying recovery, cure, or abandonment of her accommodations?
+- Which of the proposed contrasts with Rain, Vesper, Claire, Roxana, and the Pursuer produce distinct behavior on the page rather than only thematic explanation?
+
 ### Magic-system edges
 
 - How do living and non-object substrates retain or release resonance on the page?
@@ -30,6 +37,6 @@ Only questions without a usable current answer belong here. Do not treat earlier
 ### Scene content
 
 - Which optional lives appear in Arc 3, and which one is the beloved life?
-- After Vesper fully extracts Rain, how does Rain regain factual access to the memories while an intact shard remains inaccessible to its owner? What state is the prism in when Vesper ends holding it?
+- What state is the prism in when Vesper ends holding it?
 - What exact first destination has Rain chosen on the outbound train?
 - Which public account leaves Rain a fugitive after the correction apparatus is broken?

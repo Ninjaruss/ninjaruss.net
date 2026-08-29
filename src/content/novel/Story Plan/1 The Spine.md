@@ -2,25 +2,23 @@
 
 The chronological owner for the whole story. Keep scene order, indispensable causal links, choice pressure, and convergence here. `Arc Structure.md` owns arc function; `Choice Points.md` owns interaction behavior and false-ending rules.
 
+### Genre Architecture
+
+Quest supplies the route from commute to outbound train. Horror supplies the increasing pressure as correction advances regardless of local wins and finally succeeds against Rain through extraction. Battle is localized; Roxana versus the Pursuer is the clearest recurring Battle subplot, while other combat takes the genre of its immediate dramatic question.
+
 ### Arc 1 · The Fugitive
 
-The story's thematic territory is the relationship between **commitment, consequence, and becoming**. It asks what participation costs, preserves, destroys, or makes possible; it does not treat participation as automatic virtue or assume that a choice validates itself.
+**Choice pressure:** Rain can let hiding close into another commute or follow the Ghost before he feels ready. Continuing connects the accusation to the asylum.
 
-The authorial orientation is: **life is becoming; agency is the ability to participate in it.** Pessimism of strength. The story never promises that action works, reveals an essential identity, or earns reward. It keeps commitment distinct from momentum, participation from control, care from substitution, evidence from identity, and continuing from re-choosing.
+- **0 · Rain intro** — Establish Rain's dreams, self-awareness, and hope that something external will fix him. Use the exact selected opening line in the manuscript. The Ghost appears and guides his attention away from the commute.
 
-Rain is the thing that falls. “Now I fall” is an act; “I am Rain” is a present claim made after the completed past no longer feels owned. The name is something he will answer to and proceed from, not a hidden truth finally uncovered.
+- **1 · The road less traveled** — Rain walks his usual route. The Ghost turns into an alley. He argues for routine, says *fuck it*, and follows. End as he enters the dark.
 
 - **2 · The vault** — The alley opens into Nimbus's confiscated-Imprint vault, already breached by someone else. Shiori is present but unnamed, recovering her work. The goggles call Rain; he takes them and leaves as a thief. She remembers his nervous laugh.
 
 - **3 · The charge lands** — By morning, the disappearances are publicly blamed on Rain. Official numbers and a plausible theory spread. Family and friends call and message, asking him to explain or surrender. He half-believes explanation can restore the old life.
 
-**The counter-pressure.** Commitment itself can imprison, harm, distort, or outlive its reason. The Pursuer is the standing guard against reducing the book to *just continue*, while Vesper is the guard against treating successful care as sufficient authority over another person's future.
-
-### Genre
-
-**Quest-primary with strong Horror modulation.** The Quest supplies the route — commute → fugitive → asylum → prison → Circuit Line → caldera → outbound train — and asks whether Rain will keep moving toward something he has chosen. Horror supplies the accumulating pressure: correction continues despite local victories, weather and options thin, people are altered, and Vesper ultimately wins the extraction.
-
-**Battle is localized.** A confrontation becomes Battle-shaped when the opponent is the immediate problem and overcoming them supplies the local resolution. Roxana versus the Pursuer is the strongest recurring Battle subplot. Other fights can become temporary Battle sequences or remain Quest/Horror depending on the immediate dramatic question. Combat by itself does not define the genre.
+- **4 · The drift** — Pitfall entry. Hiding becomes a workable routine and starts closing into another commute. The Ghost appears once and is ignored. Steam and a distant figure give the pursuit a face.
 
 - **5 · The follow** — Rain follows the Ghost to a disappearance site full of Ministry personnel. There is no forced door or struggle. The missing person had reportedly been doing better.
 
@@ -34,9 +32,7 @@ Rain is the thing that falls. “Now I fall” is an act; “I am Rain” is a p
 
 ### Arc 2 · The Mirror
 
-**The question.** Can you take one irreversible step before feeling ready?
-
-**The development.** Action produces consequence. Rain acts and his life becomes materially worse; the safe life retains real value, and risk is never automatic reward.
+**Choice pressure:** Vesper offers effective, voluntary relief from wanting. Rain's *not yet* keeps the route moving until Roxana's Melt and Claire's referral place Rain and Roxana in state custody.
 
 - **1 · The open door** — Begin inside the asylum. It is calm, useful, and voluntary. Rain recognizes missing people and believes their presence may clear him. Residents complete assigned tasks but initiate little of their own.
 
@@ -62,9 +58,7 @@ Rain is the thing that falls. “Now I fall” is an act; “I am Rain” is a p
 
 ### Arc 3 · The Prisoner
 
-**The question.** Can you keep wanting when wanting hurts?
-
-**The development.** Relief can genuinely help. The Widower's first treatment remains right; the danger begins when successful intervention repeats until it replaces the person's capacity to determine what comes next.
+**Choice pressure:** Rain can remain inside a possible life with no outside consequences or end even the beloved life. His choice sends the Ghost toward Roxana, whose acceptance of help creates the escape.
 
 - **1 · Intake** — The Pursuer completes forms while Rain's goggles, notebook, and Roxana's lighter are logged into a tray. Roxana is lowered into a pod. Rain goes last. The tank, not a guard, is the lock.
 
@@ -74,7 +68,7 @@ Rain is the thing that falls. “Now I fall” is an act; “I am Rain” is a p
 
   - **A life · 1–3** — Optional, self-contained lives. They reveal Rain and cannot contain plot facts required by the spine.
 
-- **4 · The mountain** — The beloved life comes last and lasts longest. Rain ends it. The mountain holds the bodies of the possibilities he preserved and then renounced. The Ghost is expelled toward Roxana while Rain remains unaware. The Split receives its first distinct mark.
+- **4 · The mountain** — The beloved life comes last, lasts longest, and is genuinely happy. Rain ends it because a preserved possibility cannot acquire consequences beyond itself, not because it was false or hid a truer self. The mountain holds the bodies of valuable lives relinquished. The Ghost is expelled toward Roxana while Rain remains unaware. The Split receives its first distinct mark.
 
 - **5 · The hand** — The only external POV cut. The Pursuer reviews Aster's record outside Roxana's pod. When hope has collapsed, the Ghost offers an open hand that asks nothing. Roxana accepts. A raw spark passes through the scars and burns through both seals.
 
@@ -86,9 +80,7 @@ Rain is the thing that falls. “Now I fall” is an act; “I am Rain” is a p
 
 **Choice pressure:** The Circuit Line gives Rain time to answer while the amnesty remains live. He refuses before it expires, then mistakes the apparently costless Perfect Clone for progress and carries that relapse toward the caldera.
 
-**The development.** Possibility itself has value, but possibility preserved from outside consequence cannot acquire consequences beyond itself. The beloved life is meaningful and genuinely happy. Rain leaves it because nothing outside it can answer back, not because it was false or because a true self waits beneath it.
-
-**The pitfall. Stay in the life** — the long movie. Card 3, exits to card 4.
+- **1 · Out of the chute** — Escape into a smoother city. Rain and Roxana board the Circuit Line and recover the goggles and lighter.
 
 - **2 · The boundary** — A full lap makes the correction measurable. The same stations appear twice; the boundary moves between passes. Rain thins in corrected districts. Roxana begins the drills needed to use the Bearing Flame.
 
@@ -110,9 +102,7 @@ Rain is the thing that falls. “Now I fall” is an act; “I am Rain” is a p
 
 ### Arc 5 · The Proof
 
-**The question.** Can you choose when nothing is chasing you?
-
-**The development.** Choice does not validate itself. Rain receives time, evidence, legal amnesty, and a defensible route home. He refuses and still loses his district: choice is not correctness, reward, or control over consequence.
+**Convergence:** There is no pitfall. Shiori's network, Claire's refusal and overwatch, and Roxana's rearguard clear the path toward Vesper. Extraction must fully succeed before the void, return, refusal, clean-rain actions, and outbound train.
 
 - **1 · The summit road** — The group climbs toward the caldera while the correction advances below. Rain is already relying on the Perfect Clone. Shiori's distributed feeds open the route and keep every front visible.
 
@@ -122,14 +112,14 @@ Rain is the thing that falls. “Now I fall” is an act; “I am Rain” is a p
 
 - **4 · The overwatch** — Claire coordinates through Shiori's feeds until complexity, duration, execution, and repeated use overwhelm her. The ribbon dies, range collapses, and the lens comes off. At contact range, without a complete model, she says *Go*.
 
-- **5 · The extraction** — Vesper reads Rain through Roxana's finished record. Rain slips. Direct contact succeeds and the UI, music, and world are removed with his memories. Claire and Roxana arrive spent. Do not interrupt or soften the extraction: Vesper takes everything.
+- **5 · The extraction** — Vesper reads Rain through Roxana's finished record. Rain slips. Direct contact succeeds and the UI, music, and world are removed with his autobiographical memory. Claire and Roxana arrive spent. Do not interrupt or soften the extraction: Vesper takes 100% of the target and receives the finished past in full.
 
-- **6 · The void** — Only *you* remains. The completed story becomes available as accurate but emotionally flat fact: Rain knows it intimately without feeling that he inhabited it. Non-branching choices create present consequences without restoring ownership of the past. The interface and music rebuild through continued response, not discovery of an underlying completed identity.
+- **6 · The void** — Only *you* remains. Arc 3 and Perfect Clone have left an independently encoded semantic record, so the completed story remains accurate fact without autobiographical access: “Rain met Roxana,” not “I remember meeting Roxana.” Non-branching choices create present consequences without restoring ownership or reconstructing an old identity. The interface and music rebuild through continued response.
 
 - **7 · The return** — Rain returns capable of responding, not newly completed. He sets out the Clone as the expected target. Vesper passes through the intangible copy; the injured real Rain takes the blow and catches him himself.
 
 - **8 · The refusal** — Vesper offers to remove the Split. Rain refuses. He uses the open-hand gesture without summoning the Ghost and breaks the correction apparatus. Vesper is left with the prism and an event his finished records could not predict.
 
-- **9 · The clean rain** — Keep the aftermath brief. Shiori turns the cameras off and closes something without marking her place. Claire abandons the appointment she no longer intends to keep. Roxana burns Aster's shard and fills the lighter with her own flame. The clean rain follows the physical collapse of the apparatus and water loop.
+- **9 · The clean rain** — Keep the aftermath brief. **Working Shiori beat, not locked:** she turns the cameras off and closes something without marking her place; this is a small wager that an unrecorded moment can matter, not a cure or new trust in her memory. Claire abandons the appointment she no longer intends to keep. Roxana burns Aster's shard and fills the lighter with her own flame. The clean rain follows the physical collapse of the apparatus and water loop.
 
 - **10 · The outbound train** — Final scene. Rain remains publicly a fugitive and accepts that the city has not cleared his name. Leaving is partly necessary but not merely exile: he chooses a first destination and a new adventure as the next step toward his dreams. He remains afraid, uncertain, and unable to feel ownership of what he survived; nothing suggests that connection is beginning to return. The notebook contains two lines and many blank pages. End with the exact selected callback from `Manuscript/Arc 1 - Fugitive/0 Rain intro.md`. No scene follows it.

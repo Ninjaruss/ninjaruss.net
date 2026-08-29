@@ -7,6 +7,7 @@ A man who has served the same institution for thirty years and calculated the da
 - **Age:** roughly 50–55
 - **Height:** 6'2"
 - **Role:** institutional pursuer, practical combat threat, and Rain's strongest foil
+- **Traits:** **Procedural Persistence** / **Buried Longing**
 - **Contradiction:** nothing can stop him, and he wants nothing.
 - **Question:** *Is it too late to stop?*
 
@@ -14,7 +15,13 @@ His career predates the Flare; his supernatural condition does not. Thirty years
 
 ### On the Page
 
-**Around fifty to fifty-five.** Main trait: **Procedural Persistence** — courteous, unhurried continuity supplied by the institution's next verb. Passive trait: **Buried Longing** — the enormous want he never voiced, burned as fuel for somebody else's direction. The longing rarely redirects the procedure; it escapes as steam and surfaces once as the possibility that stopping need not erase the man who endured.
+- Unhurried, courteous, minimal, and procedural.
+- Never runs, at any point, regardless of anyone else's speed.
+- Completes records and signs them.
+- Does not lie or misstate an offer.
+- Hurts only as much as the assigned task requires.
+- Maintains upright posture and deliberate walking even in combat.
+- Arrives first as steam gathering in scene corners before the reader understands it belongs to him.
 
 He knows exactly what has happened to him. His tragedy is not ignorance but the fact that he has spent all his endurance continuing and none of it leaving.
 

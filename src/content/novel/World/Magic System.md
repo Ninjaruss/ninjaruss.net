@@ -95,13 +95,21 @@ Vesper cannot choose the exact residue with certainty. Deep repetition and emoti
 
 ### What This Changes
 
-Vesper extracts **coherent autobiographical memories or connected autobiographical memory-networks** into glass. His target is the record of living an event as part of one's own life, not every kind of information the brain contains about it. An intact shard preserves the network's context, chronology, emotion, associations, and learned information, while the original owner can no longer access it autobiographically. Shattering a shard returns that network; melting one erases it permanently. This is the system's only irreversible alteration.
+Magic is not a collectible power set. It is a record of irreversible transition, a person's relationship to that record, and a cost paid through the system being used.
 
 Factual access and felt ownership remain distinct. Accurate access to a completed record does not automatically make it feel personally inhabited, and loss of ownership does not make the record inaccurate.
 
-**The consequence law.** Removing the autobiographical record does not necessarily remove every consequence that living it produced elsewhere in the person. Depending on precision, function, habits, associations, learned behavior, and procedural residue may remain. Melt demonstrates the precedent most clearly: autobiographical material can be destroyed while movement, phrasing, and practiced behavior survive. Factual access and felt ownership are not the same thing.
+Vesper cannot extract a want as a separate object. He removes the memories and associations that sustain it. Repeated removal can leave function intact while making a person unable to say what they want to do with that function.
 
-**Precision is the horror.** Early and imprecise, he broke function and left the person recognizably themselves — Shiori forgets and keeps making. Late and precise, he preserves more downstream function while removing the autobiographical networks that sustain wanting — the patients can state facts and perform routines while nobody reaches beyond them. He got better by learning to stop breaking function, and the better he got, the worse the outcome.
+### Rain's Final Extraction
+
+Vesper succeeds completely. Direct contact extracts **100% of Rain's autobiographical target**: every lived relationship, fear, choice, emotion, and connected context up to contact. There is no shield, hidden soul, secret autobiographical fragment, incomplete extraction, or protagonist immunity. Vesper's prism contains the finished past in full.
+
+Rain remains factually informed because Arc 3 repeatedly trained his mind through life → completion → life subsequently known as story. That made semantic knowledge unusually independent from autobiographical ownership. The Perfect Clone deepened the same fracture by leaving accurate outcome without felt accomplishment. Those are downstream encodings outside Vesper's autobiographical target, not resistance to it.
+
+Afterward, “I remember meeting Roxana” is gone. “Rain met Roxana” remains. Rain can recount the adventure precisely and cannot inhabit it as something that happened to him. The void's small non-branching acts do not restore the old identity or ownership; they create new consequences after the finished record ends.
+
+Vesper therefore wins the extraction and still loses the immediate physical exchange. His evidence is accurate; his error is believing a completed account authorizes the next response. A finished record is necessarily behind the present.
 
 ### Constraints
 

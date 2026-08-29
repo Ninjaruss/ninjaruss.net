@@ -2,11 +2,7 @@
 
 Use these as scene anchors, not as a complete geography.
 
-**Setting characterization — Main: Abundant Vitality. Passive: Quiet Correction.** At rest the city is wet, crowded, commercial, layered, noisy, improvised, highly engineered, and constantly adapting. Correction modulates that vitality by making the same city cleaner, quieter, more reliable, less cluttered, less wet, less interruptible, and easier.
-
-The contradiction is structural: **a city sustained by circulation increasingly eliminates the irregularity produced by things actually changing.** Its horror is not an overt dystopia. Things become strangely easier. As correction advances, travel grows smoother while encounters, improvisation, weather, and reasons to stop for another person thin away.
-
-**Decided 2026-08-19 — the culture is a blend, not a place.** Not Japan-coded, not any single real culture legible under it — a deliberate braid of the impossibility of Las Vegas (a city that shouldn't be sustainable, built anyway, thriving on excess in a hostile environment), the futuristic ideal of Atlantis before its disaster (advancement that reads as grace rather than machinery, right up until the water turns on it), and enough of the author's own pull toward Japan to season the texture — never enough to resolve into it. The test for any detail added later: if a reader could name the real-world culture it's borrowed from, cut it back until they can't. The volcano is kept and is no longer an open question (see below); the island's specific real-world analog stays permanently unresolved, on purpose.
+### The Short Version
 
 The story takes place in a rain-soaked island city built around a dormant volcano. Its civic water loop connects the volcanic caldera, public infrastructure, and the institutions that regulate everyday life. The city remains beautiful and functional even as its systems become quieter, cleaner, and more over-managed.
 
@@ -17,6 +13,10 @@ The city's visual-reference palette may draw from Las Vegas, an intact futuristi
 ### The City
 
 An island city under near-constant rain, built around a dormant volcano. It survives through excess, engineering, and a water system that appears improbably sustainable.
+
+**Setting traits:** **Abundant Vitality** / **Quiet Correction.** At rest the city is wet, crowded, commercial, layered, noisy, improvised, highly engineered, and constantly adapting. Correction modulates that vitality by making it cleaner, quieter, more reliable, less cluttered, less wet, less interruptible, and easier.
+
+Its contradiction is that a city sustained by circulation increasingly eliminates the irregularity produced by things actually changing. The horror is not overt dystopia; things become strangely easier.
 
 Its decline appears as cleaner schedules, quieter districts, thinner weather, and fewer disruptions. Avoid overt dystopian spectacle.
 

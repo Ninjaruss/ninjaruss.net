@@ -7,12 +7,13 @@ She can model every visible outcome and still cannot guarantee the one she choos
 - **Age:** 21–22
 - **Height:** 5'10", slender
 - **Role:** tactician; Rain's source of borrowed certainty
+- **Traits:** **Controlled Precision** / **Fearful Urgency**
 - **Contradiction:** she is almost never wrong and almost never in time.
 - **Question:** *Can I choose responsibly without guaranteeing the result?*
 
 Claire does not calculate because she lacks feeling. She calculates because being correct once destroyed her family and still failed to protect anyone. Her problem is responsibility without control: no amount of accuracy can make contingency obey her.
 
-**Mind · 21–22 · the Certainty Junkie.** Main trait: **Controlled Precision** — exact, cool, and disciplined in how she makes situations legible. Passive trait: **Fearful Urgency** — the pressure to close uncertainty before another irreversible loss occurs. Urgency sharpens the precision and sometimes exhausts it; it does not replace her with panic.
+### On the Page
 
 - Precise, cool, and economical in movement.
 - Answers the question someone is about to ask.

@@ -7,14 +7,15 @@ A young man with a notebook full of first lines and no second ones.
 - **Age:** 23
 - **Height:** 5'7"
 - **Role:** protagonist; the Paralyzed Dreamer
+- **Traits:** **Soft Yearning** / **Sudden Resolve**
 - **Contradiction:** he wants more than anyone in the story and does less than anyone in it.
 - **Question:** *Can I still respect myself after reality replaces fantasy with evidence?*
 
 Rain preserves possibility because choosing one life would close others and make him finite. Beneath that defense is a fear that a finished attempt may prove he is ordinary. He never diagnoses that fear aloud; he speaks honestly about the lives a choice would close, while the notebook supplies the less flattering evidence.
 
-**Heart · 23 · the Paralyzed Dreamer.** Main trait: **Soft Yearning** — an open, gentle pull toward lives and people beyond his present one. Passive trait: **Sudden Resolve** — a secondary force that arrives sharply under pressure and converts yearning into an irreversible step without replacing his softness.
+He grew up praised for potential and steered away from risking it. His hardworking parents equate safety with love: his father tends to decide what Rain means before listening, while his mother offers sincere encouragement without understanding the specific dream. Rain learned to deflect rather than explain himself. Their concern is real, but being supported and being seen have never felt identical to him.
 
-**The passive does not turn him into a decisive man.** It appears as brief, hard modulation inside Soft Yearning: an emergency can pull him into motion while a quiet room still leaves him without an answer. The Arc 5 refusal is the largest modulation in the book because resolve arrives with nothing chasing him, and he remains hesitant, soft, afraid, and unfinished while acting.
+### On the Page
 
 - Agreeable, self-deprecating, and easy company; often a fraction absent from his own body.
 - Spins a pen and almost never writes. His notebook holds ideas stopped after one line because a second line would become evidence.
@@ -33,11 +34,13 @@ Rain wants a life large enough to justify his dreams without exposing him to the
 2. Vesper offers relief from wanting; Rain answers *not yet*.
 3. He lives and ends his possible lives, including the beloved one.
 4. He refuses the amnesty while it is still available, then relapses through the Perfect Clone.
-5. Vesper successfully extracts everything. Rain returns with complete factual recall but no felt ownership of the person who lived those events.
+5. Vesper successfully extracts every autobiographical memory-network. Rain returns with independently encoded factual knowledge but no lived access to, or felt ownership of, the person who experienced those events.
 6. He refuses Vesper's offer to remove the Split and takes the real blow himself instead of sending the Clone.
 7. Still publicly a fugitive, he boards an outbound train toward a chosen first destination, a new adventure, and the next step toward his dreams.
 
 The completed adventure remains a story Rain knows intimately and can recount precisely but cannot inhabit in the first person. The train does not begin restoring that connection. What remains available is his ability to make new consequences through present choices.
+
+Arc 3 made semantic story and autobiographical ownership unusually separable by forcing him to live, complete, and subsequently know whole lives as stories. The Perfect Clone strengthened the same fracture by returning accurate outcome without felt accomplishment. This residue is not a shield or immunity: Vesper still takes the entire autobiographical target.
 
 **Locked callbacks — use these exact selected lines from `Manuscript/Arc 1 - Fugitive/0 Rain intro.md`:**
 

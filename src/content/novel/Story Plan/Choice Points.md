@@ -27,12 +27,14 @@ The player does not select a heroic ending from a menu. They reach it by continu
 
 Comfort matters. A pitfall that is merely boring or obviously wrong cannot tempt the player or respect the character choosing it.
 
-| Arc | Pitfall | Entry | Spine continuation | Ending |
-|---|---|---|---|---|
-| **1** | **Go home** | The drift | The follow | Rain admits wrongs he did not commit and resumes the commute. |
-| **2** | **Become a patient** | The archive | Aster's trail ends here | Vesper removes the Split and Rain stays. |
-| **3** | **Stay in the life** | The lives | The mountain | Rain never ends the beloved life. |
-| **4** | **Let it expire** | The amnesty | The unsigned offer | The offer dies unanswered and the Circuit Line closes around him. |
+| Arc | Pitfall | What it protects | Entry | Spine continuation | Ending |
+|---|---|---|---|---|---|
+| **1** | **Go home** | the old life | The drift | The follow | Rain admits wrongs he did not commit and resumes the commute. |
+| **2** | **Become a patient** | the present from painful wanting | The archive | Aster's trail ends here | Rain accepts treatment for the ache of wanting, remains for additional sessions, and gradually lets the asylum determine what needs relief next. |
+| **3** | **Stay in the life** | the possible life | The lives | The mountain | Rain never ends the beloved life. It remains valuable and does not need to reveal itself as false. |
+| **4** | **Let it expire** | the decision itself | The amnesty | The unsigned offer | Rain leaves both options open until circumstances close them; the Circuit Line becomes a new commute. |
+
+Together the pitfalls move from preserving the old life, to protecting the present from wanting, to preserving a possible life, to preserving the decision itself. Arc 5 has no corresponding shelter: across Arcs 1–4 the player keeps Rain's story moving; in Arc 5 Rain keeps Rain moving.
 
 ### False Endings
 
