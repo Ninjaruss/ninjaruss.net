@@ -50,29 +50,34 @@ The sharper test is not whether she can accept a hand once. It is whether she ca
 - **The Pursuer:** he can continue one old decision until the fuel ends. She can stop, hurt, and choose to relight. Their last fight turns repeated choice, not superior force, into the difference.
 - **Aster:** father figure, trainer, missing investigator, and the source of her surname and lighter. His absence remains active through what she does with his training and remains.
 
-### Empathic Burn and Bearing Flame
+### Empathic Burn, Undying Flame, and Starborne
 
 Shared passive, Imprint, Deviation, and cost rules belong to `World/Magic System.md`. For Roxana on the page:
 
-- **Empathic burn:** other people's pain reaches her through the burn scars on her arms. She cannot choose whether to feel it.
-- **Bearing Flame:** accessed through Aster's empty lighter. Fire holds up a body that cannot otherwise stand; it does not restore that body.
-- **Cost:** the flame uses Roxana's own body heat. Pain arrives uninvited, but offered warmth enters only when she accepts it. When the flame gutters, she becomes completely dependent on others.
+- **Empathic Burn:** Roxana involuntarily echoes nearby bodily pain through her own nervous system. It is not emotional mind-reading. Sensitive or damaged tissue responds most strongly, so her scars amplify the experience without serving as its exclusive channel. Exact range and source localization remain unsettled.
+- **Undying Flame:** Aster's empty lighter produces one small real resonant flame guided primarily through Roxana's gestures. Its core resists ordinary rain, wind, and smothering while sustained, and it can ignite ordinary combustibles; secondary fires remain ordinary and uncontrolled. The base flame has negligible kinetic force.
+- **Base cost:** sustaining the flame heightens Roxana's nociceptive sensitivity. Her injuries, scar pain, and incoming Empathic Burn become harder to ignore and can interfere with function.
+- **Starborne:** the advanced expression binds Roxana's movement to the same tiny flame. Guiding it can pull, lift, pivot, redirect, and carry her body along its path. It does not heal her or restore function Vesper removed; inertia, impact, injury, and structural limits remain.
+- **Starborne cost:** while the flame carries her, normal physiological pain gating is suppressed. Ungated pain can trigger withdrawal, involuntary tension or release, shaking, disrupted breathing, nausea, disorientation, and collapse. Mental toughness cannot simply overrule those responses.
 - **Passive breakout:** in the prison, accepting the Ghost's open hand lets her produce one raw spark without the lighter. It nearly empties her and is not a new reliable technique.
+
+Undying Flame and Starborne are alternate deliberate modes, not independent powers used together. The star never gets bigger; Roxana changes her relationship to it.
 
 Vesper Melts a memory-network tied to her trauma, pain, and refusal to stop. Roxana loses access to it permanently. He gains no autobiographical memory, but may inherit unyielding reflexes or behaviors without their meaning.
 
 ### Visual Anchors
 
-Roxana is compact and physically forceful. Burn scars on her arms are essential. Her warmth should come through posture, touch, practical hands, anger, and workwear rather than delicacy. The chair and lighter are key objects. When the Bearing Flame stands her, movement remains costly rather than becoming a graceful restoration fantasy.
+Roxana is compact and physically forceful. Burn scars on her arms are essential. Her warmth should come through posture, touch, practical hands, anger, and workwear rather than delicacy. The chair, lighter, and one small star-like flame are key images. When Starborne carries her, movement remains costly rather than becoming a graceful restoration fantasy.
 
 ### Do Not Flatten
 
 - Do not reduce her to a woman waiting to be retrieved.
 - Her inability to stand is produced by Vesper's memory alteration, not a spinal injury.
-- The scars are the channel: pain arrives through them; offered warmth must be accepted.
+- The scars amplify bodily pain; they are not the sole channel and Empathic Burn is not emotional mind-reading.
 - Her giving is both love and armor. Do not reveal one as fake.
 - Training Rain is partly an attempt to reconstitute Aster. Never have her explain this.
 - Her anger and immediate action are practical intelligence, not evidence that she is less rational than Claire.
 - Her Arc 5 victory is renewed choice, not greater stamina or uncomplicated strength.
+- Starborne carries rather than heals. Do not let the flame restore removed function or erase injury and inertia.
 - Receiving care does not cure her or make dependence shameful.
 - Avoid frail-tragic-woman imagery and the serene disabled-sage archetype.

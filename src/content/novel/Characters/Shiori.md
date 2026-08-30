@@ -32,7 +32,7 @@ Shiori is not trying to recover a lost past. She is defending a future self agai
 
 She wants accompaniment without having to earn it through usefulness, though she would not admit that. The current Arc 5 action is deliberately small: she closes something without marking her place. Its thematic interpretation remains a working direction rather than locked canon.
 
-1. She appears unnamed in the vault, taking back confiscated work, and remembers Rain's nervous laugh.
+1. She breaches the vault to recover Gadget X, a recent mundane device of her own, and remembers Rain's nervous laugh when he steals the separately confiscated goggles.
 2. Her equipment and maker's marks recur before she joins the cast.
 3. She boards the Circuit Line to accuse Rain. Her own recordings exonerate him, and she stays.
 4. She carries the knowledge that the system saving them is also the system watching the city.
@@ -55,7 +55,7 @@ The proposed formulation is that Shiori is the cast member most comfortable with
 
 The proposed Arc 5 “no bookmark” wager must not become a cure. She may forget the moment. The possibility being tested is that it can still have mattered without a guaranteed receipt, not that she now trusts her memory or stops using accommodations.
 
-Shiori enters with pressure independent of the central conflict: her work was stolen, Rain appears to have taken it, and the state has turned her survival system into infrastructure. Even after her accusation fails, ownership, surveillance, and the cost of keeping the group connected remain her problems rather than errands for Rain.
+Shiori enters with pressure independent of the central conflict: Nimbus knows both Gadget X and the older goggles are missing, and evidence makes Rain appear responsible for both. He did steal the goggles; she recovered Gadget X without being identified. Even after her recordings dismantle the larger accusation, ownership, surveillance, and the cost of keeping the group connected remain her problems rather than errands for Rain.
 
 ### Work, Tools, Records, and Cost
 
@@ -63,6 +63,7 @@ Shiori has no passive, bonded Imprint, or Deviation of her own. That absence is 
 
 - Her first major project was an external recording system built after her injury. The state confiscated and scaled it into unattended surveillance infrastructure. The same system later preserves evidence everyone else ignored.
 - The goggles are her work. Rain wears her decisions from Arc 1 onward before knowing who made them.
+- Gadget X is a separate recent device, mundane when built, which she breaches the vault to recover. Its function remains unresolved.
 - Her recorder and surviving records first support her accusation, then correct it. Evidence can outlast her certainty without becoming neutral or institutionally innocent.
 - Most of her devices are handmade, patched, and specific to a problem. Functional redundancy and playful maker's marks have different jobs and should not blur together.
 - In Arc 5 she burns out her own rig component by component to maintain feeds across every front. This is a chosen material cost, not a surprise failure.

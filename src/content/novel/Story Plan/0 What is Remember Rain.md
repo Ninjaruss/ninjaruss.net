@@ -2,9 +2,9 @@
 
 ### Premise
 
-*Remember Rain* is a visual novel about a young man who leaves his commute on impulse, steals a resonant object, and is blamed for disappearances caused by someone who can remove memory and wanting.
+*Remember Rain* is a visual novel about a young man who leaves his commute on impulse, steals a resonant object, and is blamed for disappearances caused by someone who can remove memory and wanting. Its main external action spans approximately five to eight weeks.
 
-Rain has spent his life preserving dreams by never testing them. As he moves through an asylum, a sensory-deprivation prison, and a city accepting painless correction, he must act without receiving proof that action will make him exceptional or safe.
+Rain has spent his life preserving dreams by never testing them. He wants to create a great story capable of inspiring someone as formative stories inspired him, but preparation and reflection repeatedly substitute for finished evidence. As he collides with Claire and Roxana's existing investigation and moves through an asylum, a sensory-deprivation prison, and a city accepting painless correction, he must act without receiving proof that action will make him exceptional or safe.
 
 ### Story Hierarchy
 

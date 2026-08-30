@@ -59,9 +59,9 @@ Character imagery remains specific: Rain has gold/Ghost/Clone/Split; Claire has 
 
 ### Ghost, Clone, and Split
 
-**Forms:** The Ghost is faded gold with an open hand and points toward wanting rather than method. The Clone flickers, remains intangible, and lets Rain be seen without acting as himself. The Perfect Clone is solid gold, beautiful, and still. The Split speaks in Rain's voice as a ledger of failure.
+**Forms:** The Ghost is faded gold with an open hand and points toward wanting rather than method. The Clone flickers, remains intangible, and lets Rain be seen without acting as himself. The Perfect Clone remains intangible but counterfeits physical presence with seamless gold fidelity. The Split speaks in Rain's voice as a ledger of failure.
 
-**Progression:** The Ghost guides without solving, then is spent to create the apparently costless Perfect Clone. The Split is unmarked early and italicized after the mountain. In the finale Rain uses the open-hand gesture without summoning the Ghost.
+**Progression:** The Ghost guides without solving. It dims as repeated Perfect Clone use impairs Rain's felt authorship and action initiation, then can recover as that temporary impairment does. The Split is unmarked early and italicized after the mountain. In the finale Rain uses the open-hand gesture without summoning the Ghost.
 
 **Carriers:** Rain's passive, Deviation, relapse, and final independent gesture.
 
@@ -87,7 +87,7 @@ Character imagery remains specific: Rain has gold/Ghost/Clone/Split; Claire has 
 
 ### Fire and Scars
 
-**Forms:** Roxana's scars receive other people's pain. Aster's lighter channels the Bearing Flame, and Roxana's own heat pays its cost.
+**Forms:** Roxana's nervous system echoes other people's bodily pain, with damaged scar tissue amplifying it. Aster's lighter channels one small Undying Flame. Base use heightens pain sensitivity; in Starborne, the same flame carries Roxana while normal pain gating is suppressed.
 
 **Progression:** The prison spark occurs without the lighter and nearly empties her. In the finale she burns Aster's shard and fills his lighter with her own flame.
 
@@ -119,7 +119,7 @@ The evidence-as-bookmark interpretation and the Arc 5 no-bookmark wager are a **
 
 ### The Pursuer's Steam and Greatcoat
 
-**Forms:** Steam appears before the Pursuer is named. His greatcoat shapes vapor into armor; there is no plate armor. He never runs.
+**Forms:** Steam appears before the Pursuer is named. His greatcoat shapes heat and available moisture into a turbulent vapor defense; it creates no water and there is no plate armor. He never runs.
 
 **Progression:** Every defense visibly spends him. Rain's question causes one unprocedural change in the steam. When the Pursuer finally stops, vapor condenses on wet wool.
 
@@ -143,7 +143,7 @@ Use this closed set only when the visual argument requires it:
 
 - `faded` — the Ghost; wanting not yet acted on
 - `flicker` — the Clone; borrowed motion
-- `solid` — the Perfect Clone; perfected stasis
+- `seamless` — the Perfect Clone; perfected counterfeit presence
 - `shine` — a person overcoming in the present
 - `unlit` — wanting removed
 - `stored` — resonance held in glass

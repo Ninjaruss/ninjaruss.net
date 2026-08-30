@@ -13,7 +13,7 @@ The youngest major character, physically unthreatening, and already convinced he
 
 Vesper is not secretly cruel. His warmth, patience of manner, and desire to relieve suffering are real. His coercion comes from certainty: he trusts the successful result he can produce more than another person's unfinished ability to revise, refuse, or become otherwise.
 
-He was thirteen when the Flare happened. Five years of perfect recall, experimentation, and escalating success have made his conclusions feel complete because he reached them quickly and has forgotten none of the evidence.
+He was thirteen when the Flare happened. The resonant alteration gave him unusually complete encoding and retrieval: perfect recall and involuntary replay are parts of the same memory architecture. Five years of experimentation and escalating success have made his conclusions feel complete because he reached them quickly and has forgotten none of the evidence.
 
 ### On the Page
 
@@ -29,7 +29,9 @@ The reveal changes the reader's understanding of his role; it is not a mask drop
 
 ### Want, Fear, and Change
 
-Vesper wants suffering to become solvable and relief to arrive before another person wastes years inside pain. His mother was full of potential, unstable, and slow to change. He learned that waiting for another person wastes both lives, while a private fear of resembling her sits beneath his impatience. She remains absent, and he never compares Rain to her aloud.
+Vesper wants suffering to become solvable and relief to arrive before another person wastes years inside pain. His mother believed she could not be a good mother until she changed herself, and that remaining would prevent the change. She abandoned Vesper and deliberately left a prism on the table—the symbol of the exceptional person she imagined becoming. Under sufficient resonance, the same departure changed Vesper and patterned the prism as an Imprint. The abandonment became the first memory he could not stop replaying, and he later bonded with the object she had left behind.
+
+She believed becoming better required leaving and time. Vesper internalized the opposite lesson: waiting for someone to change is intolerable. A private fear of resembling her sits beneath that impatience. She remains absent, and he never compares Rain to her aloud.
 
 **Vesper's throughline is premature completion.** His failure is not simply that he refuses to ask. He genuinely values consent, but treats successful present intervention and present consent as sufficient authority to close another person's future revision. Asking matters to him only at the point of treatment; he does not preserve the future capacity to revisit what was authorized.
 
@@ -54,15 +56,19 @@ He mistakes knowing the destination for authority to close the route.
 - **Shiori:** Vesper corrects the source into a cleaner form. Shiori patches the particular thing and accepts the seam. He remembers her warmly and learned precision by damaging her.
 - **Aster:** Vesper can consciously reproduce what Aster's intact record teaches him. This is archive access, not Melted instinct, and it makes his claim to understand Roxana personally dangerous.
 
-### Extraction, Archive, Shatter, and Melt
+### Replay, Prism, Extraction, Archive, Shatter, and Melt
 
 Shared extraction and glass rules belong to `World/Magic System.md`. Vesper's practical posture and limits are:
 
+- His passive is involuntary high-fidelity replay. His own memories can intrude without invitation, as can foreign records currently connected through intact shards.
+- The prism is the Imprint formed by his mother's abandonment. Extracted shards are resonantly continuous manifestations associated with it, not finite chips physically removed from the object. There is no fixed shard count.
 - He extracts through direct contact and can return to the same person. Each pass removes a coherent memory or memory-network, while repeated work becomes harder to isolate from identity-adjacent connections.
 - The archive is his default. Intact shards preserve complete context, chronology, emotion, learned information, reversibility, and his conscious access; he values understanding and traceable evidence.
 - Shattering returns the memory to its owner and permanently ends Vesper's access. He does not treat restoration as failure, but it gives the outcome back to someone else.
 - Melt destroys the autobiographical memory for both people. Vesper remembers performing it but retains only uncertain involuntary procedural or behavioral residue: habits, reflexes, movement, speech rhythms, practiced reactions, or mannerisms.
 - Melt does not transfer emotion, meaning, relationships, worldview, Deviations, or the lost person's lived experience. He cannot choose the residue exactly.
+
+The practical limit is cognitive rather than numerical. As foreign records accumulate or are heavily accessed, intrusive replay, neurological strain, and foreign associations escalate into source interference. Vesper may use another person's phrasing or gesture, enter the wrong experiential context, or briefly misattribute where a thought came from. At extreme load the records can remain accurate while immediate retrieval becomes too noisy for him to trust its source.
 
 Only three Melts are intended: his mother; one unknown person used as deliberate proof; and Roxana, intentionally, from distorted compassion and a desire for her unyielding behavior. Melt is rare, irreversible, and a sacrifice of understanding rather than a superior archive method.
 
@@ -78,5 +84,6 @@ Vesper is slight, young, composed, and physically non-threatening. He should inv
 - Do not reduce his failure to never asking or to disclosure alone. His consent is genuine but present-bound: he assumes today's authorization can settle a future whose ability to revise may be changed by the treatment itself.
 - His mother never appears in flashback, and Vesper never explains Rain through her.
 - Do not portray five years of development as decades of authority. His danger is premature completion, aided by perfect memory.
+- Do not reduce his cost to headaches or generic fatigue. Source confusion attacks the evidentiary certainty on which his worldview depends.
 - Understanding a person does not entitle him to author their future. Keep the distinction active in what he does, not as a speech he loses.
 - He is neither redeemed nor philosophically annihilated at the end.

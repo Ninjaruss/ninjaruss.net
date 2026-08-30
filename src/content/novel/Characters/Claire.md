@@ -47,15 +47,15 @@ Her change is not intuition defeating reason. Evidence carries her as far as it 
 - **Vesper:** both pre-empt uncertainty and intervene before being asked. Claire can eventually return the final decision to another person. Vesper cannot.
 - **Shiori:** Claire is controlled and systematic; Shiori is improvised and material. Both build systems against a future loss.
 
-### The Static, Lens, Visual Calculus, and Still Point
+### The Static, Lens, Visual Calculus, and Convergence
 
 Shared passive, Imprint, Deviation, and cost rules belong to `World/Magic System.md`. For Claire on the page:
 
 - **The Static:** the intrusive memory and noise of the collapse. Removing it would also remove the record of why Claire began.
 - **The lens:** turns an auditory wound into something visual and legible; it does not match, cure, or erase the Static. Claire's practiced gesture of raising it externalizes her attempt to convert noise into certainty.
 - **The Click:** the instant of silence that arrives with a completed model. The relief is real, but it does not guarantee that Claire can control the modeled outcome.
-- **Visual Calculus:** reads intent, movement, and interacting variables through the lens. Seeing is cheaper than executing, which encourages Claire to direct other people.
-- **Still Point:** holds a limited area in which she continually updates a model and attempts to keep predicted relations true. Calculation alone never wins a fight.
+- **Visual Calculus:** the broader predictive mode. Physical trajectory and observable movement are its strongest inputs. It can infer intent less reliably from visible evidence, but cannot read minds, see hidden variables, or resolve genuine randomness. Seeing is cheaper than executing, which encourages Claire to direct other people.
+- **Convergence:** sacrifices breadth and longer-horizon prediction for an intensely local model that updates while Claire acts: observe, act, detect divergence, recalculate, act again. It revises around the unexpected rather than predicting retroactively or forcing reality to remain inside the model.
 - **Cost:** neurological and computational overload. Load rises with complexity, hold time, execution through Claire's own body, and repeated use without recovery.
 
 Escalation may include fatigue, headache, visual or motor disturbance, tremor, slowed processing, weakness, disorientation, and collapse. Extreme overuse can leave her helpless and unconscious; repeated severe crashes risk increasingly long comas.
@@ -67,6 +67,7 @@ Claire has a long, controlled silhouette and economical movement. The lens or mo
 ### Do Not Flatten
 
 - Calculation never wins a fight by itself.
+- Visual Calculus and Convergence are alternate expressions: breadth and prediction versus locality and continuous revision.
 - Her growth does not make reason foolish or intuition automatically correct.
 - She would accept treatment that helped her carry the Static. Vesper only offers removal.
 - Show accommodations, recovery, established protocols, and accepted help. The story does not praise untreated suffering.

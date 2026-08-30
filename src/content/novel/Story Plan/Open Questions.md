@@ -33,9 +33,23 @@ The bookmark formulation is developed but not locked. Its current test is whethe
 - How do living and non-object substrates retain or release resonance on the page?
 - Can the same Imprint resonate strongly with more than one person, and what happens to an existing bond?
 - How much can a passive physically manifest before an Imprint without becoming a repeatable ability?
+- Is the island's volcanic/Sacred Water reservoir depleting, persistent, or periodically unavailable or inert?
+- What predicts a high-resonance window?
+- What is the exact relationship between correction, stasis, and weakening water circulation?
+- What other Flare reservoirs exist globally?
+
+### Ability edges
+
+- How long does Rain need to recover from ordinary Clone sensory disruption and Perfect Clone initiation impairment at different loads?
+- What practical mid-range and destination knowledge does Rain need for a scripted Clone action?
+- What are the exact range and source-localization rules for Roxana's Empathic Burn?
+- What is Convergence's exact local radius?
+- What is the Pursuer's active Deviation called?
+- After Furnace empties, what degree of mobility remains possible with time, assistance, or equipment?
 
 ### Scene content
 
+- What does Gadget X do?
 - Which optional lives appear in Arc 3, and which one is the beloved life?
 - What state is the prism in when Vesper ends holding it?
 - What exact first destination has Rain chosen on the outbound train?

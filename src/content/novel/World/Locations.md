@@ -54,7 +54,7 @@ Rain's ordinary route and the first route he leaves. The alley gives the story i
 
 ### Nimbus Imprint Vault
 
-A restricted, corporate-secured room for confiscated Imprints and Shiori's equipment. The goggles are logged as Nimbus property on loan to the state; their later recovery appears on the Arc 4 amnesty manifest as corporate asset recovery dressed as clemency.
+A restricted, corporate-secured room for confiscated Imprints and Shiori's equipment. Shiori breaches it to recover Gadget X, a recent device that was mundane when built. Her older goggles are a separate object already in custody; Rain follows through her breach, feels their Pull, and steals them. The goggles are logged as Nimbus property on loan to the state; their later recovery appears on the Arc 4 amnesty manifest as corporate asset recovery dressed as clemency.
 
 ### Abandoned Asylum
 

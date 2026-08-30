@@ -1,6 +1,6 @@
 ## The Spine
 
-The chronological owner for the whole story. Keep scene order, indispensable causal links, choice pressure, and convergence here. `Arc Structure.md` owns arc function; `Choice Points.md` owns interaction behavior and false-ending rules.
+The chronological owner for the whole story. Keep scene order, indispensable causal links, choice pressure, and convergence here. `Arc Structure.md` owns arc function; `Choice Points.md` owns interaction behavior and false-ending rules. The main external action spans approximately five to eight weeks.
 
 ### Genre Architecture
 
@@ -14,15 +14,15 @@ Quest supplies the route from commute to outbound train. Horror supplies the inc
 
 - **1 · The road less traveled** — Rain walks his usual route. The Ghost turns into an alley. He argues for routine, says *fuck it*, and follows. End as he enters the dark.
 
-- **2 · The vault** — The alley opens into Nimbus's confiscated-Imprint vault, already breached by someone else. Shiori is present but unnamed, recovering her work. The goggles call Rain; he takes them and leaves as a thief. She remembers his nervous laugh.
+- **2 · The vault** — Shiori breaches Nimbus's confiscated-artifact vault to recover Gadget X, a recent mundane device she made. Her older goggles are a separate Shiori-made object already held there. Rain follows the Ghost through her breach, feels the goggles' Pull, and steals them. Shiori removes Gadget X without Nimbus identifying her and remembers Rain's nervous laugh.
 
-- **3 · The charge lands** — By morning, the disappearances are publicly blamed on Rain. Official numbers and a plausible theory spread. Family and friends call and message, asking him to explain or surrender. He half-believes explanation can restore the old life.
+- **3 · The charge lands** — By morning, Nimbus knows the goggles and Gadget X are missing. Evidence shows Rain leaving with Shiori property, so authorities attribute the more consequential gadget theft and related disappearances to him. Rain is guilty of stealing the goggles and falsely accused of stealing Gadget X. Official numbers and a plausible theory spread. Family and friends call and message, asking him to explain or surrender. He half-believes explanation can restore the old life.
 
 - **4 · The drift** — Pitfall entry. Hiding becomes a workable routine and starts closing into another commute. The Ghost appears once and is ignored. Steam and a distant figure give the pursuit a face.
 
 - **5 · The follow** — Rain follows the Ghost to a disappearance site full of Ministry personnel. There is no forced door or struggle. The missing person had reportedly been doing better.
 
-- **6 · Claire and Roxana save Rain** — Claire has calculated an exit; Rain breaks her model as noise. Roxana holds off the Pursuer long enough for Claire's route to work. Rain contributes little and watches.
+- **6 · Claire and Roxana save Rain** — Claire and Roxana are already investigating the disappearance pattern: Aster's disappearance drives Roxana, while Claire follows evidence and rumors of memory removal. Claire has calculated an exit; Rain breaks her model as noise. Roxana holds off the Pursuer long enough for Claire's route to work. Rain contributes little and watches, colliding with an objective that predates him.
 
 - **7 · The hideout** — First still group scene. Roxana makes Rain family quickly. Claire cannot classify him. She resolves a small problem before he finishes asking, and he permits it without comment.
 
@@ -82,7 +82,7 @@ Quest supplies the route from commute to outbound train. Horror supplies the inc
 
 - **1 · Out of the chute** — Escape into a smoother city. Rain and Roxana board the Circuit Line and recover the goggles and lighter.
 
-- **2 · The boundary** — A full lap makes the correction measurable. The same stations appear twice; the boundary moves between passes. Rain thins in corrected districts. Roxana begins the drills needed to use the Bearing Flame.
+- **2 · The boundary** — A full lap makes the correction measurable. The same stations appear twice; the boundary moves between passes. Rain thins in corrected districts. Roxana begins the drills needed to sustain Undying Flame and learn Starborne without treating the advanced mode as physical restoration.
 
 - **3 · The accuser** — Shiori boards with evidence and a transmission rig, convinced Rain stole her work and caused the disappearances. Rain laughs nervously during the accusation. She recognizes the sound from the vault; her own recordings exonerate him. She stays.
 
@@ -92,11 +92,11 @@ Quest supplies the route from commute to outbound train. Horror supplies the inc
 
 - **6 · The voice** — Rain concedes Claire's evidence and stops asking her to decide. He carries the Ruined One's case into his answer: what does her model say about the next attempt after every previous one failed? Claire leaves shaken, not converted.
 
-- **7 · The amnesty** — Pitfall entry. The Pursuer presents a genuine exchange: surrender the listed property, including the goggles, and the charges can be resolved. His ledger contains Aster's intake, his own signature, and the date he expects to run empty. Rain asks whether it is too late to stop.
+- **7 · The amnesty** — Pitfall entry. The Pursuer presents a genuine exchange: surrender the listed property, including the goggles, and the charges can be resolved. His ledger contains Aster's intake, his own signature, and the date Furnace is projected to run empty—not a biological death date. Rain asks whether it is too late to stop.
 
 - **8 · The unsigned offer** — Rain refuses while the offer is still live. Hours later the corrected boundary takes his home station. The unsigned paperwork remains on the table. He understands that his parents' silence was amputation, not peace.
 
-- **9 · The last stop** — The Perfect Clone manifests solid and apparently costless. Everyone reads it as growth. The inner silence feels like relief. Rain leaves the loop for the caldera without understanding what he spent.
+- **9 · The last stop** — The Perfect Clone manifests as a flawlessly convincing but still intangible physical counterfeit. Everyone reads the fidelity as growth. Rain mistakes the dimming Ghost and easier feeling of letting the projection act for relief, then leaves the loop for the caldera without recognizing the accumulating impairment to his own action initiation.
 
 ---
 
@@ -110,13 +110,13 @@ Quest supplies the route from commute to outbound train. Horror supplies the inc
 
 - **3 · The rearguard** — Roxana holds the last gate against the Pursuer. She loses exchanges, reaches the choice to stop, and re-enters. He can only continue the old burn. He spends ahead of schedule, empties, and stops walking. He does not ally; the gate is simply no longer manned.
 
-- **4 · The overwatch** — Claire coordinates through Shiori's feeds until complexity, duration, execution, and repeated use overwhelm her. The ribbon dies, range collapses, and the lens comes off. At contact range, without a complete model, she says *Go*.
+- **4 · The overwatch** — Claire alternates the broad prediction of Visual Calculus with Convergence's local continuous revision while coordinating through Shiori's feeds. Complexity, duration, execution, and repeated use overwhelm her. The ribbon dies, range collapses, and the lens comes off. At contact range, without a complete model, she says *Go*.
 
-- **5 · The extraction** — Vesper reads Rain through Roxana's finished record. Rain slips. Direct contact succeeds and the UI, music, and world are removed with his autobiographical memory. Claire and Roxana arrive spent. Do not interrupt or soften the extraction: Vesper takes 100% of the target and receives the finished past in full.
+- **5 · The extraction** — Vesper reads Rain through Roxana's finished record. Perfect Clone has worked effectively throughout the approach, but repeated use has compounded the friction between Rain's decision and his real body's initiation. He knows the correct response and begins it too late. Direct contact succeeds and the UI, music, and world are removed with his autobiographical memory. Claire and Roxana arrive spent. Do not interrupt or soften the extraction: Vesper takes 100% of the target and receives the finished past in full.
 
 - **6 · The void** — Only *you* remains. Arc 3 and Perfect Clone have left an independently encoded semantic record, so the completed story remains accurate fact without autobiographical access: “Rain met Roxana,” not “I remember meeting Roxana.” Non-branching choices create present consequences without restoring ownership or reconstructing an old identity. The interface and music rebuild through continued response.
 
-- **7 · The return** — Rain returns capable of responding, not newly completed. He sets out the Clone as the expected target. Vesper passes through the intangible copy; the injured real Rain takes the blow and catches him himself.
+- **7 · The return** — Rain returns capable of responding, not newly completed. The goggles' resonant bond survives autobiographical extraction, and retained semantic and procedural knowledge let him set out the ordinary intangible Clone as the expected target. Vesper commits to the copy while the injured real Rain takes the consequential position, receives the blow, and catches him himself.
 
 - **8 · The refusal** — Vesper offers to remove the Split. Rain refuses. He uses the open-hand gesture without summoning the Ghost and breaks the correction apparatus. Vesper is left with the prism and an event his finished records could not predict.
 
