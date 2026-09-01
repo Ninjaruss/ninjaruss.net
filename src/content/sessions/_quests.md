@@ -1,11 +1,10 @@
 ## Current Arc
 
 **Arc:** Arc I — Integration
-**Stat:** Expression
-**Updated:** August 2026
+**Stat:** Insight
+**Updated:** September 2026
 
-Posting live "shut up and yap" videos to make the old self and the new self
-legible to each other in public, out loud, instead of privately.
+Feeling the momentum of posting multiple videos, I now need to loop *Is the Order a Rabbit?* until I can mostly understand at least one episode. いきましょ！！！
 
 ## The Question
 
@@ -13,13 +12,14 @@ How can I effectively make my old self integrate into my new self?
 
 ## Active
 
-- [Expression] Posting live shut up and yaps
+- [Determination] Interact and listen to Gochiusa Ep 1-3 as much as possible.
 
 ## Ideas — Determination
+- Writing and practicing hirigana symbols
 
 ## Ideas — Insight
 
-- Playing Dead by Daylight in only Japanese
+- Establish workflows for Japanese and creative projects to make committing time frictionless
 
 ## Ideas — Expression
 
@@ -27,7 +27,7 @@ How can I effectively make my old self integrate into my new self?
 
 ## Ideas — Sincerity
 
-- Post a Shut up and YAP on backsliding and/or the pessimism of strength (in spite of it all philosophy)
+- Deeply explore my line for when never to use AI/LLMs on
 
 ## Ideas — Chaos
 
