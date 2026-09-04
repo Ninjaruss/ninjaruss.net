@@ -1,80 +1,24 @@
 ---
+/**
+ * Legacy note URLs.
+ *
+ * Notes are published on Substack and no longer rendered here; the collection
+ * is the redirect map. Server-rendered on purpose: a static Astro.redirect
+ * emits a meta-refresh document, which feed readers ignore and search engines
+ * discount — that would defeat the point of keeping these URLs alive.
+ *
+ * The rest parameter also matches bare /notes, which takes the archive fallback.
+ */
+export const prerender = false;
+
 import { getCollection } from 'astro:content';
-import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
-import ListItem from '../../components/ListItem.astro';
-import EntryHeader from '../../components/EntryHeader.astro';
-import EntryBody from '../../components/EntryBody.astro';
-import RelatedContent from '../../components/RelatedContent.astro';
-import { stripMarkdown, hasMinimalContent } from '../../utils/content';
-import { getAllCollections } from '../../utils/collections';
-import { getJournalItems } from '../../utils/journal';
+import { resolveNoteRedirect } from '../../utils/noteRedirect';
 
-export async function getStaticPaths() {
-  const entries = await getCollection('notes');
-  return entries.map((entry) => ({
-    params: { slug: entry.slug },
-    props: { entry },
-  }));
-}
+const notes = await getCollection('notes');
+const target = resolveNoteRedirect(
+  Astro.params.slug ?? '',
+  notes.map((n) => ({ slug: n.slug, substackUrl: n.data.substackUrl }))
+);
 
-const { entry } = Astro.props;
-const { Content } = await entry.render();
-
-const journalItems = await getJournalItems();
-const { allShelf, allNotes, allShowcase } = await getAllCollections();
-const hasContent = !hasMinimalContent(entry.body);
-
-const pageDescription = entry.data.description ?? stripMarkdown(entry.body).slice(0, 160);
-const pageOgImage = entry.data.image ?? '/social-default.svg';
+return Astro.redirect(target, 301);
 ---
-
-<SplitViewLayout
-  title="Journal"
-  description={pageDescription}
-  section="journal"
-  initialSlug={entry.slug}
-  initialEmblem={entry.data.emblem}
-  pageTitle={entry.data.title}
-  ogImage={pageOgImage}
-  ogType="article"
->
-  <Fragment slot="list">
-    {journalItems.map(({ entry: item, type, href }) => (
-      <ListItem
-        href={href}
-        slug={item.slug}
-        title={item.data.title}
-        emblem={item.data.emblem}
-        contentType={type}
-        searchableContent={stripMarkdown(item.body).slice(0, 500)}
-        hasMinimalContent={hasMinimalContent(item.body)}
-      />
-    ))}
-  </Fragment>
-
-  <Fragment slot="detail">
-    <article class="entry">
-      <div class="container">
-        <EntryHeader
-          title={entry.data.title}
-          publishedAt={entry.data.publishedAt}
-          updatedAt={entry.data.updatedAt}
-          emblem={entry.data.emblem}
-        />
-        <EntryBody hasContent={hasContent}>
-          <Content />
-        </EntryBody>
-        {entry.data.collections.length > 0 && (
-          <RelatedContent
-            currentSlug={entry.slug}
-            currentCollections={entry.data.collections}
-            section="notes"
-            allShelf={allShelf}
-            allNotes={allNotes}
-            allShowcase={allShowcase}
-          />
-        )}
-      </div>
-    </article>
-  </Fragment>
-</SplitViewLayout>
