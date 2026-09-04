@@ -25,8 +25,10 @@ function queryElements(splitView: HTMLElement): SplitViewElements | null {
   const listPanel = splitView.querySelector('.split-view__list') as HTMLElement | null;
   const detailPanel = splitView.querySelector('.split-view__detail') as HTMLElement | null;
 
-  if (!searchInput || !typesList || !clearAllButton || !noResults || !contentArea) {
-    console.error('Split view: missing required elements');
+  // Only the content area is structural. The filter chrome is optional so a
+  // bare surface (no search, no types) still gets selection + content loading.
+  if (!contentArea) {
+    console.error('Split view: missing content area');
     return null;
   }
 
@@ -75,10 +77,10 @@ export function initSplitView(): void {
 
   // Restore filter state from URL
   const { search: initialSearch, types: initialTypes } = getFiltersFromURL();
-  elements.searchInput.value = initialSearch;
-  populateTypes(elements.typesList, elements.listItems, initialTypes);
+  if (elements.searchInput) elements.searchInput.value = initialSearch;
+  if (elements.typesList) populateTypes(elements.typesList, elements.listItems, initialTypes);
   // Reflect restored (non-search) filters on the clear button
-  elements.clearAllButton.hidden = initialTypes.size === 0;
+  if (elements.clearAllButton) elements.clearAllButton.hidden = initialTypes.size === 0;
   applyFilters(elements.listItems, elements.noResults);
 
   // Mark initial active item

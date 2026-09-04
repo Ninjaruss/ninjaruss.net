@@ -1,10 +1,11 @@
 export interface SplitViewElements {
   splitView: HTMLElement;
-  searchInput: HTMLInputElement;
+  /** Filter chrome is absent on bare surfaces (e.g. /showcase) — all nullable. */
+  searchInput: HTMLInputElement | null;
   /** Segmented type control (.split-view__types); hidden when <2 types */
-  typesList: HTMLElement;
-  clearAllButton: HTMLElement;
-  noResults: HTMLElement;
+  typesList: HTMLElement | null;
+  clearAllButton: HTMLElement | null;
+  noResults: HTMLElement | null;
   contentArea: HTMLElement;
   listItems: HTMLElement[];
   navContainer: HTMLElement | null;

@@ -5,7 +5,7 @@ import { getFiltersFromURL } from './urlState';
  */
 export function applyFilters(
   listItems: HTMLElement[],
-  noResults: HTMLElement
+  noResults: HTMLElement | null
 ): void {
   const { search, types } = getFiltersFromURL();
   const query = search.toLowerCase().trim();
@@ -31,7 +31,7 @@ export function applyFilters(
     if (isVisible) visibleCount++;
   });
 
-  noResults.hidden = visibleCount > 0;
+  if (noResults) noResults.hidden = visibleCount > 0;
 
   // Update "visible / total" count display
   const countEl = document.getElementById('split-count');

@@ -13,6 +13,9 @@ export function bindFilterEvents(
   idleManager: IdleManager
 ): void {
   const { searchInput, typesList, clearAllButton, listItems, noResults } = elements;
+  // A bare surface renders no filter chrome — nothing to bind. Selection and
+  // content loading are bound separately in bindListEvents and are unaffected.
+  if (!searchInput || !typesList || !clearAllButton) return;
 
   // Reflect a type selection onto the segmented control (single-select)
   const syncTypePills = (types: Set<string>) => {
