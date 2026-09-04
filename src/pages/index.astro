@@ -117,6 +117,13 @@ const latestShowcase = [...showcase].sort(
 )[0];
 
 // Interleave writing/showcase/writing so the client-side cycle alternates.
+interface LatestEntry {
+  title: string;
+  href: string;
+  date: string;
+  emblem: string;
+  excerpt: string;
+}
 const latestEntries = [
   substackPosts[0] && {
     title: substackPosts[0].title,
@@ -143,7 +150,7 @@ const latestEntries = [
     emblem: '/images/emblems/scroll.svg',
     excerpt: substackPosts[1].description.slice(0, 140),
   },
-].filter(Boolean);
+].filter((entry): entry is LatestEntry => Boolean(entry));
 
 ---
 

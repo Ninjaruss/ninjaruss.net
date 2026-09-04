@@ -50,6 +50,52 @@ describe('parseSubstackFeed', () => {
   });
 });
 
+function itemFeed(title: string, description: string): string {
+  return `<rss><channel><item>
+    <title>${title}</title>
+    <link>https://ninjaruss.substack.com/p/entities</link>
+    <pubDate>Mon, 01 Sep 2026 12:00:00 GMT</pubDate>
+    <description>${description}</description>
+  </item></channel></rss>`;
+}
+
+describe('parseSubstackFeed entity decoding', () => {
+  it('decodes decimal numeric entities to curly quotes', () => {
+    const posts = parseSubstackFeed(itemFeed('&#8220;Quoted&#8221;', 'plain'));
+    expect(posts[0].title).toBe('“Quoted”');
+  });
+
+  it('decodes hex numeric entities', () => {
+    const posts = parseSubstackFeed(itemFeed('An em&#x2014;dash', 'plain'));
+    expect(posts[0].title).toBe('An em—dash');
+  });
+
+  it('decodes named entities beyond the original five', () => {
+    const posts = parseSubstackFeed(itemFeed('Wait&hellip;', 'plain'));
+    expect(posts[0].title).toBe('Wait…');
+  });
+
+  it('matches the observed regression shape', () => {
+    const description =
+      'Time is running out, yet I have &#8220;all&#8221; the time in the world.';
+    const posts = parseSubstackFeed(itemFeed('title', description));
+    expect(posts[0].description).toBe(
+      'Time is running out, yet I have “all” the time in the world.'
+    );
+  });
+
+  it('decodes &amp; last so escaped entities are not double-decoded', () => {
+    const posts = parseSubstackFeed(itemFeed('&amp;#8220;', 'plain'));
+    expect(posts[0].title).toBe('&#8220;');
+  });
+
+  it('leaves a malformed or out-of-range numeric entity intact without throwing', () => {
+    expect(() => parseSubstackFeed(itemFeed('&#zzz;', 'plain'))).not.toThrow();
+    const posts = parseSubstackFeed(itemFeed('Bad &#99999999999; entity', 'plain'));
+    expect(posts[0].title).toBe('Bad &#99999999999; entity');
+  });
+});
+
 afterEach(() => {
   vi.unstubAllGlobals();
 });

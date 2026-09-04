@@ -12,14 +12,47 @@ export interface SubstackPost {
 
 const ITEM_RE = /<item\b[^>]*>([\s\S]*?)<\/item>/g;
 
-/** Undo the five XML entities a feed generator emits. Anything exotic is left alone. */
+/** Named entities beyond the basic five that Substack's HTML payloads commonly carry. */
+const NAMED_ENTITIES: Record<string, string> = {
+  nbsp: ' ',
+  hellip: '…',
+  mdash: '—',
+  ndash: '–',
+};
+
+/**
+ * Undo the XML/HTML entities a feed generator emits: the five basic XML
+ * entities, decimal (`&#8220;`) and hex (`&#x2014;`) numeric entities, and a
+ * handful of common named ones. Anything else is left alone.
+ *
+ * `&amp;` MUST be decoded last — decoding it earlier would double-decode
+ * deliberately-escaped input like `&amp;#8220;` (meant to display literally
+ * as `&#8220;`) into a curly quote.
+ *
+ * Never throws: a malformed/out-of-range numeric entity is left as-is rather
+ * than crashing the build.
+ */
 function decodeEntities(s: string): string {
   return s
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&#0?39;|&apos;/g, "'")
+    .replace(/&#x([0-9a-fA-F]+);/g, (match, hex) => {
+      const code = parseInt(hex, 16);
+      return isValidCodePoint(code) ? String.fromCodePoint(code) : match;
+    })
+    .replace(/&#(\d+);/g, (match, dec) => {
+      const code = parseInt(dec, 10);
+      return isValidCodePoint(code) ? String.fromCodePoint(code) : match;
+    })
+    .replace(/&(nbsp|hellip|mdash|ndash);/g, (match, name) => NAMED_ENTITIES[name] ?? match)
     .replace(/&amp;/g, '&');
+}
+
+/** Guard against a code point `String.fromCodePoint` would throw on. */
+function isValidCodePoint(code: number): boolean {
+  return Number.isInteger(code) && code >= 0 && code <= 0x10ffff;
 }
 
 /** Read one child element out of an <item> block, unwrapping CDATA. */
