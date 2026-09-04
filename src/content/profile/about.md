@@ -17,7 +17,7 @@ makes:
     href: "https://www.youtube.com/@Ninjaruss"
   - label: "Things I build"
     blurb: "Utasync, L-file, ninjaruss.net, and other things that usually begin with: why doesn't this already exist?"
-    href: "/journal?types=showcase"
+    href: "/showcase"
 
 subjects:
   - group: "choice & the self"
@@ -44,8 +44,8 @@ links:
   - label: "YouTube"
     href: "https://www.youtube.com/@Ninjaruss"
     primary: true
-  - label: "Read the journal"
-    href: "/journal"
+  - label: "Read on Substack"
+    href: "https://ninjaruss.substack.com"
     primary: true
   - label: "Twitch"
     href: "https://twitch.tv/ninjaruss"

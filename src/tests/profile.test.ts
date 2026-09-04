@@ -81,7 +81,7 @@ const validProfile = {
   hook: 'I decide on a whim and figure out the logistics after.',
   credentials: ['B.S. Computer Science, 2021'],
   makes: [{ label: 'Remember Rain', blurb: 'The visual novel', href: '/novel' }],
-  makesMore: { text: 'plus whatever is next', href: '/journal?types=showcase' },
+  makesMore: { text: 'plus whatever is next', href: '/showcase' },
   subjects: [{ group: 'the self', items: ['Commitment', 'Avoidance'] }],
   connect: 'Open to collaboration',
   links: [{ label: 'YouTube', href: 'https://youtube.com/@x', primary: true }],
