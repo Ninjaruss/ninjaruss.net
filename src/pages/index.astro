@@ -10,9 +10,13 @@ import { stripMarkdown } from '../utils/content';
 import { formatDate } from '../utils/dates';
 import { readFileSync } from 'fs';
 import { parseProtagonist, DEFAULT_PROTAGONIST } from '../utils/protagonist';
+import { fetchSubstackPosts } from '../utils/substack';
 
-// Query all content collections. Notes/showcase are dated feeds; shelf is not.
-const notes = await getCollection('notes', ({ data }) => !data.draft && data.publishedAt);
+// Writing lives on Substack. Fetched at build time; [] on any failure, which
+// collapses both tiles to showcase-only rather than failing the build.
+const substackPosts = await fetchSubstackPosts(5);
+
+// Query remaining content collections. Showcase is a dated feed; shelf is not.
 // The collage is a sample of the shelf, not a dated feed — requiring
 // `publishedAt` here hid 25 of 29 entries and left the tile 4 covers wide.
 // `effectiveDate` already sorts undated entries last.
@@ -54,22 +58,15 @@ const recentMedia = [...media]
 const shortDate = (ms: number) =>
   new Date(ms).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).toLowerCase();
 
-type JournalRow = { href: string; title: string; type: 'note' | 'showcase'; date: string };
-const recentJournal: JournalRow[] = [
-  ...notes.map(e => ({ href: `/notes/${e.slug}`, title: e.data.title, type: 'note' as const, d: effectiveDate(e) })),
-  ...showcase.map(e => ({ href: `/showcase/${e.slug}`, title: e.data.title, type: 'showcase' as const, d: effectiveDate(e) })),
-]
-  .sort((a, b) => b.d - a.d)
-  .slice(0, 5)
-  .map(({ href, title, type, d }) => ({ href, title, type, date: shortDate(d) }));
-
-// Latest tile pool — the latest 2 notes and latest 1 showcase, interleaved
-// (note, showcase, note) so the client-side cycle alternates types.
-const byDateDesc = (a: (typeof notes)[number], b: (typeof notes)[number]) =>
-  effectiveDate(b) - effectiveDate(a);
-const latestNotes = [...notes].sort(byDateDesc).slice(0, 2);
-const latestShowcase = [...showcase].sort(byDateDesc).slice(0, 1);
-const latestPool = [latestNotes[0], latestShowcase[0], latestNotes[1]].filter(Boolean);
+type WritingRow = { href: string; title: string; date: string };
+const recentWriting: WritingRow[] = substackPosts.slice(0, 5).map((p) => {
+  const ms = Date.parse(p.pubDate);
+  return {
+    href: p.link,
+    title: p.title,
+    date: Number.isNaN(ms) ? '' : shortDate(ms),
+  };
+});
 
 // Novel — find most recently modified file date from MetaData.txt
 const novelDir = join(process.cwd(), 'src/content/novel');
@@ -115,13 +112,38 @@ try {
 
 // Prepare data for client-side cycling. The date is formatted at build time —
 // absolute only, never time-since (no-shame invariant).
-const latestEntries = latestPool.map(entry => ({
-  title: entry.data.title,
-  href: `/${entry.collection}/${entry.slug}`,
-  date: formatDate(entry.data.updatedAt ?? entry.data.publishedAt!),
-  emblem: entry.data.emblem ?? DEFAULT_EMBLEM,
-  excerpt: stripMarkdown(entry.body ?? '').slice(0, 140),
-}));
+const latestShowcase = [...showcase].sort(
+  (a, b) => effectiveDate(b) - effectiveDate(a)
+)[0];
+
+// Interleave writing/showcase/writing so the client-side cycle alternates.
+const latestEntries = [
+  substackPosts[0] && {
+    title: substackPosts[0].title,
+    href: substackPosts[0].link,
+    date: Number.isNaN(Date.parse(substackPosts[0].pubDate))
+      ? ''
+      : formatDate(new Date(substackPosts[0].pubDate)),
+    emblem: '/images/emblems/scroll.svg',
+    excerpt: substackPosts[0].description.slice(0, 140),
+  },
+  latestShowcase && {
+    title: latestShowcase.data.title,
+    href: `/showcase/${latestShowcase.slug}`,
+    date: formatDate(latestShowcase.data.updatedAt ?? latestShowcase.data.publishedAt!),
+    emblem: latestShowcase.data.emblem ?? DEFAULT_EMBLEM,
+    excerpt: stripMarkdown(latestShowcase.body ?? '').slice(0, 140),
+  },
+  substackPosts[1] && {
+    title: substackPosts[1].title,
+    href: substackPosts[1].link,
+    date: Number.isNaN(Date.parse(substackPosts[1].pubDate))
+      ? ''
+      : formatDate(new Date(substackPosts[1].pubDate)),
+    emblem: '/images/emblems/scroll.svg',
+    excerpt: substackPosts[1].description.slice(0, 140),
+  },
+].filter(Boolean);
 
 ---
 
@@ -247,17 +269,17 @@ const latestEntries = latestPool.map(entry => ({
       </div>
 
       <!-- Rows 2-3: Journal (4×2, slash split) + Novel (1×2) + Stream (1×2) -->
-      <div class="bento-tile bento-tile--full bento-tile--highlight bento-tile--core bento-tile--span-4x2 journal-tile" data-tile-href="/journal">
+      <div class="bento-tile bento-tile--full bento-tile--highlight bento-tile--core bento-tile--span-4x2 journal-tile" data-tile-href="/showcase">
         <div class="journal-tile__notes">
-          <a href="/journal?types=note" class="journal-tile__head">
+          <a href="https://ninjaruss.substack.com" class="journal-tile__head">
             <div class="bento-tile__header">
-              <span class="bento-tile__label">Journal</span>
+              <span class="bento-tile__label">Writing</span>
               <h3 class="bento-tile__title">Notes</h3>
             </div>
           </a>
-          {recentJournal.length > 0 && (
+          {recentWriting.length > 0 && (
             <div class="journal-tile__list">
-              {recentJournal.map(row => (
+              {recentWriting.map(row => (
                 <a class="journal-tile__row" href={row.href} title={row.title}>
                   <span class="journal-tile__row-title">{row.title}</span>
                   <span class="journal-tile__date">{row.date}</span>
@@ -268,7 +290,7 @@ const latestEntries = latestPool.map(entry => ({
         </div>
         {recentShowcase.length > 0 && (
           <div class="journal-tile__showcases">
-            <a href="/journal?types=showcase" class="journal-tile__showcase-tab">Showcases</a>
+            <a href="/showcase" class="journal-tile__showcase-tab">Showcases</a>
             <div class="journal-tile__projects">
               {recentShowcase.map((entry, i) => (
                 <a
