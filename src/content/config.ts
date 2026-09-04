@@ -23,10 +23,17 @@ const shelf = defineCollection({
   }),
 });
 
-// Notes collection — philosophical fragments, beliefs in progress
+// Notes collection — philosophical fragments, beliefs in progress.
+// No longer renders pages: writing is published on Substack, and this
+// collection is the slug -> post redirect map (src/utils/noteRedirect.ts).
+// The markdown stays in the repo as the working copy, public via GitHub.
 const notes = defineCollection({
   type: 'content',
-  schema: sharedSchema,
+  schema: sharedSchema.extend({
+    // Optional only because a half-written entry must not fail the build.
+    // Backfill target: every note carries one.
+    substackUrl: z.string().url().optional(),
+  }),
 });
 
 // Showcase collection — projects framed as inquiries
