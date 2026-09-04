@@ -1,4 +1,5 @@
 ---
+substackUrl: "https://ninjaruss.substack.com/p/loser-behavior"
 title: "Loser Behavior"
 emblem: "/images/emblems/scroll.svg"
 publishedAt: 2026-04-07

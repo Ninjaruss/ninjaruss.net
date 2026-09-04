@@ -1,4 +1,5 @@
 ---
+substackUrl: "https://ninjaruss.substack.com/p/vibe-learning"
 title: "Vibe Learning"
 emblem: "/images/emblems/torii.svg"
 publishedAt: 2026-04-20

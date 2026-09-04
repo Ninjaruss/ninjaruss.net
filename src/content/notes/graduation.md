@@ -1,4 +1,5 @@
 ---
+substackUrl: "https://ninjaruss.substack.com/p/graduation"
 title: "Graduation"
 emblem: "/images/emblems/flame.svg"
 publishedAt: 2026-05-28

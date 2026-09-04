@@ -1,4 +1,5 @@
 ---
+substackUrl: "https://ninjaruss.substack.com/p/reason-for-japan"
 title: "Reason for Japan"
 emblem: "/images/emblems/torii.svg"
 publishedAt: 2026-03-17

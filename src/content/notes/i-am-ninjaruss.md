@@ -1,4 +1,5 @@
 ---
+substackUrl: "https://ninjaruss.substack.com/p/i-am-ninjaruss"
 title: "I am Ninjaruss"
 emblem: "/images/emblems/shuriken.svg"
 publishedAt: 2026-07-14

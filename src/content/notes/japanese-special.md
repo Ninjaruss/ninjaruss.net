@@ -1,4 +1,5 @@
 ---
+substackUrl: "https://ninjaruss.substack.com/p/japans-special-aura"
 title: "Japan's Special Aura"
 emblem: "/images/emblems/torii.svg"
 publishedAt: 2026-03-09

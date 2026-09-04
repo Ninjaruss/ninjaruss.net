@@ -1,4 +1,5 @@
 ---
+substackUrl: "https://ninjaruss.substack.com/p/the-importance-and-uselessness-of"
 title: "The Importance (and Uselessness) of Yapping"
 emblem: "/images/emblems/flame.svg"
 publishedAt: 2026-08-19

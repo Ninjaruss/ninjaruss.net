@@ -1,4 +1,5 @@
 ---
+substackUrl: "https://ninjaruss.substack.com/p/free-time"
 title: "Free Time"
 emblem: "/images/emblems/scroll.svg"
 publishedAt: 2026-08-24
