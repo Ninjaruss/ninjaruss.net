@@ -33,8 +33,8 @@ src/
 ├── layouts/          # Page layout templates
 ├── pages/            # File-based routing
 ├── styles/           # Global CSS (no frameworks)
-├── tests/            # Vitest unit tests (novel, content, journal, shelf, sessions, streamTile, ...)
-└── utils/            # Shared utilities (content, collections, journal, dates, novel, splitView/)
+├── tests/            # Vitest unit tests (novel, content, substack, shelf, sessions, streamTile, ...)
+└── utils/            # Shared utilities (content, collections, substack, noteRedirect, dates, novel, splitView/)
 ```
 
 ### Key Patterns
@@ -58,7 +58,7 @@ All collections share a base schema (defined in `sharedSchema`):
 
 Collection-specific extensions:
 - **shelf**: adds `content_type: 'anime' | 'manga' | 'film' | 'series' | 'music' | 'book' | 'game' | 'character' | 'other'`, `isFavorite: boolean` (defaults to false), and `tags` (string array, defaults to []) — shelf is the only collection with tags
-- **notes**: uses sharedSchema without extensions (no tags; relatedness via `collections`)
+- **notes**: uses sharedSchema without extensions (no tags; relatedness via `collections`), plus an optional `substackUrl` (`z.string().url().optional()` — optional only so a half-written entry doesn't fail the build). The collection no longer produces pages; it is the slug→Substack redirect map (see the Substack section below)
 - **showcase**: uses sharedSchema without extensions
 - **now**: simplified schema with `title` (defaults to 'Now'), `publishedAt` (required), `updatedAt`, `draft`
 - **profile**: single entry backing `/about` — `hook` (required), `credentials[]`, `makes[]` (`{label, blurb, href}`), `makesMore` (`{text, href}`), `subjects[]` (`{group, items[]}`), `connect`, `links[]` (`{label, href, primary}`). Every string is `.min(1)` — a blank field is a build error, not a silently empty card. Schema is defined in `src/utils/profile.ts` and imported into `config.ts` (not inline) so it stays unit-testable. Body markdown is the ABOUT prose. Deliberately has **no** `draft` field: it's a singleton the author edits directly
@@ -68,19 +68,19 @@ Collection-specific extensions:
 | Layout | Purpose |
 |--------|---------|
 | `BaseLayout.astro` | Foundation wrapper with meta, styles, view transitions |
-| `SplitViewLayout.astro` | Three-panel list/detail/emblem interface with client-side navigation and emblem card sidebar. Optional `kicker` prop; renders the unified P4G section header (`p4g-tab` + `p4g-heading` + `p4g-underline`; the page title is the `<h1>` and the entry title in the detail panel is the `<h2>` beneath it, on the list route and the standalone detail routes alike) — the same header pattern is replicated on the Now, Now-archive, and Novel pages; optional `placeholderStats` prop renders a build-time stats `<dl>` in the no-selection placeholder (journal: notes/showcases/newest); optional `showDraw` prop renders the draw-a-card deck in the placeholder + the mobile DRAW button (journal only) |
+| `SplitViewLayout.astro` | Three-panel list/detail/emblem interface with client-side navigation and emblem card sidebar. Optional `kicker` prop; renders the unified P4G section header (`p4g-tab` + `p4g-heading` + `p4g-underline`; the page title is the `<h1>` and the entry title in the detail panel is the `<h2>` beneath it, on the list route and the standalone detail routes alike) — the same header pattern is replicated on the Now, Now-archive, and Novel pages; optional `showSearch` prop (default `true`) gates the whole `.split-view__filter` block (search input + segmented type control) — `/showcase` renders it `false` and is bare: no search, no type pills, no draw deck, no RSS icon. (`placeholderStats` and `showDraw` — the build-time stats `<dl>` and the draw-a-card deck/mobile DRAW button — were removed with `/journal` in the Substack migration; see the Substack section below) |
 
 ## Component Inventory
 
 ### Structural
 - `BentoGrid.astro` / `BentoTile.astro` — Homepage grid system with visual hierarchy
-- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Journal/VN/Shelf/About/Now with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /about. (No longer the centered floating Home pill.) ≤768px: items wrap into two rows (4+3, 44px targets, hairlines via gap + gold-tinted inner background) and the back link takes a full-width third row (a folder title never fits a quarter-width cell); a small script publishes the nav's measured height as `--nav-clearance` on <html> (re-set on astro:page-load/resize), consumed by page bottom paddings (now pages, SplitViewLayout detail panel, novel.css) so the bar never covers content.
+- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Showcase/VN/Shelf/About/Now with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/showcase/[slug]` paths highlight Showcase via the shared `startsWith` match on `['/showcase']` — no special-casing needed now that `/notes/*` is a server-rendered redirect off-site rather than an on-site route); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /about. (No longer the centered floating Home pill.) ≤768px: items wrap into two rows (4+3, 44px targets, hairlines via gap + gold-tinted inner background) and the back link takes a full-width third row (a folder title never fits a quarter-width cell); a small script publishes the nav's measured height as `--nav-clearance` on <html> (re-set on astro:page-load/resize), consumed by page bottom paddings (now pages, SplitViewLayout detail panel, novel.css) so the bar never covers content.
 
 ### Bento Tile Hierarchy
 The homepage uses a visual hierarchy pattern:
-- **Journal tile** (`.journal-tile`, 4×2, core, slash split): gold notes field / black showcases field separated by a diagonal `clip-path` seam (`::before` overlay; shifts ~2% left on hover, static under reduced motion; notes rows carry `padding-right: var(--space-xl)` so dates clear the hovered seam — the seam leans left as it descends (66%→58% at rest, 64%→56% on hover) so its encroachment *grows* down the list while the padding is constant, which is why the bottom row is the first to be crossed; the old `--space-md` left the last row's date 2px under the black field on hover at ≥1232px, and the date is black text, so it did not merely overlap, it vanished). Root is a `div` (no nested anchors). Whole-tile navigation is JS (`initializeJournalTileNav`, `data-tile-href="/journal"`): a click handler on the tile routes any non-`<a>` click to the journal via `window.location.href` (a plain assignment on purpose — the view-transition router's trusted-event gating makes a stretched-link/`navigate()` approach unverifiable and it silently failed in testing); entry links keep their own view-transition nav. Left: JOURNAL tab + "Notes" heading linking to `/journal?types=note`, seven deep-link rows with right-aligned dates. Right: gold SHOWCASES tab linking to `/journal?types=showcase`, three showcase rows (42px emblem + visible title; gold border marks the most recent); the showcases column has `padding-left` so its content clears the seam and never straddles the diagonal. Corner hover triangle is gold (overrides the highlight-tile black — it sits on the black field). Below 1024px the fields stack and the black field is painted by `.journal-tile__showcases` itself (negative-margin bleed + 16px diagonal top clip) — tile-relative percentage seams can't track auto-sized content.
+- **Journal tile** (`.journal-tile`, 4×2, core, slash split): gold Writing field / black showcases field separated by a diagonal `clip-path` seam (`::before` overlay; shifts ~2% left on hover, static under reduced motion; row entries carry `padding-right: var(--space-xl)` so dates clear the hovered seam — the seam leans left as it descends (66%→58% at rest, 64%→56% on hover) so its encroachment *grows* down the list while the padding is constant, which is why the bottom row is the first to be crossed; the old `--space-md` left the last row's date 2px under the black field on hover at ≥1232px, and the date is black text, so it did not merely overlap, it vanished). Root is a `div` (no nested anchors). Whole-tile navigation is JS (`initializeJournalTileNav`, `data-tile-href="/showcase"`): a click handler on the tile routes any non-`<a>` click to `/showcase` via `window.location.href` (a plain assignment on purpose — the view-transition router's trusted-event gating makes a stretched-link/`navigate()` approach unverifiable and it silently failed in testing); entry links keep their own view-transition nav. Left: gold WRITING tab linking out to `https://ninjaruss.substack.com`, up to five deep-link rows fetched at build time from the Substack feed (`fetchSubstackPosts()`, see the Substack section below) with right-aligned dates — the row list simply doesn't render when the feed fetch returned `[]`. Right: gold SHOWCASES tab linking to `/showcase`, three showcase rows (42px emblem + visible title; gold border marks the most recent); the showcases column has `padding-left` so its content clears the seam and never straddles the diagonal. Corner hover triangle is gold (overrides the highlight-tile black — it sits on the black field). Below 1024px the fields stack and the black field is painted by `.journal-tile__showcases` itself (negative-margin bleed + 16px diagonal top clip) — tile-relative percentage seams can't track auto-sized content. **Naming wart, documented rather than fixed**: the tile reads "Writing" in the UI and its whole-tile click now routes to `/showcase`, but the CSS class family (`.journal-tile`, `.journal-tile__*`) and the JS function (`initializeJournalTileNav()`) still say "journal" — leftover from when this was the merged `/journal` tile. Same kind of wart as `#stream-tile` below (see the Stream tile bullet); not renamed here because that's a separate change from documenting it.
 - **Core tiles** (`.bento-tile--core`): Journal and Shelf (Media Log) with elevated gold glow and larger typography. The homepage Shelf tile's 8-cover collage tucks under a diagonal top edge (`.tile-poster-strip` clip) — one cut, no new colors.
-- **Signal tiles**: Current activity indicators (Now, Latest) — Now shows the latest now-entry's title; Latest is 2×2 with a stripped-markdown excerpt, an absolute per-entry date (`.latest-date`, never time-since, rendered lowercase to match the journal tile's date rows), and cycles client-side through the latest 2 notes + latest 1 showcase (interleaved note/showcase/note, 7s interval; each swap is a P4G gold sweep — a skewed gold panel (`.latest-tile__sweep`, `skewX(--skew-accent)`, the same move as the journal-entry hover `.list-item::before`) sweeps across via the `latest-sweep` keyframes on `#latest-tile.is-cycling`: in to cover, entry swapped behind it at the midpoint, out to reveal; cycling is skipped entirely under `prefers-reduced-motion`, which also sets the sweep `animation: none`). The emblem sits on a deeper-black angled field (`.latest-tile__emblem-wrap`, `clip-path` + negative-margin bleed) traced by a gold hairline (`::before`, skewX(-4deg) measured against the clip edge); ≤768px the field flattens to the tile's bottom edge and the hairline hides.
+- **Signal tiles**: Current activity indicators (Now, Latest) — Now shows the latest now-entry's title; Latest is 2×2 with a stripped-markdown excerpt, an absolute per-entry date (`.latest-date`, never time-since, rendered lowercase to match the journal tile's date rows), and cycles client-side through the latest 2 Substack posts + latest 1 showcase (interleaved post/showcase/post, 7s interval; Substack entries have no per-entry emblem of their own and render `/images/emblems/scroll.svg`; each swap is a P4G gold sweep — a skewed gold panel (`.latest-tile__sweep`, `skewX(--skew-accent)`, the same move as the journal-entry hover `.list-item::before`) sweeps across via the `latest-sweep` keyframes on `#latest-tile.is-cycling`: in to cover, entry swapped behind it at the midpoint, out to reveal; cycling is skipped entirely under `prefers-reduced-motion`, which also sets the sweep `animation: none`). The emblem sits on a deeper-black angled field (`.latest-tile__emblem-wrap`, `clip-path` + negative-margin bleed) traced by a gold hairline (`::before`, skewX(-4deg) measured against the clip edge); ≤768px the field flattens to the tile's bottom edge and the hairline hides.
 - **Novel tile** (`.novel-tile`, 1×2, rows 2-3): "rain gauge" — script words (Manuscript/ folder, big gold; labelled "script words" in the UI) vs outline words (other folders, small grey) from `computeNovelStats()`. Each rain drop is randomized per-visit (position/speed/delay/length/opacity) by `initializeNovelRain`. Client script (`initializeNovelRain`) reads `data-scene-modified`/`data-outline-modified` and sets `is-raining` (scene work ≤14 days, CSS rain animation scaled by `--rain-strength`), `is-misting` (outline-only work ≤14 days, sparse slow drizzle), or `is-waiting` (static "the rain waits." line); the rain spans the full tile (14 drops with varied lengths via `--len`, spread across the width). Design invariant: never red, never displays a count of absent days — the tile rewards accumulation, it does not shame absence.
 - **Stream tile** (`.stream-tile`, `#stream-tile`): Dark 1×2 tile linking to `/about`, kicker "About" and the protagonist's name as its title; shows a one-line teaser of the current arc's decision text (read from `_quests.md`'s `## Current Arc` section, the same source `/about`'s arc card uses). Pulsing red border (`--color-live`) when live, via the unchanged `/api/live-status.ts` polling. Known wart: the element keeps `id="stream-tile"`, the `.stream-tile` class, and the whole `--st-*`/`.st-*` CSS prefix family from its pre-merge "Stream" identity even though the tile now means "About" — the id is load-bearing for the live-status client script, and renaming it would have to touch the CSS and that script together in the same pass, so it was deliberately left for a separate cleanup.
 - **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) and an Email tile (2×1, `#mail-tile`, **gold** — see below) with 48x48px logos/icons and hover effects. The email address (mailbox@ninjaruss.net) is never in the served HTML — `initializeMailTile()` assembles the `mailto:` on first pointerenter/focus/touch/click (bot-scrape mitigation; same pattern fills `#about-mail` in `/about`'s Connect block). Angled gold kicker chips name each tile's role (WATCHLIST / LISTENING / CONTACT), corner-cut clip-path (no hover shadow — clip-path would clip it, same reason there's no focus outline ring — hover/focus feedback is the gold sweep + lift instead), brand-colored hovers replaced by the shared `.p4g-sweep` gold wash with black text.
@@ -214,17 +214,18 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 ## Pages & Routes
 
 ### Content Collection Pages
-- `/journal` — SplitViewLayout merging the `notes` + `showcase` collections into one date-sorted list ("notes & showcases" kicker). Filters are search + a segmented type control only (All / note / showcase, single-select with per-type counts, `?types=` URL param), plus a "visible / total" count and a compact ✕ clear-all beside search — no tag filtering (legacy `?tags=` params are ignored and scrubbed from the URL on first filter interaction, `urlState.ts`). Unknown `?types=` values — including the legacy `fragment`/`inquiry` — are dropped (fall back to All, enforced in `filterUI.populateTypes` + `filterEngine.applyFilters`). The no-selection placeholder shows build-time stats (`placeholderStats`) and the draw-a-card deck (`showDraw`). Draw-a-card: desktop = deck in the placeholder (one draw per visit; clicking the revealed face opens the entry through the normal selection path), mobile (≤900px) = a DRAW button that navigates to a random note; the pool respects active filters and contains notes only (pure logic in `splitView/drawCard.ts`). (The old featured strip linking `/novel` and `/status` (then `/stream`) was removed; those live in the NavPill now.)
-- `/notes/[slug]` — Individual note detail pages (left panel shows the merged journal list, `section="journal"`)
-- `/showcase/[slug]` — Individual project detail pages (same merged list)
+- `/showcase` — `SplitViewLayout`, `section="showcase"`, showcase entries only, sorted by `updatedAt`/`publishedAt` descending. **Bare** (`showSearch={false}`): no search, no type control, no draw deck, no RSS icon — `populateTypes` already hides the type control when fewer than two types are present, so nothing extra was needed there for the single-type list. Removing the draw deck means `/showcase` now **auto-opens its newest entry on desktop** on load — the deck was the only thing that used to suppress SplitViewLayout's ordinary auto-open behavior (see Important Implementation Detail 1). Dissolved from the old `/journal`, which merged notes + showcases into one date-sorted list; notes moved to Substack (see the Substack section below), so the merge had nothing left to merge. (The old featured strip linking `/novel` and `/status` (then `/stream`) was removed earlier; those live in the NavPill now.)
+- `/notes/[...slug]` — **Not a page.** Server-rendered (`export const prerender = false`) redirect route: reads the `notes` collection, resolves the slug via `resolveNoteRedirect()` (`src/utils/noteRedirect.ts`), and returns `Astro.redirect(url, 301)` to that note's `substackUrl`, or to the Substack archive if the note isn't backfilled yet or the slug is unknown. The rest parameter also matches bare `/notes` (empty slug → archive), so there is no separate `/notes/index.astro`. Server-rendered on purpose — a static `Astro.redirect` from a prerendered page degrades to a meta-refresh HTML document, which feed readers ignore and search engines discount, defeating the point of preserving these inbound links. See the Substack section below.
+- `/showcase/[slug]` — Individual project detail pages (left panel shows the showcase-only list, `section="showcase"`)
 - `/shelf` — Flat 'wall' collage of every entry (size = favorite/written/logged tier) with a sticky type-filter bar and inline quick-view panel. Progressive enhancement: cards link to `/shelf/[slug]` without JS; JS intercepts clicks to push `/shelf/[slug]` into history and open the panel instead (`?open=slug` supported for legacy links only).
 - `/shelf/[slug]` — Individual shelf detail pages
 
 ### Legacy Routes (301 Redirects)
 - `/status` → redirects to `/about` (the 2026-08 `/status`↔`/about` merge; `astro.config.mjs` `redirects`).
 - `/stream` → redirects to `/about` (retargeted in the same merge so it's a direct hop, not a chain through `/status`; `astro.config.mjs` `redirects`).
-- `/notes` → redirects to `/journal?types=note` (list page only; detail routes live)
-- `/showcase` → redirects to `/journal?types=showcase` (list page only; detail routes live)
+- `/journal` → redirects to `/showcase` (the merge had nothing left to merge once notes moved to Substack; `astro.config.mjs` `redirects`, alongside `/status`/`/stream`).
+- `/notes/*` (including bare `/notes`) → server-rendered 301 to the note's Substack post, falling back to the Substack archive (`src/pages/notes/[...slug].astro` — deliberately **not** a `vercel.json`/`astro.config.mjs` entry; see the Substack section below for why it needs to be server-rendered).
+- `/rss.xml` → server-side 301 to `https://ninjaruss.substack.com/feed` (`vercel.json`, not `astro.config.mjs` — the destination is external and a feed reader needs a true 301). **`vercel.json` redirects do not apply under `astro dev`** — verify against the real deployment.
 - `/favorites` → redirects to `/shelf` (the `?fav=1` filter no longer exists)
 - `/favorites/[slug]` → redirects to `/shelf/[slug]`
 - `/media` → redirects to `/shelf` (via `astro.config.mjs` redirects)
@@ -236,10 +237,78 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 
 ### Utility Pages
 - `/` — Homepage with BentoGrid tiles
-- `/about` — profile card. One card, one screen: header (name/epithet/portrait from `_protagonist.md` via `parseProtagonist`), credential lines, WHAT I MAKE, SUBJECTS I EXPLORE, ABOUT prose, NOW, CONNECT + FIND ME. Copy is hand-written in the single-entry `profile` collection (`src/content/profile/about.md`); the Zod schema and the `pickProfile`/`nowLine` selectors live in `src/utils/profile.ts` (pure — vitest can't resolve `astro:content`, same split as `journal.ts`/`journalMerge.ts`). Exactly one live element in the profile card proper: the NOW line, pulled from the latest `now` entry and omitted entirely when there isn't one. Reached from NavPill (the About item, on every non-home page) and from the homepage's 1×2 About tile. The `.title-tile__about` button under the homepage tagline was removed in the 2026-08 `/status` merge — an always-visible nav item replaces it. The page absorbed `/status` in that same merge: the current-arc card (`parseCurrentArc()` over `_quests.md`) is the first block in the main column, above the hook, and the retired mailbox strip's "Send mail to be read on stream" line now sits in the rail's Connect section. Arc-card CSS lives in `about.css`; `status.css` was deleted. Was a 301 to `/notes/i-am-ninjaruss` — the "no static About page" stance is preserved in spirit (the card is all output and links, no biography) and that note is now the deep read, linked from the ABOUT prose. The email address is assembled client-side (`#about-mail`), never in the served HTML. Link labels inside `.p4g-sweep` anchors **must** be wrapped in an element (`<span>`): the utility lifts children via `.p4g-sweep > *`, which doesn't match bare text nodes, so an unwrapped label gets painted over by the gold panel on hover.
+- `/about` — profile card. One card, one screen: header (name/epithet/portrait from `_protagonist.md` via `parseProtagonist`), credential lines, WHAT I MAKE, SUBJECTS I EXPLORE, ABOUT prose, NOW, CONNECT + FIND ME. Copy is hand-written in the single-entry `profile` collection (`src/content/profile/about.md`); the Zod schema and the `pickProfile`/`nowLine` selectors live in `src/utils/profile.ts` (pure — vitest can't resolve `astro:content`, the same split `substack.ts`'s `parseSubstackFeed` uses). `profile.links[]` carries a primary "Read on Substack" link to `https://ninjaruss.substack.com`, and `makes[]`'s "Things I build" entry points at `/showcase`. Exactly one live element in the profile card proper: the NOW line, pulled from the latest `now` entry and omitted entirely when there isn't one. Reached from NavPill (the About item, on every non-home page) and from the homepage's 1×2 About tile. The `.title-tile__about` button under the homepage tagline was removed in the 2026-08 `/status` merge — an always-visible nav item replaces it. The page absorbed `/status` in that same merge: the current-arc card (`parseCurrentArc()` over `_quests.md`) is the first block in the main column, above the hook, and the retired mailbox strip's "Send mail to be read on stream" line now sits in the rail's Connect section. Arc-card CSS lives in `about.css`; `status.css` was deleted. Was a 301 to `/notes/i-am-ninjaruss` — the "no static About page" stance is preserved in spirit (the card is all output and links, no biography) and that note is now the deep read, linked from the ABOUT prose. The email address is assembled client-side (`#about-mail`), never in the served HTML. Link labels inside `.p4g-sweep` anchors **must** be wrapped in an element (`<span>`): the utility lifts children via `.p4g-sweep > *`, which doesn't match bare text nodes, so an unwrapped label gets painted over by the gold panel on hover.
 - `/now` — Latest "Now" entry (current focus)
 - `/now/archive` — Historical "Now" entries list
-- `/rss.xml` — Journal RSS feed (`src/pages/rss.xml.ts`, `@astrojs/rss`): merged notes + showcases, **excerpt-only by design** (~300 chars + link — the feed is a doorbell, the site is the room). Autodiscovery `<link rel="alternate">` in BaseLayout head.
+
+## Substack
+
+Writing lives on Substack (`https://ninjaruss.substack.com`), not on this site.
+The site serves **no** note prose — no notes listing, no note detail pages, no
+locally-generated RSS feed of note content. This isn't a temporary gap:
+Substack's own `/archive` already lists everything, automatically and better
+than a hand-synced page could, and pretending `/journal` was still one stream
+once half its rows redirected off-site would have been worse than admitting
+the two were never really one thing (`/journal` now 301s to `/showcase` — see
+Legacy Routes above).
+
+`src/content/notes/` stays in the repo — and stays public via GitHub — as the
+author's working copy, but it is now purely **the slug→Substack redirect
+map**, not a source of pages. The schema gained one optional field,
+`substackUrl` (`z.string().url().optional()`; optional only so a half-written
+entry can't fail the build). `/notes/[...slug].astro` is server-rendered
+(`export const prerender = false`) rather than a normal static page — a
+prerendered page's `Astro.redirect` degrades to a meta-refresh HTML document,
+which feed readers ignore and search engines discount, defeating the point of
+keeping these inbound URLs alive. It reads the `notes` collection and resolves
+the target via `resolveNoteRedirect()` (`src/utils/noteRedirect.ts`): a note's
+own `substackUrl` if it has one, otherwise `https://ninjaruss.substack.com/archive`
+— the same fallback an unknown slug gets. The site already opts into
+on-demand rendering for the Traces API, so this adds no new deployment
+concern, only one more function.
+
+**Backfill is ongoing manual work, not part of any build step.** All 24
+pre-migration notes need to be posted to Substack and have `substackUrl`
+filled in by hand; until a given note is backfilled, its slug redirects to
+the archive — imprecise, but a correct destination, not a 404. Two inbound
+prose links still point at `/notes/*` slugs and keep working through the
+redirect in the meantime: `src/content/profile/about.md` →
+`/notes/i-am-ninjaruss` and `src/content/now/2026-03.md` → `/notes/addiction`.
+Retarget both to their Substack URLs once those two notes are backfilled —
+not urgent, since the redirect already gets a visitor to the right place.
+
+`/rss.xml` redirects to the Substack feed via `vercel.json` (not
+`astro.config.mjs` — the destination is external and a feed reader needs a
+true 301). `BaseLayout`'s `<link rel="alternate" type="application/rss+xml">`
+autodiscovery tag points at `https://ninjaruss.substack.com/feed` directly
+(title "ninjaruss — Substack") rather than at the redirecting `/rss.xml`.
+**`vercel.json` redirects do not apply under `astro dev`** — verify `/rss.xml`
+against the real deployment, not the dev server.
+
+**The homepage still advertises the writing**, via a build-time feed read in
+`src/utils/substack.ts`: `fetchSubstackPosts(limit)` fetches
+`https://ninjaruss.substack.com/feed` and `parseSubstackFeed()` — a
+hand-rolled, pure RSS-item parser, no new XML dependency, since a Substack
+item's shape is narrow and stable — extracts `title`/`link`/`pubDate`/
+`description` from each `<item>`. Both wrap every failure in `try`/`catch` and
+**return `[]` rather than throw**: a Substack outage, a network blip, or an
+offline build must degrade the homepage tiles to showcase-only, never fail
+`npm run build`. The homepage Journal tile and Latest tile both guard on a
+non-empty result before rendering Substack rows, the same way the Journal
+tile already guarded `recentShowcase.length > 0`.
+
+`decodeEntities()` in the same file decodes decimal (`&#8220;`) and hex
+(`&#x2014;`) numeric entities plus a handful of common named ones (`&nbsp;`,
+`&hellip;`, `&mdash;`, `&ndash;`), with `&amp;` deliberately decoded **last**
+— decoding it earlier would double-decode deliberately-escaped input like
+`&amp;#8220;` (meant to display literally as `&#8220;`) into a curly quote.
+This was a real bug caught during implementation, not a hypothetical — worth
+remembering if `parseSubstackFeed` is ever touched again.
+
+Showcases stay canonical on the site, unaffected by any of this. There is no
+cross-posting automation in either direction — publishing to Substack is
+manual — and this migration does not mirror or archive post prose on the
+site anywhere.
 
 ### Shelf Page Features (`/shelf`)
 - **The Wall**: one flat dense-packed collage of every non-draft entry (no per-type
@@ -400,7 +469,7 @@ click target was never a good affordance.
 (`runTracesBurst`, ≤3 bullets), then it settles and only the parked line
 remains. The homepage already spends a lot of its motion budget (novel
 rain, Latest cycling every 7s, the live pulse). The burst fires at most once
-per session (`sessionStorage`) so hopping home from `/journal` doesn't
+per session (`sessionStorage`) so hopping home from `/showcase` doesn't
 replay it, and an `IntersectionObserver` cancels the remainder if the
 visitor scrolls past the bar mid-burst.
 
@@ -563,8 +632,8 @@ separate decision, not part of this page.
 |------|---------|---------|
 | `src/utils/content.ts` | `stripMarkdown()`, `hasMinimalContent()` | Strip markdown AND raw HTML for excerpts + client-side search; detect empty entries. Entities a renderer emits (`&amp; &lt; &gt; &quot; &#39;`) are **decoded, not blanked** — blanking them turned every "the author&#39;s notes" into "the author s notes" in excerpts and the search index; exotic entities still collapse to a space |
 | `src/utils/collections.ts` | `getAllCollections()` → `{ allShelf, allNotes, allShowcase }` | Fetch all non-draft entries; `SectionName = 'shelf' \| 'notes' \| 'showcase'` |
-| `src/utils/journal.ts` | `getJournalItems()`, `mergeJournalEntries()`, `JournalItem`, `JournalType` | Merge notes (`note`) + showcase (`showcase`) into one date-sorted list |
-| `src/utils/journalMerge.ts` | pure merge/sort logic (no astro imports) | Unit-testable core of journal.ts (vitest can't resolve `astro:content`) |
+| `src/utils/substack.ts` | `SUBSTACK_URL`, `SUBSTACK_FEED_URL`, `SUBSTACK_ARCHIVE_URL`, `SubstackPost`, `parseSubstackFeed()`, `fetchSubstackPosts()` | Build-time Substack feed read for the homepage tiles — see the Substack section above |
+| `src/utils/noteRedirect.ts` | `resolveNoteRedirect()` | Slug→Substack-URL lookup with archive fallback, consumed by `src/pages/notes/[...slug].astro` — see the Substack section above |
 | `src/utils/dates.ts` | `formatDate()`, `shouldShowUpdatedDate()` | Date formatting and update-date display logic |
 | `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `parseOrderPrefix()`, `unescapeScrivenerMarkdown()`, `stripSceneLabel()`, `countWords()`, `computeNovelStats()`, `flattenFolderFiles()`, `findRecentFiles()`, `findSynopsisDoc()`, `findFirstScene()` | Scrivener-backed novel content loader + rain-gauge stats + desk recency/intro helpers |
 | `src/utils/sessions.ts` | `STAT_ORDER`, `StatName`, `STAT_COLORS`, `hexToRgbTriplet()` | The shared stat vocabulary/colors — the only place the five stat hexes are written (`about.astro`'s arc card and `scripts/transition.ts`'s page-transition card read `STAT_COLORS`; the homepage About tile deliberately does **not** — see below). Tallying/radar/donut/quest-parsing/level-curve logic that used to live here was deleted in the 2026-08 `/status` rebuild (see Sessions & the /about arc card above) |
@@ -576,7 +645,7 @@ separate decision, not part of this page.
 | `src/utils/tracesDb.ts` | `insertMessage()`, `listMessages()`, `countMessages()`, `lastSubmissionByIpHash()`, `deleteMessage()`, `TraceRow` | Traces database access layer (Neon, lazy-initialized) |
 | `src/utils/tracesFormat.ts` | `formatTraceTimestamp()`, `formatTraceTimestampCompact()` | Zero-import timestamp formatting shared by `traces.astro`'s list, the homepage modal list, and the wall bullets' compact date+time |
 
-The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-pool logic, tested in `src/tests/drawCard.test.ts`), `emblemAnimation`, `eventBindings`, `filterEngine`, `filterUI`, `idleManager`, `mediaHandlers`, `proseImageTilt`, `types`, `urlState`.
+The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `eventBindings`, `filterEngine`, `filterUI`, `idleManager`, `mediaHandlers`, `proseImageTilt`, `types`, `urlState`. (`drawCard` — the notes-only draw pool — was deleted with the draw-a-card deck in the Substack migration; see the Substack section above.)
 
 ## Astro Integrations
 
@@ -592,9 +661,9 @@ The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-po
 
 ## Important Implementation Details
 
-1. **SplitViewLayout JavaScript**: Three-panel layout (list/detail/emblem) with client-side fetch for detail content, History API for navigation, search/tag/type filtering (Cmd/Ctrl+K to focus search), emblem card flipping on content selection, falls back gracefully without JS. `contentLoader.loadContent` fetches by each list item's own `href` (not the page section), so mixed-collection lists like `/journal` work. On load with no slug in the URL, auto-opens the newest visible entry — desktop layout only (detected via the applied grid columns, not viewport width) and without pushing history or moving focus; detection retries on a setTimeout loop (20 × 75ms then 20 × 250ms, ~6.5s total) because styles can land after init and rAF is suspended in background tabs, and is re-kicked once on window `load` and once when the `(min-width: 1200px)` media query flips true (embedded panes can report 0×0 at init), with a `splitView.isConnected` guard stopping stale timers after view-transition swaps (`src/utils/splitView/index.ts`; `loadContent` accepts `{ pushHistory, focusHeading }` options). Auto-open is skipped entirely when `showDraw` renders the draw deck — the journal lands on the placeholder (stats + draw) instead of auto-opening an entry.
+1. **SplitViewLayout JavaScript**: Three-panel layout (list/detail/emblem) with client-side fetch for detail content, History API for navigation, search filtering (Cmd/Ctrl+K to focus search) when `showSearch` is true, emblem card flipping on content selection, falls back gracefully without JS. `contentLoader.loadContent` fetches by each list item's own `href` (not the page section). On load with no slug in the URL, auto-opens the newest visible entry — desktop layout only (detected via the applied grid columns, not viewport width) and without pushing history or moving focus; detection retries on a setTimeout loop (20 × 75ms then 20 × 250ms, ~6.5s total) because styles can land after init and rAF is suspended in background tabs, and is re-kicked once on window `load` and once when the `(min-width: 1200px)` media query flips true (embedded panes can report 0×0 at init), with a `splitView.isConnected` guard stopping stale timers after view-transition swaps (`src/utils/splitView/index.ts`; `loadContent` accepts `{ pushHistory, focusHeading }` options). **`/showcase` now auto-opens its newest entry on desktop** — the old `/journal` route was the one place that suppressed this, by rendering the draw-a-card deck (`showDraw`) in the placeholder instead; both the deck and `showDraw` were deleted with the notes merge (see the Substack section above), and nothing replaced the suppression, so the ordinary auto-open behavior now applies.
 
-1b. **SplitView mobile (≤900px) stacked layout**: the list panel flows at natural height (`.split-view__nav` has `max-height: none` — the page scrolls; an inner scroller left a dead band above the bottom nav) with `--nav-clearance` bottom padding, and the empty detail pane is `display: none` until a selection exists (`has-selection` is server-set on detail routes like `/notes/[slug]` and client-set on tap, so both flows show the detail). Auto-open remains desktop-only. The `.split-view__content .prose` right inset in that breakpoint exists to clear the fixed `.emblem-badge` (60px + its offset) — removing it puts the badge back on top of the text.
+1b. **SplitView mobile (≤900px) stacked layout**: the list panel flows at natural height (`.split-view__nav` has `max-height: none` — the page scrolls; an inner scroller left a dead band above the bottom nav) with `--nav-clearance` bottom padding, and the empty detail pane is `display: none` until a selection exists (`has-selection` is server-set on detail routes like `/showcase/[slug]` and client-set on tap, so both flows show the detail). Auto-open remains desktop-only. The `.split-view__content .prose` right inset in that breakpoint exists to clear the fixed `.emblem-badge` (60px + its offset) — removing it puts the badge back on top of the text.
 
 2. **View Transitions**: Uses Astro's ClientRouter with custom P4G-style slide animations. `#transition-canvas` is a replaced element sized by its `width`/`height` attributes (`resizeCanvas()` in `src/scripts/transition.ts`) — a percentage in CSS can't size it, and measuring from `window.innerWidth` (scrollbar-inclusive) reintroduces horizontal page overflow; use `documentElement.clientWidth`.
 
@@ -604,9 +673,9 @@ The `splitView/` directory is modular: `contentLoader`, `drawCard` (pure draw-po
 
 5. **Now Page**: Dynamically renders the latest entry from the `now` collection. To update, add a new markdown file to `src/content/now/` with `publishedAt` frontmatter. Archive available at `/now/archive`. The homepage Now tile shows the latest entry's title.
 
-6. **Latest Tile**: Homepage 2×2 tile with an absolute date (`.latest-date`, formatted at build with `formatDate`, carried per entry in `data-entries` so it swaps with the cycle — never "days ago", per the no-shame invariant; `text-transform: lowercase` in CSS so it matches the journal tile's "aug 1" rows without touching `formatDate`) and excerpt; cycles client-side through the latest 2 notes and latest 1 showcase (interleaved note/showcase/note, 7s interval; each swap is a P4G gold sweep — a skewed gold panel (`.latest-tile__sweep`) sweeps across via the `latest-sweep` keyframes on `#latest-tile.is-cycling`, matching the journal-entry hover, with the entry swapped behind it mid-sweep; cycling skipped under `prefers-reduced-motion`). The emblem sits on a deeper-black angled field (`.latest-tile__emblem-wrap`, `clip-path` + negative-margin bleed) traced by a gold hairline (`::before`, skewX(-4deg) measured against the clip edge); ≤768px the field flattens to the tile's bottom edge and the hairline hides.
+6. **Latest Tile**: Homepage 2×2 tile with an absolute date (`.latest-date`, formatted at build with `formatDate`, carried per entry in `data-entries` so it swaps with the cycle — never "days ago", per the no-shame invariant; `text-transform: lowercase` in CSS so it matches the journal tile's "aug 1" rows without touching `formatDate`) and excerpt; cycles client-side through the latest 2 Substack posts and latest 1 showcase (interleaved post/showcase/post, 7s interval; Substack entries render with `/images/emblems/scroll.svg`, having no per-entry emblem of their own; each swap is a P4G gold sweep — a skewed gold panel (`.latest-tile__sweep`) sweeps across via the `latest-sweep` keyframes on `#latest-tile.is-cycling`, matching the journal-entry hover, with the entry swapped behind it mid-sweep; cycling skipped under `prefers-reduced-motion`). The emblem sits on a deeper-black angled field (`.latest-tile__emblem-wrap`, `clip-path` + negative-margin bleed) traced by a gold hairline (`::before`, skewX(-4deg) measured against the clip edge); ≤768px the field flattens to the tile's bottom edge and the hairline hides.
 
-6b. **NavPill**: 6 items — Home / Journal / VN / Shelf / About / Now — rendered on every non-home page including `/about` (whose sidebar "Ninjaruss" logo badge was removed back when this was `/status`; both `/status` and `/stream` now 301-redirect to `/about`). `/notes/*` and `/showcase/*` paths highlight Journal via each section's `match` array.
+6b. **NavPill**: 6 items — Home / Showcase / VN / Shelf / About / Now — rendered on every non-home page including `/about` (whose sidebar "Ninjaruss" logo badge was removed back when this was `/status`; both `/status` and `/stream` now 301-redirect to `/about`). `/showcase/[slug]` paths highlight Showcase via the shared `startsWith` match on `['/showcase']` — no special-casing needed now that `/notes/*` is a server-rendered redirect off-site rather than an on-site route.
 
 7. **Shelf Wall**: `/shelf` is one flat dense-packed collage (not SplitViewLayout, no per-type sections) where an entry's size expresses affection — favorites large with a gold ring, written-about medium, bare logs small, nothing dimmed. See the Shelf Page Features section above for the full model.
 
@@ -654,7 +723,7 @@ All placeholder emblems share the same card template (dark card, gold gradient f
 - **Shelf**: All reviews, consumption logs, and inspirational content (anime, manga, film, series, music, book, game, character, other)
   - Set `isFavorite: false` (or omit) for reviews/notes that appear only in /shelf
   - Set `isFavorite: true` for curated highlights — large wall tier with a gold ring + hard gold shadow on `/shelf` (see Shelf Page Features)
-- **Notes**: Philosophical fragments and thoughts
+- **Notes**: Philosophical fragments and thoughts. **No longer rendered on-site** — the site is the slug→Substack redirect map only; publish the actual prose on Substack and fill in `substackUrl` (see the Substack section above)
 - **Showcase**: Project inquiries and experiments
 - **Now**: Current focus snapshots (time-based)
 
