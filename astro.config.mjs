@@ -16,5 +16,8 @@ export default defineConfig({
        straight at /about so there is no redirect chain. */
     '/stream': '/about',
     '/status': '/about',
+    /* The journal merged notes + showcases. Notes moved to Substack, so the
+       merge had nothing left to merge — showcase is what survived. */
+    '/journal': '/showcase',
   },
 });
