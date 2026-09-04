@@ -36,7 +36,6 @@ const STAT_CARDS: Record<StatName, StatCard> = {
 };
 
 const ROUTE_STATS: [string, StatName][] = [
-  ['/notes',    'Insight'],
   ['/novel',    'Expression'],
   ['/shelf',    'Sincerity'],
   ['/about',    'Chaos'],

@@ -99,7 +99,15 @@ export function parseSubstackFeed(xml: string): SubstackPost[] {
  */
 export async function fetchSubstackPosts(limit = 5): Promise<SubstackPost[]> {
   try {
-    const res = await fetch(SUBSTACK_FEED_URL);
+    const res = await fetch(SUBSTACK_FEED_URL, {
+      // Substack sits behind Cloudflare; a default undici UA from a Vercel
+      // build IP is a plausible 403, and the failure is invisible by design
+      // (the tile just silently degrades to []). A named UA is cheap insurance.
+      headers: { 'user-agent': 'ninjaruss.net build' },
+      // A hung request would otherwise stall `npm run build` for minutes —
+      // the tile isn't worth that cost, so fail fast and fall back to [].
+      signal: AbortSignal.timeout(5000),
+    });
     if (!res.ok) return [];
     return parseSubstackFeed(await res.text()).slice(0, limit);
   } catch {

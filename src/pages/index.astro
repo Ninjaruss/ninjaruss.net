@@ -284,7 +284,7 @@ const latestEntries = [
               <h3 class="bento-tile__title">Notes</h3>
             </div>
           </a>
-          {recentWriting.length > 0 && (
+          {recentWriting.length > 0 ? (
             <div class="journal-tile__list">
               {recentWriting.map(row => (
                 <a class="journal-tile__row" href={row.href} title={row.title}>
@@ -293,6 +293,10 @@ const latestEntries = [
                 </a>
               ))}
             </div>
+          ) : (
+            <p class="journal-tile__empty">
+              <a href="https://ninjaruss.substack.com">Posts live on Substack now.</a>
+            </p>
           )}
         </div>
         {recentShowcase.length > 0 && (
@@ -1001,6 +1005,29 @@ const latestEntries = [
     flex: 1;
     min-height: 0;
     padding-right: var(--space-xl);
+  }
+
+  /* Empty-feed fallback: the fetch guarantees [] on any Substack failure
+     (network blip, build-time block, no posts yet), which is now a live
+     outcome rather than a bug — so the left half of this 4x2 core tile
+     still has to say what it is, rather than a heading over nothing. */
+  .journal-tile__empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    min-height: 0;
+    padding-right: var(--space-xl);
+  }
+
+  .journal-tile__empty a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .journal-tile__empty a:hover,
+  .journal-tile__empty a:focus-visible {
+    color: var(--color-text);
+    text-decoration: underline;
   }
 
   .journal-tile__row {
@@ -2367,7 +2394,7 @@ const latestEntries = [
     const tile = document.querySelector('.journal-tile') as HTMLElement | null;
     if (!tile || tile.dataset.navBound) return;
     tile.dataset.navBound = 'true';
-    const href = tile.dataset.tileHref || '/journal';
+    const href = tile.dataset.tileHref || '/showcase';
     tile.addEventListener('click', (e) => {
       if ((e.target as HTMLElement).closest('a')) return;
       window.location.href = href;
@@ -2663,7 +2690,7 @@ const latestEntries = [
   // One bounded wave on arrival. Cancelled if the visitor scrolls past the
   // hero mid-burst — they have moved on, so finishing it is just noise
   // behind them — and fired at most once per session so hopping home from
-  // /journal does not replay it every time.
+  // /showcase does not replay it every time.
   function runTracesBurst(): void {
     if (!tracesFlightAllowed()) return;
     try {

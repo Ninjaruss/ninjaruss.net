@@ -20,5 +20,12 @@ const target = resolveNoteRedirect(
   notes.map((n) => ({ slug: n.slug, substackUrl: n.data.substackUrl }))
 );
 
+// Notes are being backfilled to Substack over time, so a slug's destination
+// CHANGES the day its `substackUrl` is filled in. A long edge TTL here would
+// turn into staleness on exactly the URLs that just got a better destination
+// — so this cache is intentionally modest (capped at one day), not the
+// aggressive year-long TTL a "fixed" redirect would normally deserve.
+Astro.response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=86400');
+
 return Astro.redirect(target, 301);
 ---

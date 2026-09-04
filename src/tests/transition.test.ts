@@ -61,13 +61,6 @@ describe('easeDecel', () => {
 });
 
 describe('statForPath', () => {
-  it('returns Insight for /notes', () => {
-    expect(statForPath('/notes').color).toBe('#4ab0ff');
-    expect(statForPath('/notes').name).toBe('INSIGHT');
-  });
-  it('returns Insight for /notes/slug', () => {
-    expect(statForPath('/notes/live-without-regret').color).toBe('#4ab0ff');
-  });
   it('returns Expression for /novel', () => {
     expect(statForPath('/novel').color).toBe('#a855f7');
     expect(statForPath('/novel').name).toBe('EXPRESSION');

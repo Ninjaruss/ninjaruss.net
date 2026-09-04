@@ -39,7 +39,7 @@ describe('parseSubstackFeed', () => {
     expect(parseSubstackFeed('<rss><channel></channel></rss>')).toEqual([]);
   });
 
-  it('returns [] for malformed input rather than throwing', () => {
+  it('returns [] for input containing no items', () => {
     expect(parseSubstackFeed('not xml at all <<<')).toEqual([]);
     expect(parseSubstackFeed('')).toEqual([]);
   });

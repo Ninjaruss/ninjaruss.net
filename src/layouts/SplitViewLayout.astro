@@ -22,9 +22,7 @@ const { title, description, section, kicker, initialSlug, initialEmblem, pageTit
 const hasInitialContent = Astro.slots.has('detail');
 
 const SECTION_KICKERS: Record<string, string> = {
-  notes: 'notes',
   showcase: 'showcases',
-  journal: 'notes & showcases',
 };
 const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
 ---
@@ -97,7 +95,9 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
               </svg>
             </div>
             <p class="split-view__placeholder-title">Choose an entry</p>
-            <p class="split-view__placeholder-hint">or press <kbd id="search-kbd">⌘K</kbd> to search</p>
+            {showSearch && (
+              <p class="split-view__placeholder-hint">or press <kbd id="search-kbd">⌘K</kbd> to search</p>
+            )}
           </div>
         </div>
         <article class:list={['split-view__content', { 'is-active': hasInitialContent }]} aria-live="polite">
