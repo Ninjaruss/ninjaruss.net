@@ -11,7 +11,7 @@ Throughout the story of Remember Rain, I am trying to express a fundamental trut
 
 Yet, I still dream and continue to try to do stuff that will hopefully pan out and shape me into a better person. But more often than not, the change is subtle, if any at all. It manifests into a sort of slight change in my decision making, like an increased odds that I will make a given decision towards who I want to become.
 
-What ends up happening, I find, is that while I have changed enough recently in the past 3-4 years to become someone who’s willing to make major life changes, the coasting still continues and it almost feels like nothing has changed. I have decided to move to Japan in the less than 3 months, yet I’m here not dedicating enough of my spare time towards learning Japanese further as much as I should.
+What ends up happening, I find, is that while I have changed enough recently in the past 3-4 years to become someone who’s willing to make major life changes, the coasting still continues and it almost feels like nothing has changed. I have decided to move to Japan, yet I’m here not dedicating enough of my spare time towards learning Japanese further as much as I should.
 
 I feel like I’m a liar, a coward who can’t simply make the further commitments necessary to make the life I want come true. Like perhaps abandoning video games for a long while or to put all this developing of niche apps for myself to rest. 
 
