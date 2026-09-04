@@ -1,4 +1,5 @@
 ---
+substackUrl: "https://ninjaruss.substack.com/p/hermit"
 title: "Hermit"
 emblem: "/images/emblems/scroll.svg"
 publishedAt: 2026-02-07

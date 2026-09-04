@@ -1,4 +1,5 @@
 ---
+substackUrl: "https://ninjaruss.substack.com/p/subtle-progress"
 title: "Subtle Progress"
 emblem: "/images/emblems/flame.svg"
 publishedAt: 2026-01-31
