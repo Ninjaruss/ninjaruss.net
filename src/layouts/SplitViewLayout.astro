@@ -18,9 +18,11 @@ interface Props {
   /** Render the draw-a-card control (journal) */
   showDraw?: boolean;
   rssHref?: string;
+  /** Render the search + filter chrome. False for bare surfaces like /showcase. */
+  showSearch?: boolean;
 }
 
-const { title, description, section, kicker, initialSlug, initialEmblem, pageTitle, ogImage, ogType, placeholderStats, showDraw, rssHref } = Astro.props;
+const { title, description, section, kicker, initialSlug, initialEmblem, pageTitle, ogImage, ogType, placeholderStats, showDraw, rssHref, showSearch = true } = Astro.props;
 const hasInitialContent = Astro.slots.has('detail');
 
 const SECTION_KICKERS: Record<string, string> = {
@@ -60,31 +62,33 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
         </div>
         <span class="p4g-underline" aria-hidden="true"></span>
       </header>
-      <div class="split-view__filter">
-        <div class="split-view__filter-row">
-          <div class="split-view__search-wrapper">
-            <span class="split-view__search-icon" aria-hidden="true">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="5" cy="5" r="3.5" stroke="currentColor" stroke-width="1.5"/>
-                <path d="M8 8L10.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
-            </span>
-            <input
-              type="search"
-              class="split-view__search"
-              placeholder="Search..."
-              aria-label="Search entries"
-            />
+      {showSearch && (
+        <div class="split-view__filter">
+          <div class="split-view__filter-row">
+            <div class="split-view__search-wrapper">
+              <span class="split-view__search-icon" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="5" cy="5" r="3.5" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M8 8L10.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <input
+                type="search"
+                class="split-view__search"
+                placeholder="Search..."
+                aria-label="Search entries"
+              />
+            </div>
+            <button class="split-view__clear-all-filters" type="button" hidden aria-label="Clear all filters" title="Clear all filters">
+              <span class="split-view__clear-all-icon" aria-hidden="true">✕</span>
+            </button>
+            {showDraw && (
+              <button class="split-view__draw-mobile" type="button" hidden data-draw-mobile aria-label="Draw a random note">DRAW</button>
+            )}
           </div>
-          <button class="split-view__clear-all-filters" type="button" hidden aria-label="Clear all filters" title="Clear all filters">
-            <span class="split-view__clear-all-icon" aria-hidden="true">✕</span>
-          </button>
-          {showDraw && (
-            <button class="split-view__draw-mobile" type="button" hidden data-draw-mobile aria-label="Draw a random note">DRAW</button>
-          )}
+          <div class="split-view__types" role="group" aria-label="Filter by type"></div>
         </div>
-        <div class="split-view__types" role="group" aria-label="Filter by type"></div>
-      </div>
+      )}
       <div class="split-view__no-results" hidden>
         <span class="split-view__no-results-icon" aria-hidden="true">◈</span>
         <p class="split-view__no-results-text">No entries found</p>
