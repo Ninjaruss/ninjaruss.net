@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { parseSubstackFeed } from '../utils/substack';
+import { describe, it, expect, afterEach, vi } from 'vitest';
+import { parseSubstackFeed, fetchSubstackPosts } from '../utils/substack';
 
 const FEED = `<?xml version="1.0"?>
 <rss version="2.0"><channel>
@@ -47,5 +47,28 @@ describe('parseSubstackFeed', () => {
   it('skips an item with no link', () => {
     const xml = '<rss><channel><item><title>Orphan</title></item></channel></rss>';
     expect(parseSubstackFeed(xml)).toEqual([]);
+  });
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+describe('fetchSubstackPosts', () => {
+  it('returns parsed posts capped at the limit', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(FEED, { status: 200 })));
+    const posts = await fetchSubstackPosts(1);
+    expect(posts).toHaveLength(1);
+    expect(posts[0].title).toBe('Why one must fall');
+  });
+
+  it('returns [] when the network throws', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => { throw new Error('offline'); }));
+    await expect(fetchSubstackPosts()).resolves.toEqual([]);
+  });
+
+  it('returns [] on a non-OK response', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('nope', { status: 503 })));
+    await expect(fetchSubstackPosts()).resolves.toEqual([]);
   });
 });

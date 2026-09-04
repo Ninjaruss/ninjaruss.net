@@ -56,3 +56,20 @@ export function parseSubstackFeed(xml: string): SubstackPost[] {
     return [];
   }
 }
+
+/**
+ * Build-time read of the Substack feed.
+ *
+ * Every failure path returns [] on purpose: the homepage tiles guard on an
+ * empty result and fall back to showcase-only. A Substack outage, a network
+ * blip, or an offline build must not fail `npm run build`.
+ */
+export async function fetchSubstackPosts(limit = 5): Promise<SubstackPost[]> {
+  try {
+    const res = await fetch(SUBSTACK_FEED_URL);
+    if (!res.ok) return [];
+    return parseSubstackFeed(await res.text()).slice(0, limit);
+  } catch {
+    return [];
+  }
+}
