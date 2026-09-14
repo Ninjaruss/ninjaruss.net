@@ -1,6 +1,6 @@
-#### Scene: Rain takes the road less traveled
+\#\#\#\# Scene: Rain takes the road less traveled
 
-*Context: Rain is going home from his commute, walking to the train station. He is tired of the same routine yet is convinced he needs to bide his time to accomplish great things. During his walk, he notices a small faint dim light that looks like a human being. As he approaches, the ghost takes a step around the corner and disappears. Rain is curious and uses this opportunity as an excuse to do something different and explore the area a bit.*
+\*Context: Rain is going home from his commute, walking to the train station. He is tired of the same routine yet is convinced he needs to bide his time to accomplish great things. During his walk, he notices a small faint dim light that looks like a human being. As he approaches, the ghost takes a step around the corner and disappears. Rain is curious and uses this opportunity as an excuse to do something different and explore the area a bit.\*
 
 I walked along the route that was practically a straight line as far as my mind was concerned. The glass on the buildings to my right were simply what they are, clear glass showing the empty interiors of nameless buildings I gave a single care for. What seemed fancy to some was simply a filler background from my point of view.
 
@@ -10,4 +10,6 @@ A faint light appeared in the distance. I couldn’t make out what it was, but a
 
 I stood where the faint light was before. I felt myself already cutting down the idea of exploring this alley. Another work day is scheduled tomorrow. You gotta get some sleep. Perhaps we can do this some other time? Preferably during non dangerous hours?
 
-I was getting tired of my own my nature. I told myself “fuck it” and proceeded to go down the unknown.
+I was getting tired of my own my nature. 
+
+“Fuck it.”, I told myself as I proceeded to go down the unknown.

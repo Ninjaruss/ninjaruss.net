@@ -1,164 +1,191 @@
-## Themes and Motifs
+\#\# Themes and Motifs
 
 Recurring images and behavioral contrasts belong here. Use them through objects, repetition, placement, and consequence; characters should not explain the pattern.
 
-### Character Carriers
+\#\#\# Character Carriers
 
-| Character | Preserves | Mistakes for proof | Scene question |
-|---|---|---|---|
-| **Rain** | possibility | unrealized potential | Can he act after evidence replaces fantasy? |
-| **Claire** | intelligibility | a correct model | Can she choose responsibly without certainty? |
-| **Roxana** | belonging | indispensability | Can she belong while someone else provides? |
-| **The Pursuer** | continuity | endurance | Can stopping honor rather than erase the past? |
-| **Vesper** | relief | successful outcomes | Can another person improve beyond his direction? |
-| **Shiori** | traces | the surviving record | Can she trust what changed without preserving the receipt? |
+\| Character \| Preserves \| Mistakes for proof \| Scene question \|
+
+\|---\|---\|---\|---\|
+
+\| \*\*Rain\*\* \| possibility \| unrealized potential \| Can he act after evidence replaces fantasy? \|
+
+\| \*\*Claire\*\* \| intelligibility \| a correct model \| Can she choose responsibly without certainty? \|
+
+\| \*\*Roxana\*\* \| belonging \| indispensability \| Can she belong while someone else provides? \|
+
+\| \*\*The Pursuer\*\* \| continuity \| endurance \| Can stopping honor rather than erase the past? \|
+
+\| \*\*Vesper\*\* \| relief \| successful outcomes \| Can another person improve beyond his direction? \|
+
+\| \*\*Shiori\*\* \| traces \| the surviving record \| Can she trust what changed without preserving the receipt? \|
 
 No character is the thesis. Preserve the value inside each distortion.
 
-### Loose Motif Structure
+\#\#\# Loose Motif Structure
 
 Use three broad, overlapping families. The detailed image sections below are manifestations of these families, not separate symbolic systems that each require a complete arc.
 
-- **Movement / Stillness:** rain, falling, commuting, roads, walking, standing, the Pursuer never running, the Circuit Line, correction, and the outbound train. Motion is not automatically progress. Opening movement lacks chosen direction; ending direction lacks a guaranteed result.
-- **Record / Evidence / Trace:** notebook, two lines, glass, archive, models, recordings, marks, ledgers, government documents, Imprints, and Rain's final factual knowledge. A record can establish what happened without completing what happens next.
-- **Contact / Intervention:** reaching, carrying, steadying, helping, accepting help, extraction through touch, Roxana's care, Claire's offered hand, Vesper's hand, the Ghost's palm, and Rain's final gesture. Ask when intervention preserves another person's participation and when it replaces it.
+\- \*\*Movement / Stillness:\*\* rain, falling, commuting, roads, walking, standing, the Pursuer never running, the Circuit Line, correction, and the outbound train. Motion is not automatically progress. Opening movement lacks chosen direction; ending direction lacks a guaranteed result.
 
-Character imagery remains specific: Rain has gold/Ghost/Clone/Split; Claire has Static/lens/silence; Roxana has fire/scars/lighter; the Pursuer has steam/greatcoat; Shiori has tools/marks/recordings; Vesper has glass/archive. Aster is primarily the trace of someone absent. **Consumption / Cost / Spending** remains exploratory rather than locked as a fourth major motif.
+\- \*\*Record / Evidence / Trace:\*\* notebook, two lines, glass, archive, models, recordings, marks, ledgers, government documents, Imprints, and Rain's final factual knowledge. A record can establish what happened without completing what happens next.
 
-### Contrasts in Action
+\- \*\*Contact / Intervention:\*\* reaching, carrying, steadying, helping, accepting help, extraction through touch, Roxana's care, Claire's offered hand, Vesper's hand, the Ghost's palm, and Rain's final gesture. Ask when intervention preserves another person's participation and when it replaces it.
 
-- **Rain / Pursuer:** Rain hesitates at an open road; the Pursuer follows the supplied heading.
-- **Rain / Vesper:** Rain leaves the next response unsettled; Vesper acts from finished evidence.
-- **Rain / Claire:** both can prepare forever—one protects possibility, the other certainty.
-- **Claire / Roxana:** Claire diagnoses; Roxana tends the visible wound.
-- **Claire / Vesper:** Claire eventually hands a decision back; Vesper completes it for the person.
-- **Roxana / Vesper:** Roxana spends herself; Vesper spends part of the other person.
-- **Shiori / Vesper:** Shiori patches and leaves the seam; Vesper corrects the source.
-- **Shiori / Rain:** she signs imperfect work; he stops before evidence can measure him.
-- **Pursuer / Vesper:** one obeys process; the other takes control because process is too slow.
+Character imagery remains specific: Rain has gold/Ghost/Clone/Split; Claire has Static/lens/silence; Roxana has fire/scars/lighter; the Pursuer has steam/greatcoat; Shiori has tools/marks/recordings; Vesper has glass/archive. Aster is primarily the trace of someone absent. \*\*Consumption / Cost / Spending\*\* remains exploratory rather than locked as a fourth major motif.
 
-**Drafting risk:** If a contrast cannot produce different actions in the same immediate problem, it is not ready for the draft.
+\#\#\# Contrasts in Action
 
-### Rain and Weather
+\- \*\*Rain / Pursuer:\*\* Rain hesitates at an open road; the Pursuer follows the supplied heading.
 
-**Forms and progression:** Rain opens beneath a downpour while unable to fall. Heavy rain continues through Arcs 1–3, then thins as the correction spreads. Corrected districts in Arc 4 are dry and quiet. In Arc 5, clean rain follows the physical collapse of the apparatus and water loop. The ending carries Rain away by train.
+\- \*\*Rain / Vesper:\*\* Rain leaves the next response unsettled; Vesper acts from finished evidence.
 
-**Carriers:** Rain's suspended movement, the city's water system, the correction boundary, and the final train.
+\- \*\*Rain / Claire:\*\* both can prepare forever—one protects possibility, the other certainty.
 
-**Drafting risk:** The clean rain is causal, not moral approval from the world. Rain remains unfinished when the weather changes.
+\- \*\*Claire / Roxana:\*\* Claire diagnoses; Roxana tends the visible wound.
 
-### Notebook and Pen
+\- \*\*Claire / Vesper:\*\* Claire eventually hands a decision back; Vesper completes it for the person.
 
-**Forms:** Rain spins the pen and fills the notebook with first lines. Other characters do not remark on either object.
+\- \*\*Roxana / Vesper:\*\* Roxana spends herself; Vesper spends part of the other person.
 
-**Progression:** The notebook is logged at prison intake and returned during escape. Every false ending closes it after one line. The outbound train is the only place the second line appears, followed by blank pages.
+\- \*\*Shiori / Vesper:\*\* Shiori patches and leaves the seam; Vesper corrects the source.
 
-**Carrier:** Rain's willingness to let an attempt become evidence.
+\- \*\*Shiori / Rain:\*\* she signs imperfect work; he stops before evidence can measure him.
 
-**Drafting risk:** Use the exact selected opening and ending callback wording from `Manuscript/Arc 1 - Fugitive/0 Rain intro.md`. Do not use the notebook to explain the theme.
+\- \*\*Pursuer / Vesper:\*\* one obeys process; the other takes control because process is too slow.
 
-### Ghost, Clone, and Split
+\*\*Drafting risk:\*\* If a contrast cannot produce different actions in the same immediate problem, it is not ready for the draft.
 
-**Forms:** The Ghost is faded gold with an open hand and points toward wanting rather than method. The Clone flickers, remains intangible, and lets Rain be seen without acting as himself. The Perfect Clone remains intangible but counterfeits physical presence with seamless gold fidelity. The Split speaks in Rain's voice as a ledger of failure.
+\#\#\# Rain and Weather
 
-**Progression:** The Ghost guides without solving. It dims as repeated Perfect Clone use impairs Rain's felt authorship and action initiation, then can recover as that temporary impairment does. The Split is unmarked early and italicized after the mountain. In the finale Rain uses the open-hand gesture without summoning the Ghost.
+\*\*Forms and progression:\*\* Rain opens beneath a downpour while unable to fall. Heavy rain continues through Arcs 1–3, then thins as the correction spreads. Corrected districts in Arc 4 are dry and quiet. In Arc 5, clean rain follows the physical collapse of the apparatus and water loop. The ending carries Rain away by train.
 
-**Carriers:** Rain's passive, Deviation, relapse, and final independent gesture.
+\*\*Carriers:\*\* Rain's suspended movement, the city's water system, the correction boundary, and the final train.
 
-**Drafting risk:** The Perfect Clone is perfected stasis, not growth. Never decide whether the Ghost or Split are separate beings.
+\*\*Drafting risk:\*\* The clean rain is causal, not moral approval from the world. Rain remains unfinished when the weather changes.
 
-### Contact / Intervention — Hands
+\#\#\# Notebook and Pen
 
-**Forms and progression:** Claire solves a small problem and Rain permits it. Roxana accepts Vesper's steadying hand and is altered. Claire later offers Rain a sincere hand in the still room and he cannot answer. The Ghost offers Roxana a hand that asks nothing and she accepts. Rain finally repeats the open-hand gesture without calling a guide.
+\*\*Forms:\*\* Rain spins the pen and fills the notebook with first lines. Other characters do not remark on either object.
 
-**Carriers:** Claire, Roxana, Vesper, the Ghost, and Rain.
+\*\*Progression:\*\* The notebook is logged at prison intake and returned during escape. Every false ending closes it after one line. The outbound train is the only place the second line appears, followed by blank pages.
 
-**Drafting risk:** Keep the pattern physical. Nobody names or interprets it.
+\*\*Carrier:\*\* Rain's willingness to let an attempt become evidence.
 
-### Glass and Memory
+\*\*Drafting risk:\*\* Use the exact selected opening and ending callback wording from \`Manuscript/Arc 1 - Fugitive/0 Rain intro.md\`. Do not use the notebook to explain the theme.
 
-**Forms:** Intact glass stores context, chronology, access, and reversibility. Shattering returns a memory. Melt destroys the record while behavior may remain without provenance.
+\#\#\# Ghost, Clone, and Split
 
-**Progression:** The archive first appears as evidence of transparent, reversible care. Aster's shard makes preservation personal. Roxana's Melt exposes the cost of destroying context. Rain's extraction produces a prism while changing his relation to the completed record.
+\*\*Forms:\*\* The Ghost is faded gold with an open hand and points toward wanting rather than method. The Clone flickers, remains intangible, and lets Rain be seen without acting as himself. The Perfect Clone remains intangible but counterfeits physical presence with seamless gold fidelity. The Split speaks in Rain's voice as a ledger of failure.
 
-**Carriers:** Vesper's archive and prism, the extracted owners, Aster's shard, and Rain's emotionally flat factual recall.
+\*\*Progression:\*\* The Ghost guides without solving. It dims as repeated Perfect Clone use impairs Rain's felt authorship and action initiation, then can recover as that temporary impairment does. The Split is unmarked early and italicized after the mountain. In the finale Rain uses the open-hand gesture without summoning the Ghost.
 
-**Drafting risk:** Glass should feel stored and still. Vesper's foreign behavior is most unsettling as a small stance, phrase, hand movement, or reflex with no remembered lesson behind it.
+\*\*Carriers:\*\* Rain's passive, Deviation, relapse, and final independent gesture.
 
-### Fire and Scars
+\*\*Drafting risk:\*\* The Perfect Clone is perfected stasis, not growth. Never decide whether the Ghost or Split are separate beings.
 
-**Forms:** Roxana's nervous system echoes other people's bodily pain, with damaged scar tissue amplifying it. Aster's lighter channels one small Undying Flame. Base use heightens pain sensitivity; in Starborne, the same flame carries Roxana while normal pain gating is suppressed.
+\#\#\# Contact / Intervention — Hands
 
-**Progression:** The prison spark occurs without the lighter and nearly empties her. In the finale she burns Aster's shard and fills his lighter with her own flame.
+\*\*Forms and progression:\*\* Claire solves a small problem and Rain permits it. Roxana accepts Vesper's steadying hand and is altered. Claire later offers Rain a sincere hand in the still room and he cannot answer. The Ghost offers Roxana a hand that asks nothing and she accepts. Rain finally repeats the open-hand gesture without calling a guide.
 
-**Carriers:** Roxana's body, Aster's lighter, accepted care, and the shard.
+\*\*Carriers:\*\* Claire, Roxana, Vesper, the Ghost, and Rain.
 
-**Drafting risk:** Standing remains costly. Do not render the flame as physical restoration.
+\*\*Drafting risk:\*\* Keep the pattern physical. Nobody names or interprets it.
 
-### Claire's Static, Lens, and Silence
+\#\#\# Glass and Memory
 
-**Forms:** The Static is the collapse continuing inside Claire. The lens makes uncertainty visible and can briefly produce the Click. Silence may mean rest, relief, amputation, or emptying.
+\*\*Forms:\*\* Intact glass stores context, chronology, access, and reversibility. Shattering returns a memory. Melt destroys the record while behavior may remain without provenance.
 
-**Progression:** Increasing load becomes neurological failure rather than abstract loss of intelligence. At overwatch, the ribbon dies, range collapses, the lens comes off, and Claire still says *Go*.
+\*\*Progression:\*\* The archive first appears as evidence of transparent, reversible care. Aster's shard makes preservation personal. Roxana's Melt exposes the cost of destroying context. Rain's extraction produces a prism while changing his relation to the completed record.
 
-**Carriers:** Claire's body, lens, ribbon, calculations, and final unmodeled instruction.
+\*\*Carriers:\*\* Vesper's archive and prism, the extracted owners, Aster's shard, and Rain's emotionally flat factual recall.
 
-**Drafting risk:** Establish what a silence means through consequence. Do not turn overload into a vague reduction of intelligence or make removing the lens an instant cure.
+\*\*Drafting risk:\*\* Glass should feel stored and still. Vesper's foreign behavior is most unsettling as a small stance, phrase, hand movement, or reflex with no remembered lesson behind it.
 
-### Shiori's Tools, Marks, and Records
+\#\#\# Fire and Scars
 
-The evidence-as-bookmark interpretation and the Arc 5 no-bookmark wager are a **working direction, not locked canon**. The objects and actions below are established; their final thematic meaning remains open.
+\*\*Forms:\*\* Roxana's nervous system echoes other people's bodily pain, with damaged scar tissue amplifying it. Aster's lighter channels one small Undying Flame. Base use heightens pain sensitivity; in Starborne, the same flame carries Roxana while normal pain gating is suppressed.
 
-**Forms:** Doodles and jokes identify Shiori's hand before she appears. Tools left on seams show where she stopped. Backups brace against loss; maker's marks express delight. Her recordings preserve evidence while the state ignores it.
+\*\*Progression:\*\* The prison spark occurs without the lighter and nearly empties her. In the finale she burns Aster's shard and fills his lighter with her own flame.
 
-**Progression:** Her missing work and surviving records first make Rain her suspect; her recordings later exonerate him. Her distributed rig keeps the final fronts connected until she spends it. Afterward she turns the cameras off and puts a tool away.
+\*\*Carriers:\*\* Roxana's body, Aster's lighter, accepted care, and the shard.
 
-**Carriers:** The goggles, vault, patched infrastructure, distributed feeds, cameras, and hand tools.
+\*\*Drafting risk:\*\* Standing remains costly. Do not render the flame as physical restoration.
 
-**Drafting risk:** Do not merge backups with maker's marks. Keep the unattended surveillance system mostly invisible: no camera walls, checkpoints, or central tower.
+\#\#\# Claire's Static, Lens, and Silence
 
-### The Pursuer's Steam and Greatcoat
+\*\*Forms:\*\* The Static is the collapse continuing inside Claire. The lens makes uncertainty visible and can briefly produce the Click. Silence may mean rest, relief, amputation, or emptying.
 
-**Forms:** Steam appears before the Pursuer is named. His greatcoat shapes heat and available moisture into a turbulent vapor defense; it creates no water and there is no plate armor. He never runs.
+\*\*Progression:\*\* Increasing load becomes neurological failure rather than abstract loss of intelligence. At overwatch, the ribbon dies, range collapses, the lens comes off, and Claire still says \*Go\*.
 
-**Progression:** Every defense visibly spends him. Rain's question causes one unprocedural change in the steam. When the Pursuer finally stops, vapor condenses on wet wool.
+\*\*Carriers:\*\* Claire's body, lens, ribbon, calculations, and final unmodeled instruction.
 
-**Carriers:** The Pursuer's body, service, greatcoat, supplied headings, and finite burn.
+\*\*Drafting risk:\*\* Establish what a silence means through consequence. Do not turn overload into a vague reduction of intelligence or make removing the lens an instant cure.
 
-**Drafting risk:** Endurance must look costly rather than superhumanly free. Stopping is not defection or a sudden alliance.
+\#\#\# Shiori's Tools, Marks, and Records
 
-### Aster
+The evidence-as-bookmark interpretation and the Arc 5 no-bookmark wager are a \*\*working direction, not locked canon\*\*. The objects and actions below are established; their final thematic meaning remains open.
 
-**Forms:** Aster is dead before the story begins and remains through Roxana's surname, training, and lighter; Claire's investigation; Vesper's access to his recorded fighting style; the Pursuer's signature on his intake; and the shard Roxana ultimately burns.
+\*\*Forms:\*\* Doodles and jokes identify Shiori's hand before she appears. Tools left on seams show where she stopped. Backups brace against loss; maker's marks express delight. Her recordings preserve evidence while the state ignores it.
 
-**Progression:** He begins as missing influence, becomes a preserved record in the archive and prison, and ends as a shard Roxana chooses not to keep.
+\*\*Progression:\*\* Her missing work and surviving records first make Rain her suspect; her recordings later exonerate him. Her distributed rig keeps the final fronts connected until she spends it. Afterward she turns the cameras off and puts a tool away.
 
-**Carriers:** Roxana, Claire, Vesper, the Pursuer's ledger, the lighter, and the shard.
+\*\*Carriers:\*\* The goggles, vault, patched infrastructure, distributed feeds, cameras, and hand tools.
 
-**Drafting risk:** Nobody eulogizes Aster as the mentor the cast should have had. His absence should be legible through what people do with his remains.
+\*\*Drafting risk:\*\* Do not merge backups with maker's marks. Keep the unattended surveillance system mostly invisible: no camera walls, checkpoints, or central tower.
 
-### Gold Vocabulary
+\#\#\# The Pursuer's Steam and Greatcoat
+
+\*\*Forms:\*\* Steam appears before the Pursuer is named. His greatcoat shapes heat and available moisture into a turbulent vapor defense; it creates no water and there is no plate armor. He never runs.
+
+\*\*Progression:\*\* Every defense visibly spends him. Rain's question causes one unprocedural change in the steam. When the Pursuer finally stops, vapor condenses on wet wool.
+
+\*\*Carriers:\*\* The Pursuer's body, service, greatcoat, supplied headings, and finite burn.
+
+\*\*Drafting risk:\*\* Endurance must look costly rather than superhumanly free. Stopping is not defection or a sudden alliance.
+
+\#\#\# Aster
+
+\*\*Forms:\*\* Aster is dead before the story begins and remains through Roxana's surname, training, and lighter; Claire's investigation; Vesper's access to his recorded fighting style; the Pursuer's signature on his intake; and the shard Roxana ultimately burns.
+
+\*\*Progression:\*\* He begins as missing influence, becomes a preserved record in the archive and prison, and ends as a shard Roxana chooses not to keep.
+
+\*\*Carriers:\*\* Roxana, Claire, Vesper, the Pursuer's ledger, the lighter, and the shard.
+
+\*\*Drafting risk:\*\* Nobody eulogizes Aster as the mentor the cast should have had. His absence should be legible through what people do with his remains.
+
+\#\#\# Gold Vocabulary
 
 Use this closed set only when the visual argument requires it:
 
-- `faded` — the Ghost; wanting not yet acted on
-- `flicker` — the Clone; borrowed motion
-- `seamless` — the Perfect Clone; perfected counterfeit presence
-- `shine` — a person overcoming in the present
-- `unlit` — wanting removed
-- `stored` — resonance held in glass
+\- \`faded\` — the Ghost; wanting not yet acted on
 
-**Progression:** Live gold moves; dead gold holds still.
+\- \`flicker\` — the Clone; borrowed motion
 
-**Carriers:** Passives, Deviations, glass, and moments of present commitment.
+\- \`seamless\` — the Perfect Clone; perfected counterfeit presence
 
-**Drafting risk:** Gold tracks a person's relation to commitment, not power level or human worth.
+\- \`shine\` — a person overcoming in the present
 
-### Global Drafting Risks
+\- \`unlit\` — wanting removed
 
-- Evil arrives through offers, forms, referrals, renovations, and schedules. It does not need to raise its voice.
-- Prefer missing speeches to translated symbolism. Let Claire remove the lens, Roxana accept care, the Pursuer stop, Shiori put away the tool, and Rain board the train without a thematic debrief.
-- Do not reward every good choice immediately or punish avoidance immediately.
-- Keep the final prose concrete. Rain's semantic knowledge is precise while autobiographical access and felt ownership are absent.
-- His past should feel like fiction he knows intimately, not like missing factual information. The train does not begin reconnecting him to it.
-- Leave the future open through new choices and consequences, not through promised recovery of the old emotional connection.
+\- \`stored\` — resonance held in glass
+
+\*\*Progression:\*\* Live gold moves; dead gold holds still.
+
+\*\*Carriers:\*\* Passives, Deviations, glass, and moments of present commitment.
+
+\*\*Drafting risk:\*\* Gold tracks a person's relation to commitment, not power level or human worth.
+
+\#\#\# Global Drafting Risks
+
+\- Evil arrives through offers, forms, referrals, renovations, and schedules. It does not need to raise its voice.
+
+\- Prefer missing speeches to translated symbolism. Let Claire remove the lens, Roxana accept care, the Pursuer stop, Shiori put away the tool, and Rain board the train without a thematic debrief.
+
+\- Do not reward every good choice immediately or punish avoidance immediately.
+
+\- Keep the final prose concrete. Rain's semantic knowledge is precise while autobiographical access and felt ownership are absent.
+
+\- His past should feel like fiction he knows intimately, not like missing factual information. The train does not begin reconnecting him to it.
+
+\- Leave the future open through new choices and consequences, not through promised recovery of the old emotional connection.

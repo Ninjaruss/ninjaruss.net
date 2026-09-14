@@ -42,13 +42,13 @@ connect: "Open to collaborating on stories, niche apps, JP-learning tools — wh
 
 links:
   - label: "YouTube"
-    href: "https://www.youtube.com/@Ninjaruss"
+    href: "https://www.youtube.com/@Ninjaruss_"
     primary: true
   - label: "Read on Substack"
     href: "https://ninjaruss.substack.com"
     primary: true
   - label: "Twitch"
-    href: "https://twitch.tv/ninjaruss"
+    href: "https://twitch.tv/ninjaruss_"
   - label: "MyAnimeList"
     href: "https://myanimelist.net/animelist/Ninjaruss_?status=7&order=4&order2=0"
   - label: "Spotify"

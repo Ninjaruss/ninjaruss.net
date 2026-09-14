@@ -1,6 +1,8 @@
-Created: July 14, 2026 at 2:49 PM
-Modified: August 27, 2026 at 4:19 PM
+Created: July 14, 2026 at 2:49 PM
+Modified: August 28, 2026 at 2:33 PM
 Status: No Status
 Label: No Label
 Keywords: 
 
+
+The Flare, the two substrates (Deviation and Imprint), passives, costs, and the memory exception.

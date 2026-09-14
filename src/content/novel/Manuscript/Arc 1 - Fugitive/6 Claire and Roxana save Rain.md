@@ -1,5 +1,5 @@
-#### Scene: Claire and Roxana intro 
+\#\#\#\# Scene: Claire and Roxana intro 
 
-*Context: Rain finds himself in an active crime scene and finds someone*
+\*Context: Rain finds himself in an active crime scene and finds someone\*
 
-*(To be written.)
+\*(To be written.)

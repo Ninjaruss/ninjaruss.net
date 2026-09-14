@@ -1,10 +1,10 @@
-#### Scene: Rain confronts true silence (sensory deprivation tank)
+\#\#\#\# Scene: Rain confronts true silence (sensory deprivation tank)
 
-*Possible context: This scene takes place within the sensory deprivation prison where both Rain and Roxana are held. The situation is grim as the recent betrayal from Vesper has blindsided them leaving Roxana physically paralyzed and Rain guilty for not being able to see the betrayal?*
+\*Possible context: This scene takes place within the sensory deprivation prison where both Rain and Roxana are held. The situation is grim as the recent betrayal from Vesper has blindsided them leaving Roxana physically paralyzed and Rain guilty for not being able to see the betrayal?\*
 
-*As a result of having no senses to take any input from, Rain confronts his very core being.*
+\*As a result of having no senses to take any input from, Rain confronts his very core being.\*
 
-You know the one thing I’ve avoided doing in my life that I *know* would help me in the long term? It’s meditation. Something about the very act of sitting still and quieting all your thoughts seemed very pointless to me. After having so much dopamine injected into my brain via the very techno societal world I am in, I found it a luxury that I never allowed myself to have. In some ways, I have sat with at least silence, but never in such an intentional way that ignored all sense of reality.
+You know the one thing I’ve avoided doing in my life that I \*know\* would help me in the long term? It’s meditation. Something about the very act of sitting still and quieting all your thoughts seemed very pointless to me. After having so much dopamine injected into my brain via the very techno societal world I am in, I found it a luxury that I never allowed myself to have. In some ways, I have sat with at least silence, but never in such an intentional way that ignored all sense of reality.
 
 Well, I don’t have any sense of reality… now.
 
