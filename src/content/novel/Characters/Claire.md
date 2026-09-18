@@ -6,8 +6,6 @@ She can model every visible outcome and still cannot guarantee the one she choos
 
 \- \*\*Age:\*\* 21–22
 
-\- \*\*Height:\*\* 5'10", slender
-
 \- \*\*Role:\*\* tactician; Rain's source of borrowed certainty
 
 \- \*\*Traits:\*\* \*\*Controlled Precision\*\* / \*\*Fearful Urgency\*\*
@@ -74,15 +72,15 @@ Shared passive, Imprint, Deviation, and cost rules belong to \`World/Magic Syste
 
 \- \*\*The lens:\*\* turns an auditory wound into something visual and legible; it does not match, cure, or erase the Static. Claire's practiced gesture of raising it externalizes her attempt to convert noise into certainty.
 
+\- \*\*Imprint — the lens.\*\* It was patterned at the collapse: a single event can pattern both the person undergoing the transition and the objects materially involved in it, and the lens was materially involved. The same event that left her the Static also left her the lens. This is why her Deviation is available to her deliberately, and why losing the lens costs her the Deviation as well as the accommodation.
+
 \- \*\*The Click:\*\* the instant of silence that arrives with a completed model. The relief is real, but it does not guarantee that Claire can control the modeled outcome.
 
 \- \*\*Visual Calculus:\*\* the broader predictive mode. Physical trajectory and observable movement are its strongest inputs. It can infer intent less reliably from visible evidence, but cannot read minds, see hidden variables, or resolve genuine randomness. Seeing is cheaper than executing, which encourages Claire to direct other people.
 
 \- \*\*Convergence:\*\* sacrifices breadth and longer-horizon prediction for an intensely local model that updates while Claire acts: observe, act, detect divergence, recalculate, act again. It revises around the unexpected rather than predicting retroactively or forcing reality to remain inside the model.
 
-\- \*\*Cost:\*\* neurological and computational overload. Load rises with complexity, hold time, execution through Claire's own body, and repeated use without recovery.
-
-Escalation may include fatigue, headache, visual or motor disturbance, tremor, slowed processing, weakness, disorientation, and collapse. Extreme overuse can leave her helpless and unconscious; repeated severe crashes risk increasingly long comas.
+\- \*\*Cost:\*\* neurological and computational overload (see \`World/Magic System.md\`).
 
 \#\#\# Visual Anchors
 

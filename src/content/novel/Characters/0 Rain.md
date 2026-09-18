@@ -6,8 +6,6 @@ A young man with a notebook full of first lines and no second ones.
 
 \- \*\*Age:\*\* 23
 
-\- \*\*Height:\*\* 5'7"
-
 \- \*\*Role:\*\* protagonist; the Paralyzed Dreamer
 
 \- \*\*Traits:\*\* \*\*Soft Yearning\*\* / \*\*Sudden Resolve\*\*
@@ -96,7 +94,7 @@ Shared passive, Imprint, Deviation, and cost rules belong to \`World/Magic Syste
 
 \- \*\*The goggles:\*\* Shiori built them as ordinary technology. A worker later used them during a resonant Sacred Water infrastructure shift and finally quit a dead-end job rather than return indefinitely. They retain the completed shape of choosing an unfinished, self-directed future over a prescribed route; Rain's unresolved version of the same transition produces the Pull.
 
-\- \*\*The Clone:\*\* one completely intangible projection at a practical mid-range. It can reproduce Rain's intended voice and projected sound without strict line-of-sight, but it cannot scout, relay sensation, or improvise as an independent mind. Rain must know enough about the destination and intended action to author its scripted behavior. Longer or more complex use disrupts his anchoring to his real body, escalating from blur and ringing through disorientation, proprioceptive instability, severe sensory degradation, and collapse.
+\- \*\*The Clone:\*\* one completely intangible projection at a practical mid-range. It can reproduce Rain's intended voice and projected sound without strict line-of-sight, but it cannot scout, relay sensation, or improvise as an independent mind. Rain must know enough about the destination and intended action to author its scripted behavior. Cost: disrupts sensory anchoring; compounds with length and complexity (see \`World/Magic System.md\`).
 
 \- \*\*The Perfect Clone:\*\* the same intangible counterfeit rendered with convincing physical fidelity. It locally registers enough of its surroundings to simulate rain, impact, wounds, recoil, clothing damage, and incidental sound on the projected body while matter and force pass through it; semantic speech remains authored by Rain. It cannot create unrelated consequences, transmit force, or give Rain access to what it registers. Repeated use temporarily compounds friction in Rain's want → commit → act pathway: he retains desire and knowledge but loses felt authorship and struggles to initiate action. The dimming Ghost is a symptom of that recoverable impairment, not a finite resource being consumed.
 

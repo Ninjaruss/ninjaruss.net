@@ -35,3 +35,6 @@ pnpm-debug.log*
 .agents/skills/
 .claude/skills/
 skills-lock.json
+
+# Remember Rain workbench runtime state (private conversation, not for the public repo)
+remember-rain/workbench/chat.jsonl

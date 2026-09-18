@@ -6,8 +6,6 @@ A tinkerer who made one very good thing, lost it to the state, and kept making i
 
 \- \*\*Age:\*\* 25–26
 
-\- \*\*Height:\*\* 5'8"
-
 \- \*\*Role:\*\* maker, recorder, accuser, and the fourth front of the finale
 
 \- \*\*Traits:\*\* \*\*Playful Industriousness\*\* / \*\*Defensive Vigilance\*\*

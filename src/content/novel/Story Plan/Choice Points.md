@@ -26,7 +26,7 @@ The player does not select a heroic ending from a menu. They reach it by continu
 
 2\. Each cycle contains genuinely new material, but the world becomes smaller.
 
-3\. The Ghost appears as a possible exit, later and dimmer each time.
+3\. The Ghost appears as a possible exit, later each time and leading further off.
 
 4\. When the Ghost stops appearing, the trap ending begins.
 

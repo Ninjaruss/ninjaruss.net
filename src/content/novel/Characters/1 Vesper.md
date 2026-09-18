@@ -6,8 +6,6 @@ The youngest major character, physically unthreatening, and already convinced he
 
 \- \*\*Age:\*\* 18
 
-\- \*\*Height:\*\* 5'6"
-
 \- \*\*Role:\*\* antagonist; caregiver, extractor, and architect of the correction
 
 \- \*\*Traits:\*\* \*\*Gentle Certainty\*\* / \*\*Controlling Impatience\*\*

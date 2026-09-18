@@ -6,8 +6,6 @@ She can give almost anything and cannot receive without feeling exposed.
 
 \- \*\*Age:\*\* 27–28
 
-\- \*\*Height:\*\* 5'5"
-
 \- \*\*Role:\*\* fighter, caretaker, and Rain's first home after the charge
 
 \- \*\*Traits:\*\* \*\*Forceful Warmth\*\* / \*\*Guarded Neediness\*\*
@@ -84,7 +82,7 @@ Shared passive, Imprint, Deviation, and cost rules belong to \`World/Magic Syste
 
 \- \*\*Starborne:\*\* the advanced expression binds Roxana's movement to the same tiny flame. Guiding it can pull, lift, pivot, redirect, and carry her body along its path. It does not heal her or restore function Vesper removed; inertia, impact, injury, and structural limits remain.
 
-\- \*\*Starborne cost:\*\* while the flame carries her, normal physiological pain gating is suppressed. Ungated pain can trigger withdrawal, involuntary tension or release, shaking, disrupted breathing, nausea, disorientation, and collapse. Mental toughness cannot simply overrule those responses.
+\- \*\*Starborne cost:\*\* normal pain gating is suppressed; ungated pain can trigger withdrawal, tension, and collapse (see \`World/Magic System.md\`).
 
 \- \*\*Passive breakout:\*\* in the prison, accepting the Ghost's open hand lets her produce one raw spark without the lighter. It nearly empties her and is not a new reliable technique.
 

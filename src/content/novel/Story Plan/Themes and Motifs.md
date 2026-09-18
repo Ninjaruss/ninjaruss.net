@@ -78,7 +78,7 @@ Character imagery remains specific: Rain has gold/Ghost/Clone/Split; Claire has 
 
 \*\*Forms:\*\* The Ghost is faded gold with an open hand and points toward wanting rather than method. The Clone flickers, remains intangible, and lets Rain be seen without acting as himself. The Perfect Clone remains intangible but counterfeits physical presence with seamless gold fidelity. The Split speaks in Rain's voice as a ledger of failure.
 
-\*\*Progression:\*\* The Ghost guides without solving. It dims as repeated Perfect Clone use impairs Rain's felt authorship and action initiation, then can recover as that temporary impairment does. The Split is unmarked early and italicized after the mountain. In the finale Rain uses the open-hand gesture without summoning the Ghost.
+\*\*Progression:\*\* The Ghost guides without solving. It dims as repeated Perfect Clone use impairs Rain's felt authorship and action initiation, then can recover as that temporary impairment does. Its dimming is never a warning and never a countdown. The Split is unmarked early and italicized after the mountain. In the finale Rain uses the open-hand gesture without summoning the Ghost.
 
 \*\*Carriers:\*\* Rain's passive, Deviation, relapse, and final independent gesture.
 

@@ -82,7 +82,7 @@ Quest supplies the route from commute to outbound train. Horror supplies the inc
 
 \- \*\*1 · Out of the chute\*\* — Escape into a smoother city. Rain and Roxana board the Circuit Line and recover the goggles and lighter.
 
-\- \*\*2 · The boundary\*\* — A full lap makes the correction measurable. The same stations appear twice; the boundary moves between passes. Rain thins in corrected districts. Roxana begins the drills needed to sustain Undying Flame and learn Starborne without treating the advanced mode as physical restoration.
+\- \*\*2 · The boundary\*\* — A full lap makes the correction measurable. The same stations appear twice; the boundary moves between passes. The rain thins in corrected districts. Roxana begins the drills needed to sustain Undying Flame and learn Starborne without treating the advanced mode as physical restoration.
 
 \- \*\*3 · The accuser\*\* — Shiori boards with evidence and a transmission rig, convinced Rain stole her work and caused the disappearances. Rain laughs nervously during the accusation. She recognizes the sound from the vault; her own recordings exonerate him. She stays.
 

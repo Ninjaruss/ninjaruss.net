@@ -46,6 +46,8 @@ The bond is a resonant relationship, not an autobiographical recollection. Remov
 
 A bonded Imprint can sustain only one deliberate expression of its Deviation at a time. Developed forms are alternate uses of the same bonded relationship, not additional powers layered over the base form. They normally remain available alongside the base expression, but the user cannot sustain base and advanced expressions simultaneously as independent effects.
 
+Practical applications of a single expression — the specific ways its effect is applied in the moment — are facets of that expression, not separate powers. The Pursuer's Sheath, Vent, vapor-shaping, and projectile defense are one vapor-control expression applied four ways, never four simultaneous abilities.
+
 Under extreme emotional or physical pressure, a passive may briefly break into the world without an Imprint. This is uncontrolled, difficult to repeat, and severely costly. Roxana's spark in the prison is the main example.
 
 Imprinted objects remain physically ordinary unless a specified effect changes them. Their supernatural significance does not automatically make them indestructible.
@@ -64,9 +66,33 @@ Every Deviation pays through the same system the user employs. Cost scales with 
 
 \- Vesper's high-fidelity memory system suffers increasing replay, interference, and source confusion as foreign records accumulate.
 
+Rain's longer or more complex Clone use escalates from blur and ringing through disorientation, proprioceptive instability, severe sensory degradation, and collapse.
+
+Roxana's Starborne suppresses normal pain gating; ungated pain can trigger withdrawal, involuntary tension or release, shaking, disrupted breathing, nausea, disorientation, and collapse, and mental toughness cannot simply overrule those responses.
+
 For Claire, load increases with the number and complexity of variables, the duration of the model, the bodily cost of executing a prediction, and repeated use before recovery. Light use produces fatigue and neurological symptoms. Heavy use causes tremor, slowed processing, weakness, disorientation, or collapse. Extreme overuse can leave her helpless and unconscious, with each severe episode risking a longer coma. Seeing is cheaper than executing; calculation alone never wins a fight.
 
-Deviations do not permanently rewrite the physical world. Vesper's alteration of memory and identity is the exception.
+Deviations do not permanently rewrite the physical world. Vesper's alteration of memory and identity is the exception, and correction falls under it: what his hands extract and what the loop thins are both permanently gone.
+
+\#\#\# Correction
+
+Correction is Vesper's own faculty delivered through infrastructure instead of through his hands. The apparatus at the caldera vents the effect into the Sacred Water loop, and the loop carries it through the city's supply. What he does to one person at contact range, the loop does to a district at exposure range.
+
+The water is the contact. That is why correction needs no touch, and it is also why correction is imprecise where his hands are precise. His hands can isolate one memory-network; the loop cannot, so what a corrected district loses is wanting in general — the appetite for a thing rather than the record of it. A corrected district is not emptied. Its residents continue, and stop initiating.
+
+\*\*Boundary.\*\* The boundary is the edge of the loop's current reach. It is measured rather than decreed: it moves as circulation carries the effect further, and a full lap of the Circuit Line makes the change legible by showing the same stations in two different states.
+
+\*\*Apparatus.\*\* The correction apparatus is an installation at the caldera, coupled to the loop. It is physically ordinary, and it is the only thing that makes correction city-scale. Vesper corrects a person; the apparatus corrects a city. Breaking it stops the loop carrying the effect. Vesper survives its destruction.
+
+\*\*On the person.\*\* Exposure degrades wanting in proportion to time and concentration. It is gradual, and it is not extraction: nothing is stored, nothing is carried away, and no one can read what a corrected person has lost. Removal from exposure is the only thing that slows it.
+
+\- Correction requires Vesper's faculty and the loop together. Neither alone corrects a district.
+
+\- Correction removes wanting, not memory. A corrected person can still say what happened and cannot say what they want.
+
+\- Correction is not reversible by Vesper. He can restore what he extracted. He cannot restore what the loop thinned.
+
+\- The apparatus is the objective because it is the only city-scale component.
 
 \#\#\# Extraction and Glass
 

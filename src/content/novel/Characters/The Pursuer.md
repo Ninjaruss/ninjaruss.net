@@ -6,8 +6,6 @@ A man who has served the same institution for thirty years and calculated when t
 
 \- \*\*Age:\*\* roughly 50–55
 
-\- \*\*Height:\*\* 6'2"
-
 \- \*\*Role:\*\* institutional pursuer, practical combat threat, and Rain's strongest foil
 
 \- \*\*Traits:\*\* \*\*Procedural Persistence\*\* / \*\*Buried Longing\*\*
@@ -76,13 +74,7 @@ Shared passive, Imprint, Deviation, and cost rules belong to \`World/Magic Syste
 
 \- \*\*The greatcoat:\*\* decades-old field wool patterned in the same event as Furnace. It captures and shapes vapor produced from his heat and whatever moisture is available. It creates no water: heavy rain is ideal, damp air is functional, and dry conditions restrict it to breath, sweat, retained fabric moisture, and limited humidity.
 
-\- \*\*Sheath:\*\* a hot turbulent vapor-and-pressure boundary that obscures close movement, spoils contact, and redirects attacks without behaving like invisible plate armor.
-
-\- \*\*Vent:\*\* a short-to-mid-range directed release that can scald, unbalance, break contact, obscure vision, or clear space. It is not artillery.
-
-\- \*\*Shape / redirect:\*\* practical redistribution of available vapor for defense, concealment, and approach control. No elaborate constructs or unrestricted heat manipulation.
-
-\- \*\*Projectile defense:\*\* directed pressure can alter the path of ordinary handgun and rifle fire. Concentrated fire sharply increases expenditure; very high-energy projectiles and explosions are not automatically negated.
+\- \*\*Vapor control\*\* — the greatcoat's single expression, applied as close obscuring and redirection (Sheath), short-to-mid release (Vent), concealment and approach control (Shape), and projectile deflection (Projectile defense). It creates no water and is not artillery, plate armor, propulsion, or an advanced form.
 
 \- \*\*Cost:\*\* Furnace consumes a minute amount at baseline and substantially more during pursuit, defense, venting, projectile deflection, or forced continuation through injury and exhaustion. Spent charge does not regenerate. Years of thermal and workload records let him extrapolate a depletion date; it is not prophecy, and heavy use moves it forward.
 

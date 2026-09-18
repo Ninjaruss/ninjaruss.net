@@ -1,0 +1,17 @@
+{
+  "name": "remember-rain",
+  "version": "0.1.0",
+  "description": "Work on the Remember Rain visual novel against its live Scrivener package, which is the source of truth for the story.",
+  "author": {
+    "name": "ninjaruss"
+  },
+  "license": "MIT",
+  "keywords": [
+    "remember-rain",
+    "visual-novel",
+    "scrivener",
+    "writing",
+    "fiction",
+    "canon"
+  ]
+}

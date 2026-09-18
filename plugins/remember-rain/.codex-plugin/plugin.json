@@ -1,0 +1,31 @@
+{
+  "name": "remember-rain",
+  "version": "0.1.0",
+  "description": "Work on the Remember Rain visual novel against its live Scrivener package, which is the source of truth for the story.",
+  "license": "MIT",
+  "keywords": [
+    "remember-rain",
+    "visual-novel",
+    "scrivener",
+    "writing",
+    "fiction",
+    "canon"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Remember Rain",
+    "shortDescription": "Draft scenes into the live Scrivener package",
+    "longDescription": "Remembers that Remember Rain's source of truth is /Users/ninjaruss/Documents/Remember Rain.scriv, not the src/content/novel export. Reads and writes scene cards, assembles the drafting brief for one scene from the card's own synopsis plus The Spine and the law documents, and refuses to write while Scrivener is open.",
+    "developerName": "ninjaruss",
+    "category": "Writing",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "What do I write next in Remember Rain?",
+      "Draft the next scene of Remember Rain.",
+      "Show me the brief for Arc 2 scene 1."
+    ]
+  }
+}
