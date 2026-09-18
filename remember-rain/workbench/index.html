@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Remember Rain — workbench</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Remember Rain <span class="dim">· workbench</span></div>
+    <div class="meta" id="meta"></div>
+  </header>
+  <div class="layout">
+    <div class="left">
+      <nav class="tabs" id="tabs"></nav>
+      <main id="main" class="content"></main>
+    </div>
+    <aside class="chat">
+      <div class="chat-head">Workbench chat</div>
+      <div class="chat-log" id="chat-log"></div>
+      <form class="chat-form" id="chat-form">
+        <textarea id="chat-input" rows="2" placeholder="Ask or instruct the model — e.g. 'focus-pass Arc 2 scene 2' or 'what does the Split do?'"></textarea>
+        <button type="submit">Send</button>
+      </form>
+      <div class="chat-hint">I answer here; accepted work also lands in Outline / Findings.</div>
+    </aside>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>

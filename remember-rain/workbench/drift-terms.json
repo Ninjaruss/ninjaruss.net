@@ -1,0 +1,70 @@
+{
+  "groups": [
+    {
+      "id": "F-006",
+      "label": "The state apparatus",
+      "note": "One institution under several names.",
+      "variants": [{ "term": "the System", "caseSensitive": true }, "the state", "Nimbus", "Ministry"]
+    },
+    {
+      "id": "F-020",
+      "label": "The vault",
+      "note": "One location under several names (minor).",
+      "variants": ["Imprint Vault", "confiscated-artifact vault", "confiscated-Imprint vault"]
+    },
+    {
+      "id": "F-016",
+      "label": "The asylum",
+      "note": "Named 'Abandoned Asylum' once; every other document says 'the asylum'.",
+      "variants": ["Abandoned Asylum"]
+    },
+    {
+      "id": "F-010",
+      "label": "The Split / the suit-self",
+      "note": "Never linked in any document.",
+      "variants": [{ "term": "the Split", "caseSensitive": true }, "suit-self"]
+    },
+    {
+      "id": "F-015",
+      "label": "Roxana's flame",
+      "note": "Magic System says 'Roxana's flame'; her file calls it Undying Flame.",
+      "variants": ["Undying Flame", "Roxana's flame"]
+    },
+    {
+      "id": "F-023",
+      "label": "The closed vocabulary",
+      "note": "Themes says Gold Vocabulary; a sidecar calls it the Shine grammar.",
+      "variants": ["Gold Vocabulary", "Shine grammar"]
+    },
+    {
+      "id": "F-024",
+      "label": "The goggles' Imprint",
+      "note": "Named only in the newest prose; absent from every plan document.",
+      "variants": ["worker's-refusal"]
+    },
+    {
+      "id": "ledger",
+      "label": "The Arc 4 offer document",
+      "note": "One object under two names; the Pursuer's date has two phrasings.",
+      "variants": ["amnesty manifest", "ledger", "disposal date", "projected depletion date"]
+    }
+  ],
+  "watch": [
+    { "id": "F-012", "term": "the correction apparatus", "note": "Undefined — the climax's object has no location entry." },
+    { "id": "F-012", "term": "the eruption", "note": "Undefined — reads volcanic inside the dormant-volcano section." },
+    { "id": "F-007", "term": "Stasis", "note": "One word, two unrelated meanings; the city-scale one is never defined." },
+    { "id": "F-011", "term": "Gadget X", "note": "Undefined function; called 'the more consequential' theft." },
+    { "id": null, "term": "Sacred Water", "note": "Never glossed; 'Sacred' carries no definition in any document." },
+    { "id": "F-013", "term": "the appointment", "note": "Defined only in sidecars; not in any .md document." }
+  ],
+  "verified": [
+    "Vesper's age: 13 at the Flare + five years = 18 (consistent).",
+    "The Widower's nine treatments: 1 first + 8 returns = 9 (consistent).",
+    "Story duration 'approximately five to eight weeks' (identical wording, nothing contradicts).",
+    "Five arcs, five questions, four pitfalls, four comfortable exits (consistent).",
+    "Three Melts (mother / one unknown person / Roxana) — consistent.",
+    "The Pursuer: thirty years' service, age ~50–55, career predates the Flare (consistent).",
+    "Furnace's projected depletion is 'not a biological death date' (consistent).",
+    "Per-arc scene counts 9 / 10 / 6 + 3 lives / 9 / 10 (consistent with the Manuscript folders)."
+  ]
+}
