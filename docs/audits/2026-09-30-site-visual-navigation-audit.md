@@ -131,11 +131,27 @@ The reduced-motion escape is correct (`prefersReducedMotion()` at
 it's a pacing bug.
 
 Fix options, cheapest first:
-1. Don't gate the swap: call `original()` immediately and let the wipe run
-   alongside it (the wipe already covers the swap visually).
+1. ~~Don't gate the swap: call `original()` immediately and let the wipe run
+   alongside it.~~ **Tried, reverted — see the note below.**
 2. Cut the constants — the card phase is 58% of the total and reads as a pause.
 3. Gate it to once per session, exactly as the Traces burst already does with
    `sessionStorage`, so hopping back and forth across sections doesn't replay it.
+
+**Note on option 1 (this was wrong, and shipping it proved it).** Removing the
+swap gate does not just shorten the transition, it destroys it: with the swap
+immediate, the card plays over the page that has *already* been swapped in, and
+the wipe then sweeps over content that is already visible. The wipe stops
+covering anything — so the effect is both shorter *and* pointless, and cutting
+the durations to match (200/90/300ms) reduced the card to a 290ms flicker, i.e.
+it removed the thing the effect exists to show. Reverted.
+
+What the original code got wrong was not the gate, it was *when the fetch
+started*: it awaited `cardPhase()` first and only then called `original()`, so
+the request's latency was added on top of the animation instead of hidden behind
+it. Starting the fetch first and keeping the gate gets both: the card covers the
+fetch, and the wipe covers the swap. The fix for this finding is therefore
+"parallelise the fetch and skip the effect on history traversals", not "remove
+the animation from the critical path".
 
 ### N10 — SplitView's Back button corrupts history: Forward dies
 
@@ -1337,7 +1353,7 @@ a fix.
 
 | # | Finding | Fix | Verified by |
 |---|---|---|---|
-| N1 | Every internal navigation gated behind a ~1.14s animation | `transition.ts`: the loader no longer awaits the animation at all (`playTransition()` is fire-and-forget; only `original()` is awaited), history traversals return early via `e.navigationType === 'traverse'`, and the timings drop to 200/90/300ms | build; constants + loader body read back |
+| N1 | Every internal navigation gated behind a ~1.14s animation | `transition.ts`: **the fetch now starts in parallel with the card** (the old code fetched only *after* `await cardPhase()`, adding request latency on top of the animation), the wipe's midpoint still releases the swap so the DOM exchange happens under the slab, history traversals return early via `e.navigationType === 'traverse'`, the swap gate got a fail-safe release so a canvas failure can't strand navigation, and the timings were **restored to 520/340/620** after a shorter revision made the card a 290ms flicker. Wall time ≈1.14s to the swap (860ms card + wipe midpoint), as before — but with fetch latency absorbed rather than added | build; timing math recomputed (card 860ms, swap 1140ms, clears 1480ms) |
 | N10 | SplitView Back corrupts history | `contentLoader.ts` pushes `null` state (so Astro's ClientRouter ignores it) and gained `clearContent()` which resets `currentSlug`; the popstate handler now resolves the slug from the URL and calls `loadContent(…, { pushHistory: false, scroll: false, focusHeading: false })` instead of synthesising a click; the `isAnimating` guard was replaced by a real `isLoading` flag set *before* the fetch | build; grep `pushState(null` = 1 |
 | N11 | Reduced motion + shelf quick-view bricks the wall | `closePanel` now hides on whichever comes first — `transitionend` or a timeout derived from the element's own computed `transition-duration` — with a guarded `finalizeHide()` and a pending-hide cancel on re-open | build; 5 `finalizeHide` references |
 | V11 | Traces modal built from unreset UA controls | `global.css`: `color-scheme: dark`, `button,input,select,textarea { font: inherit; color: inherit; letter-spacing: inherit }`, `button { background: none; border: none }`, and a focus-visible ring for form controls. `.traces-modal__close` and `.traces-form__submit` given their own affordance + `font-size: var(--text-sm)` | `color-scheme:dark` and `font:inherit` present in built CSS |
@@ -1406,5 +1422,5 @@ a fix.
 | display-font weights requested | 8 | 7 |
 | heading structure, homepage | h1 + 6×h3 | h1 + 6×h2 |
 | `<main>` landmarks on `/showcase` and `/novel` | 2 | 1 |
-| internal navigation blocked by an animation | ~1.14s every time | 0 (animation plays concurrently) |
+| internal navigation blocked by an animation | ~1.14s + fetch latency, every time | ~1.14s with the fetch absorbed behind the card; **0** on Back/Forward |
 | `npx astro check` errors | 12 | 10 |

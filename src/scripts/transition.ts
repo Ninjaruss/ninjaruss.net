@@ -221,14 +221,22 @@ function drawWipe(leadX: number, color: string): void {
 
 // ── Animation constants ───────────────────────────────────────────────────────
 
-/* Timing budget. This no longer gates the swap (see playTransition below), so
-   these only decide how long the overlay covers the page — over content that has
-   usually already arrived. Kept deliberately short: the previous 520 + 340 + 620
-   = 1480ms was sized as a pause, which is only defensible if the navigation is
-   genuinely waiting on it. */
-const T_IN         = 200;              // ms — card entry + rotation settle
-const T_HOLD       = 90;               // ms — card bob/sway at rest
-const T_WIPE       = 300;              // ms — wipe sweeps, card exits
+/* Timing budget. Total 520 + 340 + 620 = 1480ms, of which the first 860ms is the
+   card being *seen* (entry, settle, hold) and the rest is the wipe covering the
+   swap and clearing.
+
+   These are the original values, restored. A pass through this file cut them to
+   200/90/300 to shorten the navigation, which made the card flash past in under
+   a third of a second — the card is the point of the effect, so cutting the hold
+   removed the thing it exists to show. The perceived-speed win was never really
+   in these numbers anyway: see the loader in init(), where the fetch now runs
+   *behind* the card instead of after it, so the animation absorbs request
+   latency rather than adding to it. If the effect ever wants tuning, this block
+   is the only knob: T_HOLD is how long the card sits still long enough to read,
+   T_WIPE is how long the new page takes to be uncovered. */
+const T_IN         = 520;              // ms — card entry + rotation settle
+const T_HOLD       = 340;              // ms — card holds, long enough to read
+const T_WIPE       = 620;              // ms — wipe sweeps, card exits
 const ENTRY_ANGLE  = -18 * Math.PI / 180;  // -18° — card entry path angle
 const REST_ROT     = -0.14;           // -8° — card resting rotation
 
@@ -377,29 +385,55 @@ function init(): void {
 
     const stat = statForPath(toPath);
 
-    /* The animation is decoration and must never be on the critical path. It
-       used to gate the swap (`await cardPhase(...)` before the loader resolved,
-       then the wipe's midpoint releasing a swap gate), which put ~1.14s of
-       animation in front of a fetch that takes tens of milliseconds and made a
-       static site feel slower than its architecture. The loader now resolves as
-       soon as the document arrives; the wipe plays concurrently and covers the
-       swap because the canvas is a fixed, pointer-events:none layer. */
+    /* Sequencing, and why each part is where it is:
+
+       1. The fetch starts FIRST, in parallel with the card. The old code fetched
+          only after `await cardPhase(...)`, so the request's latency was added on
+          top of the animation. Starting it here means the card covers the fetch
+          instead of following it — which is where the old effect's real cost was.
+
+       2. The card then plays over the OLD page, which is the only time it is
+          legible against a still background.
+
+       3. The wipe sweeps, and its midpoint releases the swap (`resolveSwap`), so
+          the DOM exchange happens underneath the slab rather than in the open.
+          The canvas is `position: fixed` with `transition:persist`, so it keeps
+          drawing across the swap and uncovers the new page as it exits.
+
+       The loader therefore resolves at whichever is later: the wipe's midpoint,
+       or the fetch. An earlier revision skipped the gate entirely and let the
+       swap happen immediately — which left the card playing over the page that
+       had already been swapped in, and the wipe sweeping afterwards over content
+       that was already visible. The wipe stopped covering anything, so the
+       effect was both shorter and pointless. */
     const original = e.loader;
     e.loader = async () => {
-      playTransition(stat);
-      await original();
+      const fetched = original();
+
+      await cardPhase(stat).catch(() => {});
+
+      let resolveSwap!: () => void;
+      const swapGate = new Promise<void>((r) => { resolveSwap = r; });
+
+      /* Released once, from whichever comes first: the wipe's midpoint, or the
+         wipe finishing/dying without reaching it. Without that second path a
+         canvas failure (startWipe's `if (!ctx) resolve()` and its early-return
+         tick both resolve WITHOUT firing onMidpoint) would leave this promise
+         pending forever and strand the navigation — the fetch would complete and
+         the new page would never be swapped in. */
+      let swapReleased = false;
+      const releaseSwap = () => {
+        if (swapReleased) return;
+        swapReleased = true;
+        resolveSwap();
+      };
+
+      const wipe = startWipe(stat, releaseSwap);
+      wipe.then(releaseSwap, releaseSwap);
+
+      await Promise.all([swapGate, fetched]);
     };
   });
-}
-
-/** Fire-and-forget entrance + wipe. Nothing awaits this. */
-function playTransition(stat: StatCard & { img: HTMLImageElement | null }): void {
-  cardPhase(stat)
-    .then(() => startWipe(stat, () => {}))
-    .catch(() => {
-      // A failed frame must never leave the overlay painted over the page.
-      ctx?.clearRect(0, 0, W, H);
-    });
 }
 
 if (typeof window !== 'undefined') init();
