@@ -1,0 +1,195 @@
+---
+/**
+ * 404.
+ *
+ * There was no 404 page at all before this — neither src/pages/404.astro nor
+ * public/404.html — so every dead URL (a typo, a removed slug, an old inbound
+ * link) landed on Vercel's bare "The page could not be found / NOT_FOUND" text
+ * with no navigation, no styling and no way back. For a site whose whole design
+ * language is a menu screen, that was the one screen with no menu.
+ *
+ * Uses BaseLayout so it inherits the skip link, the fonts and the global styles,
+ * and renders NavPill (which hides itself on `/`, so it always shows here).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavPill from '../components/NavPill.astro';
+import { getAllCollections } from '../utils/collections';
+
+const { allShowcase, allShelf } = await getAllCollections();
+
+/* Offer real destinations rather than an apology. Newest first, capped so the
+   page stays a menu and not an index. */
+const suggestions = [
+  ...allShowcase.slice(0, 3).map((entry) => ({
+    href: `/showcase/${entry.slug}`,
+    label: entry.data.title,
+    kind: 'Showcase',
+  })),
+  ...allShelf.slice(0, 3).map((entry) => ({
+    href: `/shelf/${entry.slug}`,
+    label: entry.data.title,
+    kind: 'Shelf',
+  })),
+];
+---
+
+<BaseLayout
+  title="Not found"
+  description="That page doesn't exist. Here's the way back."
+>
+  <div class="nf">
+    <header class="nf__head">
+      <span class="p4g-tab">404</span>
+      <h1 class="p4g-heading nf__title">Nothing here</h1>
+      <span class="p4g-underline"></span>
+      <p class="nf__lede">
+        That address doesn't lead anywhere. It may have been renamed — the media
+        log became Shelf, and notes moved to Substack.
+      </p>
+    </header>
+
+    <nav class="nf__routes" aria-label="Site sections">
+      <a class="nf__route p4g-sweep" href="/"><span>Home</span></a>
+      <a class="nf__route p4g-sweep" href="/showcase"><span>Showcase</span></a>
+      <a class="nf__route p4g-sweep" href="/shelf"><span>Shelf</span></a>
+      <a class="nf__route p4g-sweep" href="/novel"><span>Visual Novel</span></a>
+      <a class="nf__route p4g-sweep" href="/now"><span>Now</span></a>
+      <a class="nf__route p4g-sweep" href="/traces"><span>Traces</span></a>
+    </nav>
+
+    {suggestions.length > 0 && (
+      <section class="nf__recent" aria-label="Recent entries">
+        <h2 class="nf__recent-head">Recent</h2>
+        <ul class="nf__list">
+          {suggestions.map((item) => (
+            <li>
+              <a class="nf__item p4g-sweep" href={item.href}>
+                <span class="nf__item-kind">{item.kind}</span>
+                <span class="nf__item-label">{item.label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </div>
+
+  <NavPill />
+</BaseLayout>
+
+<style>
+  .nf {
+    max-width: 720px;
+    padding: var(--space-2xl) var(--space-lg) var(--nav-clearance, var(--space-3xl));
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+  }
+
+  .nf__head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  .nf__title {
+    margin: 0;
+  }
+
+  .nf__lede {
+    max-width: 52ch;
+    color: var(--color-text-muted);
+    line-height: var(--leading-normal);
+  }
+
+  .nf__routes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .nf__route {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-xs) var(--space-md);
+    background: var(--color-black);
+    border: var(--border-thin) solid var(--color-gold-dim);
+    color: var(--color-gold);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    clip-path: polygon(
+      var(--cut-sm) 0, 100% 0, 100% calc(100% - var(--cut-sm)),
+      calc(100% - var(--cut-sm)) 100%, 0 100%, 0 var(--cut-sm)
+    );
+  }
+
+  .nf__route:hover,
+  .nf__route:focus-visible {
+    border-color: var(--color-gold);
+    color: var(--color-black);
+  }
+
+  .nf__recent-head {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-sm);
+  }
+
+  .nf__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .nf__item {
+    min-height: 44px;
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+    padding: var(--space-xs) var(--space-sm);
+    border-left: 3px solid transparent;
+  }
+
+  .nf__item:hover,
+  .nf__item:focus-visible {
+    border-left-color: var(--color-gold);
+  }
+
+  .nf__item-kind {
+    flex-shrink: 0;
+    width: 7rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-floor);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-text-muted);
+  }
+
+  .nf__item-label {
+    color: var(--color-text);
+  }
+
+  @media (max-width: 768px) {
+    .nf {
+      padding-top: var(--space-xl);
+      gap: var(--space-xl);
+    }
+
+    .nf__item {
+      flex-direction: column;
+      gap: var(--space-2xs);
+    }
+
+    .nf__item-kind {
+      width: auto;
+    }
+  }
+</style>

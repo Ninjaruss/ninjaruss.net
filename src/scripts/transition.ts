@@ -221,9 +221,14 @@ function drawWipe(leadX: number, color: string): void {
 
 // ── Animation constants ───────────────────────────────────────────────────────
 
-const T_IN         = 520;              // ms — card entry + rotation settle
-const T_HOLD       = 340;              // ms — card bob/sway at rest
-const T_WIPE       = 620;              // ms — wipe sweeps, card exits
+/* Timing budget. This no longer gates the swap (see playTransition below), so
+   these only decide how long the overlay covers the page — over content that has
+   usually already arrived. Kept deliberately short: the previous 520 + 340 + 620
+   = 1480ms was sized as a pause, which is only defensible if the navigation is
+   genuinely waiting on it. */
+const T_IN         = 200;              // ms — card entry + rotation settle
+const T_HOLD       = 90;               // ms — card bob/sway at rest
+const T_WIPE       = 300;              // ms — wipe sweeps, card exits
 const ENTRY_ANGLE  = -18 * Math.PI / 180;  // -18° — card entry path angle
 const REST_ROT     = -0.14;           // -8° — card resting rotation
 
@@ -361,21 +366,40 @@ function init(): void {
 
     if (isSamePage(fromPath, toPath)) return;
     if (prefersReducedMotion()) return;
+
+    /* Back/Forward must be instant. A history traversal is the one navigation
+       where a sub-second response is the whole point, and this used to replay
+       the full 1.48s card-and-wipe over it — on top of Astro re-fetching the
+       document, because SplitView's pushed state has no `index` key. */
+    if (e.navigationType === 'traverse') return;
+
     if (!canvas || !ctx) return;
 
     const stat = statForPath(toPath);
 
+    /* The animation is decoration and must never be on the critical path. It
+       used to gate the swap (`await cardPhase(...)` before the loader resolved,
+       then the wipe's midpoint releasing a swap gate), which put ~1.14s of
+       animation in front of a fetch that takes tens of milliseconds and made a
+       static site feel slower than its architecture. The loader now resolves as
+       soon as the document arrives; the wipe plays concurrently and covers the
+       swap because the canvas is a fixed, pointer-events:none layer. */
     const original = e.loader;
     e.loader = async () => {
-      await cardPhase(stat);
-
-      let resolveSwap!: () => void;
-      const swapGate = new Promise<void>((r) => { resolveSwap = r; });
-
-      startWipe(stat, resolveSwap).catch(() => resolveSwap());
-      await Promise.all([swapGate, original()]);
+      playTransition(stat);
+      await original();
     };
   });
+}
+
+/** Fire-and-forget entrance + wipe. Nothing awaits this. */
+function playTransition(stat: StatCard & { img: HTMLImageElement | null }): void {
+  cardPhase(stat)
+    .then(() => startWipe(stat, () => {}))
+    .catch(() => {
+      // A failed frame must never leave the overlay painted over the page.
+      ctx?.clearRect(0, 0, W, H);
+    });
 }
 
 if (typeof window !== 'undefined') init();

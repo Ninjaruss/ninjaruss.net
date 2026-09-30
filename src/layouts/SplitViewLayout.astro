@@ -28,7 +28,12 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
 ---
 
 <BaseLayout title={pageTitle ?? title} description={description} ogImage={ogImage} ogType={ogType}>
-  <NavPill />
+  {/* /showcase was the only detail family with no back link — and the one where
+      the list is hidden outright on mobile (.has-selection .split-view__list {
+      display: none }), so a tapped entry left no in-page way back at all.
+      Only rendered when a detail is actually open (initialSlug is set on the
+      detail routes): on the index route it would link to the current page. */}
+  <NavPill backLink={initialSlug ? `/${section}` : undefined} backLabel={title} />
   <div
     class:list={['split-view', { 'has-selection': hasInitialContent }]}
     data-section={section}
@@ -82,7 +87,12 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     </aside>
 
     <!-- Center Panel: Detail -->
-    <main class="split-view__detail">
+    {/* A <div>, not <main>: BaseLayout already wraps every page's slot in
+        <main id="main-content">, and a nested <main> is invalid HTML and
+        duplicates the landmark — which made landmark navigation ambiguous on
+        the site's two largest surfaces. Same reasoning already recorded in
+        about.astro. */}
+    <div class="split-view__detail">
       <div class="split-view__detail-inner">
         <div class="split-view__placeholder">
           <div class="split-view__placeholder-content">
@@ -104,7 +114,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
           {hasInitialContent ? <slot name="detail" /> : null}
         </article>
       </div>
-    </main>
+    </div>
 
     <!-- Right Panel: Emblem -->
     <aside class="split-view__emblem">
@@ -286,8 +296,13 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     color: var(--color-text);
   }
 
+  /* Black, not gold: outline-offset -2px draws the ring inside the border box,
+     and the selected pill's fill is already --color-gold, so a gold ring
+     measured 1.00:1. (Currently latent — showSearch is false on both /showcase
+     routes, so this pill never renders — but the next surface that turns the
+     filter chrome on would inherit the bug.) */
   .split-view__type-pill:focus-visible {
-    outline: 2px solid var(--color-gold);
+    outline: 2px solid var(--color-black);
     outline-offset: -2px;
   }
 
@@ -994,8 +1009,14 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
   }
 
   /* Visual hierarchy improvements: dim sidebar when scrolling */
+  /* Scroll affordance. Deliberately subtle, and deliberately only ONE dimming
+     layer: this used to compound with `.list-item:not(.is-active) { opacity: 0.6 }`
+     below (0.7 x 0.6 = 0.42 effective), which dropped the 11px date meta to
+     2.00:1 and the 12px subtitle to 2.24:1 — both far under the 4.5:1 floor for
+     text that carries real information. Now the items dim and the list only
+     fades a hair, so nothing compounds past readability. */
   .split-view__list.is-scrolled {
-    opacity: 0.7;
+    opacity: 0.92;
     transition: opacity 300ms ease-out;
   }
 

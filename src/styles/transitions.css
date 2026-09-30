@@ -6,51 +6,7 @@
    ============================================ */
 
 /* Custom page transition: Diagonal Sweep */
-@keyframes p3r-sweep-out {
-  from {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-    opacity: 1;
-  }
-  to {
-    clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
-    opacity: 0;
-  }
-}
-
-@keyframes p3r-sweep-in {
-  from {
-    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
-    opacity: 0;
-  }
-  to {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-    opacity: 1;
-  }
-}
-
 /* Subtle slide with fade - P3R style but less jarring */
-@keyframes p3r-slide-in {
-  from {
-    transform: translateX(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes p3r-slide-out {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(-20px);
-    opacity: 0;
-  }
-}
-
 /* Page transitions handled by canvas in BaseLayout — disable default animations */
 ::view-transition-old(root),
 ::view-transition-new(root) {
@@ -120,23 +76,6 @@
 }
 
 /* Diagonal wipe reveal */
-@keyframes p3r-diagonal-reveal {
-  from {
-    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
-  }
-  to {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  }
-}
-
-/* Stagger delay utility classes */
-.stagger-1 { --stagger-delay: 0ms; }
-.stagger-2 { --stagger-delay: 50ms; }
-.stagger-3 { --stagger-delay: 100ms; }
-.stagger-4 { --stagger-delay: 150ms; }
-.stagger-5 { --stagger-delay: 200ms; }
-.stagger-6 { --stagger-delay: 250ms; }
-
 /* P3R Entrance Animation Classes */
 .p3r-animate {
   animation: p3r-entrance var(--animation-base) var(--animation-easing) backwards;
@@ -148,16 +87,10 @@
   animation-delay: var(--stagger-delay, 0ms);
 }
 
-.p3r-animate-wipe {
-  animation: p3r-wipe-reveal var(--animation-slow) var(--animation-easing) backwards;
-  animation-delay: var(--stagger-delay, 0ms);
-}
-
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .p3r-animate,
-  .p3r-animate-left,
-  .p3r-animate-wipe {
+  .p3r-animate-left {
     animation: none;
   }
 }
@@ -169,20 +102,6 @@
    ============================================ */
 
 /* Entry Grid (listing pages) - uses consistent 50ms stagger */
-.entry-grid > * {
-  animation: p3r-entrance-scale var(--animation-slow) var(--animation-easing) backwards;
-}
-
-.entry-grid > *:nth-child(1) { animation-delay: 0ms; }
-.entry-grid > *:nth-child(2) { animation-delay: 50ms; }
-.entry-grid > *:nth-child(3) { animation-delay: 100ms; }
-.entry-grid > *:nth-child(4) { animation-delay: 150ms; }
-.entry-grid > *:nth-child(5) { animation-delay: 200ms; }
-.entry-grid > *:nth-child(6) { animation-delay: 250ms; }
-.entry-grid > *:nth-child(7) { animation-delay: 300ms; }
-.entry-grid > *:nth-child(8) { animation-delay: 350ms; }
-.entry-grid > *:nth-child(n+9) { animation-delay: 400ms; }
-
 /* Bento Grid (home page) - uses consistent 50ms stagger */
 .bento-grid > * {
   animation: p3r-entrance-scale var(--animation-slow) var(--animation-easing) backwards;
@@ -204,7 +123,6 @@
 
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-  .entry-grid > *,
   .bento-grid > * {
     animation: none;
   }

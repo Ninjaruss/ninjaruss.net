@@ -12,9 +12,14 @@
    hovered. This was an 18-selector hand-written cross-product of
    (.bento-tile|.logo-tile|.title-tile|.image-tile) x itself, which is exactly
    the shape `:is()` exists for — and which had quietly left the Traces bar out
-   of the grid entirely: hovering it dimmed nothing, and it never dimmed. */
-.bento-grid:has(:is(.bento-tile, .logo-tile, .title-tile, .image-tile, .traces-bar):hover)
-  :is(.bento-tile, .logo-tile, .title-tile, .image-tile, .traces-bar):not(:hover) {
+   of the grid entirely: hovering it dimmed nothing, and it never dimmed.
+
+   .title-tile is deliberately NOT in these lists. It is a plain <div> with no
+   href — pure decoration, four columns wide in row 1 — so merely moving the
+   pointer past the wordmark blanked the rest of the page and implied an
+   interaction that does not exist. */
+.bento-grid:has(:is(.bento-tile, .logo-tile, .image-tile, .traces-bar):hover)
+  :is(.bento-tile, .logo-tile, .image-tile, .traces-bar):not(:hover) {
   opacity: 0.45;
   filter: brightness(0.75);
 }
@@ -25,7 +30,7 @@
    a focused inner link, as on the journal/title tiles whose focusables are
    children). */
 .bento-grid:has(:focus-visible)
-  :is(.bento-tile, .logo-tile, .title-tile, .image-tile, .traces-bar):not(:focus-visible):not(:has(:focus-visible)) {
+  :is(.bento-tile, .logo-tile, .image-tile, .traces-bar):not(:focus-visible):not(:has(:focus-visible)) {
   opacity: 0.45;
   filter: brightness(0.75);
 }
@@ -104,16 +109,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bento-tile--interactive:hover,
-  .bento-tile--interactive:focus-visible {
-    transform: translate(-2px, -2px);
-  }
-
   /* Disable neighbor dimming for reduced motion */
-  .bento-grid:has(:is(.bento-tile, .logo-tile, .title-tile, .image-tile, .traces-bar):hover)
-    :is(.bento-tile, .logo-tile, .title-tile, .image-tile, .traces-bar):not(:hover),
+  .bento-grid:has(:is(.bento-tile, .logo-tile, .image-tile, .traces-bar):hover)
+    :is(.bento-tile, .logo-tile, .image-tile, .traces-bar):not(:hover),
   .bento-grid:has(:focus-visible)
-    :is(.bento-tile, .logo-tile, .title-tile, .image-tile, .traces-bar):not(:focus-visible):not(:has(:focus-visible)) {
+    :is(.bento-tile, .logo-tile, .image-tile, .traces-bar):not(:focus-visible):not(:has(:focus-visible)) {
     opacity: 1;
     filter: none;
   }
@@ -240,9 +240,6 @@
   grid-row: span 2;
 }
 
-.bento-tile--small {
-  /* Default 1x1 */
-}
 
 /* Core Content Tiles — Elevated visual weight for main entry points */
 .bento-tile--core {
@@ -403,12 +400,6 @@
 }
 
 /* Section Entry Grid (for listing pages) */
-.entry-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--space-lg);
-}
-
 /* Responsive Bento */
 @media (max-width: 1024px) {
   .bento-grid {
@@ -481,5 +472,20 @@
   .bento-tile--dominant,
   .bento-tile--medium-wide {
     grid-column: span 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Reduced-motion damping for the hover lift. This has to live at the END of
+     the file: `.bento-tile--dark:hover` earlier in this file sets
+     translate(-4px, -4px) at the same specificity (0,2,0), and a later rule wins
+     — so the original placement above the variant blocks never applied, and the
+     two tiles that carry BOTH classes (Novel and About, the only
+     `.bento-tile--interactive` elements in the repo) kept the full 4px lift. */
+  .bento-tile--interactive:hover,
+  .bento-tile--interactive:focus-visible,
+  .bento-tile--dark:hover,
+  .bento-tile--dark:focus-visible {
+    transform: translate(-2px, -2px);
   }
 }

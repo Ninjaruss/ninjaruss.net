@@ -1,23 +1,47 @@
 ---
+import { SUBSTACK_URL } from '../utils/substack';
+
 interface Props {
   backLink?: string;
   backLabel?: string;
+}
+
+interface NavSection {
+  href: string;
+  label: string;
+  /** Path prefixes that mark this item current. Empty for off-site items. */
+  match: string[];
+  /** Off-site: opens in a new tab and never takes the active state. */
+  external?: boolean;
 }
 
 const { backLink, backLabel } = Astro.props;
 const currentPath = Astro.url.pathname;
 const isHome = currentPath === '/';
 
-const SECTIONS = [
+/* Labels match what each destination calls itself — the nav used to say "VN"
+   while the page, its h1 and the homepage tile all said something else, and the
+   string "VN" appeared nowhere on the page it pointed to. Keep these in sync with
+   the homepage tile labels in index.astro. */
+const SECTIONS: NavSection[] = [
   { href: '/', label: 'Home', match: ['/'] },
   { href: '/showcase', label: 'Showcase', match: ['/showcase'] },
-  { href: '/novel', label: 'VN', match: ['/novel'] },
+  { href: '/novel', label: 'Visual Novel', match: ['/novel'] },
   { href: '/shelf', label: 'Shelf', match: ['/shelf'] },
   { href: '/about', label: 'About', match: ['/about'] },
   { href: '/now', label: 'Now', match: ['/now'] },
+  /* Traces was reachable from exactly one link on one page — the homepage bar —
+     and that link canceld its own default action for JS users, so the
+     server-rendered guestbook could not be reached by a plain click from
+     anywhere. It is a site section; it belongs here. */
+  { href: '/traces', label: 'Traces', match: ['/traces'] },
+  /* Writing lives on Substack, so this is the one off-site item. Without it the
+     prose — the point of the site — had no route from /showcase, /shelf or
+     /novel, which linked to it zero times. */
+  { href: SUBSTACK_URL, label: 'Writing', match: [], external: true },
 ];
 
-const isActive = (section: (typeof SECTIONS)[number]) =>
+const isActive = (section: NavSection) =>
   section.href === '/'
     ? isHome
     : section.match.some(m => currentPath === m || currentPath.startsWith(`${m}/`));
@@ -32,6 +56,9 @@ const isActive = (section: (typeof SECTIONS)[number]) =>
             href={section.href}
             class:list={['nav-bar__item', { 'nav-bar__item--active': isActive(section) }]}
             aria-current={isActive(section) ? 'page' : undefined}
+            target={section.external ? '_blank' : undefined}
+            rel={section.external ? 'noopener noreferrer' : undefined}
+            aria-label={section.external ? `${section.label} — opens Substack in a new tab` : undefined}
           >
             <span class="nav-bar__text">{section.label}</span>
           </a>
@@ -123,9 +150,18 @@ const isActive = (section: (typeof SECTIONS)[number]) =>
     transform: translateX(0) skewX(0deg);
   }
 
+  /* offset -2px draws the ring INSIDE the border box. On the active item that
+     box is already --color-gold, so a gold ring measured 1.00:1 and the current
+     page had no perceivable focus indicator at all (its sweep is disabled below
+     and its text is already black). Black reads 16.5:1 on the gold fill and
+     ~19:1 on the black fill of every other item. */
   .nav-bar__item:focus-visible {
-    outline: 2px solid var(--color-gold);
+    outline: 2px solid var(--color-black);
     outline-offset: -2px;
+  }
+
+  .nav-bar__item--active:focus-visible {
+    outline-color: var(--color-black);
   }
 
   /* Current section — solid gold command */
@@ -148,14 +184,22 @@ const isActive = (section: (typeof SECTIONS)[number]) =>
     }
   }
 
-  @media (max-width: 768px) {
+  /* Wrap below the small-desktop step, not just below tablet. The bar carries
+     eight items now (the seven site sections plus Writing, which points at
+     Substack) and "Visual Novel" is a wide label; unwrapped it measures roughly
+     900px, so at a 769–900px viewport it would have run off the right edge —
+     it is `position: fixed; left: …` with no max-width. Wrapping is also what
+     the layout already does at this step everywhere else (the bento grid drops
+     to 4 columns at 1024px). --nav-clearance is measured, not assumed, so the
+     taller bar cannot cover page content. */
+  @media (max-width: 1024px) {
     .nav-bar {
       left: var(--space-sm);
       right: var(--space-sm);
       bottom: var(--space-sm);
     }
 
-    /* Two-row wrap: gap + gold-tinted inner background paints hairlines
+    /* Wrapped rows: gap + gold-tinted inner background paints hairlines
        between rows and columns without per-item border bookkeeping */
     .nav-bar__inner {
       flex-wrap: wrap;

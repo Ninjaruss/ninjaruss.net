@@ -22,6 +22,10 @@ export interface SplitViewState {
   section: string;
   currentSlug: string | null;
   isAnimating: boolean;
+  /** True while a detail fetch is in flight. Guards against two overlapping
+   *  fetches resolving out of order (the winner would otherwise be whichever
+   *  response arrived last, leaving entry X's body under entry Y's URL). */
+  isLoading: boolean;
   isIdle: boolean;
   resumeTimer: number | null;
 }

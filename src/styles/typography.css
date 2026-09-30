@@ -1,13 +1,44 @@
 /* Persona 4 Golden — Authentic Typography System */
 
-/* Font Face Declarations */
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+/* Web fonts are loaded by a <link> in BaseLayout's <head>, not by an @import
+   here: an @import is only discovered once this stylesheet has been fetched and
+   parsed, which pushed the Google Fonts CSS onto a second render-blocking round
+   trip and the woff2 files onto a third.
+
+   Metric-matched fallbacks. `display: swap` paints text in the fallback
+   immediately and swaps when the webfont lands — which reflowed the hero
+   wordmark, every tile title and the whole nav on every cold load. These faces
+   are Arial with its metrics scaled to match each webfont's average advance
+   width and vertical metrics, so the swap changes the glyphs without moving the
+   layout. Values computed from the real font metrics (@capsizecss/unpack) against
+   Arial regular (unitsPerEm 2048, ascent 1854, descent -434, lineGap 67,
+   xWidthAvg 913) — regenerate with `node scripts/build-font-fallbacks.mjs`.
+   Helvetica is metrically identical to Arial, so local('Arial') covers macOS too.
+   --font-mono deliberately has no override: monospace fallbacks (Menlo, Courier)
+   already advance at ~0.6em, matching JetBrains Mono. */
+@font-face {
+  font-family: 'Archivo Black Fallback';
+  src: local('Arial');
+  size-adjust: 124.05%;
+  ascent-override: 70.78%;
+  descent-override: 16.93%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Syne Fallback';
+  src: local('Arial');
+  size-adjust: 98.47%;
+  ascent-override: 93.93%;
+  descent-override: 27.93%;
+  line-gap-override: 0%;
+}
 
 :root {
   /* Font Families */
-  --font-display: 'Archivo Black', sans-serif;
-  --font-body: 'Syne', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-display: 'Archivo Black', 'Archivo Black Fallback', sans-serif;
+  --font-body: 'Syne', 'Syne Fallback', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Type Scale */
   --text-2xs: 0.625rem;
@@ -23,8 +54,8 @@
 
   /* Functional-text floor — 11px. Anything the reader acts on or reads as
      information (labels, CTAs, dates, counts, breadcrumbs, badges) renders at
-     this size or larger. Purely decorative flourishes may sit as low as
-     --text-2xs (10px), which is the hard floor for any text on screen. */
+     this size or larger. --text-2xs (10px) is the declared hard floor for
+     decorative flourishes; it is currently unused. */
   --text-floor: 0.6875rem;
 
   /* Line Heights */
@@ -33,14 +64,16 @@
   --leading-normal: 1.6;
   --leading-relaxed: 1.75;
 
-  /* Letter Spacing */
+  /* Letter Spacing. Two steps only — do not add a third.
+     NOTE: --tracking-wide is defined here ONCE, in global.css. It used to be
+     redeclared in this file at 0.05em, which silently beat global.css's
+     documented 0.12em (this stylesheet is imported second, same :root, same
+     specificity) and collapsed the two-step scale into one value. */
   --tracking-tight: -0.02em;
-  --tracking-normal: 0;
-  --tracking-wide: 0.05em;
 }
 
 /* Display Headings — Bold P4G Style (Dark Mode) */
-h1, .h1 {
+h1 {
   font-family: var(--font-display);
   font-size: var(--text-5xl);
   line-height: var(--leading-tight);
@@ -49,7 +82,7 @@ h1, .h1 {
   text-transform: uppercase;
 }
 
-h2, .h2 {
+h2 {
   font-family: var(--font-display);
   font-size: var(--text-4xl);
   line-height: var(--leading-tight);
@@ -57,27 +90,27 @@ h2, .h2 {
   color: var(--color-text);
 }
 
-h3, .h3 {
+h3 {
   font-family: var(--font-display);
   font-size: var(--text-3xl);
   line-height: var(--leading-snug);
   color: var(--color-text);
 }
 
-h4, .h4 {
+h4 {
   font-family: var(--font-display);
   font-size: var(--text-2xl);
   line-height: var(--leading-snug);
 }
 
-h5, .h5 {
+h5 {
   font-family: var(--font-body);
   font-size: var(--text-xl);
   font-weight: 700;
   line-height: var(--leading-snug);
 }
 
-h6, .h6 {
+h6 {
   font-family: var(--font-body);
   font-size: var(--text-lg);
   font-weight: 700;
@@ -91,28 +124,6 @@ p {
 
 p:last-child {
   margin-bottom: 0;
-}
-
-/* Small Text / Labels */
-.text-sm {
-  font-size: var(--text-sm);
-}
-
-.text-xs {
-  font-size: var(--text-xs);
-}
-
-/* P4G Block Label — Black bg, gold text */
-.label {
-  display: inline-block;
-  background: var(--color-black);
-  color: var(--color-gold);
-  padding: var(--space-xs) var(--space-sm);
-  font-family: var(--font-display);
-  font-size: var(--text-xs);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-label);
-  border-radius: var(--radius-sm);
 }
 
 /* Monospace */
@@ -130,16 +141,6 @@ code, .mono {
   font-size: var(--text-lg);
   line-height: var(--leading-relaxed);
   color: var(--color-text-muted);
-}
-
-/* Muted Text */
-.text-muted {
-  color: var(--color-text-muted);
-}
-
-/* Gold Accent Text */
-.text-gold {
-  color: var(--color-gold);
 }
 
 /* Prose — Entry Content Styling */

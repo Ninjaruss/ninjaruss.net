@@ -1,0 +1,15 @@
+# ninjaruss.net
+#
+# There was no robots.txt at all, so /robots.txt 404'd and nothing pointed
+# crawlers at the sitemap.
+
+User-agent: *
+Allow: /
+
+# Non-page endpoints: a JSON API and the live-status pollers. Crawling them
+# wastes budget and returns nothing indexable.
+Disallow: /api/
+
+# The Substack feed is the canonical one for writing; the site's /rss.xml is a
+# 301 to it (see vercel.json).
+Sitemap: https://ninjaruss.net/sitemap-index.xml

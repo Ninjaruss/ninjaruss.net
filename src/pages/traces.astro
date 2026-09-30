@@ -15,7 +15,7 @@ const messages = await listMessages();
   <NavPill />
   <div class="container">
     <header class="traces-header">
-      <span class="p4g-tab">Traces</span>
+      <span class="p4g-tab">traces</span>
       <h1 class="traces-title"><span class="p4g-heading">Leave a trace</span></h1>
       <span class="p4g-underline" aria-hidden="true"></span>
     </header>
@@ -107,7 +107,10 @@ const messages = await listMessages();
     min-height: 44px;
     padding: var(--space-sm) var(--space-md);
     background: var(--color-bg-elevated);
-    border: var(--border-thin) solid var(--color-border);
+    /* See the matching note in index.astro's modal: --color-border measured
+       1.56:1 on this fill (and the fill 1.11:1 against the page), under the 3:1
+       WCAG 1.4.11 wants for a component boundary. Gold-dim reads 9.04:1. */
+    border: var(--border-hairline) solid var(--color-gold-dim);
     border-radius: var(--radius-md);
     color: var(--color-text);
     font-size: var(--text-base);
@@ -116,6 +119,7 @@ const messages = await listMessages();
   .traces-form__row input:focus-visible {
     outline: 2px solid var(--color-gold);
     outline-offset: 2px;
+    border-color: var(--color-gold);
   }
 
   .traces-form__honeypot {
@@ -133,6 +137,9 @@ const messages = await listMessages();
     background: var(--color-gold);
     color: var(--color-black);
     font-family: var(--font-display);
+    /* Was the UA's 13.3333px Arial, off the type scale. */
+    font-size: var(--text-sm);
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: var(--tracking-label);
     border-radius: var(--radius-sm);

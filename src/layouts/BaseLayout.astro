@@ -7,6 +7,10 @@ import '../styles/transitions.css';
 
 interface Props {
   title: string;
+  /** Replaces the default `${title} — ninjaruss` <title>. The homepage uses
+   *  this so its tagline can lead without the site name being lost, and so the
+   *  layout never has to special-case a magic title string. */
+  displayTitle?: string;
   description?: string;
   ogImage?: string;
   ogType?: string;
@@ -14,15 +18,21 @@ interface Props {
 
 const {
   title,
+  displayTitle,
   description = 'ninjaruss.net – a personal site with notes, media logs, and projects',
   ogImage,
   ogType = 'website',
 } = Astro.props;
 const siteTitle = 'ninjaruss';
-const fullTitle = title === 'Home' ? '*in spite of it all*' : `${title} — ${siteTitle}`;
+const fullTitle = displayTitle ?? `${title} — ${siteTitle}`;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://ninjaruss.net');
-const resolvedOgImage = ogImage ?? '/social-default.svg';
+/* Raster on purpose: X/Facebook/LinkedIn/Slack/Discord/iMessage all refuse SVG
+   for og:image, so the SVG source would render as no preview image at all.
+   social-default.png is generated from social-default.svg by
+   `node scripts/build-og-image.mjs`. */
+const resolvedOgImage = ogImage ?? '/social-default.png';
 const ogImageUrl = new URL(resolvedOgImage, Astro.site || 'https://ninjaruss.net').href;
+const ogImageIsRaster = /\.(png|jpe?g|webp)$/i.test(resolvedOgImage);
 ---
 
 <!DOCTYPE html>
@@ -37,18 +47,36 @@ const ogImageUrl = new URL(resolvedOgImage, Astro.site || 'https://ninjaruss.net
     <link rel="alternate" type="application/rss+xml" title="ninjaruss — Substack" href="https://ninjaruss.substack.com/feed" />
     <meta name="generator" content={Astro.generator} />
 
+    <!-- Fonts. Loaded as a <link> rather than an @import inside typography.css:
+         an @import is only discovered after the stylesheet has been fetched and
+         parsed, which put the Google Fonts CSS on a second render-blocking round
+         trip and the woff2 files on a third. The two preconnects take the TLS
+         setup out of both of those hops. Metric-matched fallback faces are
+         declared in typography.css so the swap does not move the layout.
+         Syne 800 is deliberately absent — it is unused. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl.href} />
     <meta property="og:image" content={ogImageUrl} />
+    {ogImageIsRaster && <meta property="og:image:width" content="1200" />}
+    {ogImageIsRaster && <meta property="og:image:height" content="630" />}
+    <meta property="og:image:alt" content={`${siteTitle} — ${description}`} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={`${siteTitle} — ${description}`} />
 
     <ClientRouter />
   </head>
@@ -70,9 +98,14 @@ const ogImageUrl = new URL(resolvedOgImage, Astro.site || 'https://ninjaruss.net
 </html>
 
 <style is:global>
-  /* Page transition smoothness */
-  html {
-    scroll-behavior: smooth;
+  /* Page transition smoothness. Gated on no-preference: smooth-scrolling a long
+     page (the /novel desk anchors, the /shelf legacy #section-* links) is exactly
+     the motion someone who asked for less motion does not want. SplitView's
+     scrollIntoView calls inherit this value, so gating it here covers them too. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   /* Skip to content link for accessibility */

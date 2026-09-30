@@ -67,7 +67,7 @@ const entryData = allShelf.map(e => ({
   <div class="shelf-page">
     <header class="shelf-header">
       <div class="shelf-header__main">
-        <span class="p4g-tab">catalog</span>
+        <span class="p4g-tab">media log</span>
         <h1 class="shelf-header__title"><span class="p4g-heading">Shelf</span></h1>
         <span class="p4g-underline" aria-hidden="true"></span>
       </div>
@@ -705,8 +705,16 @@ const entryData = allShelf.map(e => ({
 
     if (!panel || !backdrop) return;
 
+    /* Narrowed aliases. TypeScript does not carry the `if (!panel || !backdrop)`
+       narrowing above into nested function declarations, so the helpers below
+       would each re-widen to `HTMLElement | null`. */
+    const panelEl: HTMLElement = panel;
+    const backdropEl: HTMLElement = backdrop;
+
     let previouslyFocused: HTMLElement | null = null;
     let panelPushedHistory = false;
+    /** Pending hide for the panel/backdrop; see finalizeHide(). */
+    let hideTimer: number | null = null;
 
     function openPanel(slug: string) {
       const entry = entryMap.get(slug);
@@ -731,6 +739,13 @@ const entryData = allShelf.map(e => ({
       `;
 
       const proseEl = panelContent.querySelector<HTMLElement>('#sp-prose-body');
+
+      // Cancel any pending hide from a close that is still in flight, so a
+      // rapid close→open can't have the old timer hide the panel underneath us.
+      if (hideTimer !== null) {
+        clearTimeout(hideTimer);
+        hideTimer = null;
+      }
 
       panel.hidden = false;
       backdrop.hidden = false;
@@ -760,16 +775,52 @@ const entryData = allShelf.map(e => ({
         });
     }
 
+    /* Hides the panel + backdrop once the slide-out has finished. Guarded
+       because it can be reached twice: by `transitionend` and by the timeout
+       fallback below, whichever lands first. */
+    function finalizeHide() {
+      if (hideTimer !== null) {
+        clearTimeout(hideTimer);
+        hideTimer = null;
+      }
+      if (panelEl.classList.contains('is-open')) return; // re-opened meanwhile
+      panelEl.hidden = true;
+      backdropEl.hidden = true;
+    }
+
+    /** Longest transition-duration on the panel, in ms (0 when none). */
+    function panelTransitionMs() {
+      const raw = getComputedStyle(panelEl).transitionDuration || '0s';
+      return raw.split(',').reduce((max, part) => {
+        const value = parseFloat(part);
+        if (!Number.isFinite(value)) return max;
+        const ms = part.includes('ms') ? value : value * 1000;
+        return Math.max(max, ms);
+      }, 0);
+    }
+
     function closePanel(fromPop = false) {
-      panel.classList.remove('is-open');
+      panelEl.classList.remove('is-open');
       document.body.style.overflow = '';
       activeFetch?.abort();
 
-      // Wait for slide-out transition before hiding
-      panel.addEventListener('transitionend', () => {
-        panel.hidden = true;
-        backdrop.hidden = true;
-      }, { once: true });
+      /* Whichever comes first: the slide-out finishing, or a timeout just past
+         it. Keying this ONLY off `transitionend` was a real bug — under
+         prefers-reduced-motion `.shelf-panel { transition: none }` (see the
+         reduced-motion block in this file's styles), so no transition event ever
+         fires and `backdrop.hidden = true` never ran. The backdrop is
+         `position: fixed; inset: 0; z-index: 90`, so the page stayed permanently
+         dimmed with every click on the wall swallowed — only the NavPill
+         (z-index 100) was still reachable. It also left the panel merely
+         translated off-screen rather than hidden, keeping its ✕ and CTA in the
+         tab order as invisible targets. */
+      const duration = panelTransitionMs();
+      if (duration > 0) {
+        panelEl.addEventListener('transitionend', finalizeHide, { once: true });
+        hideTimer = window.setTimeout(finalizeHide, duration + 60);
+      } else {
+        finalizeHide();
+      }
 
       if (!fromPop) {
         if (panelPushedHistory) history.back();
@@ -785,6 +836,11 @@ const entryData = allShelf.map(e => ({
       card.addEventListener('click', e => {
         const slug = card.dataset.slug;
         if (!slug) return;
+        // Modified clicks belong to the browser: ⌘/Ctrl-click opens the real
+        // detail route in a new tab. This is the only way to reach an entry from
+        // the wall, so swallowing it removed the standard gesture entirely.
+        // Same guard the filter bar uses further down this file.
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         e.preventDefault();
         previouslyFocused = card;
         history.pushState(null, '', `/shelf/${encodeURIComponent(slug)}`);
@@ -797,7 +853,47 @@ const entryData = allShelf.map(e => ({
     backdrop.addEventListener('click', () => closePanel(), { signal: pageCleanup!.signal });
     closeBtn?.addEventListener('click', () => closePanel(), { signal: pageCleanup!.signal });
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && !panel.hidden) closePanel();
+      if (panelEl.hidden) return;
+
+      if (e.key === 'Escape') {
+        closePanel();
+        return;
+      }
+
+      /* Focus containment. The panel declares `aria-modal="true"`, which tells
+         assistive tech the rest of the page is unavailable — but nothing was
+         making it so: there is no `inert` and no `aria-hidden` on siblings, so
+         Tab walked off the panel's last control onto the NavPill and then the
+         wall cards *behind* the dimmed backdrop. A modal that leaks Tab is worse
+         than a plain panel, because the keyboard can still operate content AT has
+         been told is gone. Queried per keypress because the prose is injected
+         after the panel opens. */
+      if (e.key !== 'Tab') return;
+      const focusables = Array.from(
+        panelEl.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter(el => el.offsetParent !== null || el === document.activeElement);
+      if (focusables.length === 0) {
+        e.preventDefault();
+        panelEl.focus();
+        return;
+      }
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      if (!panelEl.contains(active)) {
+        e.preventDefault();
+        first.focus();
+        return;
+      }
+      if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
     }, { signal: pageCleanup!.signal });
     window.addEventListener('popstate', () => {
       if (!panel.hidden) closePanel(true);

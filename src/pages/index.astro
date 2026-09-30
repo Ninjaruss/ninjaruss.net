@@ -59,6 +59,17 @@ const shortDate = (ms: number) =>
   new Date(ms).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).toLowerCase();
 
 type WritingRow = { href: string; title: string; date: string };
+/* Cuts on a word boundary and marks the cut. A raw `.slice(0, 140)` produced
+   "…utilizing LLMs (Lar" — mid-word, with no ellipsis, in the tile that rotates
+   every 11s. */
+function excerpt(text: string, max = 140): string {
+  const clean = stripMarkdown(text);
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max);
+  const lastSpace = cut.lastIndexOf(' ');
+  return `${(lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).trimEnd()}…`;
+}
+
 const recentWriting: WritingRow[] = substackPosts.slice(0, 5).map((p) => {
   const ms = Date.parse(p.pubDate);
   return {
@@ -132,14 +143,14 @@ const latestEntries = [
       ? ''
       : formatDate(new Date(substackPosts[0].pubDate)),
     emblem: '/images/emblems/scroll.svg',
-    excerpt: substackPosts[0].description.slice(0, 140),
+    excerpt: excerpt(substackPosts[0].description),
   },
   latestShowcase && {
     title: latestShowcase.data.title,
     href: `/showcase/${latestShowcase.slug}`,
     date: formatDate(latestShowcase.data.updatedAt ?? latestShowcase.data.publishedAt!),
     emblem: latestShowcase.data.emblem ?? DEFAULT_EMBLEM,
-    excerpt: stripMarkdown(latestShowcase.body ?? '').slice(0, 140),
+    excerpt: excerpt(latestShowcase.body ?? ''),
   },
   substackPosts[1] && {
     title: substackPosts[1].title,
@@ -148,13 +159,13 @@ const latestEntries = [
       ? ''
       : formatDate(new Date(substackPosts[1].pubDate)),
     emblem: '/images/emblems/scroll.svg',
-    excerpt: substackPosts[1].description.slice(0, 140),
+    excerpt: excerpt(substackPosts[1].description),
   },
 ].filter((entry): entry is LatestEntry => Boolean(entry));
 
 ---
 
-<BaseLayout title="Home" description="Notes, media, and showcases.">
+<BaseLayout title="Home" displayTitle="in spite of it all — ninjaruss" description="Notes, media, and showcases.">
   <div class="container" id="page-container">
     <BentoGrid>
       {/* Hero band — the row-1 tiles plus the Traces bar, wrapped as one
@@ -182,7 +193,6 @@ const latestEntries = [
         rel="noopener noreferrer"
         aria-label="Ninjaruss on YouTube"
         class="image-tile image-tile--youtube p3r-animate"
-        style="--stagger-delay: 100ms;"
       >
         <!-- Full-bleed channel avatar -->
         {/* object-fit: cover into a tall-ish slot means the 16:9 source is
@@ -243,7 +253,7 @@ const latestEntries = [
         label="Now"
         title={latestNow?.data.title ?? 'Current Focus'}
         description="Where am I at right now?"
-        class="home-now-tile"
+        class="home-now-tile home-now-tile--clamped"
       >
         <span class="now-date" title={`Local: ${nowMonthYearLocal}`}>
           <span class="now-dot" aria-hidden="true"></span>
@@ -281,7 +291,7 @@ const latestEntries = [
           <a href="https://ninjaruss.substack.com" class="journal-tile__head">
             <div class="bento-tile__header">
               <span class="bento-tile__label">Writing</span>
-              <h3 class="bento-tile__title">Notes</h3>
+              <h2 class="bento-tile__title">Notes</h2>
             </div>
           </a>
           {recentWriting.length > 0 ? (
@@ -333,7 +343,7 @@ const latestEntries = [
         </div>
         <div class="bento-tile__header">
           <span class="bento-tile__label">Visual Novel</span>
-          <h3 class="bento-tile__title">Remember Rain</h3>
+          <h2 class="bento-tile__title">Remember Rain</h2>
         </div>
         {novelRecentFolderTitle && novelRecentFileTitle && (
           <p class="novel-tile__recent">
@@ -370,7 +380,7 @@ const latestEntries = [
           {protagonist.portrait && (
             <img class="st-portrait" src={protagonist.portrait} alt="" loading="lazy" width="64" height="64" />
           )}
-          <h3 class="st-name">{protagonist.name}</h3>
+          <h2 class="st-name">{protagonist.name}</h2>
           {protagonist.epithet && <p class="st-epithet">{protagonist.epithet}</p>}
         </div>
 
@@ -378,7 +388,9 @@ const latestEntries = [
           {currentArc ? (
             <>
               <span class="st-arc">{currentArc.arc}</span>
-              <p class="st-teaser">{currentArc.decision}</p>
+              {/* stripMarkdown: the source paragraph contains *Is the Order a Rabbit?* and
+            the tile was rendering the asterisks as literal mid-sentence glyphs. */}
+            <p class="st-teaser">{stripMarkdown(currentArc.decision)}</p>
             </>
           ) : (
             <p class="st-teaser st-teaser--empty">The story hasn't started yet.</p>
@@ -422,7 +434,7 @@ const latestEntries = [
             <div class="latest-tile__text">
               <div class="bento-tile__header">
                 <span class="bento-tile__label">Latest</span>
-                <h3 class="bento-tile__title" id="latest-title">{latestEntries[0].title}</h3>
+                <h2 class="bento-tile__title" id="latest-title">{latestEntries[0].title}</h2>
               </div>
               <p class="latest-tile__excerpt" id="latest-excerpt"></p>
               <div class="bento-tile__footer">
@@ -449,7 +461,6 @@ const latestEntries = [
         target="_blank"
         rel="noopener noreferrer"
         class="logo-tile logo-tile--mal p4g-sweep p3r-animate"
-        style="--stagger-delay: 100ms;"
       >
         <span class="logo-tile__kicker" aria-hidden="true"><span>Watchlist</span></span>
         <img
@@ -466,7 +477,6 @@ const latestEntries = [
         target="_blank"
         rel="noopener noreferrer"
         class="logo-tile logo-tile--spotify p4g-sweep p3r-animate"
-        style="--stagger-delay: 150ms;"
       >
         <span class="logo-tile__kicker" aria-hidden="true"><span>Listening</span></span>
         <img
@@ -483,7 +493,7 @@ const latestEntries = [
            never appears in the static HTML (bot-scrape mitigation). The static href
            is a real no-JS fallback (the /about Connect block), not a dead #anchor — with
            JS the click is always intercepted to open the mailto. -->
-      <a href="/about" id="mail-tile" class="logo-tile logo-tile--mail p4g-sweep bento-tile--span-2x1 p3r-animate" style="--stagger-delay: 200ms;">
+      <a href="/about" id="mail-tile" class="logo-tile logo-tile--mail p4g-sweep bento-tile--span-2x1 p3r-animate">
         <span class="logo-tile__kicker" aria-hidden="true"><span>Contact</span></span>
         <svg class="logo-tile__img" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
           <rect x="2.5" y="5" width="19" height="14" rx="1.5"/>
@@ -501,6 +511,11 @@ const latestEntries = [
     <div class="traces-modal__header">
       <span class="p4g-tab">Traces</span>
       <span class="traces-modal__count" id="traces-modal-count"></span>
+      <!-- The bar's click opens this modal instead of navigating (deliberate),
+           which used to leave the server-rendered /traces page reachable nowhere
+           by a plain click — no nav item, no footer link, and no link out of the
+           modal itself. This is that link. -->
+      <a class="traces-modal__full" href="/traces">Full page<span aria-hidden="true"> →</span></a>
       <button type="button" class="traces-modal__close" id="traces-modal-close" aria-label="Close">✕</button>
     </div>
     <div class="traces-modal__body" id="traces-modal-body">
@@ -552,9 +567,13 @@ const latestEntries = [
   }
 
   /* Absolute entry date for the Latest tile (never time-since) */
+  /* One timestamp treatment across the page: 11px mono, lowercase, gold-dim.
+     This datum used to render at three different sizes in two formats — the
+     Latest tile at 12px, the journal rows at 11px, the modal list at 14px — with
+     the *same* Substack post's date shown at two of them simultaneously. */
   .latest-date {
     font-family: var(--font-mono);
-    font-size: var(--text-xs);
+    font-size: var(--text-floor);
     /* Tile-internal dates are lowercase across the grid (the journal tile's
        "aug 1" rows set the pattern); formatDate's own output is untouched. */
     text-transform: lowercase;
@@ -599,11 +618,15 @@ const latestEntries = [
   }
 
   /* Flush inset corner tab — matches the shared .p4g-tab used on every other tile */
+  /* Inset to match .bento-tile__label, which renders inside the tile's own
+     --space-md padding. Flush at 0,0 this chip sat 16px out of alignment with the
+     Shelf tile's identical-looking chip in the row above it, at a 4px different
+     height. */
   .logo-tile__kicker {
     position: absolute;
-    top: 0;
-    left: 0;
-    padding: var(--space-2xs) calc(var(--space-sm) + var(--cut-sm)) var(--space-2xs) var(--space-sm);
+    top: var(--space-md);
+    left: var(--space-md);
+    padding: var(--space-xs) calc(var(--space-sm) + var(--cut-sm)) var(--space-xs) var(--space-sm);
     background: var(--color-gold);
     color: var(--color-black);
     font-family: var(--font-display);
@@ -702,12 +725,15 @@ const latestEntries = [
     line-height: 1.4;
     text-align: center;
 
-    /* Always visible, clamped to keep the 1×1 tile tidy; brightens on hover */
+    /* Always visible, clamped to keep the 1×1 tile tidy; brightens on hover.
+       .75, not .6: at .6 the muted token composited to 3.12–3.34:1 over the dark
+       tile grounds, under the 4.5:1 AA floor for 12px text. The gold Email tile
+       keeps .7 (see .logo-tile--mail) — that reads 7.59:1. */
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    opacity: 0.6;
+    opacity: 0.75;
     transition: opacity 200ms ease-out;
   }
 
@@ -809,7 +835,11 @@ const latestEntries = [
     text-align: center;
     text-transform: uppercase;
     letter-spacing: var(--tracking-wide);
-    opacity: 0.45;
+    /* .45 measured 2.30:1 — #a0a0a0 at 45% over the tile's --color-black ground
+       composites to #484848, which is under the 4.5:1 AA floor for 12px and
+       under even 3:1, and it is the only line on the page explaining what the
+       site is. .75 lands at ~5.6:1. */
+    opacity: 0.75;
     transition: opacity 300ms ease-out;
   }
 
@@ -1061,7 +1091,8 @@ const latestEntries = [
     margin-left: auto;
     font-size: var(--text-floor);
     letter-spacing: var(--tracking-label);
-    opacity: 0.55;
+    /* Black on the gold field: .55 measured 4.48:1 at 11px, 0.02 under AA. */
+    opacity: 0.6;
   }
 
   /* ─── Media Tile ──────────────────────────────────────── */
@@ -1114,6 +1145,19 @@ const latestEntries = [
   }
 
   /* ─── Now Tile ────────────────────────────────────────── */
+  /* The Now tile is one column wide and shows a monthly entry title that can run
+     38+ characters. At --text-xl that wraps to four lines, and because the bento
+     rows are minmax(100px, auto) the tallest tile sets the row — so a long title
+     silently grew the entire hero and stretched the wordmark and YouTube tiles
+     with it. Clamped to two lines; the full title is on the element's own title
+     attribute (BentoTile renders it) so nothing is lost. */
+  .home-now-tile--clamped :global(.bento-tile__title) {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   .now-date {
     display: inline-flex;
     align-items: center;
@@ -1146,15 +1190,11 @@ const latestEntries = [
     50% { opacity: 0.55; transform: scale(0.75); }
   }
 
-  @keyframes radar-ping {
-    0% { transform: scale(0.6); opacity: 0.7; }
-    100% { transform: scale(3); opacity: 0; }
-  }
-
-  @keyframes now-pulse {
-    0%, 100% { opacity: 0.7; transform: scale(1); }
-    50% { opacity: 0.3; transform: scale(0.65); }
-  }
+  /* radar-ping was the Now tile's ping rings, cut as pure ornament (the gold
+     ground and the NOW kicker already say "now"; the dot still breathes).
+     now-pulse was a second orphan in the same place that the note never
+     mentioned — the live dot uses dot-breathe. Neither name appeared anywhere
+     but its own declaration. */
 
   /* ─── Stream Tile ────────────────────────────────────── */
   .stream-tile {
@@ -1175,6 +1215,17 @@ const latestEntries = [
        on the grid whose shadow did not grow on hover. */
     box-shadow: var(--shadow-hard-hover);
     transform: translate(-4px, -4px);
+  }
+
+  /* The pulse animates box-shadow, and a running CSS animation beats a normal
+     author declaration — so `.bento-tile--dark:hover`'s shadow step to
+     --shadow-hard-hover never applied while live, i.e. in exactly the state where
+     this tile is most prominent. Pausing the loop on hover restores the step and
+     also stops the page moving under the pointer. */
+  .stream-tile.is-live:hover,
+  .stream-tile.is-live:focus-visible,
+  .stream-tile.is-live:has(:focus-visible) {
+    animation-play-state: paused;
   }
 
   .stream-tile.is-live {
@@ -1573,10 +1624,17 @@ const latestEntries = [
     margin-top: var(--space-xs);
   }
 
+  /* The field is as tall as the row (which the neighbouring Shelf tile's poster
+     strip sets) but the emblem inside it was `width: 100%; aspect-ratio: 1;
+     max-height: 100%` centred — roughly 70x70 inside ~118x346, about a ninth of
+     the panel, with the rest empty dark. Stretch it to the field's height and let
+     the width follow the image's own ratio; `contain` keeps the whole emblem
+     visible rather than cropping a logo. */
   .latest-tile__emblem-wrap {
     flex-shrink: 0;
     position: relative;
     width: 34%;
+    align-items: stretch;
     margin: calc(-1 * var(--space-md));
     margin-left: 0;
     padding: var(--space-md) var(--space-md) var(--space-md) var(--space-lg);
@@ -1602,9 +1660,10 @@ const latestEntries = [
 
   .latest-tile__emblem {
     width: 100%;
-    height: auto;
-    aspect-ratio: 1;
+    height: 100%;
     max-height: 100%;
+    min-height: 72px;
+    object-position: center;
     border-radius: var(--radius-sm);
     object-fit: cover;
     border: 1px solid var(--color-border-strong);
@@ -1795,9 +1854,14 @@ const latestEntries = [
       font-size: clamp(1.8rem, 8vw, 2.5rem);
     }
 
+    /* A 16:9 box for a 16:9 source: nothing is cropped. The previous
+       min-height: 200px against a two-column (~652px) width made a 3.26:1 slot,
+       so object-fit: cover threw away ~45% of the image's height. max-height
+       keeps it from becoming the tallest thing on the page. */
     .image-tile--youtube {
       grid-column: span 2;
-      min-height: 200px;
+      aspect-ratio: 16 / 9;
+      max-height: 340px;
     }
 
     /* Now fills the rest of its row so the following span-2 Journal tile
@@ -1837,13 +1901,22 @@ const latestEntries = [
       font-size: clamp(1.5rem, 6vw, 2rem);
     }
 
-    /* Single column: float owned content (Journal/Now/Novel/Latest…)
-       above the external service tiles, and let the YouTube tile read as a
-       signal rather than a full-height hero. Grid honors `order` for
-       auto-placement just like flex. */
+    /* Single column. MAL/Spotify/Email are children of the OUTER grid, so
+       `order: 2` genuinely floats them below the owned content.
+       The YouTube tile is NOT: it is a child of the inner grid inside
+       .hero-band, whose only siblings are the title tile (order: -1) and the Now
+       tile. Its `order` therefore only sequences it after those two — it cannot
+       move past the journal/novel/About/Shelf tiles, because the whole band is a
+       single item of the outer grid. This is a consequence of the band existing
+       at all (it is what lets the ~40px traces bar sit on its own row despite
+       the grid's minmax(100px, auto) rows), and moving the tile out of the band
+       would break the documented row-1 layout on desktop. So the honest
+       statement of behaviour is: title, Now, YouTube — then owned content.
+       min-height drops 150px → 96px so it stops being the largest block on the
+       first screen. */
     .image-tile--youtube {
       grid-column: span 1;
-      min-height: 150px;
+      min-height: 96px;
       order: 2;
     }
 
@@ -1945,16 +2018,12 @@ const latestEntries = [
     font-weight: 700;
   }
 
-  :global(.traces-bullet__time) {
-    font-size: var(--text-floor);
-    opacity: 0.65;
-  }
-
   /* An older message from someone who has posted since — smaller and
      dimmer, so age is legible at a glance. */
   :global(.traces-bullet--echo) {
     font-size: var(--text-floor);
-    opacity: 0.62;
+    /* .62 measured 3.49:1; the gold-on-dark echo now reads ~6:1. */
+    opacity: 0.72;
   }
 
   /* What is resting in the lane. Cross-fades in place and never translates —
@@ -1997,7 +2066,8 @@ const latestEntries = [
 
   :global(.traces-park__time) {
     font-size: var(--text-floor);
-    opacity: 0.6;
+    /* .6 measured 3.26:1 at 11px over the bar's #181818 ground. */
+    opacity: 0.75;
     margin-left: 0.6em;
   }
 
@@ -2114,16 +2184,48 @@ const latestEntries = [
     color: var(--color-text-muted);
   }
 
+  /* Escape hatch from the modal to the server-rendered page. Muted at rest so it
+     never competes with the count; gold on hover/focus. No auto margin — the
+     count already carries `margin-right: auto`, which is what pushes this and the
+     close button to the right edge. */
+  .traces-modal__full {
+    padding: var(--space-2xs) var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-floor);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    border: var(--border-hairline) solid transparent;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .traces-modal__full:hover,
+  .traces-modal__full:focus-visible {
+    color: var(--color-gold);
+    border-color: var(--color-gold-dim);
+  }
+
   .traces-modal__close {
     min-width: 44px;
     min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--space-sm);
     color: var(--color-text-muted);
     font-size: var(--text-lg);
+    line-height: 1;
+    border: var(--border-thin) solid transparent;
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast), border-color var(--transition-fast);
   }
 
   .traces-modal__close:hover,
   .traces-modal__close:focus-visible {
     color: var(--color-gold);
+    border-color: var(--color-gold-dim);
   }
 
   .traces-modal__body {
@@ -2186,10 +2288,18 @@ const latestEntries = [
     min-height: 44px;
     padding: var(--space-sm) var(--space-md);
     background: var(--color-bg-elevated);
-    border: var(--border-thin) solid var(--color-border);
+    /* --color-border (#3a3a3a) measured 1.56:1 against this field's own fill, and
+       the fill only 1.11:1 against the page ground — WCAG 1.4.11 wants 3:1 on a
+       UI component boundary, so the field was undelimited until focused.
+       Gold-dim reads 9.04:1 here. */
+    border: var(--border-hairline) solid var(--color-gold-dim);
     border-radius: var(--radius-md);
     color: var(--color-text);
     font-size: var(--text-base);
+  }
+
+  :global(.traces-modal__body .traces-form__row input:focus-visible) {
+    border-color: var(--color-gold);
   }
 
   :global(.traces-modal__body .traces-form__honeypot) {
@@ -2207,6 +2317,10 @@ const latestEntries = [
     background: var(--color-gold);
     color: var(--color-black);
     font-family: var(--font-display);
+    /* Was inheriting the UA's 13.3333px Arial — a size the type scale does not
+       have — while the identical word "Sign" in the bar above renders at 11px. */
+    font-size: var(--text-sm);
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: var(--tracking-label);
     border-radius: var(--radius-sm);
@@ -2254,9 +2368,12 @@ const latestEntries = [
   }
 
   :global(.traces-modal__body .traces-list__date) {
-    font-size: var(--text-sm);
+    /* 11px, matching .journal-tile__date / .latest-date / .traces-park__time —
+       one timestamp slot, not four sizes. */
+    font-size: var(--text-floor);
     color: var(--color-text-muted);
     font-family: var(--font-mono);
+    letter-spacing: var(--tracking-label);
   }
 </style>
 

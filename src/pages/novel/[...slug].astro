@@ -157,7 +157,12 @@ const pageTitle =
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
   {view === 'desk' && stats && (
-    <main class="novel-page novel-desk">
+    /* A <div>, not <main>: BaseLayout already wraps every page's slot in
+       <main id="main-content">, and a nested <main> is invalid HTML and
+       duplicates the landmark — which made landmark navigation ambiguous on the
+       site's two largest surfaces. Same reasoning already recorded in
+       about.astro. */
+    <div class="novel-page novel-desk">
       <header class="novel-header p3r-animate">
         <div class="novel-header__titles">
           <span class="p4g-tab">visual novel</span>
@@ -224,11 +229,16 @@ const pageTitle =
           </section>
         ))}
       </section>
-    </main>
+    </div>
   )}
 
   {view === 'file' && topFolder && file && (
-    <main class="novel-page novel-reading">
+    /* A <div>, not <main>: BaseLayout already wraps every page's slot in
+       <main id="main-content">, and a nested <main> is invalid HTML and
+       duplicates the landmark — which made landmark navigation ambiguous on the
+       site's two largest surfaces. Same reasoning already recorded in
+       about.astro. */
+    <div class="novel-page novel-reading">
       <nav class="novel-crumb p3r-animate" aria-label="Breadcrumb">
         <a href="/novel">desk</a>
         <span aria-hidden="true">/</span>
@@ -265,7 +275,7 @@ const pageTitle =
           )}
         </nav>
       )}
-    </main>
+    </div>
   )}
 </BaseLayout>
 

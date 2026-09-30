@@ -30,7 +30,9 @@ const variantClass = `bento-tile--${variant}`;
 >
   <div class="bento-tile__header">
     {label && <span class="bento-tile__label">{label}</span>}
-    <h3 class="bento-tile__title">{title}</h3>
+    {/* h2, not h3: tiles are siblings of the page's <h1> (the title tile on the
+        homepage), so h3 skipped a heading level. */}
+    <h2 class="bento-tile__title">{title}</h2>
   </div>
   {description && <p class="bento-tile__description">{description}</p>}
   <div class="bento-tile__footer">

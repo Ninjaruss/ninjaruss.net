@@ -1,5 +1,13 @@
+/* Anything genuinely interactive. This used to be a hand-maintained list led by
+   `.bento-tile--interactive` — but every homepage tile passes `variant="dark"` or
+   `"highlight"`, so only Novel and About matched it, while the Journal, Shelf,
+   Now and Latest tiles did not. It also missed the global nav, the whole /shelf
+   wall and the SplitView list entirely, and it DID match the decorative title
+   tile. Deriving it from the element type instead of a class list means it
+   cannot go stale again — the same bug class CLAUDE.md records for
+   initializeTilt(). */
 const TILE_SELECTOR =
-  '.bento-tile--interactive, .logo-tile, .image-tile, .title-tile, .traces-bar, .traces-bullet, .traces-modal__close';
+  'a[href], button, .traces-bar, .traces-bullet, [role="button"]';
 
 // Only take over the cursor on hover-capable (pointer) devices, and only once
 // JS is confirmed running. CSS hides the native cursor via

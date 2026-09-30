@@ -151,7 +151,10 @@ const arcCardStyle = arcColor
     letter-spacing: 0.05em;
     white-space: nowrap;
     flex-shrink: 0;
-    animation: p3r-animate 400ms var(--animation-easing) 300ms backwards;
+    /* p3r-entrance, not p3r-animate: p3r-animate is a CLASS (transitions.css),
+       not a @keyframes name, so this shorthand resolved to nothing and the chip
+       never animated in. */
+    animation: p3r-entrance 400ms var(--animation-easing) 300ms backwards;
   }
 
   .now__entry-title {

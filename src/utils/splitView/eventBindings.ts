@@ -2,7 +2,32 @@ import type { SplitViewElements, SplitViewState } from './types';
 import type { IdleManager } from './idleManager';
 import { getFiltersFromURL, updateURL } from './urlState';
 import { applyFilters } from './filterEngine';
-import { loadContent } from './contentLoader';
+import { loadContent, clearContent } from './contentLoader';
+
+/** Does this click mean "let the browser handle it" (new tab, download, …)? */
+export function isModifiedClick(e: MouseEvent): boolean {
+  return e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
+}
+
+/** Normalises a path for comparison — `/showcase/a` and `/showcase/a/` match. */
+function normalisePath(p: string): string {
+  return p.replace(/\/+$/, '') || '/';
+}
+
+/**
+ * Resolves which list item (if any) the current URL points at. Used by popstate,
+ * where the history entry's state can no longer be trusted to carry the slug:
+ * SplitView pushes `null` so Astro's ClientRouter ignores its entries (see
+ * contentLoader), so the URL is the source of truth.
+ */
+function slugForCurrentPath(elements: SplitViewElements): string | null {
+  const here = normalisePath(window.location.pathname);
+  const match = elements.listItems.find((item) => {
+    const href = item.getAttribute('href');
+    return href ? normalisePath(href) === here : false;
+  });
+  return match?.dataset.slug ?? null;
+}
 
 /**
  * Bind filter-related event listeners
@@ -108,6 +133,10 @@ export function bindListEvents(
   // List item clicks
   listItems.forEach((item) => {
     item.addEventListener('click', async (e) => {
+      // Let modified clicks through to the browser. ⌘/Ctrl-click "open in a new
+      // tab" is the standard gesture on a list of links, and this handler used to
+      // swallow it unconditionally. The shelf filter bar guards the same way.
+      if (isModifiedClick(e)) return;
       e.preventDefault();
       const slug = item.dataset.slug;
       if (slug) await loadContent(slug, elements, state, idleManager);
@@ -118,23 +147,29 @@ export function bindListEvents(
   if (!(window as any)[`__splitViewPopstate_${state.section}`]) {
     (window as any)[`__splitViewPopstate_${state.section}`] = true;
 
-    window.addEventListener('popstate', (e) => {
+    window.addEventListener('popstate', () => {
       const sv = document.querySelector('.split-view') as HTMLElement | null;
       if (!sv || sv.dataset.section !== state.section) return;
 
-      const content = sv.querySelector('.split-view__content') as HTMLElement | null;
-      const items = Array.from(sv.querySelectorAll('.list-item')) as HTMLElement[];
+      /* Restore from the URL, not from event.state: SplitView now pushes `null`
+         state so Astro's ClientRouter leaves these entries alone. */
+      const slug = slugForCurrentPath(elements);
 
-      if ((e as PopStateEvent).state?.slug) {
-        const item = sv.querySelector(`[data-slug="${(e as PopStateEvent).state.slug}"]`) as HTMLElement;
-        item?.click();
+      if (slug) {
+        /* The critical bit — restoring must NOT push. This used to go through
+           the list item's own click handler (item.click()), which inherited
+           pushHistory: true, so every Back pushed a new entry: that truncated
+           the forward stack (killing Forward outright) and made a second Back
+           re-render the same URL instead of leaving the entry. scroll: false
+           keeps the visitor's own reading position on a traversal, and
+           focusHeading: false avoids yanking focus on Back. */
+        loadContent(slug, elements, state, idleManager, {
+          pushHistory: false,
+          scroll: false,
+          focusHeading: false,
+        });
       } else {
-        sv.classList.remove('has-selection');
-        if (content) {
-          content.classList.remove('is-active');
-          content.innerHTML = '';
-        }
-        items.forEach((i) => i.classList.remove('is-active'));
+        clearContent(elements, state);
       }
     });
   }

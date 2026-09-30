@@ -67,6 +67,7 @@ export function initSplitView(): void {
     section,
     currentSlug: initialSlug,
     isAnimating: false,
+    isLoading: false,
     isIdle: false,
     resumeTimer: null,
   };
@@ -74,8 +75,18 @@ export function initSplitView(): void {
   // Initialize idle manager
   const idleManager = createIdleManager(splitView, state);
 
-  // Restore filter state from URL
-  const { search: initialSearch, types: initialTypes } = getFiltersFromURL();
+  /* Restore filter state from the URL — but only on surfaces that render filter
+     chrome. Both /showcase routes pass showSearch={false}, so nothing could show
+     or clear a filter, and a bookmarked or hand-made /showcase?types=film was
+     silently hiding entries with no way to see why. applyFilters still runs
+     (with no filters) because it is what stamps the `is-filtered` class that
+     tryAutoOpen reads to pick the first visible item. */
+  const hasFilterChrome = Boolean(
+    elements.searchInput || elements.typesList || elements.clearAllButton
+  );
+  const { search: initialSearch, types: initialTypes } = hasFilterChrome
+    ? getFiltersFromURL()
+    : { search: '', types: new Set<string>() };
   if (elements.searchInput) elements.searchInput.value = initialSearch;
   if (elements.typesList) populateTypes(elements.typesList, elements.listItems, initialTypes);
   // Reflect restored (non-search) filters on the clear button
@@ -132,14 +143,15 @@ export function initSplitView(): void {
         loadContent(firstSlug, elements, state, idleManager, { pushHistory: false, focusHeading: false });
       }
     };
-    // Viewports below the 1200px breakpoint (SplitViewLayout.astro's tablet
-    // media query drops the 3-column grid to 2 columns, and below 900px it
-    // collapses to a single stacked column) can never satisfy the >=3-column
-    // check above — skip the poll entirely rather than running it dry. The
-    // query-change listener covers viewports that only become desktop-wide
+    // Viewports that cannot satisfy the >=3-column check above skip the poll
+    // entirely rather than running it dry. The query must be 1201px, not 1200px:
+    // SplitViewLayout.astro drops the 3-column grid to 2 columns at
+    // `max-width: 1200px`, so at exactly 1200px that rule and a `min-width:
+    // 1200px` query were both true and auto-open silently never fired.
+    // The query-change listener covers viewports that only become desktop-wide
     // after init (embedded panes can even report 0×0 at load); tryAutoOpen's
     // own guards make every extra kick a no-op once content is open.
-    const desktopQuery = window.matchMedia('(min-width: 1200px)');
+    const desktopQuery = window.matchMedia('(min-width: 1201px)');
     const kickAutoOpen = () => {
       if (desktopQuery.matches) tryAutoOpen(0);
     };
