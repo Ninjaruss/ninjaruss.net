@@ -74,7 +74,7 @@ Collection-specific extensions:
 
 ### Structural
 - `BentoGrid.astro` / `BentoTile.astro` — Homepage grid system with visual hierarchy
-- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Showcase/VN/Shelf/About/Now with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/showcase/[slug]` paths highlight Showcase via the shared `startsWith` match on `['/showcase']` — no special-casing needed now that `/notes/*` is a server-rendered redirect off-site rather than an on-site route); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /about. (No longer the centered floating Home pill.) ≤768px: items wrap into two rows (4+3, 44px targets, hairlines via gap + gold-tinted inner background) and the back link takes a full-width third row (a folder title never fits a quarter-width cell); a small script publishes the nav's measured height as `--nav-clearance` on <html> (re-set on astro:page-load/resize), consumed by page bottom paddings (now pages, SplitViewLayout detail panel, novel.css) so the bar never covers content.
+- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Showcase/Visual Novel/Shelf/About/Now/Traces/Writing with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/showcase/[slug]` paths highlight Showcase via the shared `startsWith` match on `['/showcase']` — no special-casing needed now that `/notes/*` is a server-rendered redirect off-site rather than an on-site route); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /about. (No longer the centered floating Home pill.) **Labels match what each destination calls itself** — the `/novel` item reads "Visual Novel" (it used to read "VN", a string that appeared nowhere on the page it pointed to), and `/traces` and Writing (→ Substack, the one off-site item, opened in a new tab) were added after the 2026-09 audit found the guestbook reachable from exactly one link and the prose unreachable from `/showcase`, `/shelf` and `/novel`. ≤1024px: items wrap into rows (44px targets, hairlines via gap + gold-tinted inner background) and the back link takes a full-width third row (a folder title never fits a quarter-width cell); a small script publishes the nav's measured height as `--nav-clearance` on <html> (re-set on astro:page-load/resize), consumed by page bottom paddings (now pages, SplitViewLayout detail panel, novel.css) so the bar never covers content.
 
 ### Bento Tile Hierarchy
 The homepage uses a visual hierarchy pattern:
@@ -101,7 +101,7 @@ Sizes: `dominant` (2x2), `medium-wide` (2x1), `medium-tall` (1x2), `small` (1x1)
 
 **Kickers are one silhouette.** `.bento-tile__label` carries the parallelogram `clip-path` in its *base* rule; every variant below only swaps colours (`--dark`/`--core` → black text on gold, `--highlight` and `--highlight.--core` → gold text on black). Before this the cut lived only on the `--core` rule, so the three `--dark` tiles (Novel, About, Latest) rendered rounded rectangles beside cut ones.
 
-**Tile subtitles are always visible** (`opacity: .6`, `1` on hover — `.7`/`1` on gold `--highlight` grounds), matching `.logo-tile__description`/`.st-teaser`/`.latest-tile__excerpt`. `.bento-tile__description` used to be `opacity: 0; max-height: 0` until hover, which made the Now tile's subtitle the only tile copy on the grid you could not read at rest. It also sits at `--text-xs` like every other tile's prose (it was the lone `--text-sm`).
+**Tile subtitles are always visible** (`opacity: .75`, `1` on hover — `.7`/`1` on gold `--highlight` grounds). `.6` measured only 3.12–3.34:1 over the dark tile grounds, under the 4.5:1 AA floor for 12px text; the 2026-09 audit raised it to `.75` (~4.4–4.7:1). The gold `--highlight` case keeps `.7`, which reads 7.59:1., matching `.logo-tile__description`/`.st-teaser`/`.latest-tile__excerpt`. `.bento-tile__description` used to be `opacity: 0; max-height: 0` until hover, which made the Now tile's subtitle the only tile copy on the grid you could not read at rest. It also sits at `--text-xs` like every other tile's prose (it was the lone `--text-sm`).
 
 **The 3D mouse-tilt binds to every tile**, via `SELECTOR = '.bento-tile, .logo-tile, .image-tile, .title-tile'` in `initializeTilt()`. It used to lead with `.bento-tile--interactive`, but `BentoTile` defaults to `variant="interactive"` while every homepage tile passes `dark`/`highlight` instead — so Journal, Now, Media Log and Latest (both `--core` tiles among them) silently never tilted, and hovering Novel tilted in 3D while the Journal tile beside it stayed flat. The tilt writes an inline `transform`, which outranks the CSS hover transform on any tile it covers.
 
@@ -109,7 +109,7 @@ Sizes: `dominant` (2x2), `medium-wide` (2x1), `medium-tall` (1x2), `small` (1x1)
 Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--span-2x2`, `.bento-tile--span-2x1`, `.bento-tile--span-1x2`
 
 **Current Homepage Grid Pattern:**
-- Row 1: Title (4×1) + YouTube (1×1) + Now (1×1)
+- Row 1: Title (4×1) + YouTube (1×1) + Now (1×1). Both YouTube and Now live in the *inner* grid inside `.hero-band`, so their `order` only sequences them against each other and the title tile — they cannot reorder past the owned-content tiles, because the whole band is one item of the outer grid. The Now tile's title is clamped to 2 lines (`--clamped` modifier): unclamped, a long monthly title set the height of the entire hero row.
 - Rows 2-3: Journal (4×2, core) + Novel (1×2, rain gauge) + Stream (1×2)
 - Rows 4-5: Shelf/Media Log (2×2, core) + Latest (2×2) + MAL (1×1, row 4) + Spotify (1×1, row 4) + Email (2×1, row 5)
 
@@ -141,7 +141,7 @@ the same gotcha as the client-built Traces markup, for a different reason.
 
 ### CSS Files
 - `global.css` — Design tokens, colors, spacing, shadows
-- `typography.css` — Fonts (Archivo Black, Inter, JetBrains Mono), type scale
+- `typography.css` — Fonts (**Archivo Black, Syne, JetBrains Mono** — not Inter; see below), type scale, metric-matched fallback `@font-face`s
 - `bento.css` — Grid system and tile variants
 - `transitions.css` — P4G-style animations and view transitions
 - `novel.css` — Novel writer's-desk UI (gold/black/brown; desk landing, folder pages, paper/ink reading pages, sepia rain canvas)
@@ -199,9 +199,8 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 ### Animation Classes
 - `.p3r-animate` — Standard entrance (translateY + fade)
 - `.p3r-animate-left` — Left entrance
-- `.p3r-animate-wipe` — Diagonal wipe reveal
 - Use `--stagger-delay` for sequencing
-- (The `p3r-entrance-scale` keyframe is still used directly by `.entry-grid`/`.bento-grid` children)
+- (`p3r-entrance-scale` is used directly by `.bento-grid` children. The `.entry-grid` rules that paired with it were dead — no template ever emitted that class — and were removed in the 2026-09 audit.)
 
 ## Responsive Breakpoints
 
@@ -226,7 +225,7 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 - `/journal` → redirects to `/showcase` (the merge had nothing left to merge once notes moved to Substack; `astro.config.mjs` `redirects`, alongside `/status`/`/stream`).
 - `/notes/*` (including bare `/notes`) → server-rendered 301 to the note's Substack post, falling back to the Substack archive (`src/pages/notes/[...slug].astro` — deliberately **not** a `vercel.json`/`astro.config.mjs` entry; see the Substack section below for why it needs to be server-rendered).
 - `/rss.xml` → server-side 301 to `https://ninjaruss.substack.com/feed` (`vercel.json`, not `astro.config.mjs` — the destination is external and a feed reader needs a true 301). **`vercel.json` redirects do not apply under `astro dev`** — verify against the real deployment.
-- `/favorites` → redirects to `/shelf` (the `?fav=1` filter no longer exists)
+- `/favorites` → redirects to `/shelf` (the `?fav=1` filter no longer exists). Now a real 301 from `astro.config.mjs`. It used to be a prerendered page calling `Astro.redirect(…, 301)`, which a static build cannot express — so it served a **200 meta-refresh** document with a bare body, and all eleven `/favorites/*` URLs were listed in the sitemap as real pages.
 - `/favorites/[slug]` → redirects to `/shelf/[slug]`
 - `/media` → redirects to `/shelf` (via `astro.config.mjs` redirects)
 - `/media/[...slug]` → redirects to `/shelf/[...slug]`
@@ -562,7 +561,7 @@ snippet: type `session` + Tab). These files are currently an inert historical
 archive: nothing reads them anymore (see below), so creating new ones is
 optional bookkeeping, not something any page depends on.
 
-The arc card that now lives on `/about` traces back to `/status`
+The arc card that now lives on **`/now`** — not `/about`; see the correction below — traces back to `/status`
 (spec: docs/superpowers/specs/2026-08-18-status-page-arc-revamp-design.md),
 which was rebuilt 2026-08 from a four-screen session-log pause menu into a
 single flat screen, because the log required per-stream maintenance that
@@ -578,8 +577,15 @@ still viewer-facing, not a personal tracker: the arc card's job is "what
 chapter of the story is this, and what's currently being decided" — not "how
 many sessions has Russ logged."
 
-- **Arc card** (`.arc-card`) — the first block in `/about`'s main column,
-  above the hook. Whole-card accent-colored by the arc's stat (border/kicker/
+- **Arc card** (`.arc-card`) — **this is on `/now`, not `/about`.**
+  CORRECTION (2026-09-30 audit): everything this bullet used to claim about
+  `/about` was stale. Verified against the live site: `/about` contains no
+  `arc-card` element and no arc content at all, while `/now` contains both. The
+  markup lives at `now.astro:74-86`, its CSS at `now.astro:191-259`, and only
+  `now.astro` imports `parseCurrentArc()` (`now.astro:7,35`). `about.css`
+  contains no `.arc-card` rule. The homepage's About tile (`#stream-tile`) still
+  shows a one-line teaser from the same `_quests.md` section. Apart from where it
+  lives, the rest of this bullet describes the card accurately. Whole-card accent-colored by the arc's stat (border/kicker/
   updated stamp use `STAT_COLORS`), with a stat emblem badge
   (`/images/emblems/<stat>.png`) on a dark circular plate for contrast (the
   emblem PNGs are opaque-white-background line art and wash out if dropped
@@ -592,8 +598,9 @@ many sessions has Russ logged."
   failing the build. Hand-edited, expected to change every few weeks/months —
   not per-stream. The rest of `_quests.md` (The Question / Active / Ideas —
   `<Stat>` / Completed) is Russ's private planning scaffold and is **not**
-  rendered anywhere. Arc-card CSS moved into `about.css` in the merge;
-  `status.css` was deleted.
+  rendered anywhere. `status.css` was deleted in the merge, but its arc-card
+  rules did **not** move into `about.css` — they are in `now.astro`'s scoped
+  style block (see the correction above).
 - **Identity header** and **"find me elsewhere" links row** — no longer
   `/status`-specific; they're just `/about`'s own header (portrait/name/
   epithet from `_protagonist.md`, parsed by `parseProtagonist()`,
