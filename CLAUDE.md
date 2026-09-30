@@ -681,6 +681,16 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 
 2. **View Transitions**: Uses Astro's ClientRouter with custom P4G-style slide animations. `#transition-canvas` is a replaced element sized by its `width`/`height` attributes (`resizeCanvas()` in `src/scripts/transition.ts`) — a percentage in CSS can't size it, and measuring from `window.innerWidth` (scrollbar-inclusive) reintroduces horizontal page overflow; use `documentElement.clientWidth`.
 
+   **The choreography is load-bearing — read this before touching the timings.** `src/scripts/transition.ts` stages every internal navigation in three parts, and the order is what makes it read as a transition rather than as two unrelated animations:
+
+   - The **fetch starts first**, in parallel with the card (`const fetched = original()`).
+   - The **card plays over the OLD page** — the only time it is legible against a still background.
+   - The **wipe sweeps, and its midpoint releases the swap** (`resolveSwap`), so the DOM exchange happens *underneath* the slab. The canvas is `position: fixed` with `transition:persist`, so it keeps drawing across the swap and uncovers the new page as it exits.
+
+   Timings are `T_IN 520 + T_HOLD 340 + T_WIPE 620` = 1480ms, of which 860ms is the card being *seen*. That block is the only knob. Two regressions worth not repeating: cutting `T_HOLD` makes the card a flicker (the card is the point of the effect), and **removing the swap gate destroys the effect entirely** — with the swap immediate, the card plays over the already-swapped page and the wipe then sweeps over content that is already visible, so it covers nothing. The original code's actual flaw was subtler: it awaited `cardPhase()` *before* calling `original()`, so request latency was added on top of the animation instead of hidden behind it. Fetch early, gate the swap.
+
+   Two deliberate skips: history traversals (`e.navigationType === 'traverse'`) return early so Back/Forward are instant, and `prefersReducedMotion()` opts out entirely. The swap gate also has a fail-safe release — `startWipe` resolves *without* firing `onMidpoint` on its `if (!ctx)` early returns, which would otherwise leave the gate pending forever and strand navigation behind a completed fetch.
+
 3. **Draft Filtering**: All collection queries should filter `draft !== true`
 
 4. **Accessibility**: Focus-visible gold rings, prefers-reduced-motion respected, 44px minimum touch targets
