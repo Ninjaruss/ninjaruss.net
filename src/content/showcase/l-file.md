@@ -1,12 +1,14 @@
 ---
 title: "L-file - Usogui Database"
 publishedAt: 2026-02-07
-updatedAt: 2026-03-22
+updatedAt: 2026-10-02
 emblem: /images/showcase/Usogui_Volume_2_popout.png
 collections: ["web dev"]
 ---
 
-I finally did it! The Usogui database is now live on the Internet! [L-file website](https://l-file.com)
+> **Update — October 2, 2026:** The hosted site is offline. The [source code and screenshots](https://github.com/ninjaruss/L-file) are still available. The original project journal follows below.
+
+I finally did it! The Usogui database went live on the Internet!
 
 I was looking to try my hand at making a full production website while using... Claude Code. Yes, this website is immensely vibe coded, but I wanted to make sure that the priority was to make a stable enough database for my favorite manga. To me, the coolest thing is that I can get this site live with all the features I want on my own. It's better to have a site than not make one at all to me.
 
