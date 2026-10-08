@@ -1,3087 +1,697 @@
 ---
 import { getCollection } from 'astro:content';
-import { join } from 'path';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BentoGrid from '../components/BentoGrid.astro';
-import BentoTile from '../components/BentoTile.astro';
-import { buildNovelTree, computeNovelStats, flattenFolderFiles } from '../utils/novel';
-import { parseCurrentArc } from '../utils/currentArc';
-import { stripMarkdown } from '../utils/content';
-import { formatDate } from '../utils/dates';
-import { readFileSync } from 'fs';
-import { parseProtagonist, DEFAULT_PROTAGONIST } from '../utils/protagonist';
 import { fetchSubstackPosts } from '../utils/substack';
+import { formatDate } from '../utils/dates';
 
-// Writing lives on Substack. Fetched at build time; [] on any failure, which
-// collapses both tiles to showcase-only rather than failing the build.
-const substackPosts = await fetchSubstackPosts(5);
-
-// Query remaining content collections. Showcase is a dated feed; shelf is not.
-// The collage is a sample of the shelf, not a dated feed — requiring
-// `publishedAt` here hid 25 of 29 entries and left the tile 4 covers wide.
-// `effectiveDate` already sorts undated entries last.
-const media = await getCollection('shelf', ({ data }) => !data.draft);
-const showcase = await getCollection('showcase', ({ data }) => !data.draft && data.publishedAt);
-
-// Query now collection for latest entry
-const allNow = await getCollection('now', ({ data }) => !data.draft);
-const latestNow = allNow.sort((a, b) =>
-  new Date(b.data.publishedAt).getTime() - new Date(a.data.publishedAt).getTime()
-)[0];
-
-// Format month and year for now tile
-const nowDate = latestNow?.data.publishedAt;
-const nowMonthYearUTC = nowDate
-  ? nowDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
-  : '';
-const nowMonthYearLocal = nowDate
-  ? nowDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
-  : '';
-
-const DEFAULT_EMBLEM = '/images/emblems/default.svg';
-
-const effectiveDate = (e: { data: { updatedAt?: Date; publishedAt?: Date } }) =>
-  new Date(e.data.updatedAt || e.data.publishedAt || 0).getTime();
-
-// Recent entries with emblems for core tile thumbnails
-const recentShowcase = showcase
-  .filter(e => e.data.publishedAt)
-  .sort((a, b) => effectiveDate(b) - effectiveDate(a))
-  .slice(0, 3)
-  .map(e => ({ href: `/showcase/${e.slug}`, emblem: e.data.emblem ?? DEFAULT_EMBLEM, title: e.data.title }));
-
-const recentMedia = [...media]
-  .sort((a, b) => effectiveDate(b) - effectiveDate(a))
-  .slice(0, 8)
-  .map(e => ({ href: `/shelf/${e.slug}`, emblem: e.data.emblem ?? DEFAULT_EMBLEM, title: e.data.title }));
-
-const shortDate = (ms: number) =>
-  new Date(ms).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).toLowerCase();
-
-type WritingRow = { href: string; title: string; date: string };
-/* Cuts on a word boundary and marks the cut. A raw `.slice(0, 140)` produced
-   "…utilizing LLMs (Lar" — mid-word, with no ellipsis, in the tile that rotates
-   every 11s. */
-function excerpt(text: string, max = 140): string {
-  const clean = stripMarkdown(text);
-  if (clean.length <= max) return clean;
-  const cut = clean.slice(0, max);
-  const lastSpace = cut.lastIndexOf(' ');
-  return `${(lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).trimEnd()}…`;
-}
-
-const recentWriting: WritingRow[] = substackPosts.slice(0, 5).map((p) => {
-  const ms = Date.parse(p.pubDate);
-  return {
-    href: p.link,
-    title: p.title,
-    date: Number.isNaN(ms) ? '' : shortDate(ms),
-  };
-});
-
-// Novel — find most recently modified file date from MetaData.txt
-const novelDir = join(process.cwd(), 'src/content/novel');
-const novelTree = await buildNovelTree(novelDir);
-let novelLastModified: Date | null = null;
-let novelRecentFileTitle: string | null = null;
-let novelRecentFolderTitle: string | null = null;
-for (const folder of Object.values(novelTree)) {
-  // flattenFolderFiles recurses the whole subtree, so files nested more than one
-  // level deep (e.g. Manuscript/Arc 1/Scene) are considered, not just direct children.
-  for (const file of flattenFolderFiles(folder)) {
-    if (file.modified) {
-      const d = new Date(file.modified);
-      if (!isNaN(d.getTime()) && (!novelLastModified || d > novelLastModified)) {
-        novelLastModified = d;
-        novelRecentFileTitle = file.title;
-        novelRecentFolderTitle = folder.title;
-      }
-    }
-  }
-}
-const novelStats = computeNovelStats(novelTree);
-
-// About tile data — current arc teaser, read the same way /about reads it.
-let questsRaw = '';
-try {
-  questsRaw = readFileSync(join(process.cwd(), 'src/content/sessions/_quests.md'), 'utf-8');
-} catch { /* missing file → no teaser */ }
-const currentArc = parseCurrentArc(questsRaw);
-// The arc's stat colour stays on /about, where the arc card is the subject
-// and carries the stat emblem. Here it was the only non-gold accent on the
-// page and #a855f7 measured 4.40:1 at 11px — under AA. Gold on both counts.
-const arcColor = 'var(--color-gold)';
-
-/* Name for the About tile — same source /about reads. */
-let protagonist = DEFAULT_PROTAGONIST;
-try {
-  const protagonistRaw = readFileSync(join(process.cwd(), 'src/content/sessions/_protagonist.md'), 'utf-8');
-  protagonist = parseProtagonist(protagonistRaw);
-} catch {
-  /* Missing file → defaults. */
-}
-
-// Prepare data for client-side cycling. The date is formatted at build time —
-// absolute only, never time-since (no-shame invariant).
-const latestShowcase = [...showcase].sort(
-  (a, b) => effectiveDate(b) - effectiveDate(a)
-)[0];
-
-// Interleave writing/showcase/writing so the client-side cycle alternates.
-interface LatestEntry {
-  title: string;
-  href: string;
-  date: string;
-  emblem: string;
-  excerpt: string;
-}
-const latestEntries = [
-  substackPosts[0] && {
-    title: substackPosts[0].title,
-    href: substackPosts[0].link,
-    date: Number.isNaN(Date.parse(substackPosts[0].pubDate))
-      ? ''
-      : formatDate(new Date(substackPosts[0].pubDate)),
-    emblem: '/images/emblems/scroll.svg',
-    excerpt: excerpt(substackPosts[0].description),
-  },
-  latestShowcase && {
-    title: latestShowcase.data.title,
-    href: `/showcase/${latestShowcase.slug}`,
-    date: formatDate(latestShowcase.data.updatedAt ?? latestShowcase.data.publishedAt!),
-    emblem: latestShowcase.data.emblem ?? DEFAULT_EMBLEM,
-    excerpt: excerpt(latestShowcase.body ?? ''),
-  },
-  substackPosts[1] && {
-    title: substackPosts[1].title,
-    href: substackPosts[1].link,
-    date: Number.isNaN(Date.parse(substackPosts[1].pubDate))
-      ? ''
-      : formatDate(new Date(substackPosts[1].pubDate)),
-    emblem: '/images/emblems/scroll.svg',
-    excerpt: excerpt(substackPosts[1].description),
-  },
-].filter((entry): entry is LatestEntry => Boolean(entry));
-
+const posts = (await fetchSubstackPosts(3)).filter(post => !Number.isNaN(Date.parse(post.pubDate)));
+const now = await getCollection('now', ({ data }) => !data.draft);
+const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())[0];
 ---
 
-<BaseLayout title="Home" displayTitle="in spite of it all — ninjaruss" description="Notes, media, and showcases.">
-  <div class="container" id="page-container">
-    <BentoGrid>
-      {/* Hero band — the row-1 tiles plus the Traces bar, wrapped as one
-          full-width grid item. The bar needs to be ~40px tall, but the bento
-          grid's implicit rows are minmax(100px, auto), so it can't simply be
-          another row of the outer grid. The inner element reuses the
-          .bento-grid class so it inherits the same 6/4/2/1-column responsive
-          steps rather than duplicating those breakpoints. */}
-      <div class="hero-band">
-      <div class="bento-grid">
-      <!-- Row 1: Title (4×1) + YouTube (1×1) + Now (1×1) -->
-      <div class="title-tile p3r-animate-left">
-        <div class="title-tile__inner">
-          <div class="title-tile__rule title-tile__rule--top" aria-hidden="true"></div>
-          <h1 class="title-tile__name"><span class="title-tile__name-inner">Ninjaruss</span></h1>
-          <div class="title-tile__rule title-tile__rule--bottom" aria-hidden="true"></div>
-        </div>
-        <p class="title-tile__description">In spite of it all...</p>
-      </div>
-
-      <a
-        id="yt-tile"
-        href="https://www.youtube.com/@Ninjaruss_"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Ninjaruss on YouTube"
-        class="image-tile image-tile--youtube p3r-animate"
-      >
-        <!-- Full-bleed channel avatar -->
-        {/* object-fit: cover into a tall-ish slot means the 16:9 source is
-            scaled by height, so the widest render (~684px at the 768 stacking
-            breakpoint) needs more than the 640 variant on retina. */}
-        <img
-          class="yt-tile__avatar"
-          src="/images/logos/yt-avatar-640.jpg"
-          srcset="/images/logos/yt-avatar-640.jpg 640w, /images/logos/yt-avatar-1024.jpg 1024w"
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 177px"
-          alt="Ninjaruss YouTube channel"
-        />
-        <span class="yt-tile__chip" aria-hidden="true">YouTube</span>
-
-        <!-- Red tint on hover -->
-        <div class="yt-tile__tint" aria-hidden="true"></div>
-
-        <!-- Slide-up strip: YouTube branding -->
-        <div class="yt-tile__strip" aria-hidden="true">
-          <svg class="yt-tile__strip-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.010-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/>
-          </svg>
-          <div class="yt-tile__strip-text">
-            <div class="yt-tile__strip-name">Ninjaruss</div>
-            <div class="yt-tile__strip-sub">YouTube</div>
-          </div>
-        </div>
-
-        <!-- Live overlay: shown via .is-twitch-live class -->
-        <div class="yt-tile__live-overlay" aria-hidden="true">
-          {/* src is set by applyLiveState() only once Twitch actually reports
-              live. In the template it was a third-party request fired on every
-              single homepage load for an image that is invisible almost always. */}
-          <img
-            class="yt-tile__preview"
-            data-src="https://static-cdn.jtvnw.net/previews-ttv/live_user_ninjaruss_-440x248.jpg"
-            alt="Live stream preview"
-          />
-          <div class="yt-tile__live-badge">LIVE</div>
-
-          <!-- Slide-up strip: Twitch/live branding -->
-          <div class="yt-tile__strip yt-tile__strip--live" aria-hidden="true">
-            <svg class="yt-tile__strip-icon yt-tile__strip-icon--twitch" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/>
-            </svg>
-            <div class="yt-tile__strip-text">
-              <div class="yt-tile__strip-name">Ninjaruss</div>
-              <div class="yt-tile__strip-sub">Watching live →</div>
-            </div>
-          </div>
-        </div>
-      </a>
-
-      <!-- Now tile — row 1 col 6 -->
-      <BentoTile
-        href="/now"
-        variant="highlight"
-        label="Now"
-        title={latestNow?.data.title ?? 'Current Focus'}
-        description="Where am I at right now?"
-        class="home-now-tile home-now-tile--clamped"
-      >
-        <span class="now-date" title={`Local: ${nowMonthYearLocal}`}>
-          <span class="now-dot" aria-hidden="true"></span>
-          {nowMonthYearUTC}
-          {nowMonthYearLocal !== nowMonthYearUTC ? ` — ${nowMonthYearLocal} locally` : ''}
-        </span>
-      </BentoTile>
-
-      </div>
-
-      {/* Player-style bar flush under the hero row: the count doubles as the
-          "there is something here" signal and the whole bar is the affordance
-          to add one. Spans the full grid width as its own auto-placed row. */}
-      <a
-        href="/traces"
-        class="traces-bar"
-        id="traces-tab"
-        aria-label="Traces — read the guestbook or leave a message"
-      >
-        {/* aria-hidden: the lane's text rotates every few seconds, and inside
-            the anchor that would rename the link continuously. The real list
-            lives at the href. */}
-        <span class="traces-current" aria-hidden="true">
-          <span class="traces-bar__field" id="traces-empty">Leave a trace — one line</span>
-          <span class="traces-park" id="traces-park" hidden></span>
-        </span>
-        <span class="traces-lane" id="traces-lane" aria-hidden="true"></span>
-        <span class="traces-bar__send">Sign</span>
-      </a>
-      </div>
-
-      <!-- Rows 2-3: Journal (4×2, slash split) + Novel (1×2) + Stream (1×2) -->
-      <div class="bento-tile bento-tile--full bento-tile--highlight bento-tile--core bento-tile--span-4x2 journal-tile" data-tile-href="/showcase">
-        <div class="journal-tile__notes">
-          <a href="https://ninjaruss.substack.com" class="journal-tile__head">
-            <div class="bento-tile__header">
-              <span class="bento-tile__label">Writing</span>
-              <h2 class="bento-tile__title">Notes</h2>
-            </div>
-          </a>
-          {recentWriting.length > 0 ? (
-            <div class="journal-tile__list">
-              {recentWriting.map(row => (
-                <a class="journal-tile__row" href={row.href} title={row.title}>
-                  <span class="journal-tile__row-title">{row.title}</span>
-                  <span class="journal-tile__date">{row.date}</span>
-                </a>
-              ))}
-            </div>
-          ) : (
-            <p class="journal-tile__empty">
-              <a href="https://ninjaruss.substack.com">Posts live on Substack now.</a>
-            </p>
-          )}
-        </div>
-        {recentShowcase.length > 0 && (
-          <div class="journal-tile__showcases">
-            <a href="/showcase" class="journal-tile__showcase-tab">Showcases</a>
-            <div class="journal-tile__projects">
-              {recentShowcase.map((entry, i) => (
-                <a
-                  href={entry.href}
-                  class:list={['journal-tile__project', { 'journal-tile__project--recent': i === 0 }]}
-                  title={entry.title}
-                >
-                  <img src={entry.emblem} alt="" loading="lazy" />
-                  <span class="journal-tile__project-title">{entry.title}</span>
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
-        <span class="bento-tile__corner" aria-hidden="true"></span>
-      </div>
-
-      <a
-        href="/novel"
-        class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--interactive bento-tile--span-1x2 novel-tile"
-        id="novel-tile"
-        data-scene-modified={novelStats.lastSceneModified ?? ''}
-        data-outline-modified={novelStats.lastOutlineModified ?? ''}
-      >
-        <div class="novel-rain" aria-hidden="true">
-          {Array.from({ length: 14 }, (_, i) => i).map(i => (
-            <span class="novel-rain__drop" style={`--i: ${i}; --len: ${14 + (i % 3) * 8}px;`}></span>
-          ))}
-        </div>
-        <div class="bento-tile__header">
-          <span class="bento-tile__label">Visual Novel</span>
-          <h2 class="bento-tile__title">Remember Rain</h2>
-        </div>
-        {novelRecentFolderTitle && novelRecentFileTitle && (
-          <p class="novel-tile__recent">
-            <span class="novel-tile__folder">{novelRecentFolderTitle}</span>
-            <span class="novel-tile__sep">›</span>
-            <span class="novel-tile__file">{novelRecentFileTitle}</span>
-          </p>
-        )}
-        <p class="novel-tile__waits">the rain waits.</p>
-        <div class="novel-tile__words">
-          <span class="novel-tile__story">{novelStats.storyWords.toLocaleString('en-US')}</span>
-          <span class="novel-tile__story-label">script words</span>
-          <span class="novel-tile__outline">{novelStats.outlineWords.toLocaleString('en-US')} outline</span>
-        </div>
-        <span class="bento-tile__corner" aria-hidden="true"></span>
-      </a>
-
-      <a
-        id="stream-tile"
-        href="/about"
-        class="bento-tile bento-tile--dark bento-tile--interactive stream-tile"
-        style={`--st-lead: ${arcColor};`}
-      >
-        {/* Reads as a profile card first — a stranger should learn there is a
-            person here (face, name, epithet), with the current arc underneath
-            as evidence. The stat colour accents the arc's rule and label only;
-            it used to tint the decision prose itself, which put an off-palette
-            purple/green paragraph in the middle of a gold-and-black page. */}
-        <div class="bento-tile__header">
-          <span class="bento-tile__label">About</span>
-        </div>
-
-        <div class="st-id">
-          {protagonist.portrait && (
-            <img class="st-portrait" src={protagonist.portrait} alt="" loading="lazy" width="64" height="64" />
-          )}
-          <h2 class="st-name">{protagonist.name}</h2>
-          {protagonist.epithet && <p class="st-epithet">{protagonist.epithet}</p>}
-        </div>
-
-        <div class="st-body">
-          {currentArc ? (
-            <>
-              <span class="st-arc">{currentArc.arc}</span>
-              {/* stripMarkdown: the source paragraph contains *Is the Order a Rabbit?* and
-            the tile was rendering the asterisks as literal mid-sentence glyphs. */}
-            <p class="st-teaser">{stripMarkdown(currentArc.decision)}</p>
-            </>
-          ) : (
-            <p class="st-teaser st-teaser--empty">The story hasn't started yet.</p>
-          )}
-        </div>
-
-        <div class="st-footer">
-          <span id="st-live-badge" class="st-live-badge" hidden>LIVE</span>
-          <span class="st-cta">About<span aria-hidden="true"> →</span></span>
-        </div>
-        <span class="bento-tile__corner" aria-hidden="true"></span>
-      </a>
-
-      <!-- Rows 4-5: Media (2×2) + Latest (2×1) + MAL/Spotify (stacked 1×1) -->
-      <BentoTile
-        href="/shelf"
-        variant="dark"
-        label="Shelf"
-        title="Media Log"
-        class="bento-tile--core bento-tile--span-2x2 media-tile"
-      >
-        {recentMedia.length > 0 && (
-          <div class="tile-poster-strip">
-            {recentMedia.map(entry => (
-              <div class="tile-poster" aria-hidden="true">
-                <img src={entry.emblem} alt="" class="tile-poster__img" loading="lazy" />
-              </div>
-            ))}
-          </div>
-        )}
-      </BentoTile>
-
-      {latestEntries.length > 0 && (
-        <a
-          id="latest-tile"
-          href={latestEntries[0].href}
-          class="bento-tile bento-tile--full bento-tile--small bento-tile--dark bento-tile--span-2x2"
-          data-entries={JSON.stringify(latestEntries)}
-        >
-          <div class="latest-tile__inner">
-            <div class="latest-tile__text">
-              <div class="bento-tile__header">
-                <span class="bento-tile__label">Latest</span>
-                <h2 class="bento-tile__title" id="latest-title">{latestEntries[0].title}</h2>
-              </div>
-              <p class="latest-tile__excerpt" id="latest-excerpt"></p>
-              <div class="bento-tile__footer">
-                <span class="latest-date" id="latest-date">{latestEntries[0].date}</span>
-              </div>
-            </div>
-            <div class="latest-tile__emblem-wrap">
-              <img
-                id="latest-emblem"
-                src={latestEntries[0].emblem}
-                alt=""
-                class="latest-tile__emblem"
-                aria-hidden="true"
-              />
-            </div>
-          </div>
-          <span class="latest-tile__sweep" aria-hidden="true"></span>
-          <span class="bento-tile__corner" aria-hidden="true"></span>
-        </a>
-      )}
-
-      <a
-        href="https://myanimelist.net/animelist/Ninjaruss_?status=7&order=4&order2=0"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="logo-tile logo-tile--mal p4g-sweep p3r-animate"
-      >
-        <span class="logo-tile__kicker" aria-hidden="true"><span>Watchlist</span></span>
-        <img
-          src="/images/logos/myanimelist.svg"
-          alt="MyAnimeList"
-          class="logo-tile__img"
-        />
-        <span class="logo-tile__label">MyAnimeList</span>
-        <p class="logo-tile__description">Anime ratings and watch history.</p>
-      </a>
-
-      <a
-        href="https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD?si=2b68cabcfc26451c"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="logo-tile logo-tile--spotify p4g-sweep p3r-animate"
-      >
-        <span class="logo-tile__kicker" aria-hidden="true"><span>Listening</span></span>
-        <img
-          src="/images/logos/spotify.svg"
-          alt="Spotify Playlist"
-          class="logo-tile__img"
-        />
-        <span class="logo-tile__label">Spotify</span>
-        <p class="logo-tile__description">A running playlist.</p>
-      </a>
-
-      <!-- Row 5 — email (2×1) fills the cols under MAL/Spotify (quote tile removed).
-           The mailto: is assembled client-side on first interaction so the address
-           never appears in the static HTML (bot-scrape mitigation). The static href
-           is a real no-JS fallback (the /about Connect block), not a dead #anchor — with
-           JS the click is always intercepted to open the mailto. -->
-      <a href="/about" id="mail-tile" class="logo-tile logo-tile--mail p4g-sweep bento-tile--span-2x1 p3r-animate">
-        <span class="logo-tile__kicker" aria-hidden="true"><span>Contact</span></span>
-        <svg class="logo-tile__img" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-          <rect x="2.5" y="5" width="19" height="14" rx="1.5"/>
-          <path d="M3 6.5l9 6.5 9-6.5"/>
-        </svg>
-        <span class="logo-tile__label">Email</span>
-        <p class="logo-tile__description">Connect with me directly.</p>
-      </a>
-
-    </BentoGrid>
-
-  </div>
-
-  <dialog id="traces-modal" class="traces-modal">
-    <div class="traces-modal__header">
-      <span class="p4g-tab">Traces</span>
-      <span class="traces-modal__count" id="traces-modal-count"></span>
-      <!-- The bar's click opens this modal instead of navigating (deliberate),
-           which used to leave the server-rendered /traces page reachable nowhere
-           by a plain click — no nav item, no footer link, and no link out of the
-           modal itself. This is that link. -->
-      <a class="traces-modal__full" href="/traces">Full page<span aria-hidden="true"> →</span></a>
-      <button type="button" class="traces-modal__close" id="traces-modal-close" aria-label="Close">✕</button>
-    </div>
-    <div class="traces-modal__body" id="traces-modal-body">
-      <p class="traces-modal__loading">Loading…</p>
-    </div>
-  </dialog>
+<BaseLayout title="Home" displayTitle="in spite of it all — ninjaruss" description="Writing, videos, projects, and Remember Rain — the personal hub of Ninjaruss.">
+<div id="personal-hub" aria-label="Illustrated personal hub">
+ <header class="header">
+<div>
+<h1>NINJARUSS</h1>
+<p class="motto">In spite of it all...</p>
+<p class="intro">Writing, videos, Japanese, and things I build along the way.</p>
+</div>
+<nav class="about-links" aria-label="About and contact">
+<a href="/about">About me</a>
+<a href="/about" data-contact>Contact</a>
+</nav>
+</header>
+ <section class="traces" aria-label="Traces guestbook">
+<a class="traces-title" href="/traces">Traces <span>Guestbook</span>
+</a>
+<p class="traces-message">Leave a trace — one line.</p>
+<a class="sign" href="/traces">Leave a trace</a>
+</section>
+ <BentoGrid class="grid">
+  <section class="tile writing" aria-labelledby="art-writing">
+<span class="chip">Substack</span>
+<div class="tile-intro">
+<h2 id="art-writing">Writing</h2>
+<p>Notes on life, Japanese, and making things.</p>
+</div>{posts.map(post => <a class="post" href={post.link}>{post.title}<time datetime={new Date(post.pubDate).toISOString()}>{formatDate(new Date(post.pubDate))}</time>
+</a>)}
+{posts.length === 0 && <p class="tile-intro">My writing lives on Substack.</p>}
+<a class="go" href="https://ninjaruss.substack.com">Read on Substack</a>
+</section>
+  <section class="tile video" aria-labelledby="art-video">
+<a class="video-art" href="https://www.youtube.com/@Ninjaruss_" aria-label="Ninjaruss on YouTube">
+<img src="/images/logos/yt-avatar-640.jpg" srcset="/images/logos/yt-avatar-640.jpg 640w, /images/logos/yt-avatar-1024.jpg 1024w" sizes="(max-width:700px) 100vw, 700px" width="1024" height="576" alt="Ninjaruss holding a Persona card">
+<span class="chip">YouTube</span>
+</a>
+<div class="video-caption">
+<div>
+<h2 id="art-video">Watch Ninjaruss</h2>
+<p>Videos on YouTube and livestreams on Twitch.</p>
+</div>
+<nav class="video-actions" aria-label="Videos and livestreams">
+<a href="https://www.youtube.com/@Ninjaruss_">YouTube videos</a>
+<a href="https://twitch.tv/ninjaruss_">Twitch livestreams</a>
+</nav>
+</div>
+</section>
+  <section class="tile projects" aria-labelledby="art-projects">
+<img class="project-emblem" src="/images/emblems/shuriken.svg" alt="" aria-hidden="true">
+<span class="chip">Showcase</span>
+<div class="tile-intro">
+<h2 id="art-projects">Things I build</h2>
+<p>Apps &amp; experiments.</p>
+</div>
+<div class="project-list">
+<a class="project" href="/showcase/utasync">
+<img src="/images/showcase/utasync.svg" alt="">
+<div>
+<strong>Utasync</strong>
+<span>Learn Japanese through music</span>
+</div>
+</a>
+<a class="project" href="/showcase/l-file">
+<img src="/images/media/usogui.webp" alt="">
+<div>
+<strong>L-file</strong>
+<span>Usogui database · Hosted site offline</span>
+</div>
+</a>
+<a class="go" href="/showcase">Explore the projects</a>
+</div>
+</section>
+  <section class="tile novel" aria-labelledby="art-novel">
+<div class="rain-field" aria-hidden="true">
+<i>
+</i>
+<i>
+</i>
+<i>
+</i>
+<i>
+</i>
+<i>
+</i>
+<i>
+</i>
+</div>
+<span class="chip">Visual novel</span>
+<div class="tile-intro">
+<h2 id="art-novel">Remember Rain</h2>
+<p>A work in progress.</p>
+</div>
+<p class="premise">Rain dreams of writing a story that will inspire someone. Following a ghost makes him a fugitive, pulling him into supernatural horrors that threaten the refuges he turns to for escape. He keeps reaching for his dreams without knowing what pursuing them will cost.</p>
+<p class="draft">Manuscript, characters, and planning documents</p>
+<a class="go" href="/novel">Explore Remember Rain</a>
+</section>
+  <a class="tile shelf" href="/shelf">
+<div>
+<span class="chip">Shelf</span>
+<h2>Media log</h2>
+<p>Stories, characters, and music that stick with me.</p>
+</div>
+<div class="posters" aria-hidden="true">
+<img src="/images/media/persona-4-golden.webp" alt="">
+<img src="/images/media/usogui.webp" alt="">
+<img src="/images/media/ttgl.webp" alt="" loading="lazy">
+</div>
+</a>
+  <a class="tile now" href="/now">
+<span class="chip">Now</span>
+<h2>Where I'm at</h2>
+<p>Current focus and personal updates.</p>{latestNow && <p class="now-date">{formatDate(latestNow.data.publishedAt)}</p>}</a>
+ </BentoGrid>
+ <footer class="footer">
+<nav aria-label="Elsewhere">
+<a href="https://myanimelist.net/animelist/Ninjaruss_">MyAnimeList</a>
+<a href="https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD">Spotify</a>
+<a href="https://twitch.tv/ninjaruss_">Twitch</a>
+</nav>
+<a href="/about" data-contact>Email me</a>
+</footer>
+</div>
 </BaseLayout>
 
-<style>
-  .container {
-    padding-top: var(--space-sm);
-    padding-bottom: var(--space-md);
-    position: relative;
-  }
-
-  .container::before {
-    content: '';
-    position: absolute;
-    /* Drawn inside the container's own box: a negative inset hung the ring
-       3px past the right edge and that was the page's horizontal overflow. */
-    inset: 0;
-    border-radius: var(--radius-lg);
-    padding: 3px;
-    background: linear-gradient(90deg, var(--color-live) 0%, #ff6a1a 35%, var(--color-gold) 65%, var(--color-live) 100%);
-    background-size: 300% 100%;
-    /* Mask trick: show only the 3px padding ring, hide the center */
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    opacity: 0;
-    transition: opacity 600ms ease;
-    pointer-events: none;
-    z-index: 100;
-  }
-
-  .container.is-live::before {
-    opacity: 1;
-    animation: live-border-flow 4s linear infinite;
-  }
-
-  @keyframes live-border-flow {
-    0%   { background-position: 0% 0%; }
-    100% { background-position: 300% 0%; }
-  }
-
-  /* Absolute entry date for the Latest tile (never time-since) */
-  /* One timestamp treatment across the page: 11px mono, lowercase, gold-dim.
-     This datum used to render at three different sizes in two formats — the
-     Latest tile at 12px, the journal rows at 11px, the modal list at 14px — with
-     the *same* Substack post's date shown at two of them simultaneously. */
-  .latest-date {
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    /* Tile-internal dates are lowercase across the grid (the journal tile's
-       "aug 1" rows set the pattern); formatDate's own output is untouched. */
-    text-transform: lowercase;
-    color: var(--color-gold-dim);
-    letter-spacing: var(--tracking-label);
-    white-space: nowrap;
-    border-left: var(--border-thin) solid var(--color-gold-dim);
-    padding-left: var(--space-sm);
-    transition: color var(--transition-fast), border-color var(--transition-fast);
-  }
-
-  #latest-tile:hover .latest-date,
-  #latest-tile:focus-visible .latest-date {
-    color: var(--color-gold);
-    border-color: var(--color-gold);
-  }
-
-  /* Logo Tiles (MyAnimeList, Spotify) */
-  .logo-tile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-sm);
-    /* extra top padding clears the corner tab so centered content never sits under it */
-    padding: calc(var(--space-md) + 1.5rem) var(--space-md) var(--space-md);
-    background: var(--color-bg-elevated);
-    border: var(--border-thick) solid var(--color-border);
-    text-decoration: none;
-    transition: all var(--transition-base);
-    min-height: 80px;
-    position: relative;
-    border-radius: 0;
-    /* corner cut — clip-path clips box-shadow (and same-element drop-shadow) — hover feedback is the sweep + lift instead */
-    clip-path: polygon(
-      0 0,
-      100% 0,
-      100% calc(100% - var(--cut-md)),
-      calc(100% - var(--cut-md)) 100%,
-      0 100%
-    );
-  }
-
-  /* Flush inset corner tab — matches the shared .p4g-tab used on every other tile */
-  /* Inset to match .bento-tile__label, which renders inside the tile's own
-     --space-md padding. Flush at 0,0 this chip sat 16px out of alignment with the
-     Shelf tile's identical-looking chip in the row above it, at a 4px different
-     height. */
-  .logo-tile__kicker {
-    position: absolute;
-    top: var(--space-md);
-    left: var(--space-md);
-    padding: var(--space-xs) calc(var(--space-sm) + var(--cut-sm)) var(--space-xs) var(--space-sm);
-    background: var(--color-gold);
-    color: var(--color-black);
-    font-family: var(--font-display);
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
-    clip-path: polygon(0 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
-    z-index: 1;
-  }
-
-  .logo-tile__kicker > span {
-    display: inline-block;
-  }
-
-  .logo-tile:hover,
-  .logo-tile:focus-visible {
-    transform: translate(-4px, -4px);
-    border-color: var(--color-gold);
-  }
-
-  /* Sweep paints the tile gold — flip text to black for contrast */
-  .logo-tile:hover .logo-tile__label,
-  .logo-tile:focus-visible .logo-tile__label,
-  .logo-tile:hover .logo-tile__description,
-  .logo-tile:focus-visible .logo-tile__description {
-    color: var(--color-black);
-  }
-
-  .logo-tile--mail {
-    background: var(--color-gold);
-    border-color: var(--color-gold-deep);
-    color: var(--color-black);
-  }
-
-  /* Reverse sweep: the shared .p4g-sweep panel is gold, which is invisible on
-     a gold ground — so this one sweeps BLACK and flips the text to gold. Same
-     move as the journal tile's note rows, which invert the identical way. */
-  .logo-tile--mail.p4g-sweep::before {
-    background: var(--color-black);
-  }
-
-  .logo-tile--mail.p4g-sweep:hover,
-  .logo-tile--mail.p4g-sweep:focus-visible {
-    color: var(--color-gold);
-  }
-
-  /* Kicker inverts on a gold ground, exactly as .bento-tile--highlight does */
-  .logo-tile--mail .logo-tile__kicker {
-    background: var(--color-black);
-    color: var(--color-gold);
-  }
-
-  .logo-tile--mail .logo-tile__label {
-    color: var(--color-black);
-  }
-
-  .logo-tile--mail .logo-tile__description {
-    color: var(--color-text-on-gold);
-    opacity: 0.7;
-  }
-
-  .logo-tile--mail:hover .logo-tile__label,
-  .logo-tile--mail:focus-visible .logo-tile__label,
-  .logo-tile--mail:hover .logo-tile__description,
-  .logo-tile--mail:focus-visible .logo-tile__description {
-    color: var(--color-gold);
-  }
-
-  .logo-tile--mail:hover .logo-tile__kicker,
-  .logo-tile--mail:focus-visible .logo-tile__kicker {
-    background: var(--color-gold);
-    color: var(--color-black);
-  }
-
-  /* No outline ring: clip-path would clip it — :focus-visible shows via the gold sweep + lift instead */
-
-  .logo-tile__img {
-    width: 48px;
-    height: 48px;
-    object-fit: contain;
-  }
-
-  .logo-tile__label {
-    font-family: var(--font-display);
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
-    text-align: center;
-  }
-
-  .logo-tile__description {
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-    margin-top: var(--space-xs);
-    line-height: 1.4;
-    text-align: center;
-
-    /* Always visible, clamped to keep the 1×1 tile tidy; brightens on hover.
-       .75, not .6: at .6 the muted token composited to 3.12–3.34:1 over the dark
-       tile grounds, under the 4.5:1 AA floor for 12px text. The gold Email tile
-       keeps .7 (see .logo-tile--mail) — that reads 7.59:1. */
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    opacity: 0.75;
-    transition: opacity 200ms ease-out;
-  }
-
-  .logo-tile:hover .logo-tile__description,
-  .logo-tile:focus-visible .logo-tile__description {
-    opacity: 1;
-  }
-
-  /* ─── Title Tile ─────────────────────────────────────── */
-  .title-tile {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--color-black);
-    /* Dot grid atmosphere */
-    background-image: radial-gradient(circle, rgba(var(--color-gold-rgb), 0.07) 1px, transparent 1px);
-    background-size: 22px 22px;
-    border: var(--border-thick) solid var(--color-gold);
-    border-radius: var(--radius-md);
-    padding: var(--space-md);
-    grid-column: span 4;
-    grid-row: span 1;
-    box-shadow:
-      var(--shadow-glow),
-      inset 0 0 60px rgba(var(--color-gold-rgb), 0.04);
-    overflow: hidden;
-    opacity: 1;
-    transition: opacity var(--transition-base);
-  }
-
-  .title-tile__inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-sm);
-    width: 100%;
-    max-width: 320px;
-  }
-
-  /* Animated gold rules — shimmer sweep after initial reveal */
-  .title-tile__rule {
-    height: 2px;
-    width: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      var(--color-gold) 20%,
-      var(--color-gold-orange) 50%,
-      var(--color-gold) 80%,
-      transparent 100%
-    );
-    background-size: 200% 100%;
-    border-radius: 2px;
-  }
-
-  .title-tile__rule--top {
-    animation:
-      p3r-wipe-reveal 500ms var(--animation-easing) 0ms backwards,
-      rule-shimmer 5s ease-in-out 1.2s infinite;
-  }
-
-  .title-tile__rule--bottom {
-    animation:
-      p3r-wipe-reveal 500ms var(--animation-easing) 300ms backwards,
-      rule-shimmer 5s ease-in-out 2s infinite;
-  }
-
-  @keyframes rule-shimmer {
-    0%, 100% { background-position: 200% 0; opacity: 0.7; }
-    50% { background-position: -100% 0; opacity: 1; }
-  }
-
-  .title-tile__name {
-    font-family: var(--font-display);
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 700;
-    color: var(--color-gold);
-    letter-spacing: 0.02em;
-    text-shadow:
-      0 0 30px rgba(var(--color-gold-rgb), 0.6),
-      0 0 60px rgba(var(--color-gold-rgb), 0.3);
-    animation: p3r-animate-left 500ms var(--animation-easing) 100ms backwards;
-  }
-
-  .title-tile__name-inner {
-    display: inline-block;
-    transform: skewX(var(--skew-display));
-  }
-
-  /* Tagline: always subtly visible, sharpens on hover */
-  .title-tile__description {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-    margin-top: var(--space-sm);
-    line-height: 1.4;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-wide);
-    /* .45 measured 2.30:1 — #a0a0a0 at 45% over the tile's --color-black ground
-       composites to #484848, which is under the 4.5:1 AA floor for 12px and
-       under even 3:1, and it is the only line on the page explaining what the
-       site is. .75 lands at ~5.6:1. */
-    opacity: 0.75;
-    transition: opacity 300ms ease-out;
-  }
-
-  /* Non-interactive wordmark: no focusable children, so hover only.
-     (The `:has(:focus-visible)` half was dead once the About button moved
-     out of this tile and into the nav.) */
-  .title-tile:hover .title-tile__description {
-    opacity: 1;
-  }
-
-  /* ─── Journal Tile ────────────────────────────────────── */
-  /* Journal tile — slash split: gold notes field / black showcases field.
-     The black field is a ::before overlay clipped diagonally; both content
-     columns are positioned to paint above it. */
-  .journal-tile {
-    display: grid;
-    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
-    gap: var(--space-md);
-  }
-
-  .journal-tile::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--color-bg-base);
-    clip-path: polygon(66% 0, 100% 0, 100% 100%, 58% 100%);
-    transition: clip-path var(--animation-base) var(--animation-easing);
-    pointer-events: none;
-  }
-
-  /* The tile is a div — keyboard focus lands on its inner links, so the seam
-     shift keys off `:has(:focus-visible)` rather than `:focus-visible`. */
-  .journal-tile:hover::before,
-  .journal-tile:has(:focus-visible)::before {
-    clip-path: polygon(64% 0, 100% 0, 100% 100%, 56% 100%);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .journal-tile::before {
-      transition: none;
-    }
-    .journal-tile:hover::before,
-    .journal-tile:has(:focus-visible)::before {
-      clip-path: polygon(66% 0, 100% 0, 100% 100%, 58% 100%);
-    }
-  }
-
-  .journal-tile__notes,
-  .journal-tile__showcases {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  /* Push showcase content clear of the seam so the diagonal never cuts across
-     the chip or the first row — content sits fully on the black field. */
-  .journal-tile__showcases {
-    padding-left: var(--space-xl);
-  }
-
-  /* Corner triangle sits on the black field now — gold, not the highlight
-     black (which would vanish). Extra class specificity beats bento.css. */
-  .journal-tile.bento-tile--highlight .bento-tile__corner {
-    background: var(--color-gold);
-  }
-
-  /* Showcases field — gold kicker tab + emblem/title project rows */
-  /* 44px touch target without a 44px-tall gold slab: the box is 44 high and
-     the chip is painted as a centred 22px band, so it still reads the same
-     weight as the JOURNAL tab across the seam. A background-*colour* would
-     fill the whole box, hence the flat gradient. */
-  .journal-tile__showcase-tab {
-    align-self: flex-start;
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    padding: 0 var(--space-md);
-    background-image: linear-gradient(var(--color-gold), var(--color-gold));
-    background-repeat: no-repeat;
-    background-position: center;
-    /* 2em of the 11px label, so browser text-zoom scales the band with the
-       type instead of leaving it stranded at a fixed 22px. */
-    background-size: 100% 2em;
-    color: var(--color-black);
-    font-family: var(--font-display);
-    font-size: var(--text-floor);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
-    text-decoration: none;
-    transform: skewX(var(--skew-accent));
-    transition: background-image var(--transition-fast), color var(--transition-fast);
-  }
-
-  .journal-tile__showcase-tab:hover,
-  .journal-tile__showcase-tab:focus-visible {
-    background-image: linear-gradient(var(--color-text), var(--color-text));
-  }
-
-  .journal-tile__projects {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2xs);
-    margin-top: var(--space-sm);
-  }
-
-  .journal-tile__project {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-    padding: var(--space-2xs) var(--space-xs);
-    text-decoration: none;
-    color: var(--color-text);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    transition: background var(--transition-fast), color var(--transition-fast);
-  }
-
-  /* Mirror of the note rows' hover: gold-on-black side inverts to gold bg */
-  .journal-tile__project:hover,
-  .journal-tile__project:focus-visible {
-    background: var(--color-gold);
-    color: var(--color-black);
-  }
-
-  .journal-tile__project img {
-    width: 42px;
-    height: 42px;
-    object-fit: cover;
-    display: block;
-    flex-shrink: 0;
-    border: 2px solid var(--color-border-strong);
-  }
-
-  .journal-tile__project--recent img {
-    border-color: var(--color-gold);
-  }
-
-  .journal-tile__project-title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  @media (max-width: 1024px) {
-    .journal-tile {
-      grid-template-columns: 1fr;
-    }
-
-    /* The tile-relative diagonal can't track stacked content heights —
-       paint the black field on the showcases block itself instead. */
-    .journal-tile::before,
-    .journal-tile:hover::before,
-    .journal-tile:has(:focus-visible)::before {
-      display: none;
-    }
-
-    .journal-tile__showcases {
-      margin: 0 calc(-1 * var(--space-md)) calc(-1 * var(--space-md));
-      padding: var(--space-md);
-      padding-top: calc(var(--space-md) + 16px);
-      background: var(--color-bg-base);
-      clip-path: polygon(0 16px, 100% 0, 100% 100%, 0 100%);
-    }
-  }
-
-  .journal-tile__head {
-    display: flex;
-    align-items: center;
-    /* 44px touch floor — the heading keeps its own type size */
-    min-height: 44px;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .journal-tile__head:hover .bento-tile__title,
-  .journal-tile__head:focus-visible .bento-tile__title {
-    text-decoration: underline;
-    text-decoration-thickness: 3px;
-  }
-
-  /* Clearance for the diagonal seam. The seam leans left as it descends
-     (66%->58% at rest, 64%->56% on hover), so its encroachment into this
-     column GROWS down the list while the padding is constant — the bottom row
-     is the first to be crossed. A flat --space-md left the last row's date 2px
-     under the black field on hover at >=1232px viewports, and the date is
-     black text, so it did not just overlap: it vanished. --space-xl clears the
-     worst case with ~13px to spare at every desktop width. */
-  .journal-tile__list {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-    padding-right: var(--space-xl);
-  }
-
-  /* Empty-feed fallback: the fetch guarantees [] on any Substack failure
-     (network blip, build-time block, no posts yet), which is now a live
-     outcome rather than a bug — so the left half of this 4x2 core tile
-     still has to say what it is, rather than a heading over nothing. */
-  .journal-tile__empty {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    min-height: 0;
-    padding-right: var(--space-xl);
-  }
-
-  .journal-tile__empty a {
-    color: var(--color-text-muted);
-    text-decoration: none;
-  }
-
-  .journal-tile__empty a:hover,
-  .journal-tile__empty a:focus-visible {
-    color: var(--color-text);
-    text-decoration: underline;
-  }
-
-  .journal-tile__row {
-    display: flex;
-    align-items: center;
-    min-height: 44px;
-    gap: var(--space-xs);
-    padding: var(--space-2xs) var(--space-xs);
-    border-top: 1px solid rgba(0, 0, 0, 0.15);
-    text-decoration: none;
-    color: var(--color-black);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    transition: background var(--transition-fast);
-  }
-
-  .journal-tile__row:hover,
-  .journal-tile__row:focus-visible {
-    background: rgba(0, 0, 0, 0.85);
-    color: var(--color-gold);
-  }
-
-  .journal-tile__row-title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .journal-tile__date {
-    flex-shrink: 0;
-    margin-left: auto;
-    font-size: var(--text-floor);
-    letter-spacing: var(--tracking-label);
-    /* Black on the gold field: .55 measured 4.48:1 at 11px, 0.02 under AA. */
-    opacity: 0.6;
-  }
-
-  /* ─── Media Tile ──────────────────────────────────────── */
-  .media-tile {
-    background-image: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 3px,
-      rgba(var(--color-gold-rgb), 0.025) 3px,
-      rgba(var(--color-gold-rgb), 0.025) 4px
-    );
-  }
-
-  :global(.media-tile .bento-tile__footer) {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-    flex: 1;
-    margin-top: 0;
-    justify-content: center;
-  }
-
-  .tile-poster-strip {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-xs);
-    align-items: center;
-    clip-path: polygon(0 12%, 100% 0, 100% 100%, 0 100%);
-  }
-
-  .tile-poster {
-    aspect-ratio: 2/3;
-    overflow: hidden;
-    border-radius: var(--radius-sm);
-    background: var(--color-bg-elevated);
-  }
-
-  .tile-poster__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    opacity: 0.75;
-    transition: opacity 200ms;
-  }
-
-  .media-tile:hover .tile-poster__img,
-  .media-tile:focus-visible .tile-poster__img {
-    opacity: 0.9;
-  }
-
-  /* ─── Now Tile ────────────────────────────────────────── */
-  /* The Now tile is one column wide and shows a monthly entry title that can run
-     38+ characters. At --text-xl that wraps to four lines, and because the bento
-     rows are minmax(100px, auto) the tallest tile sets the row — so a long title
-     silently grew the entire hero and stretched the wordmark and YouTube tiles
-     with it. Clamped to two lines; the full title is on the element's own title
-     attribute (BentoTile renders it) so nothing is lost. */
-  .home-now-tile--clamped :global(.bento-tile__title) {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .now-date {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-sm);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-black);
-    text-transform: lowercase;
-  }
-
-  /* Radar ping dot */
-  .now-dot {
-    position: relative;
-    display: inline-block;
-    width: 9px;
-    height: 9px;
-    flex-shrink: 0;
-    border-radius: 50%;
-    background: var(--color-black);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .now-dot {
-      animation: dot-breathe 2s ease-in-out infinite;
-    }
-  }
-
-  @keyframes dot-breathe {
-    0%, 100% { opacity: 0.9; transform: scale(1); }
-    50% { opacity: 0.55; transform: scale(0.75); }
-  }
-
-  /* radar-ping was the Now tile's ping rings, cut as pure ornament (the gold
-     ground and the NOW kicker already say "now"; the dot still breathes).
-     now-pulse was a second orphan in the same place that the note never
-     mentioned — the live dot uses dot-breathe. Neither name appeared anywhere
-     but its own declaration. */
-
-  /* ─── Stream Tile ────────────────────────────────────── */
-  .stream-tile {
-    grid-row: span 2;
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
-    transition:
-      border-color var(--transition-fast),
-      box-shadow var(--transition-fast),
-      transform var(--transition-fast);
-  }
-
-  .stream-tile:hover,
-  .stream-tile:focus-visible {
-    border-color: var(--color-gold);
-    /* was --shadow-hard, i.e. identical to the resting state — the one tile
-       on the grid whose shadow did not grow on hover. */
-    box-shadow: var(--shadow-hard-hover);
-    transform: translate(-4px, -4px);
-  }
-
-  /* The pulse animates box-shadow, and a running CSS animation beats a normal
-     author declaration — so `.bento-tile--dark:hover`'s shadow step to
-     --shadow-hard-hover never applied while live, i.e. in exactly the state where
-     this tile is most prominent. Pausing the loop on hover restores the step and
-     also stops the page moving under the pointer. */
-  .stream-tile.is-live:hover,
-  .stream-tile.is-live:focus-visible,
-  .stream-tile.is-live:has(:focus-visible) {
-    animation-play-state: paused;
-  }
-
-  .stream-tile.is-live {
-    border-color: var(--color-live);
-    background: #181212;
-    box-shadow: 4px 4px 0 rgba(var(--color-live-rgb), .35), 0 0 28px rgba(var(--color-live-rgb), .12);
-    animation: stream-tile-pulse 2.5s ease-in-out infinite;
-  }
-
-  @keyframes stream-tile-pulse {
-    0%, 100% { box-shadow: 4px 4px 0 rgba(var(--color-live-rgb), .35), 0 0 24px rgba(var(--color-live-rgb), .12); }
-    50%       { box-shadow: 4px 4px 0 rgba(var(--color-live-rgb), .5),  0 0 40px rgba(var(--color-live-rgb), .22); }
-  }
-
-  /* CRT inset glow — always present, warms to red when live */
-  .stream-tile::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    box-shadow: inset 0 0 22px rgba(var(--color-gold-rgb), 0.04);
-    pointer-events: none;
-    z-index: 2;
-    border-radius: inherit;
-    transition: box-shadow 300ms;
-  }
-
-  .stream-tile:hover::after,
-  .stream-tile:focus-visible::after {
-    box-shadow: inset 0 0 28px rgba(var(--color-gold-rgb), 0.08);
-  }
-
-  .stream-tile.is-live::after {
-    box-shadow: inset 0 0 22px rgba(var(--color-live-rgb), 0.1);
-  }
-
-  /* Identity block — face first, then name, then epithet. A profile card
-     with no face was the weakest thing about the old tile: it was a kicker,
-     a name and a floating paragraph. */
-  .st-id {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-2xs);
-    padding: var(--space-xs) var(--space-sm) 0;
-    text-align: center;
-  }
-
-  .st-portrait {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    object-position: center top;
-    border: var(--border-thin) solid var(--st-lead);
-    background: var(--color-surface-2);
-    margin-bottom: var(--space-2xs);
-  }
-
-  .st-name {
-    margin: 0;
-    font-family: var(--font-display);
-    /* --text-xl, matching the Novel tile beside it — this was --text-base,
-       the only tile heading on the grid under 20px, on the tile a stranger
-       most needs to read. */
-    font-size: var(--text-xl);
-    line-height: 1.1;
-    color: var(--color-gold);
-    letter-spacing: 0.03em;
-  }
-
-  .st-epithet {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    line-height: 1.35;
-    color: var(--color-text-subtle);
-    text-wrap: balance;
-  }
-
-  .st-body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2xs);
-    padding: var(--space-sm) var(--space-sm) var(--space-xs);
-  }
-
-  /* The stat colour lives here — a short label over a hairline — instead of
-     tinting the paragraph below it. */
-  .st-arc {
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: var(--st-lead);
-    padding-bottom: var(--space-2xs);
-    border-bottom: 1px solid color-mix(in srgb, var(--st-lead) 45%, transparent);
-    text-align: center;
-  }
-
-  .st-teaser {
-    margin: 0;
-    text-align: center;
-    font-size: var(--text-xs);
-    line-height: 1.5;
-    color: var(--color-text-muted);
-    letter-spacing: 0.01em;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
-    overflow: hidden;
-  }
-
-  .st-teaser--empty {
-    color: var(--color-text-subtle);
-    font-style: italic;
-  }
-
-  .st-footer {
-    padding: var(--space-sm) var(--space-md);
-    border-top: var(--border-hairline) solid var(--color-surface-1);
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    flex-shrink: 0;
-    background: var(--color-black);
-  }
-
-  .st-cta {
-    margin-left: auto;
-    font-size: var(--text-floor);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: rgba(var(--color-gold-rgb), .55);
-    font-family: var(--font-mono);
-    transition: color var(--transition-fast);
-  }
-
-  .stream-tile:hover .st-cta,
-  .stream-tile:focus-visible .st-cta {
-    color: rgba(var(--color-gold-rgb), .75);
-  }
-
-  /* Shared LIVE plate. The About tile and the YouTube tile can be live in the
-     same moment and used to disagree about what a LIVE badge looks like — one
-     an outlined red-text chip, the other a solid red plate, on different
-     letter-spacings and two near-identical keyframes. One treatment now: the
-     solid plate, which is also the only version legible over the YT preview
-     photo. */
-  .st-live-badge,
-  .yt-tile__live-badge {
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    font-weight: 700;
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: var(--color-white);
-    background: var(--color-live);
-    border-radius: var(--radius-sm);
-    padding: var(--space-2xs) var(--space-xs);
-  }
-
-  .st-live-badge:not([hidden]),
-  .image-tile--youtube.is-twitch-live .yt-tile__live-badge {
-    animation: live-badge-breathe 1.5s ease-in-out infinite;
-  }
-
-  .st-live-badge[hidden] { display: none; }
-
-  @keyframes live-badge-breathe {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: .5; }
-  }
-
-  /* ─── YouTube / Live Tile ────────────────────────────── */
-  .image-tile--youtube {
-    grid-column: span 1;
-    grid-row: span 1;
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    border: var(--border-thick) solid var(--color-border-strong);
-    background: var(--color-bg-elevated);
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    transition:
-      transform var(--transition-fast),
-      box-shadow var(--transition-fast),
-      border-color var(--transition-fast);
-    box-shadow: var(--shadow-hard);
-  }
-
-  .image-tile--youtube:hover,
-  .image-tile--youtube:focus-visible {
-    transform: translate(-4px, -4px);
-    box-shadow: var(--shadow-hard-hover);
-    border-color: #ff0000;
-  }
-
-  .image-tile--youtube:active {
-    transform: translate(0, 0);
-    box-shadow: var(--shadow-hard-sm);
-  }
-
-  /* Full-bleed avatar */
-  .yt-tile__avatar {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .yt-tile__chip {
-    position: absolute;
-    top: var(--space-xs);
-    left: var(--space-xs);
-    z-index: 2;
-    padding: 2px 8px 2px 6px;
-    background: var(--color-gold);
-    color: var(--color-black);
-    font-family: var(--font-display);
-    font-size: var(--text-floor);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
-    clip-path: polygon(0 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
-  }
-
-  /* Red tint overlay on hover */
-  .yt-tile__tint {
-    position: absolute;
-    inset: 0;
-    background: rgba(255, 0, 0, 0.1);
-    opacity: 0;
-    transition: opacity 0.2s;
-    pointer-events: none;
-    z-index: 1;
-  }
-  .image-tile--youtube:hover .yt-tile__tint,
-  .image-tile--youtube:focus-visible .yt-tile__tint {
-    opacity: 1;
-  }
-
-  /* Slide-up strip */
-  .yt-tile__strip {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: var(--space-sm) var(--space-md);
-    background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.6) 70%, transparent 100%);
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    transform: translateY(100%);
-    transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 2;
-  }
-  .image-tile--youtube:hover .yt-tile__strip,
-  .image-tile--youtube:focus-visible .yt-tile__strip {
-    transform: translateY(0);
-  }
-  .image-tile--youtube.is-twitch-live .yt-tile__strip:not(.yt-tile__strip--live) {
-    transform: translateY(100%);
-    pointer-events: none;
-  }
-
-  .yt-tile__strip-icon {
-    width: 16px;
-    height: 16px;
-    color: #ff0000; /* YouTube brand red */
-    flex-shrink: 0;
-    filter: drop-shadow(0 0 4px rgba(255, 0, 0, 0.6));
-  }
-  .yt-tile__strip-icon--twitch {
-    color: #9146ff;
-    filter: drop-shadow(0 0 4px rgba(145, 70, 255, 0.6));
-  }
-
-  .yt-tile__strip-text {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-  }
-  .yt-tile__strip-name {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-    line-height: 1.2;
-  }
-  .yt-tile__strip-sub {
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    color: #aaa;
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-  }
-  .yt-tile__strip--live .yt-tile__strip-sub {
-    color: #ff9090;
-  }
-
-  /* Live overlay — hidden until .is-twitch-live */
-  .yt-tile__live-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    overflow: hidden;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--transition-base);
-  }
-
-  .image-tile--youtube.is-twitch-live .yt-tile__live-overlay {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .yt-tile__preview {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  /* Position only — the plate itself is the shared .st-live-badge rule. */
-  .yt-tile__live-badge {
-    position: absolute;
-    top: var(--space-sm);
-    left: var(--space-sm);
-  }
-
-  /* Latest tile — flex row for text + emblem layout */
-  .latest-tile__inner {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    justify-content: space-between;
-    flex: 1;
-    gap: var(--space-sm);
-  }
-
-  /* Cycle transition: a skewed gold panel sweeps across the tile — the same
-     P4G move as the journal-entry hover (`.list-item::before`). It sweeps in to
-     cover the tile, the script swaps the entry behind it, then it sweeps out to
-     reveal the new one. */
-  .latest-tile__sweep {
-    position: absolute;
-    inset: -2px;
-    background: var(--color-gold);
-    transform: translateX(-110%) skewX(var(--skew-accent));
-    z-index: 4;
-    pointer-events: none;
-    opacity: 0;
-  }
-
-  #latest-tile.is-cycling .latest-tile__sweep {
-    animation: latest-sweep 760ms var(--animation-easing);
-  }
-
-  @keyframes latest-sweep {
-    0%   { transform: translateX(-110%) skewX(var(--skew-accent)); opacity: 1; }
-    48%  { transform: translateX(0)     skewX(var(--skew-accent)); opacity: 1; }
-    52%  { transform: translateX(0)     skewX(var(--skew-accent)); opacity: 1; }
-    100% { transform: translateX(110%)  skewX(var(--skew-accent)); opacity: 1; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    #latest-tile.is-cycling .latest-tile__sweep {
-      animation: none;
-    }
-  }
-
-  .latest-tile__text {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .latest-tile__excerpt {
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    margin-top: var(--space-xs);
-  }
-
-  /* The field is as tall as the row (which the neighbouring Shelf tile's poster
-     strip sets) but the emblem inside it was `width: 100%; aspect-ratio: 1;
-     max-height: 100%` centred — roughly 70x70 inside ~118x346, about a ninth of
-     the panel, with the rest empty dark. Stretch it to the field's height and let
-     the width follow the image's own ratio; `contain` keeps the whole emblem
-     visible rather than cropping a logo. */
-  .latest-tile__emblem-wrap {
-    flex-shrink: 0;
-    position: relative;
-    width: 34%;
-    align-items: stretch;
-    margin: calc(-1 * var(--space-md));
-    margin-left: 0;
-    padding: var(--space-md) var(--space-md) var(--space-md) var(--space-lg);
-    clip-path: polygon(24% 0, 100% 0, 100% 100%, 6% 100%);
-    background: rgba(0, 0, 0, 0.45);
-    display: flex;
-    align-items: center;
-  }
-
-  /* Gold hairline tracing the seam; -4deg measured against the rendered
-     clip edge (24%→6% over the tile's height) so the line hugs it */
-  .latest-tile__emblem-wrap::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 15%;
-    width: 2px;
-    background: var(--color-gold);
-    transform: skewX(-4deg);
-    opacity: 0.7;
-  }
-
-  .latest-tile__emblem {
-    width: 100%;
-    height: 100%;
-    max-height: 100%;
-    min-height: 72px;
-    object-position: center;
-    border-radius: var(--radius-sm);
-    object-fit: cover;
-    border: 1px solid var(--color-border-strong);
-    background: var(--color-bg-surface);
-    opacity: 0.85;
-    transition:
-      opacity var(--transition-fast),
-      border-color var(--transition-fast);
-  }
-
-  /* Novel tile — rain gauge: reward recent writing, never count absence */
-  .novel-tile {
-    position: relative;
-    overflow: hidden;
-    gap: var(--space-md);
-  }
-
-  .novel-rain {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 600ms ease;
-  }
-
-  .novel-tile.is-raining .novel-rain,
-  .novel-tile.is-misting .novel-rain {
-    opacity: var(--rain-strength, 0.5);
-  }
-
-  .novel-rain__drop {
-    position: absolute;
-    top: -30px;
-    /* --x / --dur / --delay / --drop-op are randomized per drop by
-       initializeNovelRain(); the calc() fallbacks keep an even, deterministic
-       spread when JS hasn't run. */
-    left: var(--x, calc(3% + var(--i) * 7%));
-    width: 1px;
-    height: var(--len, 22px);
-    opacity: var(--drop-op, 1);
-    background: linear-gradient(to bottom, transparent, rgba(157, 184, 204, 0.8));
-    animation: novel-rain-fall var(--dur, 1.5s) linear infinite;
-    animation-delay: var(--delay, calc(var(--i) * 0.13s));
-  }
-
-  .novel-tile.is-misting .novel-rain__drop {
-    height: 9px;
-    animation-duration: 2.6s;
-  }
-
-  @keyframes novel-rain-fall {
-    to { transform: translateY(400px); }
-  }
-
-  .novel-tile__waits {
-    display: none;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    font-style: italic;
-    color: var(--color-text-muted);
-    margin: auto 0;
-  }
-
-  .novel-tile.is-waiting .novel-tile__waits {
-    display: block;
-  }
-
-  .novel-tile__words {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .novel-tile__story {
-    font-family: var(--font-mono);
-    font-size: var(--text-lg);
-    font-weight: 700;
-    color: var(--color-gold);
-    line-height: 1;
-  }
-
-  .novel-tile__story-label {
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    color: var(--color-gold-dim);
-    text-transform: lowercase;
-    letter-spacing: var(--tracking-label);
-  }
-
-  .novel-tile__outline {
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    color: var(--color-text-muted);
-    margin-top: var(--space-2xs);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .novel-rain__drop {
-      animation: none;
-      top: auto;
-      bottom: 20%;
-      height: 6px;
-      opacity: 0.5;
-    }
-  }
-
-  .novel-tile__recent {
-    margin: 0;
-    font-size: var(--text-floor);
-    color: var(--color-text-muted);
-    display: flex;
-    align-items: center;
-    gap: 0.3em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .novel-tile__sep {
-    opacity: 0.5;
-  }
-
-  .novel-tile__file {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /* Tile border + corner triangle carry the hover highlight; emblem only brightens */
-  #latest-tile:hover .latest-tile__emblem,
-  #latest-tile:focus-visible .latest-tile__emblem {
-    opacity: 1;
-  }
-
-  /* Reduced Motion Support */
-  @media (prefers-reduced-motion: reduce) {
-    .logo-tile__description {
-      transition: opacity 100ms ease-out 0ms;
-    }
-
-    .logo-tile:hover .logo-tile__description,
-    .logo-tile:focus-visible .logo-tile__description {
-      transition-delay: 0ms;
-    }
-
-    .title-tile__rule--top,
-    .title-tile__rule--bottom,
-    .title-tile__name {
-      animation: none;
-    }
-
-    .tile-poster__img,
-    .latest-tile__emblem {
-      transition: none;
-    }
-
-    .stream-tile.is-live    { animation: none; }
-    .stream-tile::after     { transition: none; }
-    .st-live-badge,
-    .yt-tile__live-badge    { animation: none; }
-    .container.is-live::before  { animation: none; background-position: 0% 0%; }
-    .image-tile--youtube { transition: none; }
-    .yt-tile__strip { transition: none; }
-    .yt-tile__tint  { transition: none; }
-  }
-
-  /* 769–1024px is the only range where the grid is 4 columns but the title
-     still spans 4 — it filled its own row and left YouTube + Now sitting in
-     2 of the next row's 4 cells, half the row empty. Widen the pair instead
-     of shrinking the title, so the wordmark keeps its full-bleed hero row.
-     (≤768px already handles itself in the 2-column block below.) */
-  @media (min-width: 769px) and (max-width: 1024px) {
-    .image-tile--youtube,
-    :global(.home-now-tile) {
-      grid-column: span 2;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .title-tile {
-      grid-column: span 2;
-      padding: var(--space-lg);
-    }
-
-    .title-tile__name {
-      font-size: clamp(1.8rem, 8vw, 2.5rem);
-    }
-
-    /* A 16:9 box for a 16:9 source: nothing is cropped. The previous
-       min-height: 200px against a two-column (~652px) width made a 3.26:1 slot,
-       so object-fit: cover threw away ~45% of the image's height. max-height
-       keeps it from becoming the tallest thing on the page. */
-    .image-tile--youtube {
-      grid-column: span 2;
-      aspect-ratio: 16 / 9;
-      max-height: 340px;
-    }
-
-    /* Now fills the rest of its row so the following span-2 Journal tile
-       doesn't wrap and leave a blank cell beside it. */
-    :global(.home-now-tile) {
-      grid-column: span 2;
-    }
-
-    .latest-tile__inner {
-      flex-direction: column;
-    }
-
-    .latest-tile__emblem-wrap {
-      width: auto;
-      margin: 0 calc(-1 * var(--space-md)) calc(-1 * var(--space-md));
-      clip-path: polygon(0 22%, 100% 0, 100% 100%, 0 100%);
-      justify-content: center;
-      padding: var(--space-md);
-    }
-
-    .latest-tile__emblem-wrap::before {
-      display: none;
-    }
-
-    .latest-tile__emblem {
-      max-width: 120px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .title-tile {
-      grid-column: span 1;
-      order: -1; /* keep the name/h1 first */
-    }
-
-    .title-tile__name {
-      font-size: clamp(1.5rem, 6vw, 2rem);
-    }
-
-    /* Single column. MAL/Spotify/Email are children of the OUTER grid, so
-       `order: 2` genuinely floats them below the owned content.
-       The YouTube tile is NOT: it is a child of the inner grid inside
-       .hero-band, whose only siblings are the title tile (order: -1) and the Now
-       tile. Its `order` therefore only sequences it after those two — it cannot
-       move past the journal/novel/About/Shelf tiles, because the whole band is a
-       single item of the outer grid. This is a consequence of the band existing
-       at all (it is what lets the ~40px traces bar sit on its own row despite
-       the grid's minmax(100px, auto) rows), and moving the tile out of the band
-       would break the documented row-1 layout on desktop. So the honest
-       statement of behaviour is: title, Now, YouTube — then owned content.
-       min-height drops 150px → 96px so it stops being the largest block on the
-       first screen. */
-    .image-tile--youtube {
-      grid-column: span 1;
-      min-height: 96px;
-      order: 2;
-    }
-
-    .logo-tile {
-      order: 2;
-    }
-  }
-
-  /* ── Traces: danmaku over the hero ────────────────────────
-     Comments fly right-to-left across the hero row itself rather than
-     living in a strip of their own — that overlay-on-content behaviour is
-     what makes danmaku read as danmaku. Motion is deliberately BOUNDED:
-     one burst on arrival, then it settles and only the parked line remains
-     (see initializeTracesHero). The homepage already spends a lot of its
-     motion budget (novel rain, Latest cycling, live pulse), so a
-     permanently looping overlay was too much on top of that. */
-  .hero-band {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-    /* `.bento-grid > *` carries the p3r-entrance-scale stagger, and this band
-       is both a child of the outer grid and the parent of an inner one — so
-       without this the tiles scale inside a band that is itself scaling, and
-       the two transforms compound. The tiles keep their own entrance. */
-    animation: none;
-  }
-
-  /* The lane. Comments used to fly across the hero, which meant moving text
-     over the wordmark — the one element that has to read instantly, and the
-     page's <h1>. Danmaku reads as native on bilibili because the surface
-     underneath is video; a static identity mark is the opposite case, and
-     guestbook messages have no relationship to the title they were crossing.
-     The bar is the one strip on the page whose whole job is Traces, so
-     nothing gets covered — and it is where bilibili puts its comment chrome
-     anyway. Being an in-flow element, it also retires the measure-the-title-
-     tile-and-publish-CSS-vars machinery the overlay needed. */
-  /* The current comment holds its own slot rather than sharing the lane with
-     the flight. Sharing meant taking turns, and taking turns meant the parked
-     line vanished for the whole burst — the one thing on the bar that is
-     actually readable. Two zones also make the overlap structurally
-     impossible instead of timing-dependent. */
-  .traces-current {
-    position: relative;
-    display: flex;
-    align-items: center;
-    flex: 0 1 auto;
-    max-width: 42%;
-    min-width: 0;
-    align-self: stretch;
-    padding-right: var(--space-sm);
-    border-right: 1px solid var(--color-surface-3);
-  }
-
-  .traces-lane {
-    position: relative;
-    flex: 1 1 auto;
-    min-width: 0;
-    align-self: stretch;
-    overflow: hidden;
-  }
-
-  /* Created client-side, so :global() — these never receive Astro's scoped
-     data-astro-cid-* attribute. The heavy text-shadow is the danmaku
-     signature and it is load-bearing here, not decoration: a bullet has to
-     stay legible crossing from the black title tile onto the solid-gold Now
-     tile in the same pass. */
-  /* top/bottom + align-items rather than translateY: the fly keyframe owns
-     `transform`, so a centring transform here would be overwritten by it. */
-  /* left: 100% parks it just past the lane's right edge, so it enters from
-     off-screen. The old rule used `left: 0` with a `translateX(100%)` start
-     keyframe — but a percentage translate resolves against the element's OWN
-     width, so a 313px bullet started 313px from the left edge, popping into
-     view mid-lane instead of flying in. A tall sky with random vertical lanes
-     hid that; a single lane stacks every bullet at the same x. */
-  :global(.traces-bullet) {
-    position: absolute;
-    left: 100%;
-    top: 0;
-    bottom: 0;
-    white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5em;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text);
-    pointer-events: none;
-    animation: traces-fly var(--bullet-duration, 12s) linear 1 both;
-  }
-
-  @keyframes traces-fly {
-    from { transform: translateX(0); }
-    to   { transform: translateX(calc(-1 * (var(--lane-width, 1000px) + var(--bullet-width, 400px)))); }
-  }
-
-  :global(.traces-bullet__name) {
-    color: var(--color-gold);
-    font-weight: 700;
-  }
-
-  /* An older message from someone who has posted since — smaller and
-     dimmer, so age is legible at a glance. */
-  :global(.traces-bullet--echo) {
-    font-size: var(--text-floor);
-    /* .62 measured 3.49:1; the gold-on-dark echo now reads ~6:1. */
-    opacity: 0.72;
-  }
-
-  /* What is resting in the lane. Cross-fades in place and never translates —
-     peripheral vision is tuned to translation, not opacity, which is why this
-     can rotate through the whole backlog without reading as a busy page (same
-     reason the Latest tile can cycle every 7s). A block box, not a flex one,
-     so `text-overflow: ellipsis` still applies to its inline spans. */
-  /* Flex children of .traces-current, so min-width: 0 is what actually lets
-     `text-overflow: ellipsis` engage inside a flex container. */
-  .traces-park,
-  .traces-bar__field {
-    flex: 1;
-    min-width: 0;
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-  }
-
-  .traces-park {
-    color: var(--color-text-muted);
-    transition: opacity 450ms ease;
-  }
-
-  .traces-park[hidden],
-  .traces-bar__field[hidden] { display: none; }
-
-  /* :global() — the park's spans are built client-side in renderTracesPark,
-     so they never receive Astro's scoped data-astro-cid-* attribute and a
-     scoped selector silently never matches them. */
-  :global(.traces-park__name) {
-    color: var(--color-gold);
-    font-weight: 700;
-    /* em, not --space-2xs (2px): at this size that read as no gap at all
-       and ran the name straight into the message. */
-    margin-right: 0.5em;
-  }
-
-  :global(.traces-park__time) {
-    font-size: var(--text-floor);
-    /* .6 measured 3.26:1 at 11px over the bar's #181818 ground. */
-    opacity: 0.75;
-    margin-left: 0.6em;
-  }
-
-  /* Player-chrome bar, flush under the hero. Auto-placed as its own grid
-     row spanning all six columns. This is the affordance the pure-overlay
-     versions lacked — on bilibili the input bar is what invites the
-     comment in the first place. */
-  .traces-bar {
-    grid-column: 1 / -1;
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    min-height: 40px;
-    padding: var(--space-2xs) var(--space-2xs) var(--space-2xs) var(--space-md);
-    background: var(--color-bg-elevated);
-    border: var(--border-thin) solid var(--color-surface-3);
-    border-radius: var(--radius-md);
-    text-decoration: none;
-    transition: border-color var(--transition-fast), background-color var(--transition-fast);
-  }
-
-  .traces-bar:hover,
-  .traces-bar:focus-visible {
-    border-color: var(--color-gold-dim);
-    background: var(--color-surface-2);
-  }
-
-  /* The empty state — server-rendered, so it is also the no-JS and
-     pre-fetch state. JS hides it once the first parked message lands. */
-  .traces-bar__field {
-    color: var(--color-text-subtle);
-  }
-
-  /* Cut, not rounded: unifying the tile kickers left this as the only
-     rounded gold chip on the page. */
-  .traces-bar__send {
-    flex-shrink: 0;
-    padding: var(--space-2xs) calc(var(--space-md) + var(--cut-sm)) var(--space-2xs) var(--space-md);
-    background: var(--color-gold);
-    color: var(--color-black);
-    font-family: var(--font-display);
-    font-size: var(--text-floor);
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-    border-radius: 0;
-    clip-path: polygon(0 0, 100% 0, calc(100% - var(--cut-sm)) 100%, 0 100%);
-  }
-
-  .traces-bar:hover .traces-bar__send,
-  .traces-bar:focus-visible .traces-bar__send {
-    background: var(--color-gold-orange);
-  }
-
-  @media (max-width: 768px) {
-    .traces-lane {
-      display: none;
-    }
-
-    .traces-current {
-      max-width: none;
-      flex: 1;
-      padding-right: 0;
-      border-right: 0;
-    }
-
-    /* The bar is a link, so on touch it owes the same 44px floor every other
-       tap target on the page keeps. Desktop stays at the 40px chrome height. */
-    .traces-bar {
-      min-height: 44px;
-    }
-  }
-
-  /* Flying text is the one thing this feature cannot do under reduced
-     motion, so JS skips the burst and the rotation entirely and leaves the
-     parked line static on the newest message. */
-  @media (prefers-reduced-motion: reduce) {
-    .traces-park {
-      transition: none;
-    }
-  }
-
-  .traces-modal {
-    width: min(600px, 92vw);
-    max-height: 85vh;
-    margin: auto;
-    padding: 0;
-    background: var(--color-bg-base);
-    border: var(--border-medium) solid var(--color-gold-dim);
-    border-radius: var(--radius-md);
-    color: var(--color-text);
-  }
-
-  .traces-modal::backdrop {
-    background: rgba(0, 0, 0, 0.7);
-  }
-
-  .traces-modal__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-md) var(--space-lg);
-    border-bottom: var(--border-thin) solid var(--color-border);
-  }
-
-  /* margin-right: auto parks it beside the tab rather than letting
-     space-between fling it to the middle. */
-  .traces-modal__count {
-    margin-right: auto;
-    padding-left: var(--space-sm);
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-  }
-
-  /* Escape hatch from the modal to the server-rendered page. Muted at rest so it
-     never competes with the count; gold on hover/focus. No auto margin — the
-     count already carries `margin-right: auto`, which is what pushes this and the
-     close button to the right edge. */
-  .traces-modal__full {
-    padding: var(--space-2xs) var(--space-sm);
-    font-family: var(--font-mono);
-    font-size: var(--text-floor);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-    border: var(--border-hairline) solid transparent;
-    border-radius: var(--radius-sm);
-    white-space: nowrap;
-    transition: color var(--transition-fast), border-color var(--transition-fast);
-  }
-
-  .traces-modal__full:hover,
-  .traces-modal__full:focus-visible {
-    color: var(--color-gold);
-    border-color: var(--color-gold-dim);
-  }
-
-  .traces-modal__close {
-    min-width: 44px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 var(--space-sm);
-    color: var(--color-text-muted);
-    font-size: var(--text-lg);
-    line-height: 1;
-    border: var(--border-thin) solid transparent;
-    border-radius: var(--radius-sm);
-    transition: color var(--transition-fast), border-color var(--transition-fast);
-  }
-
-  .traces-modal__close:hover,
-  .traces-modal__close:focus-visible {
-    color: var(--color-gold);
-    border-color: var(--color-gold-dim);
-  }
-
-  .traces-modal__body {
-    padding: var(--space-lg);
-    overflow-y: auto;
-    max-height: calc(85vh - 60px);
-  }
-
-  /* :global() — the initial markup has this class on a static <p>, but
-     openTracesModal() also re-injects it via body.innerHTML for the
-     loading/error states, creating untagged elements each time. */
-  :global(.traces-modal__loading) {
-    color: var(--color-text-muted);
-    font-style: italic;
-    text-align: center;
-    padding: var(--space-xl);
-  }
-
-  /* Empty state — same treatment as traces.astro's own .empty-state, but
-     :global() + scoped under the modal body since this element is created
-     client-side (renderTracesModalBody's innerHTML). */
-  :global(.traces-modal__body .empty-state) {
-    color: var(--color-text-muted);
-    font-style: italic;
-    text-align: center;
-    padding: var(--space-xl);
-  }
-
-  /* The modal reuses the /traces page's form/list class names so styling
-     stays in one place conceptually — copy the relevant blocks from
-     traces.astro's <style> block here as well (form rows, submit button,
-     list items) scoped under .traces-modal__body. All :global() — this
-     entire subtree is built client-side via innerHTML/createElement in
-     renderTracesModalBody/buildTraceListItem, so none of it ever receives
-     Astro's scoped data-astro-cid-* attribute. */
-  :global(.traces-modal__body .traces-form) {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-    margin-bottom: var(--space-lg);
-    padding-bottom: var(--space-lg);
-    border-bottom: var(--border-thin) solid var(--color-border);
-  }
-
-  :global(.traces-modal__body .traces-form__row) {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-  }
-
-  :global(.traces-modal__body .traces-form__row label) {
-    font-family: var(--font-display);
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
-    color: var(--color-text-muted);
-  }
-
-  :global(.traces-modal__body .traces-form__row input) {
-    min-height: 44px;
-    padding: var(--space-sm) var(--space-md);
-    background: var(--color-bg-elevated);
-    /* --color-border (#3a3a3a) measured 1.56:1 against this field's own fill, and
-       the fill only 1.11:1 against the page ground — WCAG 1.4.11 wants 3:1 on a
-       UI component boundary, so the field was undelimited until focused.
-       Gold-dim reads 9.04:1 here. */
-    border: var(--border-hairline) solid var(--color-gold-dim);
-    border-radius: var(--radius-md);
-    color: var(--color-text);
-    font-size: var(--text-base);
-  }
-
-  :global(.traces-modal__body .traces-form__row input:focus-visible) {
-    border-color: var(--color-gold);
-  }
-
-  :global(.traces-modal__body .traces-form__honeypot) {
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-  }
-
-  :global(.traces-modal__body .traces-form__submit) {
-    align-self: flex-start;
-    min-height: 44px;
-    padding: var(--space-sm) var(--space-xl);
-    background: var(--color-gold);
-    color: var(--color-black);
-    font-family: var(--font-display);
-    /* Was inheriting the UA's 13.3333px Arial — a size the type scale does not
-       have — while the identical word "Sign" in the bar above renders at 11px. */
-    font-size: var(--text-sm);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
-    border-radius: var(--radius-sm);
-  }
-
-  :global(.traces-modal__body .traces-form__status) {
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    min-height: 1.5em;
-  }
-
-  :global(.traces-modal__body .traces-form__status[data-tone='error']) {
-    color: var(--color-live);
-  }
-
-  :global(.traces-modal__body .traces-list) {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-  }
-
-  :global(.traces-modal__body .traces-list__item) {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--space-sm);
-    padding: var(--space-md) var(--space-lg);
-    background: var(--color-bg-elevated);
-    border: var(--border-thin) solid var(--color-border);
-    border-radius: var(--radius-md);
-  }
-
-  :global(.traces-modal__body .traces-list__item.is-highlighted) {
-    border-color: var(--color-gold);
-  }
-
-  :global(.traces-modal__body .traces-list__name) {
-    font-family: var(--font-display);
-    color: var(--color-gold);
-  }
-
-  :global(.traces-modal__body .traces-list__message) {
-    color: var(--color-text);
-    flex: 1;
-  }
-
-  :global(.traces-modal__body .traces-list__date) {
-    /* 11px, matching .journal-tile__date / .latest-date / .traces-park__time —
-       one timestamp slot, not four sizes. */
-    font-size: var(--text-floor);
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    letter-spacing: var(--tracking-label);
-  }
-</style>
-
 <script>
-  import { initBotId } from 'botid/client/core';
-  import { formatTraceTimestamp, formatTraceTimestampCompact } from '../utils/tracesFormat';
-
-  initBotId({
-    protect: [{ path: '/api/traces', method: 'POST' }],
-  });
-
-  let liveInterval: ReturnType<typeof setInterval> | undefined;
-
-  async function checkLiveStatus(): Promise<void> {
-    try {
-      const res = await fetch('/api/live-status');
-      if (!res.ok) { applyLiveState(false, false); return; }
-      const { live, twitch } = await res.json() as { live: boolean; twitch: boolean; youtube: boolean };
-      applyLiveState(live, twitch);
-    } catch {
-      applyLiveState(false, false);
-    }
-  }
-
-  function applyLiveState(isLive: boolean, twitchLive: boolean): void {
-    const streamTile = document.getElementById('stream-tile') as HTMLAnchorElement | null;
-    const container  = document.getElementById('page-container');
-    const liveBadge  = document.getElementById('st-live-badge') as HTMLElement | null;
-    const ytTile     = document.getElementById('yt-tile') as HTMLAnchorElement | null;
-
-    streamTile?.classList.toggle('is-live', isLive);
-    container?.classList.toggle('is-live', isLive);
-
-    if (liveBadge) liveBadge.hidden = !isLive;
-
-    if (ytTile) {
-      // Pull the preview only when it is about to be seen (and only once).
-      if (twitchLive) {
-        const preview = ytTile.querySelector<HTMLImageElement>('.yt-tile__preview');
-        if (preview && !preview.src && preview.dataset.src) preview.src = preview.dataset.src;
-      }
-      ytTile.classList.toggle('is-twitch-live', twitchLive);
-      ytTile.href = twitchLive
-        ? 'https://twitch.tv/ninjaruss_'
-        : 'https://www.youtube.com/@Ninjaruss_';
-      ytTile.setAttribute('aria-label', twitchLive
-        ? 'Watch Ninjaruss live on Twitch'
-        : 'Ninjaruss on YouTube');
-    }
-  }
-
-  function startLivePolling(): void {
-    stopLivePolling();
-    checkLiveStatus();
-    liveInterval = setInterval(checkLiveStatus, 300_000);
-  }
-
-  function stopLivePolling(): void {
-    if (liveInterval !== undefined) {
-      clearInterval(liveInterval);
-      liveInterval = undefined;
-    }
-  }
-
-  // Latest tile — cycles through the latest notes/showcase entries.
-  // Runs on initial load and after view transitions.
-  let latestCycleTimer: number | undefined;
-
-  function initializeLatestTile() {
-    clearInterval(latestCycleTimer);
-    const latestTile = document.getElementById('latest-tile') as HTMLAnchorElement | null;
-    if (!latestTile) return;
-    const entries = JSON.parse(latestTile.dataset.entries || '[]');
-    if (entries.length === 0) return;
-
-    const render = (entry: { href: string; title: string; excerpt?: string; emblem?: string; date?: string }) => {
-      latestTile.href = entry.href;
-      const titleEl = document.getElementById('latest-title');
-      if (titleEl) titleEl.textContent = entry.title;
-
-      const excerptEl = document.getElementById('latest-excerpt');
-      if (excerptEl) excerptEl.textContent = entry.excerpt || '';
-
-      const emblemEl = document.getElementById('latest-emblem') as HTMLImageElement | null;
-      if (emblemEl && entry.emblem) emblemEl.src = entry.emblem;
-
-      // Absolute date, formatted at build time — the tile never counts elapsed days.
-      const dateEl = document.getElementById('latest-date');
-      if (dateEl) dateEl.textContent = entry.date || '';
-    };
-
-    render(entries[0]);
-
-    if (entries.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      let index = 0;
-      latestCycleTimer = window.setInterval(() => {
-        index = (index + 1) % entries.length;
-        // Gold panel sweeps across; swap the entry at the midpoint while the
-        // panel covers the tile, then let it sweep out to reveal the new one.
-        latestTile.classList.add('is-cycling');
-        window.setTimeout(() => render(entries[index]), 365);
-        window.setTimeout(() => latestTile.classList.remove('is-cycling'), 800);
-        // 11s, not 7s. A full-height gold panel crossing a 2x2 tile is the
-        // highest-contrast event on an otherwise still page, and at 7s it also
-        // shared a period with the Traces park rotation — two unsynchronised
-        // 7s timers meant something on the page changed every ~3.5s on average.
-      }, 11000);
-    }
-  }
-
-  // Email tile — assemble the mailto only on first interaction so the
-  // address never sits in the served HTML for scrapers.
-  function initializeMailTile() {
-    const tile = document.getElementById('mail-tile') as HTMLAnchorElement | null;
-    if (!tile || tile.dataset.mailBound) return;   // guard: runs on both initial load and astro:page-load
-    tile.dataset.mailBound = 'true';
-    const addr = ['mailbox', ['ninjaruss', 'net'].join('.')].join('@');
-    const arm = () => tile.setAttribute('href', 'mailto:' + addr);
-    tile.addEventListener('pointerenter', arm, { once: true });
-    tile.addEventListener('focus', arm, { once: true });
-    tile.addEventListener('touchstart', arm, { once: true, passive: true });
-    tile.addEventListener('click', (e) => {
-      if (tile.getAttribute('href')?.startsWith('mailto:')) return;
-      e.preventDefault();
-      window.location.href = 'mailto:' + addr;
+  function setupContact() {
+    const address = ['mailbox', ['ninjaruss', 'net'].join('.')].join('@');
+    document.querySelectorAll<HTMLAnchorElement>('[data-contact]').forEach(link => {
+      const arm = () => { link.href = `mailto:${address}`; };
+      link.addEventListener('pointerenter', arm, { once: true });
+      link.addEventListener('focus', arm, { once: true });
+      link.addEventListener('touchstart', arm, { once: true, passive: true });
     });
   }
-
-  // Whole-tile navigation for the journal tile: clicking any non-link area
-  // routes to the journal. Entry links (rows, tabs, projects) handle their own
-  // navigation and are left alone. A plain location assignment is used
-  // deliberately — it's guaranteed to fire on a real click regardless of the
-  // view-transition router's trusted-event gating.
-  function initializeJournalTileNav() {
-    const tile = document.querySelector('.journal-tile') as HTMLElement | null;
-    if (!tile || tile.dataset.navBound) return;
-    tile.dataset.navBound = 'true';
-    const href = tile.dataset.tileHref || '/showcase';
-    tile.addEventListener('click', (e) => {
-      if ((e.target as HTMLElement).closest('a')) return;
-      window.location.href = href;
-    });
-  }
-
-  // Novel rain gauge — full rain for recent scene work, mist for outline-only,
-  // still "the rain waits." past 14 quiet days. Reward accretion; never count absence.
-  function initializeNovelRain() {
-    const tile = document.getElementById('novel-tile');
-    if (!tile) return;
-    tile.classList.remove('is-raining', 'is-misting', 'is-waiting');
-
-    const daysSince = (iso: string | undefined): number | null => {
-      if (!iso) return null;
-      const d = new Date(iso);
-      if (isNaN(d.getTime())) return null;
-      const today = new Date();
-      const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
-      const dUTC = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
-      return Math.floor((todayUTC - dUTC) / 86_400_000);
-    };
-
-    const WINDOW = 14;
-    const sceneDays = daysSince((tile as HTMLElement).dataset.sceneModified);
-    const outlineDays = daysSince((tile as HTMLElement).dataset.outlineModified);
-
-    // Give each drop its own position, fall speed, delay, length and opacity so
-    // the rain reads as organic rather than a uniform comb of columns. Re-rolled
-    // on each init (initial load + astro:page-load), so it varies every visit.
-    // A small jitter around an even base keeps drops from clumping or gapping.
-    const randomizeDrops = () => {
-      const drops = tile.querySelectorAll<HTMLElement>('.novel-rain__drop');
-      const n = drops.length || 1;
-      drops.forEach((drop, i) => {
-        const base = (i + 0.5) / n;                          // even slot center 0..1
-        const x = Math.min(0.98, Math.max(0.02, base + (Math.random() - 0.5) * (1.4 / n)));
-        drop.style.setProperty('--x', `${(x * 100).toFixed(2)}%`);
-        drop.style.setProperty('--len', `${(9 + Math.random() * 26).toFixed(1)}px`);
-        drop.style.setProperty('--dur', `${(0.95 + Math.random() * 1.4).toFixed(2)}s`);
-        drop.style.setProperty('--delay', `${(Math.random() * 2).toFixed(2)}s`);
-        drop.style.setProperty('--drop-op', (0.4 + Math.random() * 0.6).toFixed(2));
-      });
-    };
-
-    if (sceneDays !== null && sceneDays <= WINDOW) {
-      tile.classList.add('is-raining');
-      (tile as HTMLElement).style.setProperty('--rain-strength', String(Math.max(0.2, 1 - sceneDays / WINDOW)));
-      randomizeDrops();
-    } else if (outlineDays !== null && outlineDays <= WINDOW) {
-      tile.classList.add('is-misting');
-      (tile as HTMLElement).style.setProperty('--rain-strength', String(Math.max(0.15, 0.5 * (1 - outlineDays / WINDOW))));
-      randomizeDrops();
-    } else {
-      tile.classList.add('is-waiting');
-    }
-  }
-
-  // Mouse-tracking 3D tilt for all tile types
-  function initializeTilt() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if (!window.matchMedia('(hover: hover)').matches) return;
-
-    // Every tile on the grid, not just the `--interactive` ones. BentoTile
-    // defaults to variant="interactive" but every homepage tile passes
-    // dark/highlight instead, so the old selector bound Title, YouTube, Novel,
-    // About and the three logo tiles — and silently skipped Journal, Now,
-    // Media Log and Latest, i.e. both --core tiles. Hovering Novel tilted in
-    // 3D while the Journal tile beside it stayed flat.
-    const SELECTOR = '.bento-tile, .logo-tile, .image-tile, .title-tile';
-    const MAX_TILT = 6;
-
-    document.querySelectorAll<HTMLElement>(SELECTOR).forEach(tile => {
-      if (tile.dataset.tiltBound) return;   // guard: runs on both initial load and astro:page-load
-      tile.dataset.tiltBound = 'true';
-      let rafId: number;
-
-      tile.addEventListener('mousemove', (e) => {
-        cancelAnimationFrame(rafId);
-        rafId = requestAnimationFrame(() => {
-          const rect = tile.getBoundingClientRect();
-          const cx = rect.left + rect.width / 2;
-          const cy = rect.top + rect.height / 2;
-          const rx = ((e.clientY - cy) / (rect.height / 2)) * -MAX_TILT;
-          const ry = ((e.clientX - cx) / (rect.width / 2)) * MAX_TILT;
-          tile.style.transform = `perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg) translate(-4px, -4px)`;
-        });
-      });
-
-      tile.addEventListener('mouseleave', () => {
-        cancelAnimationFrame(rafId);
-        tile.style.transform = '';
-      });
-    });
-  }
-
-
-  interface TraceEntry {
-    id: number;
-    name: string;
-    message: string;
-    createdAt: string;
-  }
-
-  interface TracesSpawnItem {
-    entry: TraceEntry;
-    isEcho: boolean;
-  }
-
-  const TRACES_FETCH_LIMIT = 30;
-  const TRACES_BURST_MAX = 3;          // bullets in the arrival burst
-  const TRACES_HOVER_POLL_MS = 400;    // how often hover re-checks the gate
-  // Clear air between consecutive bullets, sampled per gap. A single fixed
-  // value makes arrivals metronomic, which is the tell that a "stream" is
-  // really a queue draining — the spread is what makes it read as people
-  // turning up rather than a ticker.
-  const TRACES_GAP_MIN_MS = 900;
-  const TRACES_GAP_MAX_MS = 3200;
-  const TRACES_SPEED_JITTER = 0.28;    // ±% on each bullet's crossing time
-  const TRACES_PARK_ROTATE_MS = 7000;  // parked-line cross-fade interval
-  const TRACES_PARK_FADE_MS = 450;
-  const TRACES_BULLET_MIN_MS = 8000;
-  const TRACES_BULLET_MS_PER_CHAR = 90;
-
-  let tracesQueue: TracesSpawnItem[] = [];
-  let tracesBurstTimers: number[] = [];
-  let tracesParkTimer: number | undefined;
-  let tracesHoverTimer: number | undefined;
-  let tracesParkIndex = 0;
-  let tracesHoverIndex = 0;
-  let tracesTotal = 0;
-  // Timestamp the lane is next free to be entered. The overlay could stack
-  // bullets because it had ~80% of the hero's height to scatter them across;
-  // a single 32px lane has to separate them in time instead, or they pile up
-  // into an unreadable smear.
-  let tracesLaneFreeAt = 0;
-  let tracesPending: TracesSpawnItem[] = [];
-  let tracesPumping = false;
-
-  function tracesReduceMotion(): boolean {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }
-
-  // Flight is desktop-only. A bullet crossing a ~350px lane is frantic rather
-  // than ambient, and the compact bar has no room to read one mid-flight —
-  // below 769px the lane just cross-fades through the parked line, which is
-  // also the first time mobile has shown any trace content at all.
-  function tracesFlightAllowed(): boolean {
-    return !tracesReduceMotion() && window.matchMedia('(min-width: 769px)').matches;
-  }
-
-  // Groups by (trimmed, lowercased) name — "same person" can only be
-  // approximated that way since names are free text, not accounts. Each
-  // group's newest message is a "primary"; their older ones follow as
-  // "echoes", so a person's history stays together wherever this queue is
-  // consumed (the burst, the hover stream, the parked rotation).
-  function buildTracesSpawnQueue(entries: TraceEntry[]): TracesSpawnItem[] {
-    const groups = new Map<string, TraceEntry[]>();
-    for (const entry of entries) {
-      const key = entry.name.trim().toLowerCase();
-      const list = groups.get(key);
-      if (list) list.push(entry); else groups.set(key, [entry]);
-    }
-
-    const byNewest = (a: TraceEntry, b: TraceEntry) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    const ordered = [...groups.values()]
-      .map(list => [...list].sort(byNewest))
-      .sort((a, b) => byNewest(a[0], b[0]));
-
-    const queue: TracesSpawnItem[] = [];
-    for (const group of ordered) {
-      queue.push({ entry: group[0], isEcho: false });
-      for (const echo of group.slice(1)) queue.push({ entry: echo, isEcho: true });
-    }
-    return queue;
-  }
-
-  function spawnTracesBullet(item: TracesSpawnItem): void {
-    const lane = document.getElementById('traces-lane');
-    if (!lane) return;
-
-    // A span, not a button: the lane lives inside the bar's <a>, and nesting
-    // an interactive element in an anchor is invalid and unreachable by
-    // keyboard anyway (these were already tabIndex -1). Clicking a bullet now
-    // just clicks the bar, which opens the modal at the parked message.
-    const bullet = document.createElement('span');
-    bullet.className = 'traces-bullet' + (item.isEcho ? ' traces-bullet--echo' : '');
-
-    const nameEl = document.createElement('span');
-    nameEl.className = 'traces-bullet__name';
-    nameEl.textContent = item.entry.name;
-    const msgEl = document.createElement('span');
-    msgEl.textContent = item.entry.message;
-    // Name + message only. A timestamp on a moving target is unreadable
-    // noise, and it made every bullet ~25% wider, which is width the lane
-    // spends on spacing. The current comment is static and carries it there
-    // instead — the two zones say different things on purpose.
-    bullet.append(nameEl, msgEl);
-
-    // Length-scaled, then jittered: without the jitter every message short
-    // enough to hit the floor crosses at exactly the same speed, so a burst
-    // of short ones marches in lockstep.
-    const jitter = 1 + (Math.random() * 2 - 1) * TRACES_SPEED_JITTER;
-    const duration = Math.max(
-      TRACES_BULLET_MIN_MS,
-      item.entry.message.length * TRACES_BULLET_MS_PER_CHAR,
-    ) * jitter;
-    bullet.style.setProperty('--bullet-duration', `${duration}ms`);
-    bullet.addEventListener('animationend', () => bullet.remove());
-
-    lane.appendChild(bullet);
-    // The fly keyframe ends at -1 × the bullet's own width, which is only
-    // measurable once it is in the DOM.
-    const width = bullet.offsetWidth;
-    const laneWidth = lane.offsetWidth || 1;
-    bullet.style.setProperty('--bullet-width', `${width}px`);
-    bullet.style.setProperty('--lane-width', `${laneWidth}px`);
-
-    // It travels (laneWidth + width) over `duration`, so its trailing edge
-    // clears the right edge after it has covered its own width. Reserve the
-    // lane until then, plus a beat of clear air.
-    const clearMs = (width / (laneWidth + width)) * duration;
-    const gap = TRACES_GAP_MIN_MS + Math.random() * (TRACES_GAP_MAX_MS - TRACES_GAP_MIN_MS);
-    tracesLaneFreeAt = performance.now() + clearMs + gap;
-  }
-
-  // Strictly serial: one bullet enters, and the next waits for the lane to
-  // actually clear. A long message holds the lane longer than a short one, so
-  // anything precomputed from a fixed stagger overlaps exactly the bullets
-  // that are hardest to read — each spawn publishes its own clear time and
-  // the pump reads it back.
-  function pumpTracesLane(): void {
-    if (tracesPumping) return;
-    const next = tracesPending.shift();
-    if (!next) return;
-    tracesPumping = true;
-    const wait = Math.max(0, tracesLaneFreeAt - performance.now());
-    tracesBurstTimers.push(window.setTimeout(() => {
-      tracesPumping = false;
-      spawnTracesBullet(next);
-      pumpTracesLane();
-    }, wait));
-  }
-
-  function queueTracesBullet(item: TracesSpawnItem): void {
-    tracesPending.push(item);
-    pumpTracesLane();
-  }
-
-  function renderTracesPark(item: TracesSpawnItem): void {
-    const park = document.getElementById('traces-park');
-    if (!park) return;
-    // Real content has arrived — the invitation is no longer the lane's job.
-    document.getElementById('traces-empty')?.setAttribute('hidden', '');
-    park.replaceChildren();
-    const nameEl = document.createElement('span');
-    nameEl.className = 'traces-park__name';
-    nameEl.textContent = item.entry.name;
-    const msgEl = document.createElement('span');
-    msgEl.textContent = item.entry.message;
-    const timeEl = document.createElement('span');
-    timeEl.className = 'traces-park__time';
-    timeEl.textContent = formatTraceTimestampCompact(item.entry.createdAt);
-    park.append(nameEl, msgEl, timeEl);
-    park.dataset.traceId = String(item.entry.id);
-    park.removeAttribute('hidden');
-  }
-
-  function startTracesParkRotation(): void {
-    clearInterval(tracesParkTimer);
-    if (tracesQueue.length === 0) return;
-    renderTracesPark(tracesQueue[0]);
-    if (tracesQueue.length <= 1 || tracesReduceMotion()) return;
-
-    tracesParkTimer = window.setInterval(() => {
-      const park = document.getElementById('traces-park');
-      if (!park) return;
-      park.style.opacity = '0';
-      window.setTimeout(() => {
-        tracesParkIndex = (tracesParkIndex + 1) % tracesQueue.length;
-        renderTracesPark(tracesQueue[tracesParkIndex]);
-        park.style.opacity = '1';
-      }, TRACES_PARK_FADE_MS);
-    }, TRACES_PARK_ROTATE_MS);
-  }
-
-  function stopTracesBurst(): void {
-    tracesBurstTimers.forEach(t => clearTimeout(t));
-    tracesBurstTimers = [];
-  }
-
-  // One bounded wave on arrival. Cancelled if the visitor scrolls past the
-  // hero mid-burst — they have moved on, so finishing it is just noise
-  // behind them — and fired at most once per session so hopping home from
-  // /showcase does not replay it every time.
-  function runTracesBurst(): void {
-    if (!tracesFlightAllowed()) return;
-    try {
-      if (sessionStorage.getItem('traces-burst') === 'done') return;
-      sessionStorage.setItem('traces-burst', 'done');
-    } catch { /* private mode — just play it */ }
-
-    const count = Math.min(TRACES_BURST_MAX, tracesQueue.length);
-    for (let i = 0; i < count; i++) queueTracesBullet(tracesQueue[i]);
-
-    const bar = document.getElementById('traces-tab');
-    if (bar && 'IntersectionObserver' in window) {
-      const io = new IntersectionObserver(entries => {
-        if (!entries[0].isIntersecting) { stopTracesBurst(); io.disconnect(); }
-      });
-      io.observe(bar);
-    }
-  }
-
-  // Hovering the bar pulls the flight back on demand — pointing at the bar is
-  // an explicit "show me these", so it is the one moment dense motion is
-  // welcome rather than intrusive.
-  function bindTracesHover(): void {
-    const bar = document.getElementById('traces-tab');
-    if (!bar || !tracesFlightAllowed()) return;
-
-    bar.addEventListener('mouseenter', () => {
-      if (tracesHoverTimer || tracesQueue.length === 0) return;
-      // Polls the same gate rather than running its own cadence, so hovering
-      // never stacks a bullet on top of one already in the lane.
-      // At most one queued ahead, so a long hover doesn't build a backlog
-      // that keeps firing after the pointer has left.
-      const tick = () => {
-        if (tracesPending.length === 0) {
-          queueTracesBullet(tracesQueue[tracesHoverIndex++ % tracesQueue.length]);
-        }
-      };
-      tick();
-      tracesHoverTimer = window.setInterval(tick, TRACES_HOVER_POLL_MS);
-    });
-    bar.addEventListener('mouseleave', () => {
-      clearInterval(tracesHoverTimer);
-      tracesHoverTimer = undefined;
-    });
-  }
-
-  function stopTracesHero(): void {
-    stopTracesBurst();
-    clearInterval(tracesParkTimer);
-    clearInterval(tracesHoverTimer);
-    tracesParkTimer = undefined;
-    tracesHoverTimer = undefined;
-    tracesParkIndex = 0;
-    tracesHoverIndex = 0;
-    tracesQueue = [];
-    tracesPending = [];
-    tracesPumping = false;
-    tracesLaneFreeAt = 0;
-    document.querySelectorAll('.traces-bullet').forEach(b => b.remove());
-  }
-
-  async function initializeTracesHero(): Promise<void> {
-    const lane = document.getElementById('traces-lane');
-    if (!lane || lane.dataset.bound === 'true') return;
-    lane.dataset.bound = 'true';
-
-    let entries: TraceEntry[];
-    let total = 0;
-    try {
-      const res = await fetch(`/api/traces?limit=${TRACES_FETCH_LIMIT}`);
-      if (!res.ok) return;
-      const data = await res.json() as { entries: TraceEntry[]; total?: number };
-      entries = data.entries;
-      total = data.total ?? data.entries.length;
-    } catch {
-      return;
-    }
-
-    // The count reads as a detail you want once the full list is open, not
-    // as bar chrome — so it is held here and rendered into the modal header.
-    tracesTotal = total;
-
-    if (entries.length === 0) return;
-
-    tracesQueue = buildTracesSpawnQueue(entries);
-    startTracesParkRotation();
-    bindTracesHover();
-    runTracesBurst();
-  }
-
-  function bindTracesModal(): void {
-    const tab = document.getElementById('traces-tab');
-    const modal = document.getElementById('traces-modal') as HTMLDialogElement | null;
-    const closeBtn = document.getElementById('traces-modal-close');
-    if (!tab || !modal || !closeBtn) return;
-    if (modal.dataset.bound === 'true') return;
-    modal.dataset.bound = 'true';
-
-    tab.addEventListener('click', (e) => {
-      const evt = e as MouseEvent;
-      if (evt.metaKey || evt.ctrlKey || evt.shiftKey || evt.altKey || evt.button !== 0) return;
-      e.preventDefault();
-      // Land on whichever message the parked line is currently showing, so
-      // opening the modal continues from what the visitor was just reading.
-      const parkedId = Number(document.getElementById('traces-park')?.dataset.traceId);
-      openTracesModal(Number.isNaN(parkedId) ? undefined : parkedId);
-    });
-
-    closeBtn.addEventListener('click', () => modal.close());
-
-    // Click on the backdrop (the dialog element itself, outside its content box) closes it.
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.close();
-    });
-  }
-
-  async function openTracesModal(scrollToId?: number): Promise<void> {
-    const modal = document.getElementById('traces-modal') as HTMLDialogElement | null;
-    const body = document.getElementById('traces-modal-body');
-    if (!modal || !body) return;
-
-    modal.showModal();
-
-    const countEl = document.getElementById('traces-modal-count');
-    if (countEl && tracesTotal > 0) {
-      countEl.textContent = tracesTotal === 1 ? '1 trace' : `${tracesTotal} traces`;
-    }
-
-    if (body.dataset.loaded !== 'true') {
-      body.innerHTML = '<p class="traces-modal__loading">Loading…</p>';
-      try {
-        const res = await fetch('/api/traces');
-        const data = await res.json() as { entries: TraceEntry[] };
-        renderTracesModalBody(body, data.entries);
-        body.dataset.loaded = 'true';
-      } catch {
-        body.innerHTML = '<p class="traces-modal__loading">Couldn\'t load — try again.</p>';
-        return;
-      }
-    }
-
-    if (scrollToId !== undefined) {
-      body.querySelectorAll('.is-highlighted').forEach(el => el.classList.remove('is-highlighted'));
-      const target = body.querySelector(`[data-trace-id="${scrollToId}"]`);
-      target?.scrollIntoView({ block: 'nearest' });
-      target?.classList.add('is-highlighted');
-    }
-  }
-
-  function renderTracesModalBody(body: HTMLElement, entries: TraceEntry[]): void {
-    body.innerHTML = `
-      <form id="traces-modal-form" class="traces-form">
-        <div class="traces-form__row">
-          <label for="tr-modal-name">Name</label>
-          <input id="tr-modal-name" name="name" type="text" maxlength="40" required />
-        </div>
-        <div class="traces-form__row">
-          <label for="tr-modal-message">Message</label>
-          <input id="tr-modal-message" name="message" type="text" maxlength="100" placeholder="leave a trace — one line" required />
-        </div>
-        <div class="traces-form__honeypot" aria-hidden="true">
-          <label for="tr-modal-website">Website</label>
-          <input id="tr-modal-website" name="website" type="text" tabindex="-1" autocomplete="off" />
-        </div>
-        <button type="submit" class="traces-form__submit p4g-sweep"><span>Sign</span></button>
-        <p id="traces-modal-status" class="traces-form__status" role="status"></p>
-      </form>
-      <ul id="traces-modal-list" class="traces-list"></ul>
-    `;
-
-    const list = body.querySelector('#traces-modal-list') as HTMLElement;
-    for (const entry of entries) {
-      list.appendChild(buildTraceListItem(entry));
-    }
-    if (entries.length === 0) {
-      list.outerHTML = '<p class="empty-state">No one\'s signed yet — be the first.</p>';
-    }
-
-    const form = body.querySelector('#traces-modal-form') as HTMLFormElement;
-    const status = body.querySelector('#traces-modal-status') as HTMLElement;
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
-      const formData = new FormData(form);
-      const payload = {
-        name: formData.get('name'),
-        message: formData.get('message'),
-        website: formData.get('website'),
-      };
-
-      if (submitBtn) submitBtn.disabled = true;
-      status.textContent = '';
-      status.removeAttribute('data-tone');
-
-      try {
-        const res = await fetch('/api/traces', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          status.textContent = (data as { error?: string }).error || 'Something went wrong.';
-          status.dataset.tone = 'error';
-          return;
-        }
-
-        const entry = await res.json() as { id: number; name: string; message: string; createdAt: string };
-        const emptyState = body.querySelector('.empty-state');
-        let listEl = body.querySelector('#traces-modal-list') as HTMLElement | null;
-        if (emptyState && !listEl) {
-          listEl = document.createElement('ul');
-          listEl.id = 'traces-modal-list';
-          listEl.className = 'traces-list';
-          emptyState.replaceWith(listEl);
-        }
-        listEl?.prepend(buildTraceListItem(entry));
-
-        form.reset();
-        status.textContent = 'Signed — thanks for leaving a trace.';
-      } catch {
-        status.textContent = 'Network error — please try again.';
-        status.dataset.tone = 'error';
-      } finally {
-        if (submitBtn) submitBtn.disabled = false;
-      }
-    });
-  }
-
-  function buildTraceListItem(entry: { id: number; name: string; message: string; createdAt: string }): HTMLLIElement {
-    const li = document.createElement('li');
-    li.className = 'traces-list__item';
-    li.dataset.traceId = String(entry.id);
-    const name = document.createElement('span');
-    name.className = 'traces-list__name';
-    name.textContent = entry.name;
-    const message = document.createElement('span');
-    message.className = 'traces-list__message';
-    message.textContent = entry.message;
-    const date = document.createElement('span');
-    date.className = 'traces-list__date';
-    date.textContent = formatTraceTimestamp(entry.createdAt);
-    li.append(name, message, date);
-    return li;
-  }
-
-  // Run on initial page load
-  initializeLatestTile();
-  initializeNovelRain();
-  initializeTilt();
-  initializeMailTile();
-  initializeJournalTileNav();
-  startLivePolling();
-  initializeTracesHero();
-  bindTracesModal();
-
-  // Run after each view transition navigation
-  document.addEventListener('astro:page-load', () => {
-    initializeLatestTile();
-    initializeNovelRain();
-    initializeTilt();
-    initializeMailTile();
-    initializeJournalTileNav();
-    startLivePolling();
-    initializeTracesHero();
-    bindTracesModal();
-  });
-
-  // Clean up intervals before navigating away
-  document.addEventListener('astro:before-preparation', () => {
-    stopLivePolling();
-    clearInterval(latestCycleTimer);
-    stopTracesHero();
-  });
+  setupContact();
+  document.addEventListener('astro:page-load', setupContact);
 </script>
+
+<style is:global>
+#personal-hub {
+  --gold: var(--color-gold);
+  --bg: var(--color-bg-deep);
+  --surface: var(--color-bg-elevated);
+  --ink: var(--color-black);
+  --text: var(--color-text);
+  --muted: var(--color-text-muted);
+  --line: var(--color-border-strong);
+  color-scheme: dark;
+  background-color: var(--bg);
+  background-image: radial-gradient(#28251a 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--text);
+  padding: 24px;
+  font: 16px/1.6 var(--font-body);
+}
+#personal-hub * {
+  box-sizing: border-box;
+  min-width: 0;
+}
+#personal-hub h1,
+#personal-hub h2,
+#personal-hub p {
+  margin: 0;
+}
+#personal-hub a {
+  color: inherit;
+  text-decoration: none;
+}
+#personal-hub a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+#personal-hub a:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 4px;
+}
+#personal-hub .writing a:focus-visible {
+  outline-color: var(--ink);
+}
+#personal-hub .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 24px 28px;
+  border: 3px solid var(--gold);
+  background: var(--bg);
+  box-shadow: var(--shadow-hard);
+  margin-bottom: 14px;
+}
+#personal-hub h1 {
+  font: italic clamp(30px, 5vw, 56px)/1.15 var(--font-display);
+  color: var(--gold);
+  letter-spacing: -1.2px;
+}
+#personal-hub .motto {
+  margin-top: 7px;
+  font-style: italic;
+}
+#personal-hub .intro {
+  color: var(--muted);
+  margin-top: 8px;
+  max-width: 55ch;
+}
+#personal-hub .about-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+#personal-hub .about-links a {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+#personal-hub .traces {
+  background: #191919;
+  border: 1px solid var(--line);
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 8px 14px;
+  margin-bottom: 18px;
+}
+#personal-hub .traces-title {
+  color: var(--gold);
+  font-weight: 700;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#personal-hub .traces-title span {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+}
+#personal-hub .traces-message {
+  flex: 1 1 220px;
+  color: var(--muted);
+  font: 14px/1.6 var(--font-mono);
+}
+#personal-hub .sign {
+  background: var(--gold);
+  color: var(--ink);
+  padding: 8px 16px;
+  min-height: 44px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+#personal-hub .sign:focus-visible {
+  outline-color: var(--text);
+}
+#personal-hub .grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px;
+  grid-auto-rows: auto;
+}
+#personal-hub .tile {
+  animation: none;
+  position: relative;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  box-shadow: var(--shadow-hard);
+}
+#personal-hub .tile:after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 16px;
+  height: 16px;
+  background: var(--bg);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  pointer-events: none;
+}
+#personal-hub .tile h2 {
+  color: inherit;
+  font: italic 27px/1.25 var(--font-display);
+}
+#personal-hub .chip {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 4px 14px 4px 9px;
+  background: var(--gold);
+  color: var(--ink);
+  font: 700 13px/1.5 var(--font-body);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+#personal-hub .tile-intro {
+  margin: 10px 0 18px;
+}
+#personal-hub .tile-intro p {
+  color: var(--muted);
+  margin-top: 5px;
+  font-size: 15px;
+}
+#personal-hub .writing {
+  grid-column: span 5;
+  background: var(--gold);
+  color: var(--ink);
+  border-color: var(--gold);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+#personal-hub .writing .chip {
+  background: var(--ink);
+  color: var(--gold);
+}
+#personal-hub .writing .tile-intro p {
+  color: var(--ink);
+}
+#personal-hub .post {
+  display: block;
+  padding: 14px 0;
+  border-top: 1px solid #958721;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+#personal-hub .post time {
+  display: block;
+  margin-top: 5px;
+  font-size: 14px;
+  font-weight: 400;
+}
+#personal-hub .go {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  font-weight: 700;
+  margin-top: auto;
+  padding-top: 12px;
+  align-self: flex-start;
+}
+#personal-hub .video {
+  grid-column: span 7;
+  display: flex;
+  flex-direction: column;
+}
+#personal-hub .video-art {
+  display: block;
+  position: relative;
+  background: var(--gold);
+}
+#personal-hub .video-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  object-position: center;
+}
+#personal-hub .video-art .chip {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
+#personal-hub .video-caption {
+  padding: 16px 22px;
+  background: var(--surface);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+#personal-hub .video-caption h2 {
+  font-size: 25px;
+}
+#personal-hub .video-caption p {
+  color: var(--muted);
+  font-size: 15px;
+  margin-top: 4px;
+}
+#personal-hub .video-caption a {
+  color: var(--gold);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+}
+#personal-hub .projects {
+  display: flex;
+  flex-direction: column;
+  grid-column: span 7;
+  padding: 24px;
+  overflow: hidden;
+}
+#personal-hub .projects .tile-intro {
+  position: relative;
+  z-index: 1;
+}
+#personal-hub .project-list {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+#personal-hub .project {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-top: 1px solid var(--line);
+  padding: 11px 0;
+  min-height: 68px;
+}
+#personal-hub .project img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+#personal-hub .project strong {
+  display: block;
+  font-size: 18px;
+}
+#personal-hub .project span {
+  color: var(--muted);
+  display: block;
+  font-size: 14px;
+}
+#personal-hub .project-emblem {
+  position: absolute;
+  right: -10px;
+  top: 35px;
+  width: 225px;
+  height: 225px;
+  object-fit: contain;
+  opacity: 0.1;
+  transform: rotate(12deg);
+  pointer-events: none;
+}
+#personal-hub .novel {
+  grid-column: span 5;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  background: #111719;
+}
+#personal-hub .rain-field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+#personal-hub .rain-field i {
+  position: absolute;
+  width: 1px;
+  height: 65px;
+  background: #57605a;
+  transform: rotate(14deg);
+  opacity: 0.25;
+}
+#personal-hub .rain-field i:nth-child(1) {
+  left: 12%;
+  top: 10%;
+}
+#personal-hub .rain-field i:nth-child(2) {
+  left: 25%;
+  top: 67%;
+  height: 85px;
+}
+#personal-hub .rain-field i:nth-child(3) {
+  left: 47%;
+  top: 5%;
+  height: 110px;
+}
+#personal-hub .rain-field i:nth-child(4) {
+  left: 68%;
+  top: 40%;
+}
+#personal-hub .rain-field i:nth-child(5) {
+  left: 88%;
+  top: 4%;
+  height: 120px;
+}
+#personal-hub .rain-field i:nth-child(6) {
+  left: 91%;
+  top: 76%;
+}
+#personal-hub .novel:before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 40%;
+  background: linear-gradient(transparent, #1d2625);
+  pointer-events: none;
+}
+#personal-hub .novel > :not(.rain-field) {
+  position: relative;
+  z-index: 1;
+}
+#personal-hub .novel .premise {
+  margin: 8px 0 20px;
+  max-width: 34ch;
+}
+#personal-hub .novel .go {
+  color: var(--gold);
+}
+#personal-hub .novel .draft {
+  color: var(--muted);
+  font-size: 14px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+#personal-hub .shelf {
+  grid-column: span 8;
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+  padding: 22px;
+}
+#personal-hub .shelf h2 {
+  margin-top: 10px;
+}
+#personal-hub .shelf p {
+  color: var(--muted);
+  font-size: 15px;
+  margin-top: 7px;
+}
+#personal-hub .posters {
+  height: 125px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  overflow: hidden;
+  padding: 8px;
+}
+#personal-hub .posters img {
+  height: 110px;
+  width: 76px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid #b3a249;
+  transform: rotate(-5deg);
+}
+#personal-hub .posters img:nth-child(even) {
+  transform: rotate(5deg) translateY(3px);
+}
+#personal-hub .now {
+  grid-column: span 4;
+  padding: 22px;
+  border-color: var(--gold);
+}
+#personal-hub .now h2 {
+  margin: 10px 0 7px;
+}
+#personal-hub .now p {
+  color: var(--muted);
+  font-size: 15px;
+}
+#personal-hub .footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 18px;
+}
+#personal-hub .footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+#personal-hub .footer a {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+@media (max-width: 700px) {
+  #personal-hub {
+    padding: 16px;
+  }
+  #personal-hub .header {
+    padding: 18px;
+  }
+  #personal-hub h1 {
+    font-size: 29px;
+  }
+  #personal-hub .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #personal-hub .grid > * {
+    grid-column: auto;
+  }
+  #personal-hub .writing,
+  #personal-hub .projects,
+  #personal-hub .novel {
+    padding: 22px;
+  }
+  #personal-hub .video-art img {
+    height: auto;
+    aspect-ratio: 16/9;
+  }
+  #personal-hub .tile h2 {
+    font-size: 25px;
+  }
+  #personal-hub .traces-message {
+    flex-basis: 100%;
+  }
+  #personal-hub .shelf {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  #personal-hub .posters {
+    padding: 8px 0;
+  }
+}
+
+#personal-hub {
+  max-width: 1280px;
+  margin: auto;
+  overflow-wrap: anywhere;
+}
+#personal-hub .novel a:focus-visible {
+  outline-color: var(--gold);
+}
+#personal-hub .video-actions {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+#personal-hub .video-caption {
+  flex: 1;
+  align-content: start;
+}
+#personal-hub .video-caption p {
+  max-width: 55ch;
+}
+#personal-hub .premise {
+  max-width: 42ch;
+}
+#personal-hub .post time {
+  color: inherit;
+}
+#personal-hub .traces-message {
+  font-family: var(--font-body);
+}
+
+/* Native pointer on the hub; the rest of the site retains its cursor treatment. */
+html.has-custom-cursor:has(#personal-hub),
+html.has-custom-cursor:has(#personal-hub) * {
+  cursor: auto !important;
+}
+html.has-custom-cursor:has(#personal-hub) a {
+  cursor: pointer !important;
+}
+html:has(#personal-hub) #cursor {
+  display: none;
+}
+/* One selection response across the hub. Inner links keep their own focus rings. */
+#personal-hub :is(.tile, .traces) {
+  transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
+}
+#personal-hub :is(.tile, .traces):is(:focus-visible, :has(:focus-visible)) {
+  transform: translateY(-3px);
+  border-color: var(--gold);
+  box-shadow: var(--shadow-hard-hover);
+}
+#personal-hub .tile:is(:focus-visible, :has(:focus-visible)):after {
+  background: var(--gold);
+}
+#personal-hub .writing:is(:focus-visible, :has(:focus-visible)) { border-color: var(--ink); }
+#personal-hub .writing:is(:focus-visible, :has(:focus-visible)):after { background: var(--ink); }
+@media (hover:hover) and (pointer:fine) {
+  #personal-hub :is(.tile, .traces):hover {
+    transform: translateY(-3px);
+    border-color: var(--gold);
+    box-shadow: var(--shadow-hard-hover);
+  }
+  #personal-hub .tile:hover:after { background: var(--gold); }
+  #personal-hub .writing:hover { border-color: var(--ink); }
+  #personal-hub .writing:hover:after { background: var(--ink); }
+}
+@media (prefers-reduced-motion:reduce) {
+  #personal-hub :is(.tile, .traces) { transition:none; transform:none !important; }
+}
+</style>
