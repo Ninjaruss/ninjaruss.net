@@ -12,6 +12,9 @@ Scrivener-ready replacement text — live in the dated report under `audits/`.
 **ID prefixes:** the letter records which audit raised the finding, so IDs stay
 unique across the register without renumbering archived evidence.
 `F-` = terminology / canon audit. `E-` = element-vision alignment audit.
+`W-` = worldbuilding integration pass. Items a pass surfaced but deliberately did
+not raise are indexed by the same letter with a lowercase suffix (e.g. `W-b`),
+so a question can be recorded as *seen* without being counted as a finding.
 
 **Status values:** `open` · `author-decided (date)` · `dissolved (D-xxx)`
 
@@ -21,13 +24,22 @@ A finding is only closed by the author, and only in `decisions.md`.
 
 ## Current state
 
-53 findings were raised. **Ruling D-001 dissolved 10 of them and narrowed one**,
-leaving **44 live findings** — 14 from the terminology audit and 30 from the
-element audit. Fourteen are blocking. One finding (F-024) was added afterwards,
-from a recency check of the corpus — see "Canon currency" below.
+53 findings were raised. **Ruling D-001 dissolved 10 of them and narrowed one.**
+Rulings **D-003**, **D-004**, **D-006** and **D-007** have since closed ten more —
+E-001, E-002, E-003, E-004, E-008, E-009, E-010, E-012, F-005 and F-010 — leaving
+**34 live findings**, of which **9 are blocking**. One finding (F-024) was added after the first audit, from a
+recency check of the corpus.
 
-The 30 element findings are unaffected by D-001: that audit cites no sidecar at
-all, so its evidence is entirely `.md`-internal.
+The **2026-09-29 worldbuilding pass** adds two more, **W-a** and **W-c** — both
+`significant`, neither blocking — for **36 live findings**, of which **9 remain
+blocking**. That pass raised only what three or more documents already assume and
+nothing owns; its two other observations (`W-b`, `W-d`) are indexed below as
+deliberately not raised, with the reason stated, so they are recorded without
+being counted.
+
+D-001 does not touch the element findings: that audit cites no sidecar at all, so
+its evidence is entirely `.md`-internal. D-003 and D-004 do touch them, and each
+closed finding's row below records which ruling closed it.
 
 ---
 
@@ -36,12 +48,7 @@ all, so its evidence is entirely `.md`-internal.
 | ID | The decision needed |
 |---|---|
 | F-003 | Is the Split inside or outside the autobiographical target Vesper extracts? |
-| F-005 | What is Claire's Imprint, and what irreversible transition patterned it? |
-| E-001 | What *is* correction — what the boundary does, what the apparatus is, and what happens to a person inside it? |
-| E-003 | Does Roxana accepting Rain's Ghost hand break the rule that only a passive's owner perceives it? |
-| E-004 | Who pays the cost when Rain's passive produces Roxana's Deviation effect? |
 | E-006 | Whose memory died in the mother-Melt — and does the answer contradict Vesper having forgotten none of the evidence? |
-| E-010 | What are Perfect Clone's dose-response and recovery rules, given the climax needs impairment present? |
 | E-011 | How does the player leave a pitfall, when its exit is unlabeled by design? |
 | E-013 | How does Rain leave the Arc 3 pitfall, and is the beloved life optional or required? |
 | E-017 | Through what viewport does the player see Arc 5's four fronts, when the decisive beat is interior? |
@@ -51,12 +58,12 @@ all, so its evidence is entirely `.md`-internal.
 | E-029 | What does "Roxana burns Aster's shard" *do*, when the two defined shard operations mean opposite things? |
 
 **Calibration note.** `blocking` means "a scene or choice cannot be staged until
-this is ruled on" — not "the story is broken." Fourteen rulings is ordinary for a
+this is ruled on" — not "the story is broken." Fourteen rulings was ordinary for a
 plan at this stage, and severity is the audit's judgment, not a verdict. Four of
 the twelve element blockers were independently re-verified against the source
-(E-001, E-003, E-004, E-021); the rest carry the audit's severity. Two of them
-(E-003, E-004) may already have their escape hatch in the word "ordinary" at
-`World/Magic System.md:25`.
+(E-001, E-003, E-004, E-021); all four have since been ruled on — E-001 under
+D-003, E-003 and E-004 under D-004, whose indirect-registration clause is what
+`World/Magic System.md:25`'s word "directly" was always leaving room for.
 
 ---
 
@@ -67,11 +74,11 @@ the twelve element blockers were independently re-verified against the source
 | ID | Finding | Type | Severity | Status |
 |---|---|---|---|---|
 | F-003 | The Split survives an extraction stated to take 100% of the autobiographical target | contradiction | blocking | open |
-| F-005 | Claire uses a Deviation; no document names her bonded Imprint | underdefinition | blocking | open |
+| F-005 | Claire uses a Deviation; no document names her bonded Imprint | underdefinition | blocking | author-decided (D-003) |
 | F-006 | The state apparatus has two names in canon — "the Ministry" and "Nimbus" (narrowed by D-001) | terminology drift | significant | open |
 | F-007 | "stasis" carries two unrelated meanings; the world-scale one is never defined | terminology drift | significant | open |
 | F-009 | Themes says extraction "produces a prism"; the prism pre-exists and extraction yields a shard | contradiction | significant | open |
-| F-010 | "the suit-self" and "the Split" are never linked; the Split is a voice staged as a body | terminology drift | significant | open |
+| F-010 | "the suit-self" and "the Split" are never linked; the Split is a voice staged as a body | terminology drift | significant | author-decided (D-004) |
 | F-011 | Gadget X is "the more consequential" theft and has no defined function | underdefinition | significant | open |
 | F-012 | "the correction apparatus" (broken in the finale) and "the eruption" are undefined | underdefinition | significant | open |
 | F-015 | Roxana's ability has four names for three things; passive naming splits two ways | terminology drift | significant | open |
@@ -106,18 +113,18 @@ D-001 does not touch these; the audit cites no sidecar.
 
 | ID | Finding | Type | Severity | Status |
 |---|---|---|---|---|
-| E-001 | Correction is the horror engine, the Arc 4 clock, and the Arc 5 objective — and is never defined | underdefinition | blocking | open |
-| E-002 | "Rain thins in corrected districts" is either a world rule or a weather note | underdefinition | significant | open |
-| E-003 | The Ghost is perceived and used by someone who is not its owner | contradiction | blocking | open |
-| E-004 | The prison spark produces Roxana's Deviation effect through Rain's passive; the lender pays nothing | contradiction | blocking | open |
+| E-001 | Correction is the horror engine, the Arc 4 clock, and the Arc 5 objective — and is never defined | underdefinition | blocking | author-decided (D-003) |
+| E-002 | "Rain thins in corrected districts" is either a world rule or a weather note | underdefinition | significant | author-decided (D-003) |
+| E-003 | The Ghost is perceived and used by someone who is not its owner | contradiction | blocking | author-decided (D-004) |
+| E-004 | The prison spark produces Roxana's Deviation effect through Rain's passive; the lender pays nothing | contradiction | blocking | dissolved (D-004) |
 | E-005 | The Split's first appearance is filed under a term appearing nowhere else | terminology drift | significant | open |
 | E-006 | The mother-Melt does not say whose memory died; one reading contradicts Vesper's stated recall | underdefinition | blocking | open |
 | E-007 | The beloved life is both a preserved possibility and a life actually lived | vision misalignment | significant | open |
-| E-008 | "The mountain holds the bodies of valuable lives relinquished" has no referent | underdefinition | significant | open |
-| E-009 | 100% extraction and surviving semantic knowledge are reconciled by assertion | underdefinition | significant | open |
-| E-010 | Perfect Clone's dose-response and recovery are unspecified; two climaxes depend on them | underdefinition | blocking | open |
+| E-008 | "The mountain holds the bodies of valuable lives relinquished" has no referent | underdefinition | significant | author-decided (D-004) |
+| E-009 | 100% extraction and surviving semantic knowledge are reconciled by assertion | underdefinition | significant | author-decided (D-006) |
+| E-010 | Perfect Clone's dose-response and recovery are unspecified; two climaxes depend on them | underdefinition | blocking | author-decided (D-007) |
 | E-011 | The pitfall exit is unlabeled by design, and nothing says how the player takes it | causal gap | blocking | open |
-| E-012 | The dimming Ghost carries two incompatible meanings, one declared to recover | contradiction | significant | open |
+| E-012 | The dimming Ghost carries two incompatible meanings, one declared to recover | contradiction | significant | author-decided (D-003) |
 | E-013 | The Arc 3 pitfall cannot be left by the declared mechanism; its "optional" content is required | contradiction | blocking | open |
 | E-014 | The false endings' closing image needs the notebook where the story puts it in a tray | causal gap | significant | open |
 | E-015 | Arc 3 and Arc 4 both recover the same Imprints | contradiction | significant | open |
@@ -137,11 +144,32 @@ D-001 does not touch these; the audit cites no sidecar.
 | E-029 | "Roxana burns Aster's shard" is an undefined third operation; its two counterparts mean opposite things | underdefinition | blocking | open |
 | E-030 | The Gamer's condition has nothing to do with Vesper, while the open register assumes otherwise | contradiction | significant | open |
 
+### Worldbuilding integration pass — live
+
+Raised 2026-09-29. Scoped to the World layer against the story's own instruments.
+Two raised, two indexed as deliberately not raised.
+
+| ID | Finding | Type | Severity | Status |
+|---|---|---|---|---|
+| W-a | "Wanting" is the object of three documented operations (correction, Furnace, extraction) and is defined in no World document | underdefinition | significant | open |
+| W-c | `World/History.md:13` asserts a pre-Flare institution for the Pursuer while `:37` and `:39` constrain both named bodies so that neither can hold custody, records, or offers | causal gap | significant | open |
+
+**Indexed, deliberately not raised — recorded so they are not re-derived:**
+
+| ID | Observation | Why not raised |
+|---|---|---|
+| W-b | "district" is Arc 4's unit of loss and is defined nowhere; so is its reporting unit, "anchor station" | A ruling closes it immediately — the options are water-supply zones or administrative units, and either answer defines both terms at once. It lives in the decision queue at `proposals/2026-09-29-worldbuilding-integration.md`, Cluster C. |
+| W-d | The water-maintenance layer and the surveillance layer are established in the newest manuscript scene (2026-09-14) and in no World document | Nothing is broken — the prose carries both, so no scene can fall into a gap. It is a consistency risk if later scenes re-invent vocabulary the vault scene already fixed, and it becomes the change itself rather than a finding if Cluster D1 or H1 is accepted. |
+
 **Evidence:** `audits/2026-09-16-terminology.md` (findings, candidate resolutions,
 Scrivener-ready replacement text), `audits/2026-09-16-terminology-index.md`
 (the full term inventory: ~130 terms → where defined → other uses → verdict), and
 `audits/2026-09-16-element-alignment.md` (element findings, with a closing
-"elements that pass" section).
+"elements that pass" section), and `audits/2026-09-29-worldbuilding.md` (the
+worldbuilding pass, with its two findings, its two deliberately-unraised items,
+and a coverage verification). The exploratory companion to that pass — eight
+clusters of integration *options*, priced against the rubric, none of them
+findings — is at `proposals/2026-09-29-worldbuilding-integration.md`.
 
 ---
 
@@ -188,6 +216,26 @@ dissolved by D-001, so eleven remain reachable; the cluster is unchanged.)
 Sequence matters: several scene-level findings resolve themselves once the rules
 are stated, so ruling on the mechanic layer first shrinks the queue rather than
 growing it.
+
+**Update — the pass is more than half-done.** This paragraph is kept as written
+because it is what the register argued at the time. Seven of the eleven reachable
+findings are now closed: **E-001, E-002 and E-012** under D-003, **E-003 and E-004**
+under D-004, **E-009** under D-006, and **E-010** under D-007. The four still
+reachable from `World/Magic System.md` are **E-029, F-003, F-007 and F-017** —
+items 4–7 of the pass.
+
+**Update — 2026-09-29: a third pattern, which is not pattern 1 continuing.** The
+worldbuilding pass left E-029, F-003, F-007 and F-017 untouched and did not find
+more unstated *rules*. It found a different shape: **objects several documents
+already agree on and no document owns.** W-a is "wanting," acted on by correction
+(`World/Magic System.md:81`), Furnace (`:65`), and extraction (`:149`) with three
+different verbs, and defined nowhere — with no row in the terminology index at
+all, so its absence of a definition had never been recorded. W-c is the Pursuer's
+institution, asserted by `World/History.md:13`, required by his signatures,
+amnesties, and transfers, and ruled out of both named bodies by `:37` and `:39`.
+Both are answerable in one paragraph each, and neither is a rule — a mechanics
+pass would not have reached either. The pass's other two observations (`W-b`,
+`W-d`) sit in the decision queue rather than the register; see the index above.
 
 **2. Scenes that promise to *show* something and supply nothing that shows it.**
 E-021 (the demonstration meant to show Vesper's kindness), E-023 (two residents

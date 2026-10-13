@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BentoGrid from '../components/BentoGrid.astro';
+import TracesBar from '../components/TracesBar.astro';
 import { fetchSubstackPosts } from '../utils/substack';
 import { formatDate } from '../utils/dates';
 
@@ -12,23 +13,23 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 
 <BaseLayout title="Home" displayTitle="in spite of it all — ninjaruss" description="Writing, videos, projects, and Remember Rain — the personal hub of Ninjaruss.">
 <div id="personal-hub" aria-label="Illustrated personal hub">
+ <div class="intro-row">
  <header class="header">
 <div>
 <h1>NINJARUSS</h1>
 <p class="motto">In spite of it all...</p>
-<p class="intro">Writing, videos, Japanese, and things I build along the way.</p>
 </div>
 <nav class="about-links" aria-label="About and contact">
 <a href="/about">About me</a>
 <a href="/about" data-contact>Contact</a>
 </nav>
 </header>
- <section class="traces" aria-label="Traces guestbook">
-<a class="traces-title" href="/traces">Traces <span>Guestbook</span>
-</a>
-<p class="traces-message">Leave a trace — one line.</p>
-<a class="sign" href="/traces">Leave a trace</a>
-</section>
+  <a class="tile now" href="/now">
+<span class="chip">Now</span>
+<h2>Where I'm at</h2>
+<p>Current focus and personal updates.</p>{latestNow && <p class="now-date">{formatDate(latestNow.data.publishedAt)}</p>}</a>
+ </div>
+ <TracesBar />
  <BentoGrid class="grid">
   <section class="tile writing" aria-labelledby="art-writing">
 <span class="chip">Substack</span>
@@ -51,7 +52,6 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 <div class="video-caption">
 <div>
 <h2 id="art-video">Watch Ninjaruss</h2>
-<p>Videos on YouTube and livestreams on Twitch.</p>
 </div>
 <nav class="video-actions" aria-label="Videos and livestreams">
 <a href="https://www.youtube.com/@Ninjaruss_">YouTube videos</a>
@@ -120,10 +120,12 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 <img src="/images/media/ttgl.webp" alt="" loading="lazy">
 </div>
 </a>
-  <a class="tile now" href="/now">
-<span class="chip">Now</span>
-<h2>Where I'm at</h2>
-<p>Current focus and personal updates.</p>{latestNow && <p class="now-date">{formatDate(latestNow.data.publishedAt)}</p>}</a>
+  <a class="tile japanese-journal" href="/japanese-journal">
+<img class="journal-emblem" src="/images/emblems/torii.svg" alt="" aria-hidden="true">
+<span class="chip">Practice</span>
+<h2>Japanese journal</h2>
+<p>Small entries as I learn.</p>
+</a>
  </BentoGrid>
  <footer class="footer">
 <nav aria-label="Elsewhere">
@@ -191,6 +193,12 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 #personal-hub .writing a:focus-visible {
   outline-color: var(--ink);
 }
+#personal-hub .intro-row {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(220px, 1fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
 #personal-hub .header {
   display: flex;
   align-items: center;
@@ -201,7 +209,6 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   border: 3px solid var(--gold);
   background: var(--bg);
   box-shadow: var(--shadow-hard);
-  margin-bottom: 14px;
 }
 #personal-hub h1 {
   font: italic clamp(30px, 5vw, 56px)/1.15 var(--font-display);
@@ -212,11 +219,6 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   margin-top: 7px;
   font-style: italic;
 }
-#personal-hub .intro {
-  color: var(--muted);
-  margin-top: 8px;
-  max-width: 55ch;
-}
 #personal-hub .about-links {
   display: flex;
   gap: 20px;
@@ -226,46 +228,6 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   min-height: 44px;
   display: flex;
   align-items: center;
-}
-#personal-hub .traces {
-  background: #191919;
-  border: 1px solid var(--line);
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  align-items: center;
-  padding: 8px 14px;
-  margin-bottom: 18px;
-}
-#personal-hub .traces-title {
-  color: var(--gold);
-  font-weight: 700;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-#personal-hub .traces-title span {
-  color: var(--muted);
-  font-size: 14px;
-  font-weight: 400;
-}
-#personal-hub .traces-message {
-  flex: 1 1 220px;
-  color: var(--muted);
-  font: 14px/1.6 var(--font-mono);
-}
-#personal-hub .sign {
-  background: var(--gold);
-  color: var(--ink);
-  padding: 8px 16px;
-  min-height: 44px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-}
-#personal-hub .sign:focus-visible {
-  outline-color: var(--text);
 }
 #personal-hub .grid {
   display: grid;
@@ -385,11 +347,6 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 }
 #personal-hub .video-caption h2 {
   font-size: 25px;
-}
-#personal-hub .video-caption p {
-  color: var(--muted);
-  font-size: 15px;
-  margin-top: 4px;
 }
 #personal-hub .video-caption a {
   color: var(--gold);
@@ -526,7 +483,7 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 #personal-hub .shelf {
   grid-column: span 8;
   display: grid;
-  grid-template-columns: 210px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
   gap: 20px;
   padding: 22px;
@@ -558,17 +515,32 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 #personal-hub .posters img:nth-child(even) {
   transform: rotate(5deg) translateY(3px);
 }
-#personal-hub .now {
-  grid-column: span 4;
+#personal-hub .now,
+#personal-hub .japanese-journal {
   padding: 22px;
+}
+#personal-hub .now {
   border-color: var(--gold);
 }
-#personal-hub .now h2 {
+#personal-hub .now h2,
+#personal-hub .japanese-journal h2 {
   margin: 10px 0 7px;
 }
-#personal-hub .now p {
+#personal-hub .now p,
+#personal-hub .japanese-journal p {
   color: var(--muted);
   font-size: 15px;
+}
+#personal-hub .japanese-journal { grid-column: span 4; overflow: hidden; }
+#personal-hub .japanese-journal > :not(.journal-emblem) { position: relative; }
+#personal-hub .journal-emblem {
+  position: absolute;
+  right: -12px;
+  bottom: -12px;
+  width: 130px;
+  height: 130px;
+  opacity: 0.08;
+  pointer-events: none;
 }
 #personal-hub .footer {
   display: flex;
@@ -592,6 +564,9 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 @media (max-width: 700px) {
   #personal-hub {
     padding: 16px;
+  }
+  #personal-hub .intro-row {
+    grid-template-columns: minmax(0, 1fr);
   }
   #personal-hub .header {
     padding: 18px;
@@ -617,9 +592,6 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   }
   #personal-hub .tile h2 {
     font-size: 25px;
-  }
-  #personal-hub .traces-message {
-    flex-basis: 100%;
   }
   #personal-hub .shelf {
     grid-template-columns: minmax(0, 1fr);
@@ -647,17 +619,11 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   flex: 1;
   align-content: start;
 }
-#personal-hub .video-caption p {
-  max-width: 55ch;
-}
 #personal-hub .premise {
   max-width: 42ch;
 }
 #personal-hub .post time {
   color: inherit;
-}
-#personal-hub .traces-message {
-  font-family: var(--font-body);
 }
 
 /* Native pointer on the hub; the rest of the site retains its cursor treatment. */

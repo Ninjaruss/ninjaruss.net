@@ -1,0 +1,28 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavPill from '../components/NavPill.astro';
+import EntryBody from '../components/EntryBody.astro';
+
+// This practice journal stays on the site; essays retain their Substack routes.
+const journal = await getEntry('notes', 'jp-journal');
+if (!journal) throw new Error('Japanese journal content is missing');
+const { Content } = await journal.render();
+---
+
+<BaseLayout title={journal.data.title} description="Small entries as I learn Japanese.">
+  <NavPill />
+  <article class="container japanese-journal-page">
+    <header class="entry__header">
+      <h1 class="entry__title"><span class="p4g-heading">{journal.data.title}</span></h1>
+      <span class="p4g-underline" aria-hidden="true"></span>
+    </header>
+    <EntryBody hasContent={true}>
+      <div lang="ja"><Content /></div>
+    </EntryBody>
+  </article>
+</BaseLayout>
+
+<style>
+  .japanese-journal-page { max-width: 800px; padding-bottom: var(--space-xl); }
+</style>

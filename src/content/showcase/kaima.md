@@ -1,8 +1,11 @@
 ---
 title: "KAIMA - JP Learning Live Stream"
 publishedAt: 2026-04-25
+updatedAt: 2026-10-02
 emblem: "/images/showcase/KAIMA.png"
 ---
+
+> **Update — October 2, 2026:** My main YouTube channel, [@Ninjaruss_](https://www.youtube.com/@Ninjaruss_), is now where I upload my Japanese learning and updates from living in Japan. The original project journal follows below.
 
 ## Do the impossible, see the invisible...
 So I originally intended to make a experimental channel that combines my love for the idea of ninjas with an emphasis on introspection. The kanji used for the name KAIMA creates the meaning regret demon with it being showcased from a mask I bought online to give myself a physical mask for the persona. What I wanted to do was make videos that focused on introspecting on the things that seem mundane on the surface, for example the idea of why spend time going to an anime convention or what is truly stopping me from achieving the dreams I chase. Exploring these topics while using the KAIMA persona to guide myself and others to the silent truth to things and what actions are required to work towards the solutions.
@@ -15,4 +18,4 @@ But that's just it, I feel like I have so much potential, yet not able to truly 
 
 What I am trying to say is that the truly difficult things that I should focus on are the things that challenge not just my skills and knowledge, but rather my mindset and for lack of a better term, my soul. This means that in order to become someone who truly is built different, I have to take action against what I perceive is impossible; to basically spend each moment of my life struggling towards my dreams without getting all caught up in the dreaming phase.
 
-That's why I've started to simply start live streaming my Japanese learning. Sure, it is counter-intuitive to my goal of learning Japanese effectively (having to also entertain and be influenced by chat), but if it's what will get me to spend time on the actual struggle: then by all means I will use it to my advantage. 
+That's why I've started to simply start live streaming my Japanese learning. Sure, it is counter-intuitive to my goal of learning Japanese effectively (having to also entertain and be influenced by chat), but if it's what will get me to spend time on the actual struggle: then by all means I will use it to my advantage.

@@ -1,0 +1,204 @@
+<section class="traces" aria-label="Traces guestbook" data-traces-bar>
+  <a class="traces-title" href="/traces">Traces <span>Guestbook</span></a>
+  <div class="traces-lane" tabindex="0" aria-label="Recent guestbook messages">
+    <p class="traces-fallback">A few words from people passing through.</p>
+    <div class="traces-track" hidden>
+      <ul class="traces-messages"></ul>
+    </div>
+  </div>
+  <button class="traces-pause" type="button" aria-label="Pause message stream" aria-pressed="false" hidden>Pause</button>
+  <a class="sign" href="/traces">Leave a trace</a>
+</section>
+
+<script>
+  function setupTracesBar() {
+    const bar = document.querySelector<HTMLElement>('[data-traces-bar]');
+    if (!bar || bar.dataset.ready) return;
+    bar.dataset.ready = 'true';
+    const lane = bar.querySelector<HTMLElement>('.traces-lane')!;
+    const track = bar.querySelector<HTMLElement>('.traces-track')!;
+    const list = bar.querySelector<HTMLUListElement>('.traces-messages')!;
+    const fallback = bar.querySelector<HTMLElement>('.traces-fallback')!;
+    const pause = bar.querySelector<HTMLButtonElement>('.traces-pause')!;
+    const controller = new AbortController();
+    const motion = matchMedia('(prefers-reduced-motion: reduce)');
+    let observer: ResizeObserver | undefined;
+
+    pause.addEventListener('click', () => {
+      const paused = pause.getAttribute('aria-pressed') !== 'true';
+      bar.classList.toggle('is-paused', paused);
+      pause.setAttribute('aria-pressed', String(paused));
+      pause.setAttribute('aria-label', paused ? 'Resume message stream' : 'Pause message stream');
+      pause.textContent = paused ? 'Resume' : 'Pause';
+    });
+
+    const syncMotion = () => {
+      pause.hidden = motion.matches || !list.children.length;
+      lane.scrollLeft = 0;
+    };
+    motion.addEventListener('change', syncMotion);
+    document.addEventListener('astro:before-swap', () => {
+      controller.abort();
+      observer?.disconnect();
+      motion.removeEventListener('change', syncMotion);
+    }, { once: true });
+
+    void (async () => {
+      try {
+        const response = await fetch('/api/traces?limit=15', { signal: controller.signal });
+        if (!response.ok) throw new Error('Traces unavailable');
+        const data = await response.json();
+        if (!Array.isArray(data.entries)) throw new Error('Invalid Traces response');
+        for (const entry of data.entries) {
+          const id = Number(entry.id);
+          if (!Number.isSafeInteger(id) || id <= 0 || typeof entry.name !== 'string' || typeof entry.message !== 'string') continue;
+          const item = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = `/traces#trace-${id}`;
+          link.className = 'traces-bullet';
+          const name = document.createElement('strong');
+          name.textContent = entry.name;
+          const message = document.createElement('span');
+          message.textContent = entry.message;
+          link.append(name, message);
+          item.append(link);
+          list.append(item);
+        }
+        if (!list.children.length) {
+          fallback.textContent = 'Be the first to leave a few words.';
+          return;
+        }
+        // Close the loop without repeating messages for screen readers or
+        // adding duplicate keyboard stops; pointer links still work.
+        const echo = list.cloneNode(true) as HTMLUListElement;
+        echo.setAttribute('aria-hidden', 'true');
+        echo.querySelectorAll('a').forEach(link => link.tabIndex = -1);
+        echo.classList.add('traces-echo');
+        track.append(echo);
+        fallback.hidden = true;
+        track.hidden = false;
+        const measure = () => {
+          list.style.minWidth = `${lane.clientWidth}px`;
+          const distance = list.getBoundingClientRect().width;
+          track.style.setProperty('--traces-distance', `${distance}px`);
+          track.style.setProperty('--traces-duration', `${distance / 35}s`);
+        };
+        observer = new ResizeObserver(measure);
+        observer.observe(lane);
+        observer.observe(list);
+        measure();
+        syncMotion();
+      } catch {
+        // The invitation and canonical guestbook link remain usable offline.
+      }
+    })();
+  }
+  setupTracesBar();
+  document.addEventListener('astro:page-load', setupTracesBar);
+</script>
+
+<style is:global>
+#personal-hub .traces {
+  background: #191919;
+  border: 1px solid var(--line);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 8px 14px;
+  margin-bottom: 18px;
+}
+#personal-hub .traces-title {
+  color: var(--gold);
+  font-weight: 700;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#personal-hub .traces-title span {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+}
+#personal-hub .sign {
+  background: var(--gold);
+  color: var(--ink);
+  padding: 8px 16px;
+  min-height: 44px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+#personal-hub .sign:focus-visible {
+  outline-color: var(--text);
+}
+
+  #personal-hub .traces { flex-wrap: nowrap; }
+  #personal-hub .traces-title, #personal-hub .sign { flex-shrink: 0; }
+  #personal-hub .traces-lane {
+    flex: 1;
+    overflow: hidden;
+    border-inline: 1px solid var(--line);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  #personal-hub .traces-fallback { padding: 0 16px; color: var(--muted); font-size: 14px; }
+  #personal-hub .traces-track { display: flex; width: max-content; animation: traces-flow var(--traces-duration, 60s) linear infinite; }
+  #personal-hub .traces-messages {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 32px;
+    margin: 0;
+    padding: 0 32px 0 0;
+    list-style: none;
+  }
+  #personal-hub .traces-messages li { flex-shrink: 0; }
+  #personal-hub .traces-bullet {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 0 4px;
+    white-space: nowrap;
+    font-size: 14px;
+  }
+  #personal-hub .traces-bullet strong { color: var(--gold); }
+  #personal-hub .traces-bullet strong::after { content: ':'; }
+  #personal-hub .traces-pause {
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--muted);
+    font: 600 13px var(--font-body);
+    min-height: 44px;
+    min-width: 68px;
+    cursor: pointer;
+  }
+  #personal-hub .traces-pause:focus-visible, #personal-hub .traces-lane:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+  #personal-hub .traces:hover .traces-track,
+  #personal-hub .traces:focus-within .traces-track,
+  #personal-hub .traces.is-paused .traces-track { animation-play-state: paused; }
+  /* Focused entries must be brought into view without a moving transform. */
+  #personal-hub .traces-lane:focus-within { overflow-x: auto; }
+  #personal-hub .traces-lane:focus-within .traces-track { animation: none; }
+  #personal-hub .traces [hidden] { display: none; }
+  @keyframes traces-flow { to { transform: translateX(calc(-1 * var(--traces-distance))); } }
+  @media (max-width: 700px) {
+    #personal-hub .traces { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px 6px; }
+    #personal-hub .traces-title { grid-area: 1 / 1; }
+    #personal-hub .traces-title span { display: none; }
+    #personal-hub .sign { grid-area: 1 / 3; font-size: 13px; padding-inline: 10px; }
+    #personal-hub .traces-lane { grid-area: 2 / 1 / 3 / -1; border-inline: 0; border-top: 1px solid var(--line); }
+    #personal-hub .traces-pause { grid-area: 1 / 2; min-width: 54px; font-size: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #personal-hub .traces-track { animation: none; }
+    #personal-hub .traces-echo { display: none; }
+    #personal-hub .traces-lane { overflow-x: auto; }
+    #personal-hub .traces-bullet { white-space: normal; max-width: min(65ch, 75vw); }
+  }
+</style>

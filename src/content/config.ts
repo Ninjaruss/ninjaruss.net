@@ -24,9 +24,10 @@ const shelf = defineCollection({
 });
 
 // Notes collection — philosophical fragments, beliefs in progress.
-// No longer renders pages: writing is published on Substack, and this
+// Essays are published on Substack, and this
 // collection is the slug -> post redirect map (src/utils/noteRedirect.ts).
 // The markdown stays in the repo as the working copy, public via GitHub.
+// Exception: jp-journal also renders locally at /japanese-journal for practice.
 const notes = defineCollection({
   type: 'content',
   schema: sharedSchema.extend({

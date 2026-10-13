@@ -58,7 +58,7 @@ All collections share a base schema (defined in `sharedSchema`):
 
 Collection-specific extensions:
 - **shelf**: adds `content_type: 'anime' | 'manga' | 'film' | 'series' | 'music' | 'book' | 'game' | 'character' | 'other'`, `isFavorite: boolean` (defaults to false), and `tags` (string array, defaults to []) — shelf is the only collection with tags
-- **notes**: uses sharedSchema without extensions (no tags; relatedness via `collections`), plus an optional `substackUrl` (`z.string().url().optional()` — optional only so a half-written entry doesn't fail the build). The collection no longer produces pages; it is the slug→Substack redirect map (see the Substack section below)
+- **notes**: uses sharedSchema without extensions (no tags; relatedness via `collections`), plus an optional `substackUrl` (`z.string().url().optional()` — optional only so a half-written entry doesn't fail the build). It is the slug→Substack redirect map, with `jp-journal` also rendered locally at `/japanese-journal` (see the Substack section below)
 - **showcase**: uses sharedSchema without extensions
 - **now**: simplified schema with `title` (defaults to 'Now'), `publishedAt` (required), `updatedAt`, `draft`
 - **profile**: single entry backing `/about` — `hook` (required), `credentials[]`, `makes[]` (`{label, blurb, href}`), `makesMore` (`{text, href}`), `subjects[]` (`{group, items[]}`), `connect`, `links[]` (`{label, href, primary}`). Every string is `.min(1)` — a blank field is a build error, not a silently empty card. Schema is defined in `src/utils/profile.ts` and imported into `config.ts` (not inline) so it stays unit-testable. Body markdown is the ABOUT prose. Deliberately has **no** `draft` field: it's a singleton the author edits directly
@@ -242,8 +242,10 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 
 ## Substack
 
-Writing lives on Substack (`https://ninjaruss.substack.com`), not on this site.
-The site serves **no** note prose — no notes listing, no note detail pages, no
+Essays live on Substack (`https://ninjaruss.substack.com`). The Japanese practice
+journal is the exception: `/japanese-journal` renders `notes/jp-journal.md` as
+written, with a dedicated homepage tile. The site has no general notes listing,
+no essay detail pages, and no
 locally-generated RSS feed of note content. This isn't a temporary gap:
 Substack's own `/archive` already lists everything, automatically and better
 than a hand-synced page could, and pretending `/journal` was still one stream
@@ -252,8 +254,8 @@ the two were never really one thing (`/journal` now 301s to `/showcase` — see
 Legacy Routes above).
 
 `src/content/notes/` stays in the repo — and stays public via GitHub — as the
-author's working copy, but it is now purely **the slug→Substack redirect
-map**, not a source of pages. The schema gained one optional field,
+author's working copy and **the slug→Substack redirect map**. The Japanese
+journal also supplies its dedicated local page. The schema gained one optional field,
 `substackUrl` (`z.string().url().optional()`; optional only so a half-written
 entry can't fail the build). `/notes/[...slug].astro` is server-rendered
 (`export const prerender = false`) rather than a normal static page — a
