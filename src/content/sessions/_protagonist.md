@@ -1,7 +1,7 @@
 ---
 name: NINJARUSS
 epithet: the fool who will move to Japan
-portrait: /images/stream/portrait.png
+portrait: /images/identity/ttgl-portrait-640.webp
 ---
 
 Character-sheet data for /status. Edit `name`, `epithet`, or `portrait`

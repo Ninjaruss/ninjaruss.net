@@ -42,7 +42,10 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 </section>
   <section class="tile video" aria-labelledby="art-video">
 <a class="video-art" href="https://www.youtube.com/@Ninjaruss_" aria-label="Ninjaruss on YouTube">
-<img src="/images/logos/yt-avatar-640.jpg" srcset="/images/logos/yt-avatar-640.jpg 640w, /images/logos/yt-avatar-1024.jpg 1024w" sizes="(max-width:700px) 100vw, 700px" width="1024" height="576" alt="Ninjaruss holding a Persona card">
+<picture>
+<source media="(max-width: 700px)" srcset="/images/identity/ttgl-pointing-480.webp 480w, /images/identity/ttgl-pointing-960.webp 960w" sizes="calc(100vw - 36px)" width="960" height="960">
+<img src="/images/identity/ttgl-banner-1440.webp" srcset="/images/identity/ttgl-banner-720.webp 720w, /images/identity/ttgl-banner-1440.webp 1440w" sizes="(max-width: 1280px) 56vw, 714px" width="1440" height="480" alt="Ninjaruss pointing toward the viewer against a gold and black spiral" fetchpriority="high">
+</picture>
 <span class="chip">YouTube</span>
 </a>
 <div class="video-caption">
@@ -364,7 +367,7 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   height: auto;
   aspect-ratio: 16/9;
   object-fit: cover;
-  object-position: center;
+  object-position: 63% center;
 }
 #personal-hub .video-art .chip {
   position: absolute;
@@ -609,7 +612,8 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   }
   #personal-hub .video-art img {
     height: auto;
-    aspect-ratio: 16/9;
+    aspect-ratio: 4/3;
+    object-position: center 35%;
   }
   #personal-hub .tile h2 {
     font-size: 25px;
