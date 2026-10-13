@@ -6,7 +6,6 @@
       <ul class="traces-messages"></ul>
     </div>
   </div>
-  <button class="traces-pause" type="button" aria-label="Pause message stream" aria-pressed="false" hidden>Pause</button>
   <a class="sign" href="/traces">Leave a trace</a>
 </section>
 
@@ -19,21 +18,11 @@
     const track = bar.querySelector<HTMLElement>('.traces-track')!;
     const list = bar.querySelector<HTMLUListElement>('.traces-messages')!;
     const fallback = bar.querySelector<HTMLElement>('.traces-fallback')!;
-    const pause = bar.querySelector<HTMLButtonElement>('.traces-pause')!;
     const controller = new AbortController();
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     let observer: ResizeObserver | undefined;
 
-    pause.addEventListener('click', () => {
-      const paused = pause.getAttribute('aria-pressed') !== 'true';
-      bar.classList.toggle('is-paused', paused);
-      pause.setAttribute('aria-pressed', String(paused));
-      pause.setAttribute('aria-label', paused ? 'Resume message stream' : 'Pause message stream');
-      pause.textContent = paused ? 'Resume' : 'Pause';
-    });
-
     const syncMotion = () => {
-      pause.hidden = motion.matches || !list.children.length;
       lane.scrollLeft = 0;
     };
     motion.addEventListener('change', syncMotion);
@@ -166,34 +155,23 @@
   }
   #personal-hub .traces-bullet strong { color: var(--gold); }
   #personal-hub .traces-bullet strong::after { content: ':'; }
-  #personal-hub .traces-pause {
-    border: 1px solid var(--line);
-    background: transparent;
-    color: var(--muted);
-    font: 600 13px var(--font-body);
-    min-height: 44px;
-    min-width: 68px;
-    cursor: pointer;
-  }
-  #personal-hub .traces-pause:focus-visible, #personal-hub .traces-lane:focus-visible {
+  #personal-hub .traces-lane:focus-visible {
     outline: 3px solid var(--gold);
     outline-offset: 2px;
   }
   #personal-hub .traces:hover .traces-track,
-  #personal-hub .traces:focus-within .traces-track,
-  #personal-hub .traces.is-paused .traces-track { animation-play-state: paused; }
+  #personal-hub .traces:focus-within .traces-track { animation-play-state: paused; }
   /* Focused entries must be brought into view without a moving transform. */
   #personal-hub .traces-lane:focus-within { overflow-x: auto; }
   #personal-hub .traces-lane:focus-within .traces-track { animation: none; }
   #personal-hub .traces [hidden] { display: none; }
   @keyframes traces-flow { to { transform: translateX(calc(-1 * var(--traces-distance))); } }
   @media (max-width: 700px) {
-    #personal-hub .traces { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px 6px; }
+    #personal-hub .traces { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 6px; }
     #personal-hub .traces-title { grid-area: 1 / 1; }
     #personal-hub .traces-title span { display: none; }
-    #personal-hub .sign { grid-area: 1 / 3; font-size: 13px; padding-inline: 10px; }
+    #personal-hub .sign { grid-area: 1 / 2; font-size: 13px; padding-inline: 10px; }
     #personal-hub .traces-lane { grid-area: 2 / 1 / 3 / -1; border-inline: 0; border-top: 1px solid var(--line); }
-    #personal-hub .traces-pause { grid-area: 1 / 2; min-width: 54px; font-size: 12px; }
   }
   @media (prefers-reduced-motion: reduce) {
     #personal-hub .traces-track { animation: none; }
