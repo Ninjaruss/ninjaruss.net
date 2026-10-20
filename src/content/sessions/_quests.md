@@ -1,10 +1,10 @@
 ## Current Arc
 
-**Arc:** Arc I — Integration
-**Stat:** Insight
-**Updated:** September 2026
+**Arc:** Arc II — Social Maxxing
+**Stat:** Sincerity
+**Updated:** October 2026
 
-Feeling the momentum of posting multiple videos, I now need to loop *Is the Order a Rabbit?* until I can mostly understand at least one episode. いきましょ！！！
+I am now in Japan. I'm taking steps to make myself more outgoing to build relationships with people. Balancing that out with practicing a little bit of Japanese.
 
 ## The Question
 
@@ -15,7 +15,7 @@ How can I effectively make my old self integrate into my new self?
 - [Determination] Interact and listen to Gochiusa Ep 1-3 as much as possible.
 
 ## Ideas — Determination
-- Writing and practicing hirigana symbols
+- Doing an uncomfortable thing for the sake of the future: running outside, introducing myself to people, etc,
 
 ## Ideas — Insight
 
@@ -27,7 +27,7 @@ How can I effectively make my old self integrate into my new self?
 
 ## Ideas — Sincerity
 
-- Deeply explore my line for when never to use AI/LLMs on
+- Prepare possible script for a video essay on Gurren Lagann, Usogui, or anything 
 
 ## Ideas — Chaos
 
