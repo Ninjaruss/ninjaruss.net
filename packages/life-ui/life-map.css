@@ -1,0 +1,80 @@
+.life-map{--map-gold:#ffe52c;--map-ink:#0a0a0a;--map-panel:#171717;--map-line:#505050;--map-text:#f5f5f5;--map-muted:#b8b8b8;color:var(--map-text);background:var(--map-ink);border:1px solid var(--map-line);font:16px/1.7 system-ui,sans-serif;scroll-margin-top:24px}.life-map *{box-sizing:border-box}.life-map a{color:var(--map-gold);text-underline-offset:.2em}.life-map a:focus-visible,.life-map h3:focus-visible{outline:3px solid var(--map-gold);outline-offset:4px}.life-map__top{display:flex;justify-content:space-between;gap:16px;padding:12px 20px;color:var(--map-ink);background:var(--map-gold);font-weight:900;font-style:italic;text-transform:uppercase}.life-map__menu{display:flex;flex-wrap:wrap;gap:8px;padding:18px 20px;border-bottom:1px solid var(--map-line)}.life-map__menu a{display:flex;align-items:center;min-height:44px;padding:6px 12px;border:1px solid var(--map-line);text-decoration:none;color:var(--map-text);font-size:.85rem;font-weight:800}.life-map__menu a:hover,.life-map__menu a[aria-current]{background:var(--map-gold);color:var(--map-ink);border-color:var(--map-gold)}.life-map__panel{padding:22px;scroll-margin-top:24px}.life-map__panel[hidden]{display:none!important}.life-map__heading>a{display:inline-flex;align-items:center;min-height:44px;font-size:.85rem}.life-map__heading h3{font-size:clamp(1.7rem,4vw,2.5rem);font-weight:900;font-style:italic;margin:10px 0 24px;line-height:1.15;letter-spacing:-.04em;overflow-wrap:anywhere}.life-map__board{position:relative;aspect-ratio:1000/650;background:radial-gradient(#343329 1px,transparent 1px),var(--map-panel);background-size:16px 16px;border:1px solid var(--map-line);overflow:hidden}.life-map__city{display:block;width:100%;height:100%;font-family:inherit}.life-map__plot{position:absolute;inset:36px}.life-map__board-note{position:absolute;left:22px;bottom:16px;right:22px;margin:0;color:var(--map-muted);font-size:.85rem;pointer-events:none}.life-map__caption,.life-map__quiet,.life-map__help,.life-map__source{color:var(--map-muted);font-size:.85rem;line-height:1.8}.life-map__panel h4{font-size:1rem;color:var(--map-text);margin:28px 0 12px}.life-map__list{display:flex;flex-wrap:wrap;gap:10px;list-style:none;padding:0}.life-map__list a{display:flex;align-items:center;min-height:44px;padding:8px 14px;background:var(--map-panel);border:1px solid var(--map-line);text-decoration:none}.life-map__record{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:12px 0;min-height:44px;border-bottom:1px solid var(--map-line);text-decoration:none;overflow-wrap:anywhere}.life-map__record time{color:var(--map-muted);font-size:.8rem}.life-map__description{white-space:pre-line;overflow-wrap:anywhere;line-height:1.8}.life-map__help,.life-map__source{padding:0 22px}.life-map__source{padding-bottom:20px;font-size:.75rem}.life-map__people{display:flex;flex-wrap:wrap;gap:16px}.life-map__people a{flex:1 1 160px;background:var(--map-panel);padding:12px;border:1px solid var(--map-line)}@media(max-width:500px){.life-map__menu{gap:6px;padding:12px}.life-map__menu a{padding:6px 10px;font-size:.8rem}.life-map__panel{padding:14px}.life-map__plot{inset:28px}.life-map__pin{max-width:110px;font-size:.7rem}.life-map__help,.life-map__source{padding-left:14px;padding-right:14px}.map-landmark-name{display:none}}@media(prefers-reduced-motion:reduce){.life-map *{transition:none!important;scroll-behavior:auto!important}}
+
+/* SVG coordinates preserve positioning under strict CSP: no inline styles. */
+.life-map__plot{position:absolute;inset:0;width:100%;height:100%}.life-map__pin{color:var(--map-ink)!important}.life-map__pin rect{fill:var(--map-gold);stroke:var(--map-ink);stroke-width:3;vector-effect:non-scaling-stroke}.life-map__pin text{fill:var(--map-ink);font-size:16px;font-weight:850;pointer-events:none}.life-map__pin:hover rect,.life-map__pin:focus-visible rect{stroke:var(--map-text);stroke-width:5}
+
+/* Native fragment links remain usable with JavaScript disabled. */
+.life-map:not([data-map-ready]) .life-map__panel{display:none}.life-map:not([data-map-ready]) .life-map__panel:first-of-type,.life-map:not([data-map-ready]) .life-map__panel:target{display:block}
+
+/* A continuous city landscape, with destination tabs above the illustration. */
+.life-map__board--city{background:#719693;border-color:#776d50}
+.map-scenery{pointer-events:none}
+.map-sea{fill:#719693}
+.map-water-lines{fill:none;stroke:#9ab5aa;stroke-width:2;opacity:.45}
+.map-island{fill:#798267;stroke:#b2b68b;stroke-width:3}
+.map-land-shadow{fill:#416f6e}
+.map-land{fill:#b6b397;stroke:#dad0ac;stroke-width:3;stroke-linejoin:round}
+.map-hills{fill:#737e58}
+.map-contours{fill:none;stroke:#9b9f71;stroke-width:3;opacity:.5}
+.map-minor-roads{fill:none;stroke:#ded5b6;stroke-width:11;stroke-linejoin:round}
+.map-building-side{fill:#6a6859}
+.map-building-roof{stroke:#857e6a;stroke-width:.6}
+.map-building-edge{fill:#847c69}
+.map-parks{fill:#788d65;stroke:#a6ae79;stroke-width:3}
+.map-lake,.map-river{fill:#719e9b;stroke:#cee0c6;stroke-width:2}
+.map-park-path{fill:none;stroke:#d8d1a9;stroke-width:3}
+.map-river-edge{fill:none;stroke:#e8dcb8;stroke-width:19}
+.map-river{fill:none;stroke:#719e9b;stroke-width:13}
+.map-highway{fill:none;stroke:#91866b;stroke-width:10;stroke-linejoin:round}
+.map-road-centers{fill:none;stroke:#eee0b8;stroke-width:6;stroke-linejoin:round}
+.map-rail{fill:none;stroke:#5a5d56;stroke-width:6;stroke-linejoin:round}
+.map-rail-ties{fill:none;stroke:#e7dfc5;stroke-width:3;stroke-dasharray:2 6}
+.map-bridges{fill:none;stroke:#f2e2b9;stroke-width:9}
+.map-icon-shadow{fill:#535c50;opacity:.5}
+.map-tower{fill:#d8d8bc;stroke:#555c55;stroke-width:2}
+.map-icon-line{fill:none;stroke:#515c55;stroke-width:2}
+.map-dome-wall,.map-station-side{fill:#7a7b70}
+.map-dome{fill:#ede6ce;stroke:#8e927e;stroke-width:2}
+.map-station{fill:#ece4ce;stroke:#736f5e;stroke-width:2}
+.map-islet{fill:#d3b594;stroke:#f0dfb8;stroke-width:2}
+.map-airfield{fill:#a2a38c;stroke:#c4c1a0;stroke-width:2}
+.map-runway{fill:#72766e;stroke:#e2d9b6;stroke-width:1}
+.map-runway-line{fill:none;stroke:#e7e0c8;stroke-width:1.5;stroke-dasharray:8 6}
+.map-plane{fill:#f7efd3;stroke:#5d655e;stroke-width:1}
+.map-landmark-name{fill:#292f29;font-size:15px;font-weight:750;paint-order:stroke;stroke:#dcd6b9;stroke-width:4;stroke-linejoin:round}
+.map-bay-name{fill:#e8e2bc;font-size:29px;font-style:italic;font-weight:800;letter-spacing:1px}
+.map-bay-japanese{fill:#e8e2bc;font-size:17px;letter-spacing:6px}
+.map-compass{fill:#ede4bc;stroke:#4d6f66;stroke-width:2}
+.map-compass text{stroke:none;font-size:20px;font-weight:850}
+.map-destination{text-decoration:none;outline:none}
+.map-destination-stem{fill:none;stroke:#161b18;stroke-width:4}
+.map-destination-dot{fill:var(--map-gold);stroke:#171917;stroke-width:3}
+.map-destination-tag{fill:#151b18;stroke:#f4e6af;stroke-width:2;filter:drop-shadow(3px 4px 0 #373d3266);transition:fill .15s}
+.map-destination-name{fill:#fff8dc;font-size:25px;font-style:italic;font-weight:900;pointer-events:none}
+.map-destination-japanese{fill:#f7f0d7;font-size:17px;font-weight:650;paint-order:stroke;stroke:#344038;stroke-width:3;pointer-events:none}
+.map-destination:hover .map-destination-tag,.map-destination:focus-visible .map-destination-tag,.map-destination.is-selected .map-destination-tag{fill:var(--map-gold);stroke:#111a16;stroke-width:3}
+.map-destination:hover .map-destination-name,.map-destination:focus-visible .map-destination-name,.map-destination.is-selected .map-destination-name{fill:var(--map-ink)}
+.map-destination:focus-visible .map-destination-tag{stroke:#fff;stroke-width:6}
+@media(max-width:500px){.map-landmark-name{display:none}.map-destination-name{font-size:28px}.map-destination-japanese{font-size:21px}}
+
+.life-map__assets{position:absolute;overflow:hidden;pointer-events:none}
+
+/* Include the tab, stem, and label in one continuous pointer target. */
+.map-destination-hit{fill:transparent;stroke:none;pointer-events:all}
+
+/* A single game-menu pointer responds to hover, focus, and selection. */
+.map-selection-cursor{fill:var(--map-gold);stroke:var(--map-ink);stroke-width:2;opacity:0;pointer-events:none}
+.map-destination.is-selected .map-selection-cursor{opacity:1}
+.life-map__city:has(.map-destination:hover,.map-destination:focus-visible) .map-selection-cursor{opacity:0}
+.life-map__city .map-destination:hover .map-selection-cursor,.life-map__city .map-destination:focus-visible .map-selection-cursor{opacity:1}
+.life-map__context{display:flex;align-items:center;gap:8px;min-height:44px;margin-bottom:10px;border-bottom:1px solid var(--map-line);font-size:.85rem}
+.life-map__context[hidden],.life-map__context-back[hidden]{display:none}
+.life-map__context-back{display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;font-size:1.35rem;text-decoration:none}
+.life-map__context ol{display:flex;align-items:center;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0;min-width:0}
+.life-map__context li{display:flex;align-items:center;gap:8px;min-width:0}
+.life-map__context li+li::before{content:'›';color:var(--map-muted)}
+.life-map__context li a{display:inline-flex;align-items:center;min-height:44px;text-decoration:none;color:var(--map-muted)}
+.life-map__context [aria-current]{font-weight:800;color:var(--map-gold);overflow-wrap:anywhere}
+.life-map__context [aria-current]:focus-visible{outline:2px solid var(--map-gold);outline-offset:4px}
+.life-map--minimal[data-context-ready] .life-map__heading{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media(max-width:500px){.life-map__context{font-size:.75rem;gap:4px}.life-map__context ol,.life-map__context li{gap:6px}}
