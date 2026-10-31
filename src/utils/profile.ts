@@ -1,5 +1,5 @@
 /**
- * Profile card data layer for /about.
+ * Legacy profile data helpers. Life reuses the existing external links only.
  *
  * Pure by design: vitest cannot resolve the `astro:content` virtual module, so
  * nothing in this file may import it. The Zod schema is built from `astro/zod`

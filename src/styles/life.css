@@ -1,0 +1,85 @@
+.life { max-width: 1180px; margin: 0 auto; padding: var(--space-2xl) var(--space-lg) calc(var(--nav-clearance, 110px) + var(--space-2xl)); }
+.life__intro { display: grid; grid-template-columns: 250px minmax(0, 1fr); align-items: center; gap: var(--space-2xl); margin-bottom: var(--space-3xl); }
+.life__portrait-frame { position: relative; background: var(--color-gold); padding: var(--space-sm) var(--space-sm) var(--space-2xl); transform: rotate(-3deg); box-shadow: var(--shadow-hard); }
+.life__portrait { width: 100%; height: auto; display: block; aspect-ratio: 1; object-fit: cover; }
+.life__portrait-label { position: absolute; bottom: var(--space-sm); left: var(--space-md); font: 1.4rem var(--font-display); color: var(--color-black); }
+.life__hello h1 { font-size: clamp(2rem, 6vw, 4.5rem); line-height: 1.1; margin: 0 0 var(--space-lg); overflow-wrap: anywhere; }
+.life__introduction { max-width: 56ch; font-size: clamp(1rem, 1.7vw, 1.25rem); line-height: 1.8; margin: 0 0 var(--space-lg); }
+.life a { text-underline-offset: .25em; }
+.life__contact-link { display: inline-flex; align-items: center; min-height: 44px; }
+.life__explore { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: var(--space-2xl); align-items: start; border-top: var(--border-medium) solid var(--color-gold); padding-top: var(--space-xl); }
+.life__menu { display: flex; flex-direction: column; gap: var(--space-sm); position: sticky; top: var(--space-xl); }
+.life__menu a { min-height: 52px; padding: var(--space-sm) var(--space-md); display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); color: var(--color-text); font: 1.1rem var(--font-display); text-decoration: none; border-left: var(--border-medium) solid transparent; transition: background-color var(--transition-base), color var(--transition-base), transform var(--transition-base); }
+.life__menu a[aria-current], .life__menu a:hover { background: var(--color-gold); color: var(--color-black); border-left-color: var(--color-black); transform: translateX(4px); }
+.life__menu-arrow { opacity: 0; }
+.life__menu a[aria-current] .life__menu-arrow, .life__menu a:hover .life__menu-arrow { opacity: 1; }
+.life__panel { min-height: 300px; scroll-margin-top: var(--space-xl); }
+.life__panel[hidden] { display: none; }
+.life__panel h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); margin: 0 0 var(--space-xl); }
+.life__pursuits { display: grid; gap: var(--space-md); }
+.life__pursuits > a { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); padding: var(--space-lg); min-height: 64px; background: var(--color-bg-elevated); border: 1px solid var(--color-border); color: var(--color-text); text-decoration: none; }
+.life__pursuits > a:hover { border-color: var(--color-gold); }
+.life__pursuits > .life__story { background: var(--color-gold); color: var(--color-black); border-color: var(--color-gold); padding: var(--space-xl) var(--space-lg); }
+.life__story img { flex: 0 0 72px; width: 72px; height: 72px; }
+.life__story > span:nth-child(2) { flex: 1; }
+.life__story strong { font: clamp(1.2rem, 2.5vw, 1.8rem) var(--font-display); display: block; }
+.life__eyebrow { display: block; font-size: .85rem; margin-bottom: var(--space-sm); }
+.life__quiet { color: var(--color-text-muted); max-width: 45ch; line-height: 1.8; padding: var(--space-lg) 0; }
+.life__day { margin-bottom: var(--space-xl); scroll-margin-top: var(--space-xl); }
+.life__day h3 { font: .9rem var(--font-mono); color: var(--color-text-muted); }
+.life__record { display: block; padding: var(--space-lg) 0; border-bottom: 1px solid var(--color-border); text-decoration: none; color: var(--color-text); }
+.life__record strong { display: block; font-size: 1.2rem; overflow-wrap: anywhere; }
+.life__record p { line-height: 1.7; color: var(--color-text-muted); margin: var(--space-sm) 0 0; overflow-wrap: anywhere; }
+.life__record time { display: block; color: var(--color-text-muted); font-size: .85rem; margin-bottom: var(--space-sm); }
+.life__record:hover strong { color: var(--color-gold); }
+.life__month { border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-md); margin-bottom: var(--space-md); }
+.life__month summary { cursor: pointer; padding: var(--space-md) 0; min-height: 44px; }
+.life__calendar { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--space-xs); max-width: 500px; }
+.life__calendar > * { display: flex; justify-content: center; align-items: center; min-height: 44px; }
+.life__calendar a { color: var(--color-black); background: var(--color-gold); text-decoration: none; font-weight: 700; }
+.life__weekday { font-size: .75rem; color: var(--color-text-muted); }
+.life__calendar-day { color: var(--color-text-muted); }
+.life__destination-list { list-style: none; padding: 0; }
+.life__destination-list li { display: flex; align-items: baseline; gap: var(--space-md); flex-wrap: wrap; }
+.life__destination-list a { display: inline-flex; align-items: center; min-height: 44px; overflow-wrap: anywhere; }
+.life__region { margin-bottom: var(--space-xl); }
+.life__map { position: relative; height: 240px; margin: var(--space-xl) 24px; border: 1px solid var(--color-border); background-color: var(--color-bg-elevated); background-image: radial-gradient(var(--color-border-strong) 1px, transparent 1px); background-size: 20px 20px; }
+.life__map > a { position: absolute; left: var(--map-x); top: var(--map-y); transform: translate(-50%, -50%); width: 44px; height: 44px; display: grid; place-items: center; background: var(--color-gold); color: var(--color-black); text-decoration: none; }
+.life__contact { margin-top: var(--space-3xl); border-top: 1px solid var(--color-border); padding-top: var(--space-xl); }
+.life__contact h2 { font-size: 1.2rem; margin: 0 0 var(--space-md); }
+.life__contact-links { display: flex; gap: var(--space-sm) var(--space-xl); flex-wrap: wrap; }
+.life__contact-links a { display: inline-flex; align-items: center; min-height: 44px; }
+.life__contact-links a[hidden] { display: none; }
+.life a:focus-visible, .life summary:focus-visible { outline: 3px solid var(--color-gold); outline-offset: 4px; }
+.life__story:focus-visible, .life__menu a[aria-current]:focus-visible, .life__calendar a:focus-visible, .life__map a:focus-visible { outline: 3px solid var(--color-text); outline-offset: 4px; }
+.life__detail { max-width: 850px; }
+.life__back { display: inline-flex; align-items: center; min-height: 44px; margin-bottom: var(--space-xl); }
+.life__detail h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.2; overflow-wrap: anywhere; margin: var(--space-lg) 0; }
+.life__detail h2 { font-size: 1.4rem; margin-top: var(--space-2xl); }
+.life__detail time, .life__kind { color: var(--color-text-muted); }
+.life__kind { font-size: .8rem; }
+.life__body { margin: var(--space-2xl) 0; line-height: 1.9; max-width: 65ch; overflow-wrap: anywhere; }
+.life__body p { white-space: pre-line; }
+@media (max-width: 700px) {
+  .life { padding-top: var(--space-xl); }
+  .life__intro { grid-template-columns: 100px minmax(0, 1fr); gap: var(--space-lg); margin-bottom: var(--space-xl); align-items: start; }
+  .life__portrait-frame { padding: var(--space-xs) var(--space-xs) var(--space-xl); margin-top: var(--space-xs); }
+  .life__portrait-label { font-size: 1rem; left: var(--space-sm); bottom: var(--space-xs); }
+  .life__hello { display: contents; }
+  .life__hello h1 { align-self: center; font-size: clamp(1.1rem, 5.3vw, 2.4rem); margin: 0; white-space: nowrap; }
+  .life__introduction, .life__contact-link { grid-column: 1 / -1; }
+  .life__introduction { margin: var(--space-sm) 0 0; }
+  .life__contact-link { justify-self: start; }
+  .life__explore { grid-template-columns: 1fr; gap: var(--space-xl); padding-top: var(--space-md); }
+  .life__menu { position: static; flex-direction: row; flex-wrap: wrap; gap: var(--space-xs); }
+  .life__menu a { font: .9rem var(--font-display); min-height: 44px; padding: var(--space-sm); }
+  .life__menu-arrow { display: none; }
+  .life__panel { min-height: 220px; }
+  .life__story img { flex-basis: 48px; width: 48px; height: 48px; }
+  .life__pursuits > .life__story { padding: var(--space-lg) var(--space-md); }
+  .life__contact { margin-top: var(--space-xl); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .life__menu a { transition: none; }
+  .life__menu a[aria-current], .life__menu a:hover { transform: none; }
+}

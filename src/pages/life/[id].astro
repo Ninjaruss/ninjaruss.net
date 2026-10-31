@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NavPill from '../../components/NavPill.astro';
+import { loadLifeExport, linkedLifeRecords, lifeEncounters } from '../../utils/lifeData';
+import '../../styles/life.css';
+
+export async function getStaticPaths() {
+  const { records } = await loadLifeExport();
+  return records.map(entry => ({ params: { id: entry.id }, props: { entry, records } }));
+}
+const { entry, records } = Astro.props;
+const linked = linkedLifeRecords(entry, records);
+const encounters = lifeEncounters(entry, records);
+const children = records.filter(record => (record.kind === 'place' && record.region === entry.id) || (record.kind === 'region' && record.parent === entry.id));
+const kinds = { experience: 'Memory', person: 'Person', place: 'Place', event: 'Recurring event', region: 'Region' };
+const parent = { experience: 'memories', person: 'people', place: 'places', event: 'places', region: 'places' }[entry.kind];
+const dateLabel = (date: string) => new Intl.DateTimeFormat('en', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`));
+---
+
+<BaseLayout title={`${entry.title} — Life`} description={entry.body.slice(0, 160)}>
+  <NavPill />
+  <article class="life life__detail">
+    <a class="life__back" href={`/life#${parent}`}>← Back to Life</a>
+    <header>
+      <span class="p4g-tab">{kinds[entry.kind]}</span>
+      <h1 class="p4g-heading">{entry.title}</h1>
+      {entry.kind === 'experience' && <time datetime={entry.date}>{dateLabel(entry.date)}</time>}
+    </header>
+    <div class="life__body">{entry.body.split(/\n\s*\n/).map(paragraph => <p>{paragraph}</p>)}</div>
+    {linked.length > 0 && <section><h2>Connections</h2><ul class="life__destination-list">{linked.map(record => <li><a href={`/life/${record.id}`}>{record.title}</a><span class="life__kind">{kinds[record.kind]}</span></li>)}</ul></section>}
+    {children.length > 0 && <section><h2>Places &amp; regions</h2><ul class="life__destination-list">{children.map(record => <li><a href={`/life/${record.id}`}>{record.title}</a></li>)}</ul></section>}
+    {encounters.length > 0 && <section><h2>Encounters</h2>{encounters.map(memory => <a class="life__record" href={`/life/${memory.id}`}><time datetime={memory.date}>{dateLabel(memory.date)}</time><strong>{memory.title}</strong></a>)}</section>}
+  </article>
+</BaseLayout>

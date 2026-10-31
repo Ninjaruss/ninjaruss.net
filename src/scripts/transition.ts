@@ -38,6 +38,7 @@ const STAT_CARDS: Record<StatName, StatCard> = {
 const ROUTE_STATS: [string, StatName][] = [
   ['/novel',    'Expression'],
   ['/shelf',    'Sincerity'],
+  ['/life',     'Chaos'],
   ['/about',    'Chaos'],
   ['/showcase', 'Determination'],
   ['/now',      'Sincerity'],

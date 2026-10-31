@@ -89,7 +89,7 @@ const socialLinks = defineCollection({
   }),
 });
 
-// Profile — single-entry collection backing the /about card. The schema lives in
+// Profile — legacy profile data; Life reuses only its external links. The schema lives in
 // utils/profile.ts so vitest (which cannot resolve astro:content) can test it.
 const profile = defineCollection({
   type: 'content',

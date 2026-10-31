@@ -75,7 +75,9 @@ describe('statForPath', () => {
   it('returns Sincerity for /shelf/slug', () => {
     expect(statForPath('/shelf/some-anime').color).toBe('#ffe52c');
   });
-  it('returns Chaos for /about', () => {
+  it('returns Chaos for Life and its legacy About route', () => {
+    expect(statForPath('/life').name).toBe('CHAOS');
+    expect(statForPath('/life/a-memory').name).toBe('CHAOS');
     expect(statForPath('/about').color).toBe('#2dd4bf');
     expect(statForPath('/about').name).toBe('CHAOS');
   });
