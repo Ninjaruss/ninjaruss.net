@@ -1,5 +1,6 @@
 ---
 title: "Utasync - Learn Japanese through Music"
+description: "A Japanese song practice tool with lyric timing, translation, and repetition."
 publishedAt: 2026-08-01
 emblem: /images/showcase/utasync.svg
 collections: ["web dev"]

@@ -108,7 +108,7 @@ describe('computeTextFit', () => {
   // Mock ctx: width proportional to font size parsed from ctx.font
   const mockCtx = {
     font: '',
-    measureText(text: string) {
+    measureText(this: { font: string }, text: string) {
       const match = this.font.match(/(\d+(?:\.\d+)?)px/);
       const px = match ? parseFloat(match[1]) : 12;
       return { width: text.length * px };

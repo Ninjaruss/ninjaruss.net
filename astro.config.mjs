@@ -30,12 +30,17 @@ const novelFolderSlugs = new Set();
 /* NovelTree is a Record<slug, NovelFolder>; each folder holds `files` plus a
    Record<slug, NovelFolder> of `subfolders`. Every folder — top-level and nested
    — is routable as a folder-only URL. */
-(function collectFolders(folder, trail) {
+/**
+ * @param {{ subfolders: import('./src/utils/novel').NovelTree }} folder
+ * @param {string[]} trail
+ */
+function collectFolders(folder, trail) {
   novelFolderSlugs.add(`/novel/${trail.join('/')}/`);
   for (const sub of Object.values(folder.subfolders)) {
     collectFolders(sub, [...trail, sub.slug]);
   }
-})({ subfolders: novelTree }, []);
+}
+collectFolders({ subfolders: novelTree }, []);
 
 export default defineConfig({
   site: 'https://ninjaruss.net',
@@ -60,10 +65,10 @@ export default defineConfig({
   redirects: {
     '/media': '/shelf',
     '/media/[...slug]': '/shelf/[...slug]',
-    /* /stream → /status → /about happened over two renames. Both point
-       straight at /about so there is no redirect chain. */
-    '/stream': '/about',
-    '/status': '/about',
+    /* Life replaces About. Legacy personal pages go straight to it. */
+    '/about': '/life',
+    '/stream': '/life',
+    '/status': '/life',
     /* The journal merged notes + showcases. Notes moved to Substack, so the
        merge had nothing left to merge — showcase is what survived. */
     '/journal': '/showcase',

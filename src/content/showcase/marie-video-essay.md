@@ -1,5 +1,6 @@
 ---
 title: "Marie - Video Essay"
+description: "A video essay exploring Marie from Persona 4 Golden and why she resonates with me."
 publishedAt: 2026-01-11
 collections: ["persona"]
 emblem: "/images/showcase/2024-12-10-Marie-video.png"

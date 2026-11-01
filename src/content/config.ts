@@ -40,7 +40,7 @@ const notes = defineCollection({
 // Showcase collection — projects framed as inquiries
 const showcase = defineCollection({
   type: 'content',
-  schema: sharedSchema
+  schema: sharedSchema.extend({ status: z.string().optional() })
 });
 
 // Now collection — archived "now" snapshots

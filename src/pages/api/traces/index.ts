@@ -24,10 +24,13 @@ export const GET: APIRoute = async ({ url }) => {
   // Always cap the query — 200 is a reasonable ceiling for a personal-site
   // guestbook, whether the caller omits ?limit= or passes something huge.
   const effectiveLimit = limit && Number.isInteger(limit) && limit > 0 ? Math.min(limit, 200) : 200;
-  const [rows, total] = await Promise.all([listMessages(effectiveLimit), countMessages()]);
-  const entries = rows.map(r => ({ id: r.id, name: r.name, message: r.message, createdAt: r.created_at }));
-
-  return json({ entries, total }, 200, { 'Cache-Control': 'no-store' });
+  try {
+    const [rows, total] = await Promise.all([listMessages(effectiveLimit), countMessages()]);
+    const entries = rows.map(r => ({ id: r.id, name: r.name, message: r.message, createdAt: r.created_at }));
+    return json({ entries, total }, 200, { 'Cache-Control': 'no-store' });
+  } catch {
+    return json({ error: 'The guestbook is temporarily unavailable.' }, 503, { 'Cache-Control': 'no-store' });
+  }
 };
 
 export const POST: APIRoute = async (context: APIContext) => {

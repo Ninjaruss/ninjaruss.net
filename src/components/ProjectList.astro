@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import ListItem from './ListItem.astro';
+import { stripMarkdown, hasMinimalContent } from '../utils/content';
+import { formatDate } from '../utils/dates';
+
+const entries = (await getCollection('showcase', ({ data }) => !data.draft)).sort(
+  (a, b) => ((b.data.updatedAt ?? b.data.publishedAt)?.getTime() ?? 0) - ((a.data.updatedAt ?? a.data.publishedAt)?.getTime() ?? 0)
+);
+---
+{entries.map(entry => (
+  <ListItem href={`/showcase/${entry.slug}`} slug={entry.slug} title={entry.data.title}
+    subtitle={entry.data.description ?? stripMarkdown(entry.body).slice(0, 90)}
+    meta={[entry.data.status, (entry.data.updatedAt ?? entry.data.publishedAt) && `${entry.data.updatedAt ? 'Updated' : 'Published'} ${formatDate((entry.data.updatedAt ?? entry.data.publishedAt)!)}`].filter(Boolean).join(' · ')}
+    emblem={entry.data.emblem} contentType="showcase" showType={false} stacked={true}
+    searchableContent={stripMarkdown(entry.body).slice(0, 500)} hasMinimalContent={hasMinimalContent(entry.body)} />
+))}

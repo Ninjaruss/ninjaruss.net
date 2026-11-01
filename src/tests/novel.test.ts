@@ -1,6 +1,32 @@
 import { describe, it, expect } from 'vitest';
 import { slugify, parseMetaData, parseOrderPrefix, buildNovelTree, countWords, computeNovelStats, flattenFolderFiles, findRecentFiles, findSynopsisDoc, findFirstScene, unescapeScrivenerMarkdown, stripSceneLabel, stripAuthorComments, type NovelTree } from '../utils/novel';
 import { join } from 'path';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+
+describe('novel document URLs', () => {
+  it('keeps repeated titles distinct without shadowing natural suffixed titles', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'novel-routes-'));
+    try {
+      const folder = join(root, 'Manuscript');
+      mkdirSync(folder);
+      for (const [name, body] of [['1 A life', 'First'], ['2 A life', 'Second'], ['3 A life', 'Third'], ['4 A life-2', 'Other']] as const) {
+        writeFileSync(join(folder, `${name}.md`), body);
+      }
+      const tree = await buildNovelTree(root);
+      const files = flattenFolderFiles(tree.manuscript);
+      expect(files.map(file => file.slug)).toEqual(['a-life', 'a-life-3', 'a-life-4', 'a-life-2']);
+      expect(files.map(file => file.title)).toEqual(['A life', 'A life', 'A life', 'A life-2']);
+      expect(files.map(file => file.body.trim())).toEqual(['<p>First</p>', '<p>Second</p>', '<p>Third</p>', '<p>Other</p>']);
+    } finally { rmSync(root, { recursive: true, force: true }); }
+  });
+
+  it('gives every exported document its own reading URL', async () => {
+    const tree = await buildNovelTree(join(process.cwd(), 'src/content/novel'));
+    const paths = Object.values(tree).flatMap(flattenFolderFiles).map(file => file.path.join('/'));
+    expect(new Set(paths).size).toBe(paths.length);
+  });
+});
 
 describe('slugify', () => {
   it('lowercases and hyphenates spaces', () => {

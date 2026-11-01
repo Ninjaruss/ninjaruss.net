@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
-import ListItem from '../../components/ListItem.astro';
+import ProjectList from '../../components/ProjectList.astro';
 import EntryHeader from '../../components/EntryHeader.astro';
 import EntryBody from '../../components/EntryBody.astro';
 import RelatedContent from '../../components/RelatedContent.astro';
@@ -19,11 +19,6 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
-const showcaseItems = (await getCollection('showcase', ({ data }) => !data.draft)).sort(
-  (a, b) =>
-    new Date(b.data.updatedAt || b.data.publishedAt || 0).getTime() -
-    new Date(a.data.updatedAt || a.data.publishedAt || 0).getTime()
-);
 const { allShelf, allNotes, allShowcase } = await getAllCollections();
 const hasContent = !hasMinimalContent(entry.body);
 
@@ -32,7 +27,7 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
 ---
 
 <SplitViewLayout
-  title="Showcase"
+  title="Projects"
   description={pageDescription}
   section="showcase"
   initialSlug={entry.slug}
@@ -42,19 +37,7 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
   ogType="article"
   showSearch={false}
 >
-  <Fragment slot="list">
-    {showcaseItems.map((item) => (
-      <ListItem
-        href={`/showcase/${item.slug}`}
-        slug={item.slug}
-        title={item.data.title}
-        emblem={item.data.emblem}
-        contentType="showcase"
-        searchableContent={stripMarkdown(item.body).slice(0, 500)}
-        hasMinimalContent={hasMinimalContent(item.body)}
-      />
-    ))}
-  </Fragment>
+  <Fragment slot="list"><ProjectList /></Fragment>
 
   <Fragment slot="detail">
     <article class="entry">

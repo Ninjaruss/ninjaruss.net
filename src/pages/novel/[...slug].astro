@@ -8,6 +8,7 @@ import {
   countWords,
   flattenFolderFiles,
   findRecentFiles,
+  findFirstScene,
   STORY_FOLDER_SLUG,
 } from '../../utils/novel';
 import type { NovelFile, NovelFolder, NovelTree } from '../../utils/novel';
@@ -74,6 +75,7 @@ function folderHasContent(f: NovelFolder): boolean {
 // ── Desk data ──────────────────────────────────────────────────────────
 const stats = view === 'desk' ? computeNovelStats(tree) : null;
 const latestScene = view === 'desk' ? (findRecentFiles(tree, { scenes: true, limit: 1 })[0] ?? null) : null;
+const firstScene = view === 'desk' ? findFirstScene(tree) : null;
 
 // Script — chapter-select data (manuscript only). Scene numbers run
 // continuously in reading order (same order as the prev/next page-turn).
@@ -171,7 +173,12 @@ const pageTitle =
         </div>
       </header>
 
-      <nav class="desk-binder p3r-animate" style="--stagger-delay: 30ms" aria-label="Outline documents">
+      <nav class="novel-start" aria-label="Start exploring Remember Rain">
+        {firstScene && <a href={fileUrl(firstScene)}>Read the draft</a>}
+        <a href="#planning">Browse planning · spoilers</a>
+      </nav>
+
+      <nav id="planning" class="desk-binder p3r-animate" style="--stagger-delay: 30ms" aria-label="Planning documents · contains spoilers">
         {binderGroups.map((group) => (
           <section class="binder-panel" id={group.slug}>
             <h2 class="binder-panel__header">{group.title}</h2>
@@ -211,7 +218,7 @@ const pageTitle =
             {arc.title && (
               <h3 class="desk-arc__header">
                 <span>{arc.title}</span>
-                <span class="desk-arc__count">{arc.words.toLocaleString('en-US')} words</span>
+                <span class="desk-arc__count">{arc.words ? `${arc.words.toLocaleString('en-US')} words` : 'Planned'}</span>
               </h3>
             )}
             <ol class="desk-arc__list">
@@ -221,7 +228,7 @@ const pageTitle =
                     <span class="scene-row__num" aria-hidden="true">{row.num}</span>
                     <span class="scene-row__title">{row.file.title}</span>
                     {row.isLatest && <span class="scene-row__latest">latest</span>}
-                    <span class="scene-row__words">{row.words.toLocaleString('en-US')} words</span>
+                    <span class:list={['scene-row__words', { 'scene-row__words--planned': row.words === 0 }]}>{row.words ? `${row.words.toLocaleString('en-US')} words` : 'Planned'}</span>
                   </a>
                 </li>
               ))}
@@ -255,6 +262,7 @@ const pageTitle =
           </div>
           <h1 class="reading__title">{file.title}</h1>
           <div class="reading__rule" aria-hidden="true"></div>
+          {isScene && countWords(file.body) === 0 && <p>This scene is planned. There is no draft to read yet.</p>}
           <div class="reading__body" set:html={file.body} />
         </article>
       </div>

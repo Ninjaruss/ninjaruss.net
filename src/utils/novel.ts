@@ -171,7 +171,7 @@ async function buildFolder(
 ): Promise<NovelFolder> {
   // The folder's own display name / slug also honour a numeric prefix.
   const { clean: folderName } = parseOrderPrefix(basename(dirPath));
-  const slug = slugify(folderName);
+  const slug = pathSegments[pathSegments.length - 1];
 
   // Read entries, drop non-content, parse each name's order prefix, then sort into
   // binder order (numeric prefix first, natural-alphabetical fallback).
@@ -187,15 +187,27 @@ async function buildFolder(
 
   const files: NovelFile[] = [];
   const subfolders: Record<string, NovelFolder> = {};
+  // Preserve the first existing URL. Repeated titles are distinct documents;
+  // reserve natural names before allocating suffixes so none can be shadowed.
+  const reservedSlugs = new Set(entries.map(({ clean }) => slugify(clean)));
+  const usedSlugs = new Set<string>();
 
   for (const { entry, stat, isDir, clean, order } of entries) {
     const fullPath = join(dirPath, entry);
+    const baseSlug = slugify(clean);
+    let entrySlug = baseSlug;
+    let suffix = order ?? 2;
+    while (usedSlugs.has(entrySlug)) {
+      do { entrySlug = `${baseSlug}-${suffix++}`; }
+      while (reservedSlugs.has(entrySlug) || usedSlugs.has(entrySlug));
+    }
+    usedSlugs.add(entrySlug);
 
     if (isDir) {
-      const sub = await buildFolder(fullPath, [...pathSegments, slugify(clean)], order);
+      const sub = await buildFolder(fullPath, [...pathSegments, entrySlug], order);
       subfolders[sub.slug] = sub;
     } else {
-      const fileSlug = slugify(clean);
+      const fileSlug = entrySlug;
       const rawMarkdown = stripAuthorComments(
         stripSceneLabel(unescapeScrivenerMarkdown(readFileSync(fullPath, 'utf-8')))
       );

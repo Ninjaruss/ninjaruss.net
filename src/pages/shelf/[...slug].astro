@@ -30,11 +30,8 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
   ogImage={pageOgImage}
   ogType="article"
 >
-  <script define:vars={{ entrySlug: entry.slug }}>
-    window.location.replace('/shelf?open=' + encodeURIComponent(entrySlug));
-  </script>
-
   <div class="media-detail">
+    <a class="shelf-return" href="/shelf" data-shelf-return>← Back to Shelf</a>
     <div class="media-detail__inner">
       <div class="media-detail__poster-panel">
         <img
@@ -75,12 +72,13 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
     </div>
   </div>
 
-  <NavPill backLink="/shelf" backLabel="Shelf" />
+  <NavPill />
 </BaseLayout>
 
 <style>
+  .shelf-return { display: flex; align-items: center; min-height: 44px; max-width: 1100px; margin: 0 auto var(--space-lg); color: var(--color-gold); text-underline-offset: .25em; }
   .media-detail {
-    padding: var(--space-xl) var(--space-lg) calc(var(--space-xl) * 3);
+    padding: var(--space-xl) var(--space-lg) calc(var(--nav-clearance, 80px) + var(--space-xl));
   }
 
   .media-detail__inner {
@@ -144,3 +142,22 @@ const pageOgImage = entry.data.image ?? '/social-default.svg';
     }
   }
 </style>
+
+<script>
+  function initShelfReturn() {
+    const link = document.querySelector<HTMLAnchorElement>('[data-shelf-return]');
+    if (!link) return;
+    try {
+      const saved = JSON.parse(sessionStorage.getItem('shelf-return') ?? 'null');
+      const url = saved && new URL(saved.url, location.origin);
+      if (!url || url.origin !== location.origin || url.pathname !== '/shelf') return;
+      link.href = url.pathname + url.search + url.hash;
+      link.addEventListener('click', event => {
+        if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+          sessionStorage.setItem('shelf-restore', 'true');
+        }
+      });
+    } catch { /* Storage may be unavailable; the normal Shelf link still works. */ }
+  }
+  document.addEventListener('astro:page-load', initShelfReturn);
+</script>

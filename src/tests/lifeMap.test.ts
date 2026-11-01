@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { renderLifeMap } from '../../packages/life-ui/life-map.mjs';
+import type { LifeMapRecord } from '../../packages/life-ui/life-map.mjs';
 import { lifeExportSchema } from '../utils/lifeExport';
 
-const data = () => [
+const data = (): LifeMapRecord[] => [
   {id:'city',kind:'region',title:'Fukuoka notes',body:'Reviewed city.',mapKey:'fukuoka'},
   {id:'ward',kind:'region',title:'Chuo notes',body:'Reviewed area.',parent:'city',mapKey:'fukuoka-chuo'},
   {id:'district',kind:'region',title:'A smaller area',body:'Reviewed area.',parent:'ward'},
@@ -58,7 +59,7 @@ describe('shared Life map', () => {
     expect(ward).not.toContain('Explicitly elsewhere');
   });
   it('supports other regions and local back navigation without guessing geographic positions', () => {
-    const records = [{id:'elsewhere',kind:'region',title:'Another region',body:'A note.'}];
+    const records: LifeMapRecord[] = [{id:'elsewhere',kind:'region',title:'Another region',body:'A note.'}];
     const html = renderLifeMap({records,initialRegionId:'elsewhere',hrefForRecord:record=>`/life/${record.id}`});
     expect(html).toContain('data-map-initial="life-map-region-elsewhere"');
     expect(html).toContain('Other maps');

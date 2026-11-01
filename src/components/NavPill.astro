@@ -11,7 +11,7 @@ interface NavSection {
   label: string;
   /** Path prefixes that mark this item current. Empty for off-site items. */
   match: string[];
-  /** Off-site: opens in a new tab and never takes the active state. */
+  /** Off-site links never take the active state. */
   external?: boolean;
 }
 
@@ -19,27 +19,20 @@ const { backLink, backLabel } = Astro.props;
 const currentPath = Astro.url.pathname;
 const isHome = currentPath === '/';
 
-/* Labels match what each destination calls itself — the nav used to say "VN"
-   while the page, its h1 and the homepage tile all said something else, and the
-   string "VN" appeared nowhere on the page it pointed to. Keep these in sync with
-   the homepage tile labels in index.astro. */
+/* Public destination labels stay consistent with the page headings. */
 const SECTIONS: NavSection[] = [
   { href: '/', label: 'Home', match: ['/'] },
-  { href: '/showcase', label: 'Showcase', match: ['/showcase'] },
-  { href: '/novel', label: 'Visual Novel', match: ['/novel'] },
+  { href: '/showcase', label: 'Projects', match: ['/showcase'] },
+  { href: '/novel', label: 'Remember Rain', match: ['/novel'] },
   { href: '/shelf', label: 'Shelf', match: ['/shelf'] },
   { href: '/life', label: 'Life', match: ['/life'] },
   { href: '/now', label: 'Now', match: ['/now'] },
-  /* Traces was reachable from exactly one link on one page — the homepage bar —
-     and that link canceld its own default action for JS users, so the
-     server-rendered guestbook could not be reached by a plain click from
-     anywhere. It is a site section; it belongs here. */
-  { href: '/traces', label: 'Traces', match: ['/traces'] },
-  /* Writing lives on Substack, so this is the one off-site item. Without it the
-     prose — the point of the site — had no route from /showcase, /shelf or
-     /novel, which linked to it zero times. */
+  { href: '/traces', label: 'Guestbook', match: ['/traces'] },
+  { href: 'https://www.youtube.com/@Ninjaruss_', label: 'Videos', match: [], external: true },
   { href: SUBSTACK_URL, label: 'Writing', match: [], external: true },
 ];
+
+const currentSection = SECTIONS.find(section => section.match.some(path => path !== '/' && (currentPath === path || currentPath.startsWith(`${path}/`))))?.label ?? (currentPath === '/japanese-journal' ? 'Japanese journal' : 'Explore');
 
 const isActive = (section: NavSection) =>
   section.href === '/'
@@ -49,16 +42,14 @@ const isActive = (section: NavSection) =>
 
 {!isHome && (
   <nav class="nav-bar" aria-label="Site sections">
-    <div class="nav-bar__shadow">
+    <div class="nav-bar__shadow nav-bar__desktop">
       <div class="nav-bar__inner">
         {SECTIONS.map(section => (
           <a
             href={section.href}
             class:list={['nav-bar__item', { 'nav-bar__item--active': isActive(section) }]}
             aria-current={isActive(section) ? 'page' : undefined}
-            target={section.external ? '_blank' : undefined}
-            rel={section.external ? 'noopener noreferrer' : undefined}
-            aria-label={section.external ? `${section.label} — opens Substack in a new tab` : undefined}
+            aria-label={section.external ? `${section.label} on ${section.href === SUBSTACK_URL ? 'Substack' : 'YouTube'}` : undefined}
           >
             <span class="nav-bar__text">{section.label}</span>
           </a>
@@ -70,6 +61,18 @@ const isActive = (section: NavSection) =>
         )}
       </div>
     </div>
+    <details class="nav-bar__mobile">
+      <summary><span>{currentSection}</span><span class="nav-bar__menu-label">Menu <span aria-hidden="true">☰</span></span></summary>
+      <div class="nav-bar__menu">
+        {SECTIONS.map(section => (
+          <a href={section.href} class:list={['nav-bar__item', { 'nav-bar__item--active': isActive(section) }]} aria-current={isActive(section) ? 'page' : undefined} aria-label={section.external ? `${section.label} on ${section.href === SUBSTACK_URL ? 'Substack' : 'YouTube'}` : section.label}>
+            <span class="nav-bar__text">{section.label}{section.external && <span class="nav-bar__destination">{section.href === SUBSTACK_URL ? 'Substack' : 'YouTube'}</span>}</span>
+          </a>
+        ))}
+        <a href="/japanese-journal" class:list={['nav-bar__item', { 'nav-bar__item--active': currentPath === '/japanese-journal' }]} aria-current={currentPath === '/japanese-journal' ? 'page' : undefined}><span class="nav-bar__text">Japanese journal</span></a>
+        {backLink && backLabel && <a href={backLink} class="nav-bar__item nav-bar__back">← {backLabel}</a>}
+      </div>
+    </details>
   </nav>
 )}
 
@@ -184,69 +187,49 @@ const isActive = (section: NavSection) =>
     }
   }
 
-  /* Wrap below the small-desktop step, not just below tablet. The bar carries
-     eight items now (the seven site sections plus Writing, which points at
-     Substack) and "Visual Novel" is a wide label; unwrapped it measures roughly
-     900px, so at a 769–900px viewport it would have run off the right edge —
-     it is `position: fixed; left: …` with no max-width. Wrapping is also what
-     the layout already does at this step everywhere else (the bento grid drops
-     to 4 columns at 1024px). --nav-clearance is measured, not assumed, so the
-     taller bar cannot cover page content. */
-  @media (max-width: 1024px) {
-    .nav-bar {
-      left: var(--space-sm);
-      right: var(--space-sm);
-      bottom: var(--space-sm);
-    }
+  .nav-bar__mobile { display: none; }
+  .nav-bar__destination { display: block; font: var(--text-xs) var(--font-body); text-transform: none; margin-top: 4px; }
 
-    /* Wrapped rows: gap + gold-tinted inner background paints hairlines
-       between rows and columns without per-item border bookkeeping */
-    .nav-bar__inner {
-      flex-wrap: wrap;
-      gap: 1px;
-      background: rgba(var(--color-gold-rgb), 0.18);
-    }
-
-    .nav-bar__item {
-      flex: 1 1 24%;
-      min-height: 44px;
-      padding: var(--space-xs) var(--space-2xs);
-      font-size: 0.7rem; /* was 0.6rem (~9.6px) — too small for the primary nav */
-      background: var(--color-black);
-    }
-
-    .nav-bar__item + .nav-bar__item {
-      border-left: none;
-    }
-
-    .nav-bar__item--active {
-      background: var(--color-gold);
-    }
-
-    /* The back link carries a folder title, which never fits a quarter-width
-       cell (it was clipped mid-word); give it a row of its own. */
-    .nav-bar__back {
-      flex: 1 0 100%;
-    }
-  }
-
-  /* Three columns keep the full Showcase / Visual Novel labels readable on
-     narrow phones. setNavClearance measures the resulting third row. */
-  @media (max-width: 480px) {
-    .nav-bar__item { flex-basis: 30%; }
-    .nav-bar__text { white-space: normal; text-align: center; line-height: 1.3; }
+  @media (max-width: 1200px) {
+    .nav-bar { left: var(--space-sm); right: var(--space-sm); bottom: var(--space-sm); }
+    .nav-bar__desktop { display: none; }
+    .nav-bar__mobile { display: block; position: relative; background: var(--color-black); border: var(--border-medium) solid var(--color-gold); box-shadow: var(--shadow-hard-sm); }
+    .nav-bar__mobile summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); min-height: 48px; padding: var(--space-sm) var(--space-md); cursor: pointer; color: var(--color-text); font-family: var(--font-display); list-style: none; }
+    .nav-bar__mobile summary::-webkit-details-marker { display: none; }
+    .nav-bar__menu-label { color: var(--color-gold); white-space: nowrap; }
+    .nav-bar__mobile summary:focus-visible { outline: 3px solid var(--color-gold); outline-offset: -5px; }
+    .nav-bar__menu { position: absolute; bottom: calc(100% + 8px); left: -2px; right: -2px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; max-height: 65dvh; overflow-y: auto; background: var(--color-border-strong); border: var(--border-medium) solid var(--color-gold); }
+    .nav-bar__item { background: var(--color-black); min-height: 48px; padding: var(--space-sm); }
+    .nav-bar__item + .nav-bar__item { border-left: none; }
+    .nav-bar__text { white-space: normal; text-align: center; line-height: 1.4; }
+    .nav-bar__item--active { background: var(--color-gold); }
+    .nav-bar__back { grid-column: 1 / -1; }
   }
 </style>
 
 <script>
-  // Publishes the nav's real height so pages can pad their bottom edge —
-  // the two-row mobile bar must never cover content.
-  function setNavClearance() {
+  function initNavigation() {
     const nav = document.querySelector<HTMLElement>('.nav-bar');
-    const clearance = nav ? nav.offsetHeight + 16 : 0;
-    document.documentElement.style.setProperty('--nav-clearance', `${clearance}px`);
+    const menu = nav?.querySelector<HTMLDetailsElement>('details');
+    const updateClearance = () => document.documentElement.style.setProperty('--nav-clearance', `${nav ? nav.offsetHeight + 16 : 0}px`);
+    updateClearance();
+    const observer = new ResizeObserver(updateClearance);
+    if (nav) observer.observe(nav);
+    const controller = new AbortController();
+    const { signal } = controller;
+    menu?.addEventListener('click', event => {
+      if ((event.target as HTMLElement).closest('a')) menu.open = false;
+    }, { signal });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && menu?.open) {
+        menu.open = false;
+        menu.querySelector('summary')?.focus();
+      }
+    }, { signal });
+    document.addEventListener('click', event => {
+      if (menu?.open && !nav?.contains(event.target as Node)) menu.open = false;
+    }, { signal });
+    document.addEventListener('astro:before-swap', () => { observer.disconnect(); controller.abort(); }, { once: true });
   }
-  setNavClearance();
-  document.addEventListener('astro:page-load', setNavClearance);
-  window.addEventListener('resize', setNavClearance);
+  document.addEventListener('astro:page-load', initNavigation);
 </script>

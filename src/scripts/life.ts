@@ -1,3 +1,6 @@
+// Keep this imported browser entry point out of the global script scope.
+export {};
+
 function initLife() {
   const root = document.querySelector<HTMLElement>('[data-life]');
   if (!root || root.dataset.ready) return;

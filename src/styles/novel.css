@@ -507,6 +507,7 @@
   .binder-panel__list a { padding: 12px 0 12px 10px; }
   .scene-row { padding: 10px 12px; gap: 10px; }
   .scene-row__words { display: none; } /* keep rows to number + title on narrow screens */
+  .scene-row__words--planned { display: inline; }
 
   .novel-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
 
@@ -516,3 +517,7 @@
   .page-turn__link { max-width: 100%; }
   .page-turn__link--next { align-items: flex-start; text-align: left; }
 }
+.novel-start { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-xl); margin-bottom: var(--space-xl); }
+.novel-start a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-gold); text-underline-offset: .25em; }
+.novel-start a:focus-visible { outline: 3px solid var(--color-gold); outline-offset: 4px; }
+#planning { scroll-margin-top: var(--space-lg); }

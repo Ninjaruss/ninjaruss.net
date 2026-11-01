@@ -12,6 +12,34 @@ const safeHref = href => {
 
 // A presentation-only contract. Callers supply their own validated records and
 // local record URLs. There are no filesystem, network, auth, or provider imports.
+/**
+ * Fields consumed by the shared renderer. This presentation type does not
+ * replace either caller's validation or publication boundary.
+ * @typedef {Object} LifeMapRecord
+ * @property {string} id
+ * @property {'region'|'place'|'person'|'experience'|'event'} kind
+ * @property {string} title
+ * @property {string} [body]
+ * @property {string} [mapKey]
+ * @property {string} [parent]
+ * @property {string} [region]
+ * @property {{x: number, y: number}} [position]
+ * @property {string} [date]
+ * @property {string[]} [people]
+ * @property {string[]} [places]
+ * @property {string[]} [events]
+ * @property {string[]} [regions]
+ */
+
+/**
+ * @param {{
+ *   records?: LifeMapRecord[],
+ *   hrefForRecord: (record: LifeMapRecord) => string,
+ *   initialRegionId?: string,
+ *   instanceLabel?: string,
+ *   minimal?: boolean
+ * }} options
+ */
 export function renderLifeMap({ records = [], hrefForRecord, initialRegionId, instanceLabel = 'Explore the map', minimal = false }) {
   if (typeof hrefForRecord !== 'function') throw Error('Map needs a local record-link adapter');
   const byId = new Map();

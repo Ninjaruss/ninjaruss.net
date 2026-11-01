@@ -36,7 +36,6 @@ declare global {
     __splitViewInitialized?: boolean;
     __splitViewGlobalHandlers?: boolean;
     __splitViewIdleHandlers?: boolean;
-    openMediaLightbox?: (src: string, alt: string, type: 'image' | 'video') => void;
   }
 }
 

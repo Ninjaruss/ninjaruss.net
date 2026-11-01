@@ -7,16 +7,18 @@ interface Props {
   meta?: string;
   searchableContent?: string;
   contentType?: string;
+  showType?: boolean;
+  stacked?: boolean;
   hasMinimalContent?: boolean;
   emblem?: string;
 }
 
-const { href, slug, title, subtitle, meta, searchableContent, contentType, hasMinimalContent = false, emblem } = Astro.props;
+const { href, slug, title, subtitle, meta, searchableContent, contentType, showType = true, stacked = false, hasMinimalContent = false, emblem } = Astro.props;
 ---
 
 <a
   href={href}
-  class="list-item"
+  class:list={['list-item', { 'list-item--stacked': stacked }]}
   data-slug={slug}
   data-emblem={emblem}
   data-search-content={searchableContent}
@@ -25,7 +27,7 @@ const { href, slug, title, subtitle, meta, searchableContent, contentType, hasMi
   <div class="list-item__content">
     <div class="list-item__title-row">
       <span class="list-item__title">{title}</span>
-      {contentType && (
+      {showType && contentType && (
         <span class="list-item__type">{contentType.charAt(0).toUpperCase() + contentType.slice(1)}</span>
       )}
     </div>
@@ -232,6 +234,11 @@ const { href, slug, title, subtitle, meta, searchableContent, contentType, hasMi
     letter-spacing: 0.04em;
     white-space: nowrap;
   }
+
+  .list-item--stacked { flex-wrap: wrap; row-gap: var(--space-2xs); }
+  .list-item--stacked .list-item__content { flex: 1 1 100%; }
+  .list-item--stacked .list-item__meta { margin-left: 0; flex-shrink: 1; min-width: 0; }
+  .list-item--stacked .list-item__meta-text { white-space: normal; overflow-wrap: anywhere; }
 
   .list-item__indicator {
     font-size: var(--text-xs);

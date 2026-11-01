@@ -1,5 +1,7 @@
 ---
 title: "L-file - Usogui Database"
+description: "A database for Usogui, with character profiles and chapter-aware spoilers."
+status: "Hosted site offline"
 publishedAt: 2026-02-07
 updatedAt: 2026-10-02
 emblem: /images/showcase/Usogui_Volume_2_popout.png

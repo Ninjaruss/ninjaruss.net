@@ -136,13 +136,15 @@ const entryData = allShelf.map(e => ({
       <img alt="" class="shelf-panel__poster-img" id="shelf-panel-img" />
     </div>
     <div class="shelf-panel__content" id="shelf-panel-content"></div>
-    <a class="shelf-panel__link" id="shelf-panel-link" href="#">Open full entry →</a>
+    <a class="shelf-panel__link" id="shelf-panel-link" href="#">Open standalone page →</a>
   </aside>
 
   <NavPill />
 </BaseLayout>
 
 <style>
+  :global(body.shelf-reader-open .nav-bar) { visibility: hidden; }
+
   /* ── Page ────────────────────────────────────────── */
   .shelf-page {
     max-width: 1200px;
@@ -218,10 +220,12 @@ const entryData = allShelf.map(e => ({
     gap: 3px;
     padding: 8px 4px;
     overflow-x: auto;
-    scrollbar-width: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gold-dim) var(--color-bg-base);
     scroll-snap-type: x proximity;
   }
-  .shelf-jumpbar::-webkit-scrollbar { display: none; }
+  .shelf-jumpbar::-webkit-scrollbar { height: 6px; }
+  .shelf-jumpbar::-webkit-scrollbar-thumb { background: var(--color-gold-dim); }
 
   .shelf-jumpbar__link {
     scroll-snap-align: start;
@@ -690,6 +694,7 @@ const entryData = allShelf.map(e => ({
     pageCleanup?.abort();
     pageCleanup = new AbortController();
     document.body.style.overflow = '';
+    document.body.classList.remove('shelf-reader-open');
 
     const entryDataEl = document.getElementById('entry-data');
     let entries: EntryData[] = [];
@@ -711,6 +716,11 @@ const entryData = allShelf.map(e => ({
     const panelEl: HTMLElement = panel;
     const backdropEl: HTMLElement = backdrop;
 
+    const background = [document.querySelector<HTMLElement>('.shelf-page'), document.querySelector<HTMLElement>('.nav-bar')];
+    const setBackgroundInert = (inert: boolean) => {
+      background.forEach(element => { if (element) element.inert = inert; });
+      document.body.classList.toggle('shelf-reader-open', inert);
+    };
     let previouslyFocused: HTMLElement | null = null;
     let panelPushedHistory = false;
     /** Pending hide for the panel/backdrop; see finalizeHide(). */
@@ -747,14 +757,15 @@ const entryData = allShelf.map(e => ({
         hideTimer = null;
       }
 
-      panel.hidden = false;
-      backdrop.hidden = false;
+      panelEl.hidden = false;
+      backdropEl.hidden = false;
       // rAF so the display:none removal happens before the transition fires
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => panel.classList.add('is-open'));
+        requestAnimationFrame(() => panelEl.classList.add('is-open'));
       });
       document.body.style.overflow = 'hidden';
-      panel.focus();
+      setBackgroundInert(true);
+      panelEl.focus();
 
       fetch(`/shelf/${encodeURIComponent(slug)}`, { signal: activeFetch.signal })
         .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.text(); })
@@ -801,6 +812,7 @@ const entryData = allShelf.map(e => ({
 
     function closePanel(fromPop = false) {
       panelEl.classList.remove('is-open');
+      setBackgroundInert(false);
       document.body.style.overflow = '';
       activeFetch?.abort();
 
@@ -841,6 +853,11 @@ const entryData = allShelf.map(e => ({
         // the wall, so swallowing it removed the standard gesture entirely.
         // Same guard the filter bar uses further down this file.
         if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        try {
+          sessionStorage.setItem('shelf-return', JSON.stringify({ url: location.pathname + location.search + location.hash, scrollY: window.scrollY, slug }));
+          sessionStorage.setItem('shelf-restore', 'true');
+        } catch {}
+        if (matchMedia('(max-width: 900px)').matches) return;
         e.preventDefault();
         previouslyFocused = card;
         history.pushState(null, '', `/shelf/${encodeURIComponent(slug)}`);
@@ -887,7 +904,7 @@ const entryData = allShelf.map(e => ({
         first.focus();
         return;
       }
-      if (e.shiftKey && active === first) {
+      if (e.shiftKey && (active === first || active === panelEl)) {
         e.preventDefault();
         last.focus();
       } else if (!e.shiftKey && active === last) {
@@ -902,6 +919,10 @@ const entryData = allShelf.map(e => ({
     // Open on initial ?open= param (legacy compat)
     const params = new URLSearchParams(location.search);
     const initialOpen = params.get('open');
+    if (initialOpen && entryMap.has(initialOpen) && matchMedia('(max-width: 900px)').matches) {
+      location.replace(`/shelf/${encodeURIComponent(initialOpen)}`);
+      return;
+    }
     if (initialOpen && entryMap.has(initialOpen)) {
       history.replaceState(null, '', `/shelf/${encodeURIComponent(initialOpen)}`);
       panelPushedHistory = false;
@@ -912,6 +933,19 @@ const entryData = allShelf.map(e => ({
     }
 
     initFilter();
+    try {
+      const saved = JSON.parse(sessionStorage.getItem('shelf-return') ?? 'null');
+      const restoring = sessionStorage.getItem('shelf-restore') === 'true';
+      const back = (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'back_forward';
+      if (saved && (restoring || back) && saved.url === location.pathname + location.search + location.hash) {
+        sessionStorage.removeItem('shelf-restore');
+        requestAnimationFrame(() => {
+          const card = [...document.querySelectorAll<HTMLElement>('.shelf-card')].find(card => card.dataset.slug === saved.slug);
+          card?.focus({ preventScroll: true });
+          window.scrollTo({ top: Number(saved.scrollY) || 0, behavior: 'instant' });
+        });
+      }
+    } catch {}
   }
 
   document.addEventListener('astro:page-load', initShelfPage);

@@ -1,5 +1,6 @@
 ---
 title: "Fuma-shi - Roblox Roleplay Group"
+description: "The origins of a ninja roleplay group I built in Roblox."
 publishedAt: 2026-02-21
 emblem: "/images/showcase/fuma-shi-logo.png"
 ---

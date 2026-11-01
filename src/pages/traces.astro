@@ -5,22 +5,26 @@ export const prerender = false;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NavPill from '../components/NavPill.astro';
 import { formatTraceTimestamp } from '../utils/tracesFormat';
-import { listMessages } from '../utils/tracesDb';
+import { listMessages, type TraceRow } from '../utils/tracesDb';
 import { NAME_MAX_LENGTH, MESSAGE_MAX_LENGTH } from '../utils/traces';
 
-const messages = await listMessages();
+let messages: TraceRow[] = [];
+let unavailable = false;
+try { messages = await listMessages(); }
+catch { unavailable = true; }
 ---
 
-<BaseLayout title="Traces" description="Leave a trace.">
+<BaseLayout title="Traces · Guestbook" description="A few words from people passing through. Leave a message in the guestbook.">
   <NavPill />
   <div class="container">
     <header class="traces-header">
-      <span class="p4g-tab">traces</span>
+      <span class="p4g-tab">Traces · Guestbook</span>
       <h1 class="traces-title"><span class="p4g-heading">Leave a trace</span></h1>
       <span class="p4g-underline" aria-hidden="true"></span>
     </header>
 
-    <form id="traces-form" class="traces-form" method="post">
+    {unavailable && <p class="empty-state" role="status">The guestbook is temporarily unavailable. Please come back later.</p>}
+    {!unavailable && <form id="traces-form" class="traces-form" method="post">
       <div class="traces-form__row">
         <label for="tr-name">Name</label>
         <input id="tr-name" name="name" type="text" maxlength={NAME_MAX_LENGTH} required />
@@ -43,10 +47,10 @@ const messages = await listMessages();
         <input id="tr-website" name="website" type="text" tabindex="-1" autocomplete="off" />
       </div>
       <button type="submit" class="traces-form__submit p4g-sweep">
-        <span>Sign</span>
+        <span>Sign the guestbook</span>
       </button>
       <p id="traces-form__status" class="traces-form__status" role="status"></p>
-    </form>
+    </form>}
 
     <ul id="traces-list" class="traces-list">
       {messages.map((m) => (
@@ -57,7 +61,7 @@ const messages = await listMessages();
         </li>
       ))}
     </ul>
-    {messages.length === 0 && (
+    {!unavailable && messages.length === 0 && (
       <p class="empty-state">No one's signed yet — be the first.</p>
     )}
   </div>

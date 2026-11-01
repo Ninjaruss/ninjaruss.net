@@ -66,10 +66,6 @@ const arcCardStyle = arcColor
         )}
       </header>
 
-      <div class="now__content prose">
-        <Content />
-      </div>
-
       {currentArc && (
         <section class="arc-card" style={arcCardStyle} aria-label="Current arc">
           <div class="arc-card__top">
@@ -86,6 +82,10 @@ const arcCardStyle = arcColor
           {currentArc.updated && <span class="arc-updated">updated {currentArc.updated}</span>}
         </section>
       )}
+
+      <div class="now__content prose">
+        <Content />
+      </div>
 
       <footer class="now__footer p3r-animate" style="--stagger-delay: 200ms;">
         <div class="now__footer-divider" aria-hidden="true"></div>

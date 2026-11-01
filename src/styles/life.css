@@ -83,3 +83,6 @@
   .life__menu a { transition: none; }
   .life__menu a[aria-current], .life__menu a:hover { transform: none; }
 }
+
+.life__context { display: flex; flex-wrap: wrap; gap: var(--space-md); margin-top: var(--space-lg); }
+.life__context a { display: inline-flex; align-items: center; min-height: 44px; }

@@ -1,43 +1,16 @@
 ---
-import { getCollection } from 'astro:content';
 import SplitViewLayout from '../../layouts/SplitViewLayout.astro';
-import ListItem from '../../components/ListItem.astro';
-import { stripMarkdown, hasMinimalContent } from '../../utils/content';
-import { formatDate } from '../../utils/dates';
-
-const entries = (await getCollection('showcase', ({ data }) => !data.draft)).sort(
-  (a, b) =>
-    new Date(b.data.updatedAt || b.data.publishedAt || 0).getTime() -
-    new Date(a.data.updatedAt || a.data.publishedAt || 0).getTime()
-);
+import ProjectList from '../../components/ProjectList.astro';
 ---
 
 <SplitViewLayout
-  title="Showcase"
+  title="Projects"
   description="Projects framed as inquiries — things I built because I wanted them to exist."
   section="showcase"
-  ogImage="/social-default.svg"
+  ogImage="/social-default.png"
   showSearch={false}
 >
-  <Fragment slot="list">
-    {entries.length > 0 ? (
-      entries.map((entry) => (
-        <ListItem
-          href={`/showcase/${entry.slug}`}
-          slug={entry.slug}
-          title={entry.data.title}
-          subtitle={stripMarkdown(entry.body).split('\n').find(l => l.trim().length > 20)?.trim().slice(0, 90)}
-          meta={entry.data.publishedAt ? formatDate(entry.data.publishedAt) : undefined}
-          emblem={entry.data.emblem}
-          contentType="showcase"
-          searchableContent={stripMarkdown(entry.body).slice(0, 500)}
-          hasMinimalContent={hasMinimalContent(entry.body)}
-        />
-      ))
-    ) : (
-      <p class="empty-state">Nothing here yet.</p>
-    )}
-  </Fragment>
+  <Fragment slot="list"><ProjectList /></Fragment>
 </SplitViewLayout>
 
 <style>

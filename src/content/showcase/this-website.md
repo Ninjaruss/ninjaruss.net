@@ -1,5 +1,6 @@
 ---
 title: "Ninjaruss.net (This Website)"
+description: "Building this personal site and finding a design that feels like my own."
 publishedAt: 2026-01-11
 collections: ["web dev"]
 ---

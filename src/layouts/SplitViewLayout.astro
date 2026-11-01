@@ -22,18 +22,13 @@ const { title, description, section, kicker, initialSlug, initialEmblem, pageTit
 const hasInitialContent = Astro.slots.has('detail');
 
 const SECTION_KICKERS: Record<string, string> = {
-  showcase: 'showcases',
+  showcase: 'things I make',
 };
 const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
 ---
 
 <BaseLayout title={pageTitle ?? title} description={description} ogImage={ogImage} ogType={ogType}>
-  {/* /showcase was the only detail family with no back link — and the one where
-      the list is hidden outright on mobile (.has-selection .split-view__list {
-      display: none }), so a tapped entry left no in-page way back at all.
-      Only rendered when a detail is actually open (initialSlug is set on the
-      detail routes): on the index route it would link to the current page. */}
-  <NavPill backLink={initialSlug ? `/${section}` : undefined} backLabel={title} />
+  <NavPill />
   <div
     class:list={['split-view', { 'has-selection': hasInitialContent }]}
     data-section={section}
@@ -94,6 +89,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
         about.astro. */}
     <div class="split-view__detail">
       <div class="split-view__detail-inner">
+        <a class="split-view__back" href={`/${section}`}>← Back to {title.toLowerCase()}</a>
         <div class="split-view__placeholder">
           <div class="split-view__placeholder-content">
             <div class="split-view__placeholder-emblem" aria-hidden="true">
@@ -130,6 +126,10 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
 </BaseLayout>
 
 <style is:global>
+  .split-view__back { display: none; min-height: 44px; align-items: center; margin-bottom: var(--space-md); color: var(--color-gold); text-underline-offset: .25em; }
+  .split-view.has-selection .split-view__back { display: inline-flex; }
+  .split-view__back:focus-visible { outline: 3px solid var(--color-gold); outline-offset: 4px; }
+
   /* Remove page padding when split-view is active */
   .page:has(.split-view) {
     padding: 0;
@@ -144,6 +144,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
 
   /* Left Panel */
   .split-view__list {
+    min-width: 0;
     background: var(--color-bg-elevated);
     border-right: var(--border-thick) solid var(--color-gold-dim);
     display: flex;
@@ -665,20 +666,8 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
       display: none;
     }
 
-    /* Show mobile badge when content is selected */
-    .split-view.has-selection .emblem-badge {
-      display: block;
-      position: fixed;
-      /* Sit above the (possibly two-row) fixed NavPill, tracking its height. */
-      bottom: calc(var(--nav-clearance, 100px) + var(--space-sm));
-      right: var(--space-md);
-      width: 60px;
-      z-index: 50;
-    }
-
-    .emblem-badge .emblem-card {
-      max-width: 60px;
-    }
+    /* The fixed emblem competed with text and mobile navigation. */
+    .split-view .emblem-badge { display: none; }
   }
 
   /* Mobile: Stack layout */
@@ -726,11 +715,7 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
       padding-right: var(--space-md);
     }
 
-    /* The emblem badge is fixed in the bottom-right corner (60px + its own
-       16px offset); inset the detail body so no line ever runs underneath it. */
-    .split-view__content .prose {
-      padding-right: calc(60px + var(--space-sm));
-    }
+
   }
 
   /* ==========================================

@@ -262,13 +262,6 @@
     }, { signal: keyAbort.signal });
   }
 
-  // Declare global type
-  declare global {
-    interface Window {
-      openMediaLightbox: (src: string, alt: string, type?: 'image' | 'video') => void;
-    }
-  }
-
   // Initialize on page load and Astro navigation; drop the keydown listener
   // before the outgoing document is swapped away.
   document.addEventListener('astro:before-swap', () => {
