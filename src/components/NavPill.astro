@@ -1,6 +1,4 @@
 ---
-import { SUBSTACK_URL } from '../utils/substack';
-
 interface Props {
   backLink?: string;
   backLabel?: string;
@@ -9,30 +7,30 @@ interface Props {
 interface NavSection {
   href: string;
   label: string;
-  /** Path prefixes that mark this item current. Empty for off-site items. */
+  /** Path prefixes that mark this item current. */
   match: string[];
-  /** Off-site links never take the active state. */
-  external?: boolean;
 }
 
 const { backLink, backLabel } = Astro.props;
 const currentPath = Astro.url.pathname;
 const isHome = currentPath === '/';
 
-/* Public destination labels stay consistent with the page headings. */
+/* Primary navigation introduces the person; creative work stays on Home/About. */
 const SECTIONS: NavSection[] = [
   { href: '/', label: 'Home', match: ['/'] },
-  { href: '/showcase', label: 'Projects', match: ['/showcase'] },
-  { href: '/novel', label: 'Remember Rain', match: ['/novel'] },
-  { href: '/shelf', label: 'Shelf', match: ['/shelf'] },
-  { href: '/life', label: 'Life', match: ['/life'] },
+  { href: '/life', label: 'About', match: ['/life'] },
   { href: '/now', label: 'Now', match: ['/now'] },
-  { href: '/traces', label: 'Guestbook', match: ['/traces'] },
-  { href: 'https://www.youtube.com/@Ninjaruss_', label: 'Videos', match: [], external: true },
-  { href: SUBSTACK_URL, label: 'Writing', match: [], external: true },
+  { href: '/shelf', label: 'Shelf', match: ['/shelf'] },
 ];
 
-const currentSection = SECTIONS.find(section => section.match.some(path => path !== '/' && (currentPath === path || currentPath.startsWith(`${path}/`))))?.label ?? (currentPath === '/japanese-journal' ? 'Japanese journal' : 'Explore');
+/* Keep the mobile location label accurate on destinations outside the main menu. */
+const currentSection = [
+  ...SECTIONS,
+  { label: 'Projects', match: ['/showcase'] },
+  { label: 'Remember Rain', match: ['/novel'] },
+  { label: 'Guestbook', match: ['/traces'] },
+  { label: 'Japanese journal', match: ['/japanese-journal'] },
+].find(section => section.match.some(path => path !== '/' && (currentPath === path || currentPath.startsWith(`${path}/`))))?.label ?? 'Explore';
 
 const isActive = (section: NavSection) =>
   section.href === '/'
@@ -49,7 +47,6 @@ const isActive = (section: NavSection) =>
             href={section.href}
             class:list={['nav-bar__item', { 'nav-bar__item--active': isActive(section) }]}
             aria-current={isActive(section) ? 'page' : undefined}
-            aria-label={section.external ? `${section.label} on ${section.href === SUBSTACK_URL ? 'Substack' : 'YouTube'}` : undefined}
           >
             <span class="nav-bar__text">{section.label}</span>
           </a>
@@ -65,11 +62,10 @@ const isActive = (section: NavSection) =>
       <summary><span>{currentSection}</span><span class="nav-bar__menu-label">Menu <span aria-hidden="true">☰</span></span></summary>
       <div class="nav-bar__menu">
         {SECTIONS.map(section => (
-          <a href={section.href} class:list={['nav-bar__item', { 'nav-bar__item--active': isActive(section) }]} aria-current={isActive(section) ? 'page' : undefined} aria-label={section.external ? `${section.label} on ${section.href === SUBSTACK_URL ? 'Substack' : 'YouTube'}` : section.label}>
-            <span class="nav-bar__text">{section.label}{section.external && <span class="nav-bar__destination">{section.href === SUBSTACK_URL ? 'Substack' : 'YouTube'}</span>}</span>
+          <a href={section.href} class:list={['nav-bar__item', { 'nav-bar__item--active': isActive(section) }]} aria-current={isActive(section) ? 'page' : undefined}>
+            <span class="nav-bar__text">{section.label}</span>
           </a>
         ))}
-        <a href="/japanese-journal" class:list={['nav-bar__item', { 'nav-bar__item--active': currentPath === '/japanese-journal' }]} aria-current={currentPath === '/japanese-journal' ? 'page' : undefined}><span class="nav-bar__text">Japanese journal</span></a>
         {backLink && backLabel && <a href={backLink} class="nav-bar__item nav-bar__back">← {backLabel}</a>}
       </div>
     </details>
@@ -188,7 +184,6 @@ const isActive = (section: NavSection) =>
   }
 
   .nav-bar__mobile { display: none; }
-  .nav-bar__destination { display: block; font: var(--text-xs) var(--font-body); text-transform: none; margin-top: 4px; }
 
   @media (max-width: 1200px) {
     .nav-bar { left: var(--space-sm); right: var(--space-sm); bottom: var(--space-sm); }
