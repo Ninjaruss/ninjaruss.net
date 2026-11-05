@@ -40,11 +40,11 @@ Shiori is not trying to recover a lost past. She is defending a future self agai
 
 She wants accompaniment without having to earn it through usefulness, though she would not admit that. The current Arc 5 action is deliberately small: she closes something without marking her place. Its thematic interpretation remains a working direction rather than locked canon.
 
-1\. She breaches the vault to recover Gadget X, a recent mundane device of her own, and remembers Rain's nervous laugh when he steals the separately confiscated goggles.
+1\. She breaches the vault to recover something of her own, and keeps Rain's nervous laugh when he steals the confiscated goggles.
 
 2\. Her equipment and maker's marks recur before she joins the cast.
 
-3\. She boards the Circuit Line to accuse Rain. Her own recordings exonerate him, and she stays.
+3\. She boards the Circuit Line to accuse Rain. She does not exonerate him — she recognises his nervous laugh from the vault, having kept the laugh and lost the rest — and she stays.
 
 4\. She carries the knowledge that the system saving them is also the system watching the city.
 
@@ -72,7 +72,7 @@ The proposed formulation is that Shiori is the cast member most comfortable with
 
 The proposed Arc 5 “no bookmark” wager must not become a cure. She may forget the moment. The possibility being tested is that it can still have mattered without a guaranteed receipt, not that she now trusts her memory or stops using accommodations.
 
-Shiori enters with pressure independent of the central conflict: Nimbus knows both Gadget X and the older goggles are missing, and evidence makes Rain appear responsible for both. He did steal the goggles; she recovered Gadget X without being identified. Even after her recordings dismantle the larger accusation, ownership, surveillance, and the cost of keeping the group connected remain her problems rather than errands for Rain.
+Shiori enters with pressure independent of the central conflict. Rain did steal the goggles, deliberately, and she was never identified. \*\*She does not exonerate him\*\* (changed 2026-11-04 with the two-object mechanism): the charge against him is disproportionate, not false, and there is nothing for her recordings to disprove. What she brings instead is herself — ownership, surveillance, and the cost of keeping the group connected remain her problems rather than errands for Rain.
 
 \#\#\# Work, Tools, Records, and Cost
 
@@ -80,9 +80,9 @@ Shiori has no passive, bonded Imprint, or Deviation of her own. That absence is 
 
 \- Her first major project was an external recording system built after her injury. The state confiscated and scaled it into unattended surveillance infrastructure. The same system later preserves evidence everyone else ignored.
 
-\- The goggles are her work. Rain wears her decisions from Arc 1 onward before knowing who made them.
+\- The goggles are her work: early, a sibling of the recording system, built as a wearable bookmark. A worker's refusal patterned them into an Imprint afterward (\`World/Magic System\`), so what Rain bonds with is her object carrying someone else's completed act. Rain wears her decisions from Arc 1 onward before knowing who made them.
 
-\- Gadget X is a separate recent device, mundane when built, which she breaches the vault to recover. Its function remains unresolved.
+\- The thing she breaches the vault to recover is her own, recent and mundane when built. \{TK what it is and what it does — unresolved, and no longer load-bearing now that it carries no plot function\}
 
 \- Her recorder and surviving records first support her accusation, then correct it. Evidence can outlast her certainty without becoming neutral or institutionally innocent.
 
@@ -101,6 +101,8 @@ Shiori is wiry, kinetic, hands-busy, and slightly improvised. Tools, functional 
 \- Learning what Vesper did must affect her; continuing does not mean she is untouched.
 
 \- Do not make her connective tissue for Rain, Claire, and Roxana. Her accusation, stolen work, surveillance complicity, memory condition, and spent rig exert independent pressure.
+
+\- The goggles being hers is not an origin story. Her interest in them is her own — a piece of her memory system the state took — never "she made him possible." If it reads that way, it has gone wrong.
 
 \- She never states the theme or explains what memory means.
 

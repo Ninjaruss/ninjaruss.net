@@ -1,44 +1,25 @@
-\[old intro\]
+I am Rain. I dreamed and dreamed of the ceiling finally collapsing while rain poured outside. Yet I could not fall.
 
-You know what is so special about having a dream? That it brings you a world of infinite potential, unlimited possibilities, and a lingering hope that you can bring it to reality. One that pushes you to become something that you were never meant to be: an ideal.
+I lay still on the bed. I could not keep my eyes focused on the same bland ceiling any longer. I shut them hoping to get another second of silence.
 
-But if an ideal means nothing without someone to carry it. What if that someone doesn’t feel ready? What if he cannot back up his ideal with proof?
+My body knew what I was waiting for. 
 
-Well…
+“BREAK—“
 
-You get someone like me. A hopeless dreamer. Not a hero. Not a rebel.
+My finger swiped over the screen of my phone. 
 
-Just a dreamer stuck in the waiting room of his own life.
+7 AM. A dull blue filled my room through the window. The warmth of my blanket held me for as long as I could. 
 
-\*wakes up in his bed\*
+I have work today. 
 
+…
 
-\[first sentence attempts\]
+I peeled the blanket away.
 
-\- All the answers were laid before me to then realize I dreamed up all of them.
+I opened the fridge. 2 eggs and a couple slices of honey roasted turkey. After a quick pan fry, I sat down to eat.
 
-\- I waited for an answer to emerge from the depths of all the answers, only to find nothing but my own cowardice.
+What should I do today? My notes were laid out in several folders on the laptop screen. My gaze wandered hoping to find some sort of pull to attract my attention. But I knew this was a distraction.
 
-\- I dreamed and dreamed until the answer was buried within my mind.
+My story. Or rather the outline for it. I opened the file and stared at the screen to see all of my ideas waiting to be condensed.
 
-\- I dreamed and dreamed yearning for the ceiling to collapse. The rain poured, yet the rain did not fall.
-
-
-\[new intro\]
-
-\- My name is Rain. I dreamed and dreamed, yearning for the ceiling to collapse. The rain poured, yet I did not fall.
-
-\- My name is Rain. I dreamed and dreamed, yearning for the ceiling to collapse, while outside the rain poured and poured. Yet I could not fall.
-
-\- **I am Rain. I dreamed and dreamed, yearning for the ceiling to collapse, while outside the rain poured and poured. Yet I could not fall.**
-
-
-\[ending callback\]
-
-\- **I dreamed and dreamed. Now I fall.**
-
-**In spite of it all, I am Rain.**
-
-\- I dreamed and dreamed. Now I fall.
-
-In spite of the fall, I am Rain.
+Not yet. I should probably figure out a better way to spend my time.

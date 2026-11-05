@@ -24,7 +24,7 @@ He was thirteen when the Flare happened. The resonant alteration gave him unusua
 
 \- Never raises his voice or indulges in menace.
 
-\- Asks permission every time and means it. He treats consent in the present as sufficient even when the intervention changes the future person who might reconsider it; incomplete disclosure sharpens this problem but does not exhaust it.
+\- Asks permission every time and means it. He treats consent in the present as sufficient even when the intervention changes the future person who might reconsider it; incomplete disclosure sharpens this problem but does not exhaust it. At city scale the asking does not lapse — it becomes a form (see \*\*At city scale, asking becomes a form\*\*, below).
 
 \- Shows the extraction mechanism rather than hiding it.
 
@@ -48,6 +48,8 @@ His failure is not a lack of understanding. An intact record can let him underst
 
 He mistakes knowing the destination for authority to close the route.
 
+\*\*At city scale, asking becomes a form.\*\* His one consistent virtue does not fail when the correction scales; it industrialises. The Ministry's register \*is\* the asking — \*Circulation Adjustment Notice\*, \*Resonance Compliance Renewal\*, \*Household Flow Assessment\* (\`World/Locations.md\`) — while \`World/Magic System.md\` has the loop deliver the treatment through the water supply, and nobody consents to their water. The notice went out, and it was compliant. This is why Claire can make his case honestly in \`Arc 4 · 5\` — “the correction asks permission” — without lying and without being right: she is repeating a true sentence about a form. Keep this in the paperwork and the courtesy, never in a speech where he defends it. \`\{TK\}\` one scene where the courtesy is visible at city scale; \`Arc 2 · 6\` (the archive) and \`Arc 4 · 5\` (the advocate) are the candidates.
+
 1\. The asylum establishes him as genuinely helpful and technically open.
 
 2\. Borrowed behavior appears before its source is understood.
@@ -60,7 +62,7 @@ He mistakes knowing the destination for authority to close the route.
 
 6\. The correction scales his ordinary fixing gesture to the city.
 
-7\. He fully extracts Rain's autobiographical memory and receives the finished past in full.
+7\. He fully extracts every decision Rain ever made, and receives the finished past in full.
 
 8\. Rain produces a response no finished record contained. Vesper ends holding the prism, his model cracked but not replaced.
 
@@ -74,7 +76,7 @@ He mistakes knowing the destination for authority to close the route.
 
 \- \*\*Shiori:\*\* Vesper corrects the source into a cleaner form. Shiori patches the particular thing and accepts the seam. He remembers her warmly and learned precision by damaging her.
 
-\- \*\*Aster:\*\* Vesper can consciously reproduce what Aster's intact record teaches him. This is archive access, not Melted instinct, and it makes his claim to understand Roxana personally dangerous.
+\- \*\*The people he has emptied:\*\* Vesper can consciously reproduce what an intact record teaches him. This is archive access, not Melted instinct, and it is why a borrowed loadout can make his claim to understand someone personally dangerous.
 
 \#\#\# Replay, Prism, Extraction, Archive, Shatter, and Melt
 
@@ -84,19 +86,37 @@ Shared extraction and glass rules belong to \`World/Magic System.md\`. Vesper's 
 
 \- The prism is the Imprint formed by his mother's abandonment. Extracted shards are resonantly continuous manifestations associated with it, not finite chips physically removed from the object. There is no fixed shard count.
 
-\- He extracts through direct contact and can return to the same person. Each pass removes a coherent memory or memory-network, while repeated work becomes harder to isolate from identity-adjacent connections.
+\- He extracts through direct contact and can return to the same person. Each pass removes a coherent decision or connected set of decisions, while repeated work becomes harder to isolate from identity-adjacent connections.
 
 \- The archive is his default. Intact shards preserve complete context, chronology, emotion, learned information, reversibility, and his conscious access; he values understanding and traceable evidence.
 
 \- Shattering returns the memory to its owner and permanently ends Vesper's access. He does not treat restoration as failure, but it gives the outcome back to someone else.
 
-\- Melt destroys the autobiographical memory for both people. Vesper remembers performing it but retains only uncertain involuntary procedural or behavioral residue: habits, reflexes, movement, speech rhythms, practiced reactions, or mannerisms.
+\- Melt destroys the targeted decision memory for both people. Vesper remembers performing it but retains only uncertain involuntary procedural or behavioral residue: habits, reflexes, movement, speech rhythms, practiced reactions, or mannerisms.
 
 \- Melt does not transfer emotion, meaning, relationships, worldview, Deviations, or the lost person's lived experience. He cannot choose the residue exactly.
 
 The practical limit is cognitive rather than numerical. As foreign records accumulate or are heavily accessed, intrusive replay, neurological strain, and foreign associations escalate into source interference. Vesper may use another person's phrasing or gesture, enter the wrong experiential context, or briefly misattribute where a thought came from. At extreme load the records can remain accurate while immediate retrieval becomes too noisy for him to trust its source.
 
 Only three Melts are intended: his mother; one unknown person used as deliberate proof; and Roxana, intentionally, from distorted compassion and a desire for her unyielding behavior. Melt is rare, irreversible, and a sacrifice of understanding rather than a superior archive method.
+
+\#\#\# Archive as Technique
+
+Vesper does not fight from his own body's vocabulary. He keeps a few records he judged useful — each chosen because it answers something he expects to need — and he does not collect beyond that.
+
+Those records give him content, not fluency. He reproduces a recorded technique consciously: consult, then execute. His version is exact and slightly late. He never moves the way a trained body moves, because nothing he does was ever trained into him.
+
+What he needs is contact. His only decisive act is a touch, and a touch ends the exchange — whatever he reaches, he can take. He does not need to win a fight, only to arrive. This is why he is unhurried, and why his posture is courtesy rather than threat.
+
+The cost is his certainty. Every access runs through his own retrieval architecture, and heavy or repeated use brings replay, strain, and foreign association until source discrimination degrades. A fight that forces him to reach for more records attacks the one thing his worldview rests on.
+
+He cannot be out-fought, only out-spent: produce what his records answer badly, make him consult, and let the interference do the rest.
+
+\*\*Removal is his only offer.\*\* Everything he can do to a person is a subtraction: extraction takes the record, Melt destroys it, and the correction takes wanting itself. He cannot help anyone carry anything. This is why his kindness and his violence are the same gesture, and why every refusal of him in the story is a refusal of the same offer.
+
+\*\*The alternative he never considers is not a power.\*\* Helping someone recognise what is hurting them, confront it, limit its damage, or decide what it will mean for what they do next requires no Deviation at all. Reframing an experience is not lying about it — the facts do not have to move for their meaning to — and he has read enough lives to do it better than almost anyone. He never offers it. Removal is the help he can verify, and a person still carrying something is a result he cannot confirm. He withholds it from himself on the same grounds: he understands his mother's departure perfectly and has never once decided what it is allowed to mean.
+
+\*\*Shatter is the exception, and he does not use it.\*\* It returns the memory to its owner and gives the outcome back to someone else at the cost of his own access. It is the one thing he could do that is not a subtraction, and it is the one thing he withholds.
 
 \#\#\# Visual Anchors
 
@@ -111,6 +131,8 @@ Vesper is slight, young, composed, and physically non-threatening. He should inv
 \- He must be right sometimes. The Widower's first extraction remains a successful treatment.
 
 \- Do not reduce his failure to never asking or to disclosure alone. His consent is genuine but present-bound: he assumes today's authorization can settle a future whose ability to revise may be changed by the treatment itself.
+
+\- Do not let the city correction read as the moment he abandoned consent. He never stopped asking; the asking became a notice. The horror is the continuity, not a lapse.
 
 \- His mother never appears in flashback, and Vesper never explains Rain through her.
 

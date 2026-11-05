@@ -40,7 +40,7 @@ Comfort matters. A pitfall that is merely boring or obviously wrong cannot tempt
 
 \| \*\*1\*\* \| \*\*Go home\*\* \| the old life \| The drift \| The follow \| Rain admits wrongs he did not commit and resumes the commute. \|
 
-\| \*\*2\*\* \| \*\*Become a patient\*\* \| the present from painful wanting \| The archive \| Aster's trail ends here \| Rain accepts treatment for the ache of wanting, remains for additional sessions, and gradually lets the asylum determine what needs relief next. \|
+\| \*\*2\*\* \| \*\*Become a patient\*\* \| the present from painful wanting \| The archive \| The melt \| Rain accepts treatment for the ache of wanting, remains for additional sessions, and gradually lets the asylum determine what needs relief next. \|
 
 \| \*\*3\*\* \| \*\*Stay in the life\*\* \| the possible life \| The lives \| The mountain \| Rain never ends the beloved life. It remains valuable and does not need to reveal itself as false. \|
 
@@ -78,7 +78,7 @@ The lives are both optional-content space and the Arc 3 pitfall.
 
 \- They cannot see every life in one run.
 
-\- More lives create a larger graveyard on the mountain, but do not unlock a better ending.
+\- More lives create a larger graveyard on the mountain — one copy of Rain for each life he lived and left — but do not unlock a better ending. The graveyard is the figure of how much he relinquished to choose his current life: it weighs on the ending, not on the outcome.
 
 \- The player chooses when to stop entering lives. Rain ends the beloved life himself.
 

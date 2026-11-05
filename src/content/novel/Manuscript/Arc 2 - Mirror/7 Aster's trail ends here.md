@@ -1,1 +1,0 @@
-a2s07\_asters\_trail\_ends

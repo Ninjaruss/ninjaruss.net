@@ -1,10 +1,12 @@
-Created: August 10, 2026 at 12:50 PM
-Modified: August 10, 2026 at 12:50 PM
+Created: August 11, 2026 at 4:50 AM
+Modified: August 11, 2026 at 4:50 AM
 Status: No Status
 Label: Raw
 Keywords: 
 
 
-TELL 3 at breakfast (the loadout, unremarked). The steadying hand — she takes it, the one time ever. The melt; the Ghost's open hand toward the shard; Rain charges the man, brave and aimed wrong, three feet short. She keeps trying to stand, calmly at first.
+TELL 3 at breakfast (the loadout, unremarked). The steadying hand — she takes it, the one time ever. He extracts and Melts THE DECISIONS THAT MADE HER KEEP STANDING: the accumulated choices to re-enter, to carry, to not stop. Rain misreads the threat, charges the man, brave and aimed wrong, three feet short. She keeps trying to stand, calmly at first.
 
 group, Vesper | asylum
+
+Seed: "Roxana loses the ability to use her entire body properly." — Rain - Seed 1

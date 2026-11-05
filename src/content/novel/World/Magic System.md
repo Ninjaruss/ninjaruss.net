@@ -22,7 +22,7 @@ Resonance is not a moral judgment or a measure of human worth. The state turned 
 
 \#\#\# Passive, Pull, and Deviation
 
-\*\*Passive.\*\* A person's involuntary, uncontrolled resonance. Its ordinary expression is personal; the owner is the only person who directly perceives it. There is no public technical term inside the story, so names such as the Ghost and Static are personal.
+\*\*Passive.\*\* A person's involuntary, uncontrolled resonance. Its ordinary expression is personal; the owner is the only person who directly perceives it. Others do not perceive it directly, but may register it through their own resonance — as Roxana's Empathic Burn registers someone else's pain without seeing it. There is no public technical term inside the story, so names such as the Ghost and Static are personal.
 
 \*\*Pull.\*\* When a person's passive resonance meets a compatible, strongly resonant Imprint, the interaction creates an unmistakable attraction. The pull indicates compatibility, not instructions or guaranteed safety.
 
@@ -41,6 +41,24 @@ Resonance is strongest when an Imprint's completed transition and a person's unr
 A bonded Imprint is required for deliberate use of a Deviation. Lose it and the person returns to passive-only expression until it is recovered or another object resonates strongly enough to form a bond.
 
 The bond is a resonant relationship, not an autobiographical recollection. Removing a person's memory of finding, bonding with, or learning an Imprint does not by itself erase an established bond.
+
+\#\#\#\# The Goggles
+
+Settled 2026-11-05. The goggles are Rain's Imprint, and the one Imprint whose history this book states.
+
+\*\*What they are.\*\* Early work of Shiori's, a sibling of the external recording system she built after her injury: handmade skimmer goggles, taped seams, loose wire, two small screens. Built to hold a place in a process she could not rely on herself to hold. A bookmark you can wear.
+
+\*\*What patterned them.\*\* A worker's refusal, as \`Characters/0 Rain\` already states it: a worker used the goggles during a resonant Sacred Water infrastructure shift and finally quit a dead-end job rather than return indefinitely, never coming back for the equipment. The shift supplied the exposure; the refusal supplied the transition. What the goggles retain is the completed shape of choosing an unfinished, self-directed future over a prescribed route.
+
+\*\*Why they resonate with Rain.\*\* He made the same transition and it stayed open. He left a stable, approved path for an unfinished self-directed one, and it did not change him — the same shape, unresolved. That is the Pull.
+
+\*\*Not the shape match.\*\* The Clone's “nobody in it” quality is a downstream cost of the Deviation, not the resonance that formed it. Do not conflate them: Rain's unresolved transition is the leaving, not the absence.
+
+\*\*Two events, not one.\*\* Shiori made them; someone else's refusal patterned them. Imprints accumulate layers, so this is ordinary rather than a special case, and it is why she can own the object without owning what it became.
+
+\*\*Why a recorder.\*\* The system patterns objects materially involved in a transition, and a device whose whole function is to hold what happened around it is the most materially involved thing in a room. Her recorder is the ideal Imprint substrate by accident of its purpose, not by design — and she has no passive, bonded Imprint, or Deviation of her own.
+
+\{TK goggles: whether the worker is ever identified — anonymity keeps the object's history unlookupable, in a book whose antagonist's whole advantage is a complete record\}
 
 \#\#\# Deliberate Expressions
 
@@ -66,7 +84,11 @@ Every Deviation pays through the same system the user employs. Cost scales with 
 
 \- Vesper's high-fidelity memory system suffers increasing replay, interference, and source confusion as foreign records accumulate.
 
-Rain's longer or more complex Clone use escalates from blur and ringing through disorientation, proprioceptive instability, severe sensory degradation, and collapse.
+For Rain, load accumulates on two channels. The ordinary Clone disrupts sensory anchoring for as long as it is sustained, escalating from blur and ringing through disorientation, proprioceptive instability, severe sensory degradation, and collapse, and it clears within hours of use. Perfect Clone impairs felt authorship and action initiation, and that impairment accumulates across uses rather than within one use: the friction is between Rain's decision and his real body's initiation of it, so each use widens a gap the next one widens further.
+
+Perfect Clone friction clears over days of not using it, not hours, and does not clear at all while use continues. It is specific to the counterfeit: the ordinary Clone does not compound it, and switching back down does not discharge what the Perfect Clone has already spent.
+
+The practical floor is that Rain can always decide correctly. What degrades is the interval between deciding and beginning. At high accumulated load he knows the correct response and begins it too late to matter — and he cannot detect this from the inside, because the decision still feels immediate. Others can see it. He cannot.
 
 Roxana's Starborne suppresses normal pain gating; ungated pain can trigger withdrawal, involuntary tension or release, shaking, disrupted breathing, nausea, disorientation, and collapse, and mental toughness cannot simply overrule those responses.
 
@@ -96,9 +118,29 @@ The water is the contact. That is why correction needs no touch, and it is also 
 
 \#\#\# Extraction and Glass
 
-Vesper extracts a coherent autobiographical memory or connected memory-network through direct contact. There is no one-extraction-per-person limit. Repeated extractions become harder to isolate because memories share context and identity.
+Vesper extracts a coherent decision memory or connected network of decisions through direct contact (see \*\*Extraction sorts by kind\*\*, below — decision memory is the only kind his hands take). There is no one-extraction-per-person limit. Repeated extractions become harder to isolate because memories share context and identity.
 
 His precision determines whether he removes the intended network cleanly or damages related function. Early imprecision can damage related function; later treatment can leave flawless function while removing the wants and associations that made that function personal.
+
+\#\#\#\# Kinds of Memory
+
+Extraction sorts by kind, and only one kind is Vesper's target.
+
+\*\*Autobiographical memory\*\* is first-person experiential access: the lived relationship, fear, choice, emotion, and connected context. It is what makes a record feel like something that happened to you.
+
+\*\*Decision memory\*\* is the subset of autobiographical memory in which a conscious choice was made — the moment of electing one course over the others, with the weight that attached to it. \*\*This is Vesper's target, and the only kind his hands take.\*\* His prism stores decisions, and a complete extraction takes all of them. (Restored 2026-11-05 to the author's original seed, \`Research/Seed/Vesper - Seed\`: “Vesper has the ability to extract decision memories, memories where a conscious choice was made.” The Spine had drifted to the whole autobiographical record; it was never the intent.)
+
+This is why he is the antagonist of this book and not another one: it is a story about committing, and he removes the committing.
+
+\*\*What a complete extraction leaves.\*\* Everything that was not a choice survives, and survives vivid: rooms, faces, weather, what was said, what it felt like at the time. What is gone is every moment of election — so the record stays whole and nobody in it is deciding anything. The owner can narrate their life in detail and cannot locate themselves acting inside it. \*\*The intended effect is reading your own story in a book rather than remembering living it.\*\* It is not amnesia, and it is not a fact sheet.
+
+\*\*Semantic knowledge\*\* is propositional: what happened, who was present, in what order. It does not require the holder to have been there. A person can hold accurate semantic knowledge of an event they never experienced, and can lose semantic knowledge of an event they lived.
+
+\*\*Procedural knowledge\*\* is knowing how: trained movement, practised response, learned sequence. It is expressed rather than recalled.
+
+What extraction moves is the decision record. What it does not move is a faculty, and semantic and procedural knowledge are faculties rather than records. A shard is external memory storage, and what it holds is a record: Vesper can read its context, chronology, emotion, and learned information, and he may reproduce what it teaches him — deliberately, the way anyone uses external evidence. Reading a record of a skill is not acquiring the skill, and knowing what someone knew is not holding their knowledge.
+
+The owner keeps those faculties for the same reason. They were never records, extraction is not aimed at them, and nothing shields them — which is why Rain can still understand and use the goggles after the lived memory of learning them is gone.
 
 \#\#\#\# Intact Shard and Archive
 
@@ -122,7 +164,7 @@ Shattering a shard returns the memory to its original owner. Vesper permanently 
 
 \#\#\# Melt
 
-Melt destroys the autobiographical memory for both the original owner and Vesper. It cannot be restored.
+Melt destroys the targeted decision memory for both the original owner and Vesper. It cannot be restored.
 
 What may remain in Vesper is involuntary procedural or behavioral residue:
 
@@ -150,13 +192,15 @@ Vesper cannot extract a want as a separate object. He removes the memories and a
 
 \#\#\# Rain's Final Extraction
 
-Vesper succeeds completely. Direct contact extracts \*\*100% of Rain's autobiographical target\*\*: every lived relationship, fear, choice, emotion, and connected context up to contact. There is no shield, hidden soul, secret autobiographical fragment, incomplete extraction, or protagonist immunity. Vesper's prism contains the finished past in full.
+Vesper succeeds completely. Direct contact extracts \*\*100% of Rain's decision target\*\*: every choice he ever made, with the weight that attached to each, up to the moment of contact. There is no shield, hidden soul, secret surviving decision, incomplete extraction, or protagonist immunity. Vesper's prism contains the finished past in full.
 
-Rain remains factually informed because Arc 3 repeatedly trained his mind through life → completion → life subsequently known as story. That made semantic knowledge unusually independent from autobiographical ownership. The Perfect Clone deepened the same fracture by leaving accurate outcome without felt accomplishment. Those are downstream encodings outside Vesper's autobiographical target, not resistance to it.
+Rain keeps the rest of the record, in full and in detail, because it was never the target. He can describe the asylum, the tank, Roxana's face and the beloved life as precisely as before. He cannot find a decision anywhere in any of it.
+
+Arc 3 and the Perfect Clone are preparation rather than protection. Arc 3 forced him to live whole lives, complete them, and afterwards know them as stories — four times, by his own choice. The Perfect Clone returned accurate outcome without felt accomplishment. So Rain is the one person in the city who has occupied this state before and will recognise it. That is characterological, not a shield: Vesper still takes 100% of the target and nothing is withheld from him.
 
 The goggles remain bonded after extraction. The bond is resonant rather than autobiographical, so surviving semantic and procedural knowledge can still let Rain understand and deliberately use them after the lived memory of doing so is gone.
 
-Afterward, “I remember meeting Roxana” is gone. “Rain met Roxana” remains. Rain can recount the adventure precisely and cannot inhabit it as something that happened to him. The void's small non-branching acts do not restore the old identity or ownership; they create new consequences after the finished record ends.
+Afterward he can still describe meeting Roxana — the room, her hands, what she said — and there is no instant in it where he chose to stay. The adventure is recounted precisely and inhabited by no one. What is gone is not the information and not the texture; it is him, as the person who did any of it. The void's small non-branching acts do not restore the old identity or ownership; they create new consequences after the finished record ends.
 
 Vesper therefore wins the extraction and still loses the immediate physical exchange. His evidence is accurate; his error is believing a completed account authorizes the next response. A finished record is necessarily behind the present.
 
@@ -181,3 +225,32 @@ Vesper therefore wins the extraction and still loses the immediate physical exch
 \- An intact shard is reversible external storage; shatter returns the record; Melt destroys it for both people and leaves no recoverable lived meaning.
 
 \- Keep emotional or arc interpretation in Character and Story Plan references.
+
+
+\#\#\# The decision target — settled 2026-11-05
+
+Vesper's hands take decision memories only. This was the author's original seed and
+
+is now restored; semantic and procedural faculties are untouched, and the Imprint
+
+bond survives extraction for the reasons stated above.
+
+The question of what happens to autobiographical memory that was \*not\* a decision is
+
+\*\*answered: it stays, and it stays vivid.\*\* The texture of a room, a face, an
+
+afternoon nobody chose — all of it remains available in detail. Ownership turns out
+
+to have been made of choices, so removing the choices removes the claim without
+
+touching the content. That is the “read it in a book” effect this story wants, and it
+
+is why Rain can still fight: he knows everything he knew, including Vesper's tells,
+
+the chamber and the plan.
+
+The former \`\{TK decision target\}\` is closed. The alternative — that the rest collapses
+
+to flat fact — is rejected: it produces a fact sheet rather than a book, and it would
+
+leave Rain unable to act for want of information rather than for want of authorship.

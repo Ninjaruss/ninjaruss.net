@@ -44,11 +44,11 @@ After the Flare, the family separation became final while he was working in a re
 
 1\. Steam and a distant figure give the hunt a human shape.
 
-2\. In round one, he loses only the exit and does not chase beyond the task.
+2\. At their first meeting he loses only the exit, and does not chase beyond the task.
 
-3\. In round two, paperwork and procedure defeat the group without a raised hand.
+3\. At their second, paperwork and procedure defeat the group without a raised hand.
 
-4\. His signature appears on Aster's intake record.
+4\. His signature appears on the intake record of the person Roxana failed to protect.
 
 5\. He presents a genuine amnesty and reads the Furnace's projected depletion date without expression. Rain asks whether it is too late to stop; the steam reacts once.
 
@@ -64,7 +64,7 @@ He does not complete a conversion or choose a new side. His final change is the 
 
 \- \*\*Roxana:\*\* he can continue one old decision until the fuel ends. She can stop, hurt, and choose to relight. She does not overpower him; her repeated returns force him to keep paying for the assigned result.
 
-\- \*\*Aster:\*\* the Pursuer's signature on Aster's intake record makes him part of the history Roxana inherits. The record matters more than a confession, apology, or explanatory flashback.
+\- \*\*Roxana's missing person:\*\* his signature on that intake record makes him part of what she has to carry. The record matters more than a confession, apology, or explanatory flashback.
 
 \#\#\# Furnace, Greatcoat, and Finite Fuel
 

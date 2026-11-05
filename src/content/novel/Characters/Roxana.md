@@ -32,11 +32,13 @@ Roxana uses usefulness as evidence that she belongs. Her care is sincere; its fo
 
 \- Anger enters through the body: a set stance, a hand already moving, a barrier or opponent met directly.
 
-She takes Rain in before asking about the accusation. She also trains him toward Aster without admitting that need. Neither fact cancels the other.
+She takes Rain in before asking about the accusation. She also trains him because having someone to carry is how she confirms she belongs, without admitting that need. Neither fact cancels the other.
 
 \#\#\# Want, Fear, and Change
 
-A childhood fire killed Roxana's family and scarred her arms while she tried to save both parents. Aster later became her father figure and trainer. After he disappeared, she took his surname as a vow and kept his empty lighter.
+Roxana's burns are a persistent condition rather than a single event's scar: not solved, not solvable, managed daily with small accommodations and accepted as a fact of her life so she can stop spending her life on solving it. \{TK origin: what the burns are and where they came from — author's call, deliberately not decided here\}
+
+What she learned from it is the loneliness: people who hear about the pain and state the obvious. \*Have you tried not doing that. Have you tried this product.\* Advice that is not unhelpful so much as tone-deaf, from people who never considered she had already tried it. That is why she cannot receive — receiving has always meant being misunderstood. She carries a lighter that does not work.
 
 Roxana wants to be needed and known, but believes nobody leans on someone whose limits they have seen. She makes herself indispensable so belonging never has to survive her replaceability. Strength is not ease for her; it is the responsibility to keep returning when protection still matters.
 
@@ -56,7 +58,7 @@ The sharper test is not whether she can accept a hand once. It is whether she ca
 
 7\. Against the Pursuer, she loses exchanges and repeatedly chooses to re-enter until he empties.
 
-8\. She burns Aster's shard and fills his lighter with her own flame.
+8\. She remains in the room while someone else cooks, protects, decides, and carries — and still believes she belongs. She sits down while someone else works.
 
 \#\#\# With Others
 
@@ -64,19 +66,17 @@ The sharper test is not whether she can accept a hand once. It is whether she ca
 
 \- \*\*Vesper:\*\* both intervene through real care. Roxana spends herself while preserving the other person's agency. Vesper spends part of the other person to preserve the successful result.
 
-\- \*\*Rain:\*\* she offers home, training, and direction. She also tries to rebuild Aster through him without explaining that motive.
+\- \*\*Rain:\*\* she offers home, training, and direction. He is also the first person in a long time who needed her without first telling her how to manage herself.
 
 \- \*\*The Pursuer:\*\* he can continue one old decision until the fuel ends. She can stop, hurt, and choose to relight. Their last fight turns repeated choice, not superior force, into the difference.
-
-\- \*\*Aster:\*\* father figure, trainer, missing investigator, and the source of her surname and lighter. His absence remains active through what she does with his training and remains.
 
 \#\#\# Empathic Burn, Undying Flame, and Starborne
 
 Shared passive, Imprint, Deviation, and cost rules belong to \`World/Magic System.md\`. For Roxana on the page:
 
-\- \*\*Empathic Burn:\*\* Roxana involuntarily echoes nearby bodily pain through her own nervous system. It is not emotional mind-reading. Sensitive or damaged tissue responds most strongly, so her scars amplify the experience without serving as its exclusive channel. Exact range and source localization remain unsettled.
+\- \*\*Empathic Burn:\*\* Roxana involuntarily echoes nearby bodily pain through her own nervous system. It is not emotional mind-reading. Sensitive or damaged tissue responds most strongly, so her scars amplify the experience without serving as its exclusive channel. Exact range and source localization remain unsettled. The faculty is not itself suppressed by a deprivation pod; it goes quiet because everyone near her is suppressed, leaving nothing to echo. It registers only what exceeds that.
 
-\- \*\*Undying Flame:\*\* Aster's empty lighter produces one small real resonant flame guided primarily through Roxana's gestures. Its core resists ordinary rain, wind, and smothering while sustained, and it can ignite ordinary combustibles; secondary fires remain ordinary and uncontrolled. The base flame has negligible kinetic force.
+\- \*\*Undying Flame:\*\* her own empty lighter produces one small real resonant flame guided primarily through Roxana's gestures. Its core resists ordinary rain, wind, and smothering while sustained, and it can ignite ordinary combustibles; secondary fires remain ordinary and uncontrolled. The base flame has negligible kinetic force.
 
 \- \*\*Base cost:\*\* sustaining the flame heightens Roxana's nociceptive sensitivity. Her injuries, scar pain, and incoming Empathic Burn become harder to ignore and can interfere with function.
 
@@ -84,11 +84,11 @@ Shared passive, Imprint, Deviation, and cost rules belong to \`World/Magic Syste
 
 \- \*\*Starborne cost:\*\* normal pain gating is suppressed; ungated pain can trigger withdrawal, tension, and collapse (see \`World/Magic System.md\`).
 
-\- \*\*Passive breakout:\*\* in the prison, accepting the Ghost's open hand lets her produce one raw spark without the lighter. It nearly empties her and is not a new reliable technique.
+\- \*\*Passive breakout:\*\* in the prison, Empathic Burn carries the change out of Rain's pod and she knows she is not alone — and, sealed in, cannot reach him. Accepting the Ghost's open hand lets her produce one raw spark without the lighter. It nearly empties her and is not a new reliable technique.
 
 Undying Flame and Starborne are alternate deliberate modes, not independent powers used together. The star never gets bigger; Roxana changes her relationship to it.
 
-Vesper Melts a memory-network tied to her trauma, pain, and refusal to stop. Roxana loses access to it permanently. He gains no autobiographical memory, but may inherit unyielding reflexes or behaviors without their meaning.
+Vesper Melts the decisions that made her keep standing — the accumulated choices to re-enter, to carry, to not stop. Roxana loses access to them permanently. He gains no lived memory, but may inherit unyielding reflexes or behaviors without their meaning.
 
 \#\#\# Visual Anchors
 
@@ -104,7 +104,9 @@ Roxana is compact and physically forceful. Burn scars on her arms are essential.
 
 \- Her giving is both love and armor. Do not reveal one as fake.
 
-\- Training Rain is partly an attempt to reconstitute Aster. Never have her explain this.
+\- Her burns are a managed ongoing condition, not a tragic wound. Avoid the single-catastrophe origin and the heroic scar.
+
+\- Offered help that lands as dismissal is her real antagonist. The Ghost's hand works in Arc 3 because it asks nothing and says nothing.
 
 \- Her anger and immediate action are practical intelligence, not evidence that she is less rational than Claire.
 

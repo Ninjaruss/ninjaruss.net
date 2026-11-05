@@ -32,7 +32,7 @@ Use three broad, overlapping families. The detailed image sections below are man
 
 \- \*\*Contact / Intervention:\*\* reaching, carrying, steadying, helping, accepting help, extraction through touch, Roxana's care, Claire's offered hand, Vesper's hand, the Ghost's palm, and Rain's final gesture. Ask when intervention preserves another person's participation and when it replaces it.
 
-Character imagery remains specific: Rain has gold/Ghost/Clone/Split; Claire has Static/lens/silence; Roxana has fire/scars/lighter; the Pursuer has steam/greatcoat; Shiori has tools/marks/recordings; Vesper has glass/archive. Aster is primarily the trace of someone absent. \*\*Consumption / Cost / Spending\*\* remains exploratory rather than locked as a fourth major motif.
+Character imagery remains specific: Rain has gold/Ghost/Clone/Split; Claire has Static/lens/silence; Roxana has fire/scars/lighter; the Pursuer has steam/greatcoat; Shiori has tools/marks/recordings; Vesper has glass/archive. \*\*Consumption / Cost / Spending\*\* remains exploratory rather than locked as a fourth major motif.
 
 \#\#\# Contrasts in Action
 
@@ -96,19 +96,19 @@ Character imagery remains specific: Rain has gold/Ghost/Clone/Split; Claire has 
 
 \*\*Forms:\*\* Intact glass stores context, chronology, access, and reversibility. Shattering returns a memory. Melt destroys the record while behavior may remain without provenance.
 
-\*\*Progression:\*\* The archive first appears as evidence of transparent, reversible care. Aster's shard makes preservation personal. Roxana's Melt exposes the cost of destroying context. Rain's extraction produces a prism while changing his relation to the completed record.
+\*\*Progression:\*\* The archive first appears as evidence of transparent, reversible care. Roxana's Melt exposes the cost of destroying context. Rain's extraction produces a prism while changing his relation to the completed record.
 
-\*\*Carriers:\*\* Vesper's archive and prism, the extracted owners, Aster's shard, and Rain's emotionally flat factual recall.
+\*\*Carriers:\*\* Vesper's archive and prism, the extracted owners, and Rain's detailed, unowned recall of his own story.
 
 \*\*Drafting risk:\*\* Glass should feel stored and still. Vesper's foreign behavior is most unsettling as a small stance, phrase, hand movement, or reflex with no remembered lesson behind it.
 
 \#\#\# Fire and Scars
 
-\*\*Forms:\*\* Roxana's nervous system echoes other people's bodily pain, with damaged scar tissue amplifying it. Aster's lighter channels one small Undying Flame. Base use heightens pain sensitivity; in Starborne, the same flame carries Roxana while normal pain gating is suppressed.
+\*\*Forms:\*\* Roxana's nervous system echoes other people's bodily pain, with damaged scar tissue amplifying it. Her own lighter channels one small Undying Flame. Base use heightens pain sensitivity; in Starborne, the same flame carries Roxana while normal pain gating is suppressed.
 
-\*\*Progression:\*\* The prison spark occurs without the lighter and nearly empties her. In the finale she burns Aster's shard and fills his lighter with her own flame.
+\*\*Progression:\*\* The prison spark occurs without the lighter and nearly empties her. In the finale she stops carrying — she stays in the room while someone else works, and still believes she belongs.
 
-\*\*Carriers:\*\* Roxana's body, Aster's lighter, accepted care, and the shard.
+\*\*Carriers:\*\* Roxana's body, her own lighter, and accepted care.
 
 \*\*Drafting risk:\*\* Standing remains costly. Do not render the flame as physical restoration.
 
@@ -128,7 +128,7 @@ The evidence-as-bookmark interpretation and the Arc 5 no-bookmark wager are a \*
 
 \*\*Forms:\*\* Doodles and jokes identify Shiori's hand before she appears. Tools left on seams show where she stopped. Backups brace against loss; maker's marks express delight. Her recordings preserve evidence while the state ignores it.
 
-\*\*Progression:\*\* Her missing work and surviving records first make Rain her suspect; her recordings later exonerate him. Her distributed rig keeps the final fronts connected until she spends it. Afterward she turns the cameras off and puts a tool away.
+\*\*Progression:\*\* Her missing work first makes Rain her suspect; what changes her mind is recognising his laugh, not a record clearing him (the charge is disproportionate, not false). Her distributed rig keeps the final fronts connected until she spends it. Afterward she turns the cameras off and puts a tool away.
 
 \*\*Carriers:\*\* The goggles, vault, patched infrastructure, distributed feeds, cameras, and hand tools.
 
@@ -143,16 +143,6 @@ The evidence-as-bookmark interpretation and the Arc 5 no-bookmark wager are a \*
 \*\*Carriers:\*\* The Pursuer's body, service, greatcoat, supplied headings, and finite burn.
 
 \*\*Drafting risk:\*\* Endurance must look costly rather than superhumanly free. Stopping is not defection or a sudden alliance.
-
-\#\#\# Aster
-
-\*\*Forms:\*\* Aster is dead before the story begins and remains through Roxana's surname, training, and lighter; Claire's investigation; Vesper's access to his recorded fighting style; the Pursuer's signature on his intake; and the shard Roxana ultimately burns.
-
-\*\*Progression:\*\* He begins as missing influence, becomes a preserved record in the archive and prison, and ends as a shard Roxana chooses not to keep.
-
-\*\*Carriers:\*\* Roxana, Claire, Vesper, the Pursuer's ledger, the lighter, and the shard.
-
-\*\*Drafting risk:\*\* Nobody eulogizes Aster as the mentor the cast should have had. His absence should be legible through what people do with his remains.
 
 \#\#\# Gold Vocabulary
 
@@ -184,8 +174,8 @@ Use this closed set only when the visual argument requires it:
 
 \- Do not reward every good choice immediately or punish avoidance immediately.
 
-\- Keep the final prose concrete. Rain's semantic knowledge is precise while autobiographical access and felt ownership are absent.
+\- Keep the final prose concrete. Rain's recall stays detailed and sensory — he is not short of information or texture. What is absent is any felt moment of having chosen, anywhere in it.
 
-\- His past should feel like fiction he knows intimately, not like missing factual information. The train does not begin reconnecting him to it.
+\- His past should feel like fiction he knows intimately, not like missing factual information. He is a reader of it, not a witness short of details. The train does not begin reconnecting him to it.
 
 \- Leave the future open through new choices and consequences, not through promised recovery of the old emotional connection.

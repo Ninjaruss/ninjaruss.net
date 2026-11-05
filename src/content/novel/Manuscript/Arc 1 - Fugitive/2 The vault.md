@@ -1,6 +1,6 @@
 a1s02\_vault
 
-%% The alley opens into the confiscated-artifact vault through Shiori's active breach. She removes Gadget X, a recent mundane device of her own, without Nimbus identifying her. The separately held goggles call to Rain through the worker's-refusal Imprint; he steals them, and the unnamed Shiori keeps his nervous laugh. Nimbus later attributes both missing Shiori-made objects to him. \| Rain, Shiori (unnamed) \| Nimbus vault
+%% The alley opens into the Nimbus lost-and-found through Shiori's active breach. She removes something of her own without Nimbus identifying her. The separately held goggles call to Rain: her early work, patterned by a worker's refusal — someone who kept showing up for years, then walked out mid-shift and never came back for their things. He steals them, deliberately and only them, and the unnamed Shiori keeps his nervous laugh. \| Rain, Shiori (unnamed) \| Nimbus vault
 
 I couldn't remember ever noticing this alleyway before, despite walking past it almost every day.
 
@@ -292,4 +292,48 @@ Then I noticed a small icon near the bottom right of my vision. A microphone sym
 
 Still nothing.
 
-I took them off and tried to inspect the goggles more closely. I was hoping to find a model or a brand associated with this thing. But it was clean.
+I took them off and tried to inspect the goggles more closely. I was hoping to find a model or a brand associated with this thing. 
+
+Only to find a sliver of cyan tape once again. Seems like she likes that color.
+
+Maybe I’ll figure it out later after a bit more tinkering.
+
+I wrote a reminder to myself with the laptop. 
+
+I realized I haven’t written anything for the story.
+
+…
+
+Focus. Focus on what matters right now. 
+
+7:53 AM. I lost track of time. A few minutes left before I need to head to work on time. 
+
+I switched out my clothes, ate a simple sandwich, brushed my teeth, and gathered my belongings into my bag sling.
+
+Before leaving, I decided to check on any updates of the situation yesterday.
+
+…
+
+I felt a tense gravity pull my whole self to the ground.
+
+8:00 AM.
+
+“BREAK YOUR OWN LIMITER,”
+
+“We have released the following surveillance image of the suspect.”
+
+Damn it.
+
+“BECOME YOUR OWN ANSWER,”
+
+“He was last seen stealing two very important objects from the warehouse.”
+
+Two?
+
+“FIGHT, FIGHT,”
+
+“One of which can be very dangerous in the wrong hands.”
+
+“PUSH THROUGH PRESSURE.”
+
+“We must find him before it’s too late.”

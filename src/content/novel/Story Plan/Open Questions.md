@@ -6,13 +6,13 @@ Only questions without a usable current answer belong here. Do not treat earlier
 
 \- Did the asylum predate Vesper? Is he its operator, public face, research subject, or something else?
 
-\- Where within the five years do his mother's Melt, Shiori's extraction, the unknown Melt, Aster's death, and the Widower's nine treatments fall?
+\- Where within the five years do his mother's Melt, Shiori's extraction, the unknown Melt, and the Widower's nine treatments fall?
 
 \- What institution allowed a thirteen-to-eighteen-year-old Vesper to practice, and what did it believe it was authorizing?
 
 \#\#\# Melt details
 
-\- What exact autobiographical memory was destroyed in each of the three Melts?
+\- What exact decision memory was destroyed in each of the three Melts?
 
 \- Which procedural or behavioral residue remains from each?
 
@@ -22,9 +22,7 @@ Only questions without a usable current answer belong here. Do not treat earlier
 
 \#\#\# Character history
 
-\- Is Roxana's childhood fire primarily the origin of her providing or a debt she believes she must keep paying?
-
-\- What single specific act by Aster should define the person Roxana is trying to rebuild and Vesper is trying to use?
+\- What are Roxana's burns and where did they come from? (\`\{TK origin\}\` on her sheet, deliberately left undecided 2026-11-04.)
 
 \- What did Vesper remove from the Gamer, and what ordinary asylum task makes the loss visible without explanation?
 
@@ -68,7 +66,9 @@ The bookmark formulation is developed but not locked. Its current test is whethe
 
 \#\#\# Scene content
 
-\- What does Gadget X do?
+\- What is the object Shiori breaches the vault to recover, and what does it do? (No longer load-bearing: the two-object theft mechanism was cut 2026-11-04.)
+
+\- Is the worker whose refusal patterned the goggles ever identified?
 
 \- Which optional lives appear in Arc 3, and which one is the beloved life?
 

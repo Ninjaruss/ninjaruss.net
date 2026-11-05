@@ -26,4 +26,10 @@ The temptation is to replace present participation with proof: unrealized potent
 
 Care may guide, protect, confront, restrain, or relieve pain. Its limit is another person's continuing ability to participate. Relief that restores that ability is medicine. Relief that removes the person who could later accept, regret, revise, or refuse it is subtraction.
 
+Care can also change what an experience means without changing what happened. Helping a person recognise what is hurting them, confront it, limit its damage, or decide what those facts will mean for the decisions they make next is not a lie told to them about their own life — something terrible remains terrible, and the facts do not move. This is the work that neither relief nor removal performs, and it is the only form of help that leaves the person still holding their own past.
+
+\#\#\# Stillness that was chosen
+
+A quiet, comfortable, unambitious life is not a failure of this stance. Someone who genuinely chooses to remain where they are has participated. The distinction the story defends is between choosing to remain and losing the ability to choose otherwise — never between moving and staying. Nothing here licenses measuring a person by how much they initiate, and the story should not ask the reader to.
+
 No character embodies the whole answer. Their strengths remain valuable; the story tests what happens when any one strength is asked to decide the person completely.

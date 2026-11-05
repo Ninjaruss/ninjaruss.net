@@ -44,6 +44,63 @@ Forms say \*stabilization\*, \*renewal\*, and \*adjustment\*. They do not say \*
 
 Never give the Ministry a single villainous face. It appears through offices, forms, schedules, and systems that continue without anyone visibly commanding them.
 
+\#\#\#\# Consent at scale — working direction, not locked canon
+
+\*\*This section is a developed proposal, 2026-11-05.\*\* The form names and the
+
+Ministry's register above are established; the reading below is not. Preserve the
+
+established facts even if this interpretation changes.
+
+The proposed answer to how a man who asks permission every time becomes willing to
+
+correct a city is that \*\*he never stopped asking — he scaled the asking through the
+
+only instrument the state has.\*\* At household scale, asking permission is a form.
+
+On this reading the \*Household Flow Assessment\* is how consent is collected for a
+
+dwelling: delivered, read, filed, returned. It says \*stabilization\* and \*adjustment\*. It does not say
+
+\*correction\*, and it does not need to lie, because nobody reading it is being
+
+deceived about water.
+
+It would also mean \`Arc 4 · 5 The advocate\` is not wrong when Claire says the
+
+correction asks permission. It does ask. It asks the way a utility asks, of a household, in
+
+writing, with a deadline. Her sentence is accurate and it is not an answer — and she
+
+is neither lying nor naive in saying it.
+
+The appeal of the reading is that it makes Vesper's error civic without altering him: he treats present authorization as
+
+sufficient to settle what a person may later become, and the Ministry collects
+
+present authorization at a rate of one page per address. His virtue survived intact
+
+and became the delivery mechanism.
+
+\*\*Never let anyone articulate this.\*\* Vesper does not explain it, Claire does not
+
+concede it, and no official defends it. It arrives as paperwork somebody already
+
+dealt with.
+
+\{TK whether the Assessment is opt-in, opt-out, or carries an objection window nobody
+
+uses — this materially changes how damning it is, and it is the author's call\}
+
+\{TK if this reading is dropped, the seam it covers reopens: \`Arc 4 · 5\` has Claire
+
+saying the correction asks permission while \`World/Magic System\` delivers it through
+
+the water supply, which nobody consents to. That needs some answer, and this is
+
+currently the only one on the table.\}
+
+
 \#\#\# Nimbus Co.
 
 A private contractor that builds and maintains Ministry infrastructure. Nimbus constructed the Imprint Vault's containment system and the prison's sensory-deprivation pods.
@@ -56,7 +113,9 @@ Rain's ordinary route and the first route he leaves. The alley gives the story i
 
 \#\#\# Nimbus Imprint Vault
 
-A restricted, corporate-secured room for confiscated Imprints and Shiori's equipment. Shiori breaches it to recover Gadget X, a recent device that was mundane when built. Her older goggles are a separate object already in custody; Rain follows through her breach, feels their Pull, and steals them. The goggles are logged as Nimbus property on loan to the state; their later recovery appears on the Arc 4 amnesty manifest as corporate asset recovery dressed as clemency.
+A restricted Nimbus room that is in practice a lost-and-found. Bins of keys, utility tools and articles of clothing sorted by ID number; a rack of yellow rain jackets; a whiteboard of chore lists nobody reads. Confiscated Imprints and Shiori's equipment are held in the same room as ordinary unclaimed belongings. The room only ever fills up: corrected people stop initiating, so they never come back for their things.
+
+Shiori breaches it to recover something of her own. The goggles are already in custody, held separately; Rain follows through her breach, feels their Pull, and steals them — deliberately, and only them. The goggles are logged as Nimbus property on loan to the state; their later recovery appears on the Arc 4 amnesty manifest as corporate asset recovery dressed as clemency.
 
 \#\#\# Abandoned Asylum
 

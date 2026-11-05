@@ -48,7 +48,7 @@ Rain wants to create a great story capable of inspiring someone as deeply as for
 
 4\. He refuses the amnesty while it is still available, then relapses through the Perfect Clone.
 
-5\. Vesper successfully extracts every autobiographical memory-network. Rain returns with independently encoded factual knowledge but no lived access to, or felt ownership of, the person who experienced those events.
+5\. Vesper successfully extracts every decision Rain ever made. Rain returns with the whole record intact and vivid — rooms, faces, weather, what was said — and no instant anywhere in it where he was the one deciding. The events remain, the authorship does not. He reads his own story rather than remembering living it.
 
 6\. After extraction, he uses the ordinary Clone as the expected target while taking the consequential position and real blow himself, then refuses Vesper's offer to remove the Split.
 
@@ -56,7 +56,7 @@ Rain wants to create a great story capable of inspiring someone as deeply as for
 
 The completed adventure remains a story Rain knows intimately and can recount precisely but cannot inhabit in the first person. The train does not begin restoring that connection. What remains available is his ability to make new consequences through present choices.
 
-Arc 3 made semantic story and autobiographical ownership unusually separable by forcing him to live, complete, and subsequently know whole lives as stories. The Perfect Clone strengthened the same fracture by returning accurate outcome without felt accomplishment. This residue is not a shield or immunity: Vesper still takes the entire autobiographical target.
+Arc 3 made the record of a life and the ownership of having chosen it unusually separable, by forcing him to live, complete, and subsequently know whole lives as stories. The Perfect Clone strengthened the same fracture by returning accurate outcome without felt accomplishment. This residue is not a shield or immunity: Vesper still takes the entire decision target. What it means is that Rain has held an un-owned complete life before, four times, on purpose — so he recognises the state he is in rather than being equipped to resist it.
 
 \*\*Locked callbacks — use these exact selected lines from \`Manuscript/Arc 1 - Fugitive/0 Rain intro.md\`:\*\*
 
@@ -80,7 +80,7 @@ The outbound train is the final scene. Nothing follows the ending callback.
 
 \- \*\*Claire:\*\* Rain lets her take decisions from him. In Arc 4 he must answer her in a quiet room rather than converting her certainty into his choice.
 
-\- \*\*Roxana:\*\* he mistakes her usefulness for effortless strength. She gives him home and direction while partly training him toward Aster without saying so.
+\- \*\*Roxana:\*\* he mistakes her usefulness for effortless strength. She gives him home and direction, and needs to be needed without saying so.
 
 \- \*\*Shiori:\*\* she makes imperfect things and lets them exist. Rain admires this without identifying it as the answer to his notebook.
 
@@ -98,9 +98,9 @@ Shared passive, Imprint, Deviation, and cost rules belong to \`World/Magic Syste
 
 \- \*\*The Perfect Clone:\*\* the same intangible counterfeit rendered with convincing physical fidelity. It locally registers enough of its surroundings to simulate rain, impact, wounds, recoil, clothing damage, and incidental sound on the projected body while matter and force pass through it; semantic speech remains authored by Rain. It cannot create unrelated consequences, transmit force, or give Rain access to what it registers. Repeated use temporarily compounds friction in Rain's want → commit → act pathway: he retains desire and knowledge but loses felt authorship and struggles to initiate action. The dimming Ghost is a symptom of that recoverable impairment, not a finite resource being consumed.
 
-\- \*\*The Split:\*\* Rain's record of past failure in his own voice. It is unmarked at first and italicized after the mountain. Never settle whether it is another entity or only Rain.
+\- \*\*The Split:\*\* Rain's record of past failure in his own voice. Before the mountain it is unmarked and wears the shape of whichever life Rain is inside, so he meets it as a replica of himself rather than as a voice; the copies it wore are what the mountain holds. After the mountain it is marked and italicized. Never settle whether it is another entity or only Rain.
 
-Ordinary Clone and Perfect Clone remain alternate expressions, one projection at a time. Before extraction, Perfect Clone works well enough that its accumulated initiation cost helps Vesper obtain contact: Rain knows the response and begins it too late. After Vesper removes the entire autobiographical network around the goggles, the resonant bond remains. Semantic and procedural knowledge let Rain use the ordinary Clone for the decisive decoy even though he no longer remembers learning it.
+Ordinary Clone and Perfect Clone remain alternate expressions, one projection at a time. Before extraction, Perfect Clone works well enough that its accumulated initiation cost helps Vesper obtain contact: Rain knows the response and begins it too late. After Vesper removes every decision attached to the goggles — including the choice to take them — the resonant bond remains. Semantic and procedural knowledge let Rain use the ordinary Clone for the decisive decoy even though he no longer remembers learning it.
 
 \#\#\# Visual Anchors
 
