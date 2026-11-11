@@ -1,34 +1,51 @@
 ---
 import { getCollection } from 'astro:content';
-import WritingLayout from '../../layouts/WritingLayout.astro';
+import ReadingLayout from '../../layouts/ReadingLayout.astro';
 import { publicNotes } from '../../utils/notes';
 import { formatDate } from '../../utils/dates';
+import { stripMarkdown } from '../../utils/content';
 const entries = publicNotes(await getCollection('notes'));
+const [latest, ...earlier] = entries;
+const opening = latest?.data.description ?? stripMarkdown(latest?.body.split(/\n\s*\n/).find(paragraph => paragraph.trim() && !/^[#<]/.test(paragraph.trim())) ?? '');
+const excerpt = opening.length > 190
+  ? opening.slice(0, 190).match(/^.*[.!?](?=\s|$)/)?.[0] ?? opening.slice(0, 190).replace(/\s+\S*$/, '') + '…'
+  : opening;
 ---
-<WritingLayout title="Writing" description="Personal essays, reflections, and notes by Ninjaruss.">
-  <header>
+<ReadingLayout title="Writing" description="Personal essays, reflections, and notes by Ninjaruss." wide>
+  <header class="reading-header">
     <span class="p4g-tab">Essays &amp; notes</span>
     <h1 class="p4g-heading">Writing</h1>
-    <p>Personal essays on life and becoming the person I want to be.</p>
-    <nav class="writing-links" aria-label="Follow the writing">
-      <a href="/rss.xml">Follow via RSS</a>
-      <a href="/now">What I’m up to now</a>
-      <a href="/japanese-journal">Japanese practice journal</a>
-    </nav>
+    <p class="reading-description">Personal essays on life and becoming the person I want to be.</p>
+    <nav class="writing-links" aria-label="Follow the writing"><a href="/rss.xml">Follow via RSS →</a></nav>
   </header>
-  <ol class="notes-list" aria-label="Writing, newest first">
-    {entries.map(entry => <li>
-      <a href={`/notes/${entry.slug}`}>
-        <h2>{entry.data.title}</h2>
-        <span class="writing-dates">{entry.data.publishedAt ? <time datetime={entry.data.publishedAt.toISOString()}>{formatDate(entry.data.publishedAt)}</time> : 'Undated'}</span>
-      </a>
-    </li>)}
-  </ol>
-</WritingLayout>
+  {latest && <a class="latest-note" href={`/notes/${latest.slug}`}>
+    <span class="latest-note__label">Latest note</span>
+    <h2>{latest.data.title}</h2>
+    {latest.data.publishedAt && <time datetime={latest.data.publishedAt.toISOString()}>{formatDate(latest.data.publishedAt)}</time>}
+    {excerpt && <p>{excerpt}</p>}
+    <span class="latest-note__read">Read the note →</span>
+  </a>}
+  {earlier.length > 0 && <section aria-labelledby="earlier-writing">
+    <h2 id="earlier-writing" class="earlier-title">Earlier writing</h2>
+    <ol class="reading-list" aria-label="Earlier writing, newest first">
+      {earlier.map(entry => <li><a href={`/notes/${entry.slug}`}>
+        {entry.data.publishedAt ? <time datetime={entry.data.publishedAt.toISOString()}>{formatDate(entry.data.publishedAt)}</time> : <span class="undated">Undated</span>}
+        <h3>{entry.data.title}</h3>
+      </a></li>)}
+    </ol>
+  </section>}
+  <nav class="writing-links reading-footer" aria-label="More from Ninjaruss">
+    <a href="/now">What I’m up to now →</a>
+    <a href="/japanese-journal">Japanese practice journal →</a>
+  </nav>
+</ReadingLayout>
 <style>
-  .notes-list { list-style: none; margin: 0; padding: 0; }
-  .notes-list li { border-top: 1px solid var(--color-border); }
-  .notes-list a { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: var(--space-sm) var(--space-lg); padding: var(--space-lg) 0; text-decoration: none; color: var(--color-text); }
-  .notes-list h2 { font: clamp(1.1rem, 3vw, 1.4rem) var(--font-display); margin: 0; max-width: 30ch; }
-  .notes-list a:hover h2 { color: var(--color-gold); }
+  .latest-note { display: block; padding: clamp(20px,4vw,32px); border: 2px solid var(--color-gold); background: var(--color-bg-elevated); margin-bottom: var(--space-2xl); text-decoration: none; color: var(--color-text); box-shadow: var(--shadow-hard-sm); }
+  .latest-note__label { color: var(--color-gold); font: .8rem var(--font-mono); }
+  .latest-note h2 { font: italic clamp(1.7rem,4vw,2.5rem)/1.2 var(--font-display); margin: var(--space-md) 0 var(--space-sm); }
+  .latest-note time { color: var(--color-text-muted); font: .85rem var(--font-mono); }
+  .latest-note p { max-width: 60ch; line-height: 1.8; margin: var(--space-lg) 0; }
+  .latest-note__read { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-gold); font-weight: 700; }
+  .latest-note:hover h2 { color: var(--color-gold); }
+  .earlier-title { font: 1.2rem var(--font-display); margin-bottom: var(--space-sm); }
 </style>

@@ -5,24 +5,19 @@ function initLife() {
   const root = document.querySelector<HTMLElement>('[data-life]');
   if (!root || root.dataset.ready) return;
   root.dataset.ready = 'true';
-  const panels = [...root.querySelectorAll<HTMLElement>('[data-life-panel]')];
-  const links = [...root.querySelectorAll<HTMLAnchorElement>('[data-life-link]')];
-  function select() {
-    if (!root?.isConnected) return;
+  const map = root.querySelector<HTMLDetailsElement>('[data-life-map-disclosure]');
+  function revealMap() {
+    if (!root?.isConnected || !map) return;
     const hash = window.location.hash.slice(1);
     const destination = document.getElementById(hash);
-    const selected = destination?.closest<HTMLElement>('[data-life-panel]')?.id
-      ?? (panels.some(panel => panel.id === hash) ? hash : 'making');
-    panels.forEach(panel => { panel.hidden = panel.id !== selected; });
-    links.forEach(link => {
-      if (link.hash === `#${selected}`) link.setAttribute('aria-current', 'location');
-      else link.removeAttribute('aria-current');
-    });
-    if (destination && hash.startsWith('day-')) destination.scrollIntoView({ block: 'start' });
+    if (hash === 'places' || (destination && map.contains(destination))) {
+      map.open = true;
+      destination?.scrollIntoView({ block: 'start' });
+    }
   }
-  select();
-  window.addEventListener('hashchange', select);
-  document.addEventListener('astro:before-swap', () => window.removeEventListener('hashchange', select), { once: true });
+  revealMap();
+  window.addEventListener('hashchange', revealMap);
+  document.addEventListener('astro:before-swap', () => window.removeEventListener('hashchange', revealMap), { once: true });
 }
 
 function initLifeMail() {

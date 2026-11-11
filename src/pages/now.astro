@@ -2,8 +2,7 @@
 import { getCollection } from 'astro:content';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import NavPill from '../components/NavPill.astro';
+import ReadingLayout from '../layouts/ReadingLayout.astro';
 import { parseCurrentArc } from '../utils/currentArc';
 import { STAT_COLORS, hexToRgbTriplet } from '../utils/sessions';
 
@@ -47,307 +46,80 @@ const arcCardStyle = arcColor
   : '';
 ---
 
-<BaseLayout title="Now" description="What I'm currently focused on.">
-  <NavPill />
-  <div class="container">
-    <article class="now p3r-animate">
-      <header class="now__header">
-        <span class="p4g-tab">snapshot</span>
-        <div class="now__header-top">
-          <h1 class="now__title"><span class="p4g-heading">Now</span></h1>
-          <p class="now__updated" title="Date shown in UTC">
-            <span class="now__updated-icon" aria-hidden="true">◈</span>
-            {lastUpdated}
-          </p>
-        </div>
-        <span class="p4g-underline" aria-hidden="true"></span>
-        {latestPost.data.title && latestPost.data.title !== 'Now' && (
-          <p class="now__entry-title">{latestPost.data.title}</p>
-        )}
-      </header>
-
-      {currentArc && (
-        <section class="arc-card" style={arcCardStyle} aria-label="Current arc">
-          <div class="arc-card__top">
-            <div class="arc-badge">
+<ReadingLayout title="Now" description="What I'm currently focused on." wide>
+  <header class="reading-header">
+    <span class="p4g-tab">Life lately</span>
+    <h1 class="p4g-heading">Now</h1>
+    <p class="reading-description">What I’m currently focused on.</p>
+    <nav class="writing-links" aria-label="Now navigation">
+      <a href="/now/archive">Past updates →</a>
+      <a href="/life">About me →</a>
+    </nav>
+  </header>
+  <div class:list={['now-reading', { 'now-reading--focused': !!currentArc }]}>
+    {currentArc && <aside class="now-reading__focus">
+        <details class="arc-card" style={arcCardStyle} data-now-focus open>
+          <summary class="arc-card__top">
+            <span class="arc-badge">
               <img src={arcEmblem} alt="" />
-            </div>
-            <div>
+            </span>
+            <span>
               <span class="arc-kicker">Current arc{currentArc.stat ? ` · ${currentArc.stat}` : ''}</span>
-              <h2 class="arc-title">{currentArc.arc}</h2>
-            </div>
-          </div>
+              <span class="arc-title">{currentArc.arc}</span>
+            </span>
+          </summary>
           <span class="arc-decision-label">Active decision</span>
           <p class="arc-decision-text">{currentArc.decision}</p>
           {currentArc.updated && <span class="arc-updated">updated {currentArc.updated}</span>}
-        </section>
-      )}
-
-      <div class="now__content prose">
-        <Content />
-      </div>
-
-      <footer class="now__footer p3r-animate" style="--stagger-delay: 200ms;">
-        <div class="now__footer-divider" aria-hidden="true"></div>
-        <div class="now__footer-content">
-          <span class="now__footer-label">Archive</span>
-          <a href="/now/archive" class="now__archive-link">
-            View past entries <span aria-hidden="true" class="now__archive-arrow">→</span>
-          </a>
-        </div>
-      </footer>
+        </details>
+    </aside>}
+    <article class="now-reading__entry" aria-label={latestPost.data.title}>
+      <header class="now-entry-header">
+        <p class="writing-dates">Latest update · <time datetime={latestPost.data.publishedAt.toISOString()}>{lastUpdated}</time></p>
+        {latestPost.data.title !== 'Now' && <h2>{latestPost.data.title}</h2>}
+      </header>
+      <div class="prose"><Content /></div>
+      <nav class="writing-links reading-footer" aria-label="Past Now entries"><a href="/now/archive">Read past updates →</a></nav>
     </article>
   </div>
-</BaseLayout>
-
+</ReadingLayout>
 <style>
-  .now {
-    max-width: 65ch;
-    margin: 0 auto;
-    padding-bottom: calc(var(--nav-clearance, 80px) + var(--space-md)); /* Space for floating nav */
-  }
-
-  .now__header {
-    margin-bottom: var(--space-xl);
-  }
-
-  .now__header :global(.p4g-tab) {
-    margin-bottom: var(--space-xs);
-  }
-
-  .now__header :global(.p4g-underline) {
-    margin-bottom: var(--space-md);
-  }
-
-  .now__header-top {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: var(--space-md);
-    margin-bottom: var(--space-xs);
-  }
-
-  .now__title {
-    font-family: var(--font-display);
-    font-size: var(--text-page-title);
-    color: var(--color-gold);
-    text-shadow:
-      0 0 30px rgba(var(--color-gold-rgb), 0.4),
-      0 0 60px rgba(var(--color-gold-rgb), 0.2);
-    animation: p3r-animate-left 500ms var(--animation-easing) 100ms backwards;
-  }
-
-  .now__updated {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs);
-    font-size: var(--text-sm);
-    font-family: var(--font-mono);
-    background: var(--color-black);
-    color: var(--color-gold);
-    padding: var(--space-xs) var(--space-md);
-    border-radius: var(--radius-sm);
-    border: var(--border-thin) solid var(--color-gold-dim);
-    letter-spacing: 0.05em;
-    white-space: nowrap;
-    flex-shrink: 0;
-    /* p3r-entrance, not p3r-animate: p3r-animate is a CLASS (transitions.css),
-       not a @keyframes name, so this shorthand resolved to nothing and the chip
-       never animated in. */
-    animation: p3r-entrance 400ms var(--animation-easing) 300ms backwards;
-  }
-
-  .now__entry-title {
-    font-family: var(--font-display);
-    font-size: var(--text-2xl);
-    color: var(--color-text);
-    margin-bottom: var(--space-md);
-    animation: p3r-animate-left 500ms var(--animation-easing) 175ms backwards;
-  }
-
-  .now__updated-icon {
-    color: var(--color-gold-dim);
-    font-size: 0.85em;
-  }
-
-  /* Prose with left accent */
-  .now__content {
-    font-size: var(--text-lg);
-    line-height: var(--leading-relaxed);
-    padding-left: var(--space-lg);
-    border-left: var(--border-thick) solid var(--color-gold-dim);
-  }
-
-  .now__content p {
-    margin-bottom: var(--space-lg);
-  }
-
-  .now__content p:last-child {
-    margin-bottom: 0;
-  }
-
-  /* ── Current arc card ──────────────────────────────────────────────── */
-  /* Moved from about.css. The whole card is accent-colored by the arc's
-     stat via --arc-color / --arc-color-dim, set inline on the element;
-     both fall back to gold when the Stat is missing or unknown. */
-
-  .arc-card {
-    margin-top: var(--space-xl);
-    border: 2px solid var(--arc-color, var(--color-gold));
-    border-radius: var(--radius-md);
-    padding: var(--space-lg);
-    background: rgba(255, 255, 255, 0.02);
-  }
-  .arc-card__top {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    margin-bottom: var(--space-md);
-    padding-bottom: var(--space-md);
-    border-bottom: 1px solid var(--arc-color-dim, rgba(var(--color-gold-rgb), 0.25));
-  }
-  /* The emblem PNGs are opaque-white line art, so they need a dark plate —
-     dropped straight onto a pale accent like Insight they wash out. */
-  .arc-badge {
-    flex: 0 0 auto;
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: var(--color-surface-1);
-    border: 2px solid var(--arc-color, var(--color-gold));
-    box-shadow: 0 0 16px var(--arc-color-dim, rgba(var(--color-gold-rgb), 0.35));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .arc-badge img { width: 44px; height: 44px; object-fit: contain; }
-  .arc-kicker {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--arc-color, var(--color-gold));
-    margin-bottom: 4px;
-  }
-  .arc-title {
-    margin: 0;
-    font-size: var(--text-panel-title);
-    color: var(--color-text);
-  }
-  .arc-decision-label {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--color-text-subtle);
-    margin-bottom: 6px;
-  }
-  .arc-decision-text {
-    margin: 0 0 var(--space-sm);
-    color: var(--color-text);
-    line-height: 1.65;
-  }
-  .arc-updated {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    color: var(--arc-color, var(--color-gold));
-  }
-
-  @media (max-width: 768px) {
-    .arc-card__top { flex-wrap: wrap; }
-  }
-
-  /* Footer */
-  .now__footer {
-    margin-top: var(--space-3xl);
-    padding-top: var(--space-xl);
-  }
-
-  .now__footer-divider {
-    height: 2px;
-    background: linear-gradient(90deg, transparent 0%, var(--color-gold-dim) 40%, transparent 100%);
-    margin-bottom: var(--space-lg);
-    border-radius: 2px;
-  }
-
-  .now__footer-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .now__footer-label {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-subtle);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-  }
-
-  .now__archive-link {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-sm) var(--space-lg);
-    background: var(--color-bg-elevated);
-    border: var(--border-medium) solid var(--color-gold-dim);
-    border-radius: var(--radius-sm);
-    font-family: var(--font-display);
-    font-size: var(--text-sm);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
-    color: var(--color-gold);
-    transition:
-      background var(--transition-base),
-      color var(--transition-base),
-      border-color var(--transition-base),
-      transform var(--transition-fast),
-      box-shadow var(--transition-fast);
-  }
-
-  .now__archive-link:hover,
-  .now__archive-link:focus-visible {
-    background: var(--color-gold);
-    color: var(--color-black);
-    border-color: var(--color-gold);
-    transform: translate(-2px, -2px);
-    box-shadow: var(--shadow-hard);
-  }
-
-  .now__archive-arrow {
-    transition: transform var(--transition-fast);
-  }
-
-  .now__archive-link:hover .now__archive-arrow,
-  .now__archive-link:focus-visible .now__archive-arrow {
-    transform: translateX(3px);
-  }
-
-  .now__archive-link:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .now__title,
-    .now__entry-title,
-    .now__updated {
-      animation: none;
-    }
-  }
-
-  @media (max-width: 480px) {
-    /* The date chip sat right against the 56px NOW heading with no room to
-       breathe — give it its own line under the title. */
-    .now__header-top {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-sm);
-    }
+  .now-reading { min-width: 0; }
+  .now-reading__entry { min-width: 0; }
+  .now-entry-header { margin-bottom: var(--space-xl); }
+  .now-entry-header h2 { font: italic clamp(1.8rem,4vw,2.7rem)/1.2 var(--font-display); margin-top: var(--space-sm); }
+  .arc-card { border: 2px solid var(--arc-color, var(--color-gold)); padding: var(--space-lg); background: var(--color-bg-elevated); margin-bottom: var(--space-xl); }
+  .arc-card__top { display: flex; align-items: center; gap: var(--space-sm); min-height: 44px; cursor: pointer; list-style: none; }
+  .arc-card__top::-webkit-details-marker { display: none; }
+  .arc-card__top::after { content: "+"; margin-left: auto; color: var(--arc-color, var(--color-gold)); }
+  .arc-card[open] > summary { margin-bottom: var(--space-lg); }
+  .arc-card[open] > summary::after { content: "−"; }
+  .arc-card__top:focus-visible { outline: 3px solid var(--arc-color, var(--color-gold)); outline-offset: 6px; }
+  .arc-badge { flex: 0 0 44px; width: 44px; height: 44px; background: var(--color-black); border: 1px solid var(--arc-color, var(--color-gold)); display: grid; place-items: center; }
+  .arc-badge img { width: 32px; height: 32px; object-fit: contain; }
+  .arc-kicker, .arc-decision-label, .arc-updated { display: block; font: .75rem/1.6 var(--font-mono); color: var(--arc-color, var(--color-gold)); }
+  .arc-title { display: block; font: 1.2rem/1.35 var(--font-display); margin-top: var(--space-xs); }
+  .arc-decision-label { color: var(--color-text-muted); margin-bottom: var(--space-xs); }
+  .arc-decision-text { line-height: 1.75; margin-bottom: var(--space-md); }
+  @media (min-width:1024px) {
+    .now-reading--focused { display: grid; grid-template-columns: minmax(0,1fr) 280px; gap: var(--space-2xl); align-items: start; }
+    .now-reading__focus { grid-column: 2; grid-row: 1; position: sticky; top: var(--space-lg); }
+    .now-reading__entry { grid-column: 1; grid-row: 1; }
   }
 </style>
+
+
+<script>
+  function initNowFocus() {
+    const card = document.querySelector<HTMLDetailsElement>('[data-now-focus]');
+    if (!card || card.dataset.ready) return;
+    card.dataset.ready = 'true';
+    const desktop = matchMedia('(min-width: 1024px)');
+    const adapt = () => { card.open = desktop.matches; };
+    adapt();
+    desktop.addEventListener('change', adapt);
+    document.addEventListener('astro:before-swap', () => desktop.removeEventListener('change', adapt), { once: true });
+  }
+  initNowFocus();
+  document.addEventListener('astro:page-load', initNowFocus);
+</script>

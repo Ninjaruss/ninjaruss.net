@@ -21,52 +21,42 @@ const months = [...new Set(memories.map(memory => memory.date.slice(0, 7)))];
 const days = [...new Set(memories.map(memory => memory.date))];
 const dateLabel = (date: string) => new Intl.DateTimeFormat('en', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`));
 const monthLabel = (month: string) => new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${month}-01T12:00:00Z`));
-const sections = [
-  {label:'Along the way',id:'making'},
-  ...(memories.length ? [{label:'Memories',id:'memories'},{label:'Calendar',id:'calendar'}] : []),
-  {label:'Map',id:'places'},
-  ...(people.length ? [{label:'People',id:'people'}] : []),
-];
 const mapHtml = renderLifeMap({records,hrefForRecord:record=>`/life/${record.id}`});
 ---
 
-<BaseLayout title="Life" description="I make YouTube videos, sing, and I’m working toward telling a story of my own. Some of what I’m making and living." ogImage={protagonist.portrait ?? undefined} ogType="profile">
+<BaseLayout title="About" description="Ninjaruss: an otaku, aspiring writer, and Japanese learner living in Fukuoka." ogImage={protagonist.portrait ?? undefined} ogType="profile">
   <NavPill />
-  <div class="life" data-life>
+  <div class="life life--about" data-life>
     <header class="life__intro">
       <div class="life__portrait-frame">
         {protagonist.portrait && <img class="life__portrait" src={protagonist.portrait} alt="Portrait of Ninjaruss" width="640" height="640" fetchpriority="high" />}
-        <span class="life__portrait-label">Life</span>
+        <span class="life__portrait-label">Ninjaruss</span>
       </div>
       <div class="life__hello">
         <h1 class="p4g-heading">{protagonist.name}</h1>
-        <p class="life__introduction">I make YouTube videos, sing, and I’m working toward telling a story of my own. I love Japanese stories—anime and manga especially. This is where I share some of what I’m making and living.</p>
+        <p class="life__introduction">I’m an otaku, and I want to tell stories of my own. I make videos, write, and build tools around the things I love.</p>
         <a class="life__contact-link" href="#contact" data-astro-reload>Say hello</a>
       </div>
     </header>
 
-    <div class="life__explore">
-      <nav class="life__menu" aria-label="Explore my life">
-        {sections.map(section => <a href={`#${section.id}`} data-life-link data-astro-reload><span>{section.label}</span><span class="life__menu-arrow" aria-hidden="true">↗</span></a>)}
-      </nav>
-
-      <div class="life__stage">
-        <section id="making" class="life__panel" data-life-panel aria-labelledby="making-title">
+    <div class="life__content">
+        <p class="life__perspective">I love anime and manga that go all out. The stories that stick with me make me want to try harder at the life I already have. I want to make something that gives someone else that same feeling.</p>
+        <section id="making" class="life__section" aria-labelledby="making-title">
           <h2 id="making-title" class="p4g-heading">Along the way</h2>
           <div class="life__experiences">
             <section aria-labelledby="experience-fukuoka">
               <h3 id="experience-fukuoka">Finding my feet in Fukuoka</h3>
-              <blockquote><p>I went to a café alone and now have a Japanese bartender I can talk to. I initiated conversations when opportunities arose, and now they've led to so many other possibilities.</p></blockquote>
+              <p>I’m living in Fukuoka and studying Japanese. Going to cafés alone, trying solo karaoke, and starting conversations have led to experiences and connections I wouldn’t have found by staying comfortable. Not every attempt works out, but I want to keep giving myself those opportunities.</p>
               <a href="/now/2026-11">From “Coincidences” · November 2026 →</a>
             </section>
             <section aria-labelledby="experience-marie">
               <h3 id="experience-marie">Making the Marie essay</h3>
-              <blockquote><p>I really liked Marie's character from Persona 4 Golden so much that I made a whole video essay on her. Not only that, I went out of my way to express myself through her character.</p></blockquote>
+              <p>I liked Marie from Persona 4 Golden enough to make a whole video essay about her. Making it was also a way to express myself through a character I related to. I’m proud I pushed through the friction to finish it.</p>
               <a href="/showcase/marie-video-essay">Watch the essay and read how it came together →</a>
             </section>
             <section aria-labelledby="experience-utasync">
               <h3 id="experience-utasync">Learning through songs</h3>
-              <blockquote><p>I wanted some way for me to practice memorizing Japanese songs as I found I was retaining vocabulary through repetition of the song and breaking down the lyrics for the Japanese word meanings to stick.</p></blockquote>
+              <p>I found that repeating Japanese songs and breaking down their lyrics helped the words stick. I wanted to repeat specific lines and check their meanings, so I built Utasync around that. It’s one way I’ve turned something I enjoy into something I can use.</p>
               <a href="/showcase/utasync">Why I built Utasync →</a>
             </section>
           </div>
@@ -83,7 +73,7 @@ const mapHtml = renderLifeMap({records,hrefForRecord:record=>`/life/${record.id}
         </section>
 
         {memories.length > 0 && (
-        <section id="memories" class="life__panel" data-life-panel aria-labelledby="memories-title">
+        <section id="memories" class="life__section" aria-labelledby="memories-title">
           <h2 id="memories-title" class="p4g-heading">Memories</h2>
           {memories.length === 0 ? <p class="life__quiet">I haven’t shared any memories here yet.</p> : days.map(day => <div id={`day-${day}`} class="life__day">
             <h3><time datetime={day}>{dateLabel(day)}</time></h3>
@@ -93,7 +83,7 @@ const mapHtml = renderLifeMap({records,hrefForRecord:record=>`/life/${record.id}
         )}
 
         {memories.length > 0 && (
-        <section id="calendar" class="life__panel" data-life-panel aria-labelledby="calendar-title">
+        <section id="calendar" class="life__section" aria-labelledby="calendar-title">
           <h2 id="calendar-title" class="p4g-heading">Calendar</h2>
           {months.length === 0 ? <p class="life__quiet">Shared memories will appear here by date.</p> : months.map((month, index) => {
             const first = new Date(`${month}-01T12:00:00Z`);
@@ -114,32 +104,24 @@ const mapHtml = renderLifeMap({records,hrefForRecord:record=>`/life/${record.id}
         </section>
         )}
 
-        <section id="places" class="life__panel" data-life-panel aria-labelledby="places-title">
-          <h2 id="places-title" class="p4g-heading">Map</h2>
-          <div set:html={mapHtml} />
-
-        </section>
-
         {people.length > 0 && (
-        <section id="people" class="life__panel" data-life-panel aria-labelledby="people-title">
+        <section id="people" class="life__section" aria-labelledby="people-title">
           <h2 id="people-title" class="p4g-heading">People</h2>
           {people.length === 0 ? <p class="life__quiet">No people profiles shared yet.</p> : people.map(person => <a class="life__record" href={`/life/${person.id}`}><strong>{person.title}</strong><p>{person.body.length > 180 ? `${person.body.slice(0, 180)}…` : person.body}</p></a>)}
         </section>
         )}
-      </div>
+      <details id="places" class="life__map-disclosure" data-life-map-disclosure>
+        <summary><span class="p4g-heading">Explore the map</span></summary>
+        <div set:html={mapHtml} />
+      </details>
     </div>
 
-    <section class="life__contact" aria-labelledby="elsewhere-title">
-      <h2 id="elsewhere-title">Elsewhere</h2>
-      <div class="life__contact-links">
-        {profile?.links.filter(link => !['YouTube', 'Writing'].includes(link.label)).map(link => <a href={link.href}>{link.label}</a>)}
-      </div>
-    </section>
     <footer id="contact" class="life__contact">
       <h2>Say hello</h2>
       <div class="life__contact-links">
         <a id="life-mail" hidden></a>
         <noscript><span>mailbox [at] ninjaruss [dot] net</span></noscript>
+        {profile?.links.filter(link => !['YouTube', 'Writing'].includes(link.label)).map(link => <a href={link.href}>{link.label}</a>)}
       </div>
     </footer>
   </div>

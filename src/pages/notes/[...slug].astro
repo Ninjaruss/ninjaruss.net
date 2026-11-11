@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import WritingLayout from '../../layouts/WritingLayout.astro';
+import ReadingLayout from '../../layouts/ReadingLayout.astro';
 import EntryBody from '../../components/EntryBody.astro';
 import { publicNotes } from '../../utils/notes';
 import { formatDate, shouldShowUpdatedDate } from '../../utils/dates';
@@ -15,9 +15,9 @@ export async function getStaticPaths() {
 const { entry, newer, older } = Astro.props;
 const { Content } = await entry.render();
 ---
-<WritingLayout title={entry.data.title} description={entry.data.description ?? stripMarkdown(entry.body).slice(0, 160)} image={entry.data.image} article>
+<ReadingLayout title={entry.data.title} description={entry.data.description ?? stripMarkdown(entry.body).slice(0, 160)} image={entry.data.image} article>
   <article>
-    <header>
+    <header class="reading-header">
       <nav class="writing-links" aria-label="Writing navigation"><a href="/notes">← All writing</a></nav>
       <h1 class="p4g-heading">{entry.data.title}</h1>
       <p class="writing-dates">
@@ -26,10 +26,10 @@ const { Content } = await entry.render();
       </p>
     </header>
     <EntryBody hasContent={true}><Content /></EntryBody>
-    <nav class="writing-links writing-neighbors" aria-label="More writing">
-      {newer && <a href={`/notes/${newer.slug}`}>← Previous: {newer.data.title}</a>}
-      {older && <a href={`/notes/${older.slug}`}>Next: {older.data.title} →</a>}
-      <a href="/notes">All writing</a>
+    <nav class="reading-neighbors" aria-label="More writing">
+      {newer && <a href={`/notes/${newer.slug}`}><span>← Previous note</span> <strong>{newer.data.title}</strong></a>}
+      {older && <a href={`/notes/${older.slug}`}><span>Next note →</span> <strong>{older.data.title}</strong></a>}
     </nav>
+    <nav class="writing-links reading-footer" aria-label="Writing archive"><a href="/notes">← All writing</a></nav>
   </article>
-</WritingLayout>
+</ReadingLayout>

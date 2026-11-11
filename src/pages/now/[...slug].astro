@@ -1,169 +1,29 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import NavPill from '../../components/NavPill.astro';
-
+import ReadingLayout from '../../layouts/ReadingLayout.astro';
+import { formatDate } from '../../utils/dates';
 export async function getStaticPaths() {
   const entries = await getCollection('now', ({ data }) => !data.draft);
-  return entries.map((entry) => ({
-    params: { slug: entry.slug },
-    props: { entry },
-  }));
+  return entries.map(entry => ({ params: { slug: entry.slug }, props: { entry } }));
 }
-
 const { entry } = Astro.props;
 const { Content } = await entry.render();
-
-const formatDate = (date: Date) => {
-  return date.toLocaleDateString('en-US', {
-    timeZone: 'UTC',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-};
 ---
-
-<BaseLayout title={`Now - ${entry.data.title}`} description="Past snapshot of what I was focused on.">
-  <NavPill />
-  <div class="container">
-    <article class="now">
-      <header class="now__header">
-        <div class="now__label">Archive</div>
-        <h1 class="now__title">{entry.data.title}</h1>
-        <p class="now__updated">{formatDate(entry.data.publishedAt)}</p>
-        <nav class="now__nav">
-          <a href="/now" class="now__nav-link">
-            <span class="now__nav-arrow">&larr;</span>
-            Current
-          </a>
-          <a href="/now/archive" class="now__nav-link">
-            All Archives
-            <span class="now__nav-arrow">&rarr;</span>
-          </a>
-        </nav>
-      </header>
-
-      <div class="now__content prose">
-        <Content />
-      </div>
-    </article>
-  </div>
-</BaseLayout>
-
-<style>
-  .now {
-    max-width: 65ch;
-    margin: 0 auto;
-    padding-bottom: calc(var(--nav-clearance, 80px) + var(--space-md));
-  }
-
-  .now__header {
-    margin-bottom: var(--space-2xl);
-    padding-bottom: var(--space-xl);
-    border-bottom: var(--border-thick) solid var(--color-gold-dim);
-  }
-
-  .now__label {
-    display: inline-block;
-    background: var(--color-bg-elevated);
-    color: var(--color-text-muted);
-    padding: var(--space-xs) var(--space-sm);
-    font-family: var(--font-display);
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
-    border-radius: var(--radius-sm);
-    border: var(--border-thin) solid var(--color-border);
-    margin-bottom: var(--space-md);
-  }
-
-  .now__title {
-    font-family: var(--font-display);
-    font-size: var(--text-page-title);
-    color: var(--color-text);
-    margin-bottom: var(--space-sm);
-  }
-
-  .now__updated {
-    font-size: var(--text-sm);
-    font-family: var(--font-mono);
-    background: var(--color-black);
-    color: var(--color-gold);
-    display: inline-block;
-    padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--radius-sm);
-    margin-bottom: var(--space-lg);
-  }
-
-  .now__nav {
-    display: flex;
-    gap: var(--space-lg);
-  }
-
-  .now__nav-link {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    gap: var(--space-xs);
-    font-family: var(--font-display);
-    font-size: var(--text-sm);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
-    color: var(--color-gold);
-    transition: color var(--transition-fast);
-  }
-
-  .now__nav-link:hover,
-  .now__nav-link:focus-visible {
-    color: var(--color-gold-orange);
-  }
-
-  .now__nav-link:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
-    border-radius: var(--radius-xs);
-  }
-
-  .now__nav-arrow {
-    transition: transform var(--transition-fast);
-  }
-
-  .now__nav-link:first-child:hover .now__nav-arrow,
-  .now__nav-link:first-child:focus-visible .now__nav-arrow {
-    transform: translateX(-4px);
-  }
-
-  .now__nav-link:last-child:hover .now__nav-arrow,
-  .now__nav-link:last-child:focus-visible .now__nav-arrow {
-    transform: translateX(4px);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .now__nav-arrow {
-      transition: none;
-    }
-
-    .now__nav-link:first-child:hover .now__nav-arrow,
-    .now__nav-link:first-child:focus-visible .now__nav-arrow,
-    .now__nav-link:last-child:hover .now__nav-arrow,
-    .now__nav-link:last-child:focus-visible .now__nav-arrow {
-      transform: none;
-    }
-  }
-
-  .now__content {
-    font-size: var(--text-lg);
-    line-height: var(--leading-relaxed);
-    padding-left: var(--space-lg);
-    border-left: var(--border-thick) solid var(--color-gold-dim);
-  }
-
-  .now__content p {
-    margin-bottom: var(--space-lg);
-  }
-
-  .now__content p:last-child {
-    margin-bottom: 0;
-  }
-</style>
+<ReadingLayout title={`Now — ${entry.data.title}`} description="Past snapshot of what I was focused on." article>
+  <article>
+    <header class="reading-header">
+      <nav class="writing-links" aria-label="Now navigation">
+        <a href="/now/archive">← Past updates</a>
+        <a href="/now">Current update →</a>
+      </nav>
+      <span class="p4g-tab">Now archive</span>
+      <h1 class="p4g-heading">{entry.data.title}</h1>
+      <p class="writing-dates"><time datetime={entry.data.publishedAt.toISOString()}>{formatDate(entry.data.publishedAt)}</time></p>
+    </header>
+    <div class="prose"><Content /></div>
+    <nav class="writing-links reading-footer" aria-label="More Now updates">
+      <a href="/now/archive">← All past updates</a>
+      <a href="/now">Current update →</a>
+    </nav>
+  </article>
+</ReadingLayout>

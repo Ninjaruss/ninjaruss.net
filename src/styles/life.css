@@ -7,29 +7,11 @@
 .life__introduction { max-width: 56ch; font-size: clamp(1rem, 1.7vw, 1.25rem); line-height: 1.8; margin: 0 0 var(--space-lg); }
 .life a { text-underline-offset: .25em; }
 .life__contact-link { display: inline-flex; align-items: center; min-height: 44px; }
-.life__explore { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: var(--space-2xl); align-items: start; border-top: var(--border-medium) solid var(--color-gold); padding-top: var(--space-xl); }
-.life__menu { display: flex; flex-direction: column; gap: var(--space-sm); position: sticky; top: var(--space-xl); }
-.life__menu a { min-height: 52px; padding: var(--space-sm) var(--space-md); display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); color: var(--color-text); font: 1.1rem var(--font-display); text-decoration: none; border-left: var(--border-medium) solid transparent; transition: background-color var(--transition-base), color var(--transition-base), transform var(--transition-base); }
-.life__menu a[aria-current], .life__menu a:hover { background: var(--color-gold); color: var(--color-black); border-left-color: var(--color-black); transform: translateX(4px); }
-.life__menu-arrow { opacity: 0; }
-.life__menu a[aria-current] .life__menu-arrow, .life__menu a:hover .life__menu-arrow { opacity: 1; }
-.life__panel { min-height: 300px; scroll-margin-top: var(--space-xl); }
-.life__panel[hidden] { display: none; }
-.life__panel h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); margin: 0 0 var(--space-xl); }
-.life__experiences { max-width: 60ch; }
+.life__experiences { max-width: 100%; }
 .life__experiences section { padding-bottom: var(--space-xl); margin-bottom: var(--space-xl); border-bottom: 1px solid var(--color-border); }
 .life__experiences h3 { font: 1.15rem var(--font-display); margin: 0 0 var(--space-md); }
-.life__experiences blockquote { margin: 0; line-height: 1.8; }
-.life__experiences blockquote p { margin: 0 0 var(--space-sm); }
+.life__experiences p { line-height: 1.8; margin: 0 0 var(--space-sm); }
 .life__experiences a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-gold); }
-.life__pursuits { display: grid; gap: var(--space-md); }
-.life__pursuits > a { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); padding: var(--space-lg); min-height: 64px; background: var(--color-bg-elevated); border: 1px solid var(--color-border); color: var(--color-text); text-decoration: none; }
-.life__pursuits > a:hover { border-color: var(--color-gold); }
-.life__pursuits > .life__story { background: var(--color-gold); color: var(--color-black); border-color: var(--color-gold); padding: var(--space-xl) var(--space-lg); }
-.life__story img { flex: 0 0 72px; width: 72px; height: 72px; }
-.life__story > span:nth-child(2) { flex: 1; }
-.life__story strong { font: clamp(1.2rem, 2.5vw, 1.8rem) var(--font-display); display: block; }
-.life__eyebrow { display: block; font-size: .85rem; margin-bottom: var(--space-sm); }
 .life__quiet { color: var(--color-text-muted); max-width: 45ch; line-height: 1.8; padding: var(--space-lg) 0; }
 .life__day { margin-bottom: var(--space-xl); scroll-margin-top: var(--space-xl); }
 .life__day h3 { font: .9rem var(--font-mono); color: var(--color-text-muted); }
@@ -57,7 +39,7 @@
 .life__contact-links a { display: inline-flex; align-items: center; min-height: 44px; }
 .life__contact-links a[hidden] { display: none; }
 .life a:focus-visible, .life summary:focus-visible { outline: 3px solid var(--color-gold); outline-offset: 4px; }
-.life__story:focus-visible, .life__menu a[aria-current]:focus-visible, .life__calendar a:focus-visible, .life__map a:focus-visible { outline: 3px solid var(--color-text); outline-offset: 4px; }
+.life__calendar a:focus-visible, .life__map a:focus-visible { outline: 3px solid var(--color-text); outline-offset: 4px; }
 .life__detail { max-width: 850px; }
 .life__back { display: inline-flex; align-items: center; min-height: 44px; margin-bottom: var(--space-xl); }
 .life__detail h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.2; overflow-wrap: anywhere; margin: var(--space-lg) 0; }
@@ -76,19 +58,20 @@
   .life__introduction, .life__contact-link { grid-column: 1 / -1; }
   .life__introduction { margin: var(--space-sm) 0 0; }
   .life__contact-link { justify-self: start; }
-  .life__explore { grid-template-columns: 1fr; gap: var(--space-xl); padding-top: var(--space-md); }
-  .life__menu { position: static; flex-direction: row; flex-wrap: wrap; gap: var(--space-xs); }
-  .life__menu a { font: .9rem var(--font-display); min-height: 44px; padding: var(--space-sm); }
-  .life__menu-arrow { display: none; }
-  .life__panel { min-height: 220px; }
-  .life__story img { flex-basis: 48px; width: 48px; height: 48px; }
-  .life__pursuits > .life__story { padding: var(--space-lg) var(--space-md); }
   .life__contact { margin-top: var(--space-xl); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .life__menu a { transition: none; }
-  .life__menu a[aria-current], .life__menu a:hover { transform: none; }
 }
 
 .life__context { display: flex; flex-wrap: wrap; gap: var(--space-md); margin-top: var(--space-lg); }
 .life__context a { display: inline-flex; align-items: center; min-height: 44px; }
+
+
+/* About is one reading flow; the map remains an optional native disclosure. */
+.life--about { max-width: 1000px; }
+.life__content { max-width: 65ch; margin: 0 auto; border-top: var(--border-medium) solid var(--color-gold); padding-top: var(--space-xl); }
+.life__perspective { margin: 0 0 var(--space-2xl); line-height: 1.8; }
+.life__section { margin-bottom: var(--space-2xl); scroll-margin-top: var(--space-xl); }
+.life__section > h2 { display: block; font-size: clamp(1.5rem, 3vw, 2rem); margin: 0 0 var(--space-xl); }
+.life__map-disclosure { margin-top: var(--space-2xl); border-top: 1px solid var(--color-border); scroll-margin-top: var(--space-xl); }
+.life__map-disclosure summary { padding: var(--space-md) 0; min-height: 56px; cursor: pointer; color: var(--color-gold); }
+.life__map-disclosure summary span { font-size: 1.2rem; }
+.life--about .life__contact { max-width: 65ch; margin-inline: auto; scroll-margin-top: var(--space-xl); }
