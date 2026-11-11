@@ -69,9 +69,10 @@ export default defineConfig({
     '/about': '/life',
     '/stream': '/life',
     '/status': '/life',
-    /* The journal merged notes + showcases. Notes moved to Substack, so the
-       merge had nothing left to merge — showcase is what survived. */
-    '/journal': '/showcase',
+    /* Restore the old writing entrance and keep practice at its existing URL. */
+    '/journal': '/notes',
+    '/writing': '/notes',
+    '/notes/jp-journal': '/japanese-journal',
     /* The favourites filter (`?fav=1`) no longer exists on /shelf. These used to
        be prerendered pages calling Astro.redirect(…, 301) — which a static build
        cannot express, so each served a 200 meta-refresh document with a bare

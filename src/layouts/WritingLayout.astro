@@ -1,0 +1,20 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import NavPill from '../components/NavPill.astro';
+interface Props { title: string; description: string; image?: string; article?: boolean }
+const { title, description, image, article } = Astro.props;
+---
+<BaseLayout title={title} description={description} ogImage={image} ogType={article ? 'article' : undefined}>
+  <NavPill />
+  <div class="writing-page container"><slot /></div>
+</BaseLayout>
+<style is:global>
+  .writing-page { max-width: 850px; padding-bottom: calc(var(--nav-clearance, 80px) + var(--space-2xl)); }
+  .writing-page h1 { display: block; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.15; margin: var(--space-md) 0; overflow-wrap: anywhere; }
+  .writing-page header { margin-bottom: var(--space-xl); }
+  .writing-page .writing-links { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-xl); }
+  .writing-page .writing-links a { min-height: 44px; display: inline-flex; align-items: center; }
+  .writing-page .writing-dates { color: var(--color-text-muted); line-height: 1.8; }
+  .writing-page .writing-neighbors { margin-top: var(--space-2xl); border-top: 1px solid var(--color-border); padding-top: var(--space-lg); }
+  .writing-page a:focus-visible { outline: 3px solid var(--color-gold); outline-offset: 4px; }
+</style>

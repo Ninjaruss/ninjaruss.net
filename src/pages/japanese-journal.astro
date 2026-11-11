@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import NavPill from '../components/NavPill.astro';
 import EntryBody from '../components/EntryBody.astro';
 
-// This practice journal stays on the site; essays retain their Substack routes.
+// Japanese practice stays separate from the public essays-and-notes archive.
 const journal = await getEntry('notes', 'jp-journal');
 if (!journal) throw new Error('Japanese journal content is missing');
 const { Content } = await journal.render();

@@ -44,8 +44,8 @@ links:
   - label: "YouTube"
     href: "https://www.youtube.com/@Ninjaruss_"
     primary: true
-  - label: "Read on Substack"
-    href: "https://ninjaruss.substack.com"
+  - label: "Writing"
+    href: "/notes"
     primary: true
   - label: "Twitch"
     href: "https://twitch.tv/ninjaruss_"

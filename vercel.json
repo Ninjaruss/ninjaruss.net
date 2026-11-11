@@ -10,12 +10,19 @@
     }
   ],
   "redirects": [
-    { "source": "/about", "destination": "/life", "permanent": true },
-    { "source": "/status", "destination": "/life", "permanent": true },
-    { "source": "/stream", "destination": "/life", "permanent": true },
     {
-      "source": "/rss.xml",
-      "destination": "https://ninjaruss.substack.com/feed",
+      "source": "/about",
+      "destination": "/life",
+      "permanent": true
+    },
+    {
+      "source": "/status",
+      "destination": "/life",
+      "permanent": true
+    },
+    {
+      "source": "/stream",
+      "destination": "/life",
       "permanent": true
     }
   ],

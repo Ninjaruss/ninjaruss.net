@@ -22,7 +22,7 @@ const days = [...new Set(memories.map(memory => memory.date))];
 const dateLabel = (date: string) => new Intl.DateTimeFormat('en', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`));
 const monthLabel = (month: string) => new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${month}-01T12:00:00Z`));
 const sections = [
-  {label:'Making',id:'making'},
+  {label:'Along the way',id:'making'},
   ...(memories.length ? [{label:'Memories',id:'memories'},{label:'Calendar',id:'calendar'}] : []),
   {label:'Map',id:'places'},
   ...(people.length ? [{label:'People',id:'people'}] : []),
@@ -52,17 +52,30 @@ const mapHtml = renderLifeMap({records,hrefForRecord:record=>`/life/${record.id}
 
       <div class="life__stage">
         <section id="making" class="life__panel" data-life-panel aria-labelledby="making-title">
-          <h2 id="making-title" class="p4g-heading">Making</h2>
-          <div class="life__pursuits">
-            <a class="life__story" href="/novel">
-              <img src="/images/emblems/scroll.svg" alt="" width="96" height="96" />
-              <span><span class="life__eyebrow">My visual novel</span><strong>Remember Rain</strong></span>
-              <span aria-hidden="true">↗</span>
-            </a>
-            <a href="https://www.youtube.com/@Ninjaruss_"><span>YouTube videos</span><span aria-hidden="true">↗</span></a>
-            <a href="https://ninjaruss.substack.com"><span>Writing on Substack</span><span aria-hidden="true">↗</span></a>
-            <a href="/showcase"><span>Projects</span><span aria-hidden="true">↗</span></a>
+          <h2 id="making-title" class="p4g-heading">Along the way</h2>
+          <div class="life__experiences">
+            <section aria-labelledby="experience-fukuoka">
+              <h3 id="experience-fukuoka">Finding my feet in Fukuoka</h3>
+              <blockquote><p>I went to a café alone and now have a Japanese bartender I can talk to. I initiated conversations when opportunities arose, and now they've led to so many other possibilities.</p></blockquote>
+              <a href="/now/2026-11">From “Coincidences” · November 2026 →</a>
+            </section>
+            <section aria-labelledby="experience-marie">
+              <h3 id="experience-marie">Making the Marie essay</h3>
+              <blockquote><p>I really liked Marie's character from Persona 4 Golden so much that I made a whole video essay on her. Not only that, I went out of my way to express myself through her character.</p></blockquote>
+              <a href="/showcase/marie-video-essay">Watch the essay and read how it came together →</a>
+            </section>
+            <section aria-labelledby="experience-utasync">
+              <h3 id="experience-utasync">Learning through songs</h3>
+              <blockquote><p>I wanted some way for me to practice memorizing Japanese songs as I found I was retaining vocabulary through repetition of the song and breaking down the lyrics for the Japanese word meanings to stick.</p></blockquote>
+              <a href="/showcase/utasync">Why I built Utasync →</a>
+            </section>
           </div>
+          <nav class="life__context" aria-label="What I make">
+            <a href="/novel">Remember Rain</a>
+            <a href="https://www.youtube.com/@Ninjaruss_">YouTube</a>
+            <a href="/notes">Writing</a>
+            <a href="/showcase">All projects</a>
+          </nav>
           <nav class="life__context" aria-label="Updates and practice">
             <a href="/now">Current focus · Now</a>
             <a href="/japanese-journal">Japanese practice journal</a>
@@ -119,7 +132,7 @@ const mapHtml = renderLifeMap({records,hrefForRecord:record=>`/life/${record.id}
     <section class="life__contact" aria-labelledby="elsewhere-title">
       <h2 id="elsewhere-title">Elsewhere</h2>
       <div class="life__contact-links">
-        {profile?.links.filter(link => !['YouTube', 'Read on Substack'].includes(link.label)).map(link => <a href={link.href}>{link.label}</a>)}
+        {profile?.links.filter(link => !['YouTube', 'Writing'].includes(link.label)).map(link => <a href={link.href}>{link.label}</a>)}
       </div>
     </section>
     <footer id="contact" class="life__contact">

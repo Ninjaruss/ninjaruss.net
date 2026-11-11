@@ -26,6 +26,7 @@ const SECTIONS: NavSection[] = [
 /* Keep the mobile location label accurate on destinations outside the main menu. */
 const currentSection = [
   ...SECTIONS,
+  { label: 'Writing', match: ['/notes'] },
   { label: 'Projects', match: ['/showcase'] },
   { label: 'Remember Rain', match: ['/novel'] },
   { label: 'Guestbook', match: ['/traces'] },

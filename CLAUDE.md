@@ -214,7 +214,7 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 
 ### Content Collection Pages
 - `/showcase` — `SplitViewLayout`, `section="showcase"`, showcase entries only, sorted by `updatedAt`/`publishedAt` descending. **Bare** (`showSearch={false}`): no search, no type control, no draw deck, no RSS icon — `populateTypes` already hides the type control when fewer than two types are present, so nothing extra was needed there for the single-type list. Removing the draw deck means `/showcase` now **auto-opens its newest entry on desktop** on load — the deck was the only thing that used to suppress SplitViewLayout's ordinary auto-open behavior (see Important Implementation Detail 1). Dissolved from the old `/journal`, which merged notes + showcases into one date-sorted list; notes moved to Substack (see the Substack section below), so the merge had nothing left to merge. (The old featured strip linking `/novel` and `/status` (then `/stream`) was removed earlier; those live in the NavPill now.)
-- `/notes/[...slug]` — **Not a page.** Server-rendered (`export const prerender = false`) redirect route: reads the `notes` collection, resolves the slug via `resolveNoteRedirect()` (`src/utils/noteRedirect.ts`), sets a `Cache-Control: public, max-age=3600, s-maxage=86400` response header, and returns `Astro.redirect(url, 301)` to that note's `substackUrl`, or to the Substack archive if the note isn't backfilled yet or the slug is unknown. The `s-maxage` is deliberately capped at one day rather than the long edge TTL a "fixed" redirect would normally get: notes are backfilled to Substack over time, so a slug's destination changes the day its `substackUrl` is filled in, and a long edge cache would turn into staleness on exactly the URLs that just improved. The rest parameter also matches bare `/notes` (empty slug → archive), so there is no separate `/notes/index.astro`. Server-rendered on purpose — a static `Astro.redirect` from a prerendered page degrades to a meta-refresh HTML document, which feed readers ignore and search engines discount, defeating the point of preserving these inbound links. See the Substack section below.
+- `/notes/[...slug]` — Static on-site note reading pages; see Writing below.
 - `/showcase/[slug]` — Individual project detail pages (left panel shows the showcase-only list, `section="showcase"`)
 - `/shelf` — Flat 'wall' collage of every entry (size = favorite/written/logged tier) with a sticky type-filter bar and inline quick-view panel. Progressive enhancement: cards link to `/shelf/[slug]` without JS; JS intercepts clicks to push `/shelf/[slug]` into history and open the panel instead (`?open=slug` supported for legacy links only).
 - `/shelf/[slug]` — Individual shelf detail pages
@@ -222,9 +222,9 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 ### Legacy Routes (301 Redirects)
 - `/status` → redirects to `/about` (the 2026-08 `/status`↔`/about` merge; `astro.config.mjs` `redirects`).
 - `/stream` → redirects to `/about` (retargeted in the same merge so it's a direct hop, not a chain through `/status`; `astro.config.mjs` `redirects`).
-- `/journal` → redirects to `/showcase` (the merge had nothing left to merge once notes moved to Substack; `astro.config.mjs` `redirects`, alongside `/status`/`/stream`).
-- `/notes/*` (including bare `/notes`) → server-rendered 301 to the note's Substack post, falling back to the Substack archive (`src/pages/notes/[...slug].astro` — deliberately **not** a `vercel.json`/`astro.config.mjs` entry; see the Substack section below for why it needs to be server-rendered).
-- `/rss.xml` → server-side 301 to `https://ninjaruss.substack.com/feed` (`vercel.json`, not `astro.config.mjs` — the destination is external and a feed reader needs a true 301). **`vercel.json` redirects do not apply under `astro dev`** — verify against the real deployment.
+- `/journal` and `/writing` → `/notes`.
+- `/notes/jp-journal` → `/japanese-journal`. Other public notes render locally.
+- `/rss.xml` is a local RSS endpoint; no redirect.
 - `/favorites` → redirects to `/shelf` (the `?fav=1` filter no longer exists). Now a real 301 from `astro.config.mjs`. It used to be a prerendered page calling `Astro.redirect(…, 301)`, which a static build cannot express — so it served a **200 meta-refresh** document with a bare body, and all eleven `/favorites/*` URLs were listed in the sitemap as real pages.
 - `/favorites/[slug]` → redirects to `/shelf/[slug]`
 - `/media` → redirects to `/shelf` (via `astro.config.mjs` redirects)
@@ -240,83 +240,27 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 - `/now` — Latest "Now" entry (current focus)
 - `/now/archive` — Historical "Now" entries list
 
-## Substack
+## Writing (restored November 11, 2026)
 
-Essays live on Substack (`https://ninjaruss.substack.com`). The Japanese practice
-journal is the exception: `/japanese-journal` renders `notes/jp-journal.md` as
-written, with a dedicated homepage tile. The site has no general notes listing,
-no essay detail pages, and no
-locally-generated RSS feed of note content. This isn't a temporary gap:
-Substack's own `/archive` already lists everything, automatically and better
-than a hand-synced page could, and pretending `/journal` was still one stream
-once half its rows redirected off-site would have been worse than admitting
-the two were never really one thing (`/journal` now 301s to `/showcase` — see
-Legacy Routes above).
+Writing now lives on this site. This supersedes the September Substack migration
+and any remaining historical references below.
 
-`src/content/notes/` stays in the repo — and stays public via GitHub — as the
-author's working copy and **the slug→Substack redirect map**. The Japanese
-journal also supplies its dedicated local page. The schema gained one optional field,
-`substackUrl` (`z.string().url().optional()`; optional only so a half-written
-entry can't fail the build). `/notes/[...slug].astro` is server-rendered
-(`export const prerender = false`) rather than a normal static page — a
-prerendered page's `Astro.redirect` degrades to a meta-refresh HTML document,
-which feed readers ignore and search engines discount, defeating the point of
-keeping these inbound URLs alive. It reads the `notes` collection and resolves
-the target via `resolveNoteRedirect()` (`src/utils/noteRedirect.ts`): a note's
-own `substackUrl` if it has one, otherwise `https://ninjaruss.substack.com/archive`
-— the same fallback an unknown slug gets. The site already opts into
-on-demand rendering for the Traces API, so this adds no new deployment
-concern, only one more function.
-
-**Backfill is ongoing manual work, not part of any build step.** All 24
-pre-migration notes need to be posted to Substack and have `substackUrl`
-filled in by hand; until a given note is backfilled, its slug redirects to
-the archive — imprecise, but a correct destination, not a 404. Two inbound
-prose links still point at `/notes/*` slugs and keep working through the
-redirect in the meantime: `src/content/profile/about.md` →
-`/notes/i-am-ninjaruss` and `src/content/now/2026-03.md` → `/notes/addiction`.
-Retarget both to their Substack URLs once those two notes are backfilled —
-not urgent, since the redirect already gets a visitor to the right place.
-
-`/rss.xml` redirects to the Substack feed via `vercel.json` (not
-`astro.config.mjs` — the destination is external and a feed reader needs a
-true 301). `BaseLayout`'s `<link rel="alternate" type="application/rss+xml">`
-autodiscovery tag points at `https://ninjaruss.substack.com/feed` directly
-(title "ninjaruss — Substack") rather than at the redirecting `/rss.xml`.
-**`vercel.json` redirects do not apply under `astro dev`** — verify `/rss.xml`
-against the real deployment, not the dev server.
-
-**The homepage still advertises the writing**, via a build-time feed read in
-`src/utils/substack.ts`: `fetchSubstackPosts(limit)` fetches
-`https://ninjaruss.substack.com/feed` with an explicit `user-agent` header
-(Substack sits behind Cloudflare — a default undici UA from a Vercel build IP
-is a plausible 403, and the failure would otherwise be invisible by design)
-and a 5s `AbortSignal.timeout` (a hung request would otherwise stall
-`npm run build` for minutes over a tile that isn't worth the cost), then
-`parseSubstackFeed()` — a hand-rolled, pure RSS-item parser, no new XML
-dependency, since a Substack item's shape is narrow and stable — extracts
-`title`/`link`/`pubDate`/`description` from each `<item>`. Both wrap every
-failure in `try`/`catch` and **return `[]` rather than throw** (the timeout's
-abort included): a Substack outage, a network blip, or an offline build must
-degrade the homepage tiles to showcase-only, never fail `npm run build`. The
-homepage Journal tile and Latest tile both guard on a non-empty result before
-rendering Substack rows, the same way the Journal tile already guarded
-`recentShowcase.length > 0` — the Journal tile's Writing half falls back to a
-one-line "Posts live on Substack now." link instead of an empty list (see the
-Journal tile bullet above).
-
-`decodeEntities()` in the same file decodes decimal (`&#8220;`) and hex
-(`&#x2014;`) numeric entities plus a handful of common named ones (`&nbsp;`,
-`&hellip;`, `&mdash;`, `&ndash;`), with `&amp;` deliberately decoded **last**
-— decoding it earlier would double-decode deliberately-escaped input like
-`&amp;#8220;` (meant to display literally as `&#8220;`) into a curly quote.
-This was a real bug caught during implementation, not a hypothetical — worth
-remembering if `parseSubstackFeed` is ever touched again.
-
-Showcases stay canonical on the site, unaffected by any of this. There is no
-cross-posting automation in either direction — publishing to Substack is
-manual — and this migration does not mirror or archive post prose on the
-site anywhere.
+- `/notes` is the Writing archive, newest original publication date first.
+- `/notes/[...slug]` — Static on-site note reading pages; see Writing below.
+  dates, an archive link, and adjacent-note navigation. Unknown notes return 404.
+- `publicNotes()` in `src/utils/notes.ts` excludes drafts and `jp-journal`.
+  Undated notes are listed last without fabricated dates.
+- `/japanese-journal` remains the separate practice page; its old note URL
+  redirects there.
+- `/journal` and `/writing` redirect to `/notes`.
+- `/rss.xml` is a real local RSS feed of dated, non-draft notes. The homepage,
+  profile/About and global RSS discovery all link locally.
+- Historical `substackUrl` frontmatter is preserved as provenance only. It does
+  not control navigation, rendering or the feed. No external fetch is needed.
+- The four-item global menu remains Home / About / Now / Shelf. Writing is
+  accessible from Home and About and has its own archive/adjacent navigation.
+- The restored note bodies and original dates are unchanged. Existing public
+  Substack posts have not been removed or edited.
 
 ### Shelf Page Features (`/shelf`)
 - **The Wall**: one flat dense-packed collage of every non-draft entry (no per-type
@@ -648,8 +592,8 @@ separate decision, not part of this page.
 |------|---------|---------|
 | `src/utils/content.ts` | `stripMarkdown()`, `hasMinimalContent()` | Strip markdown AND raw HTML for excerpts + client-side search; detect empty entries. Entities a renderer emits (`&amp; &lt; &gt; &quot; &#39;`) are **decoded, not blanked** — blanking them turned every "the author&#39;s notes" into "the author s notes" in excerpts and the search index; exotic entities still collapse to a space |
 | `src/utils/collections.ts` | `getAllCollections()` → `{ allShelf, allNotes, allShowcase }` | Fetch all non-draft entries; `SectionName = 'shelf' \| 'notes' \| 'showcase'` |
-| `src/utils/substack.ts` | `SUBSTACK_URL`, `SUBSTACK_FEED_URL`, `SUBSTACK_ARCHIVE_URL`, `SubstackPost`, `parseSubstackFeed()`, `fetchSubstackPosts()` | Build-time Substack feed read for the homepage tiles — see the Substack section above |
-| `src/utils/noteRedirect.ts` | `resolveNoteRedirect()` | Slug→Substack-URL lookup with archive fallback, consumed by `src/pages/notes/[...slug].astro` — see the Substack section above |
+| `src/utils/notes.ts` | `publicNotes()` | Public-note filtering and original publication ordering |
+
 | `src/utils/dates.ts` | `formatDate()`, `shouldShowUpdatedDate()` | Date formatting and update-date display logic |
 | `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `parseOrderPrefix()`, `unescapeScrivenerMarkdown()`, `stripSceneLabel()`, `countWords()`, `computeNovelStats()`, `flattenFolderFiles()`, `findRecentFiles()`, `findSynopsisDoc()`, `findFirstScene()` | Scrivener-backed novel content loader + rain-gauge stats + desk recency/intro helpers |
 | `src/utils/sessions.ts` | `STAT_ORDER`, `StatName`, `STAT_COLORS`, `hexToRgbTriplet()` | The shared stat vocabulary/colors — the only place the five stat hexes are written (`about.astro`'s arc card and `scripts/transition.ts`'s page-transition card read `STAT_COLORS`; the homepage About tile deliberately does **not** — see below). Tallying/radar/donut/quest-parsing/level-curve logic that used to live here was deleted in the 2026-08 `/status` rebuild (see Sessions & the /about arc card above) |
@@ -749,7 +693,7 @@ All placeholder emblems share the same card template (dark card, gold gradient f
 - **Shelf**: All reviews, consumption logs, and inspirational content (anime, manga, film, series, music, book, game, character, other)
   - Set `isFavorite: false` (or omit) for reviews/notes that appear only in /shelf
   - Set `isFavorite: true` for curated highlights — large wall tier with a gold ring + hard gold shadow on `/shelf` (see Shelf Page Features)
-- **Notes**: Philosophical fragments and thoughts. **No longer rendered on-site** — the site is the slug→Substack redirect map only; publish the actual prose on Substack and fill in `substackUrl` (see the Substack section above)
+- **Notes**: On-site essays, reflections and notes. Keep original publication/edit dates; see Writing above.
 - **Showcase**: Project inquiries and experiments
 - **Now**: Current focus snapshots (time-based)
 

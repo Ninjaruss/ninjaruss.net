@@ -1,13 +1,17 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 import TracesBar from '../components/TracesBar.astro';
-import { fetchSubstackPosts } from '../utils/substack';
+import { publicNotes } from '../utils/notes';
 import { formatDate } from '../utils/dates';
 
-const posts = (await fetchSubstackPosts(3)).filter(post => !Number.isNaN(Date.parse(post.pubDate)));
-const now = await getCollection('now', ({ data }) => !data.draft);
+const [notes, now, lFile] = await Promise.all([
+  getCollection('notes'),
+  getCollection('now', ({ data }) => !data.draft),
+  getEntry('showcase', 'l-file'),
+]);
+const posts = publicNotes(notes).filter(entry => entry.data.publishedAt).slice(0, 3);
 const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())[0];
 ---
 
@@ -18,28 +22,28 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 <div>
 <h1>NINJARUSS</h1>
 <p class="motto">In spite of it all...</p>
+<p class="intro">I’m an otaku, and I want to tell stories of my own. I love anime and manga that go all out. Sometimes a story that’s completely over the top is what makes me want to try harder at the life I already have.</p>
 </div>
-<nav class="about-links" aria-label="Life and contact">
-<a href="/life">Life</a>
+<nav class="about-links" aria-label="About and contact">
+<a href="/life">About</a>
 <a href="/life#contact" data-contact>Contact</a>
 </nav>
 </header>
   <a class="tile now" href="/now">
 <span class="chip">Now</span>
-<h2>Where I'm at</h2>
-<p>Current focus and personal updates.</p>{latestNow && <p class="now-date">{formatDate(latestNow.data.publishedAt)}</p>}</a>
+<p class="now-context">Where I’m at</p>
+<h2>{latestNow?.data.title || "Where I'm at"}</h2>
+{latestNow && <p class="now-date"><time datetime={latestNow.data.publishedAt.toISOString()}>{formatDate(latestNow.data.publishedAt)}</time></p>}</a>
  </div>
- <TracesBar />
  <BentoGrid class="grid">
   <section class="tile writing" aria-labelledby="art-writing">
-<span class="chip">Substack</span>
+<span class="chip">Essays &amp; notes</span>
 <div class="tile-intro">
 <h2 id="art-writing">Writing</h2>
-<p>Notes on life, Japanese, and making things.</p>
-</div>{posts.map(post => <a class="post" href={post.link}>{post.title}<time datetime={new Date(post.pubDate).toISOString()}>{formatDate(new Date(post.pubDate))}</time>
+<p>Personal essays on life and becoming the person I want to be.</p>
+</div>{posts.map(post => <a class="post" href={`/notes/${post.slug}`}>{post.data.title}<time datetime={post.data.publishedAt!.toISOString()}>{formatDate(post.data.publishedAt!)}</time>
 </a>)}
-{posts.length === 0 && <p class="tile-intro">My writing lives on Substack.</p>}
-<a class="go" href="https://ninjaruss.substack.com">Read on Substack</a>
+<a class="go" href="/notes">All writing →</a>
 </section>
   <section class="tile video" aria-labelledby="art-video">
 <a class="video-art" href="https://www.youtube.com/@Ninjaruss_" aria-label="Ninjaruss on YouTube">
@@ -52,7 +56,8 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 <div class="video-caption">
 <div>
 <h2 id="art-video">Watch Ninjaruss</h2>
-<p>Life, Japanese, anime, and making things.</p>
+<p>Videos about anime, learning Japanese, and my life in Japan.</p>
+<a class="video-start" href="/showcase/marie-video-essay">My Marie video essay →</a>
 </div>
 <nav class="video-actions" aria-label="Videos and livestreams">
 <a href="https://www.youtube.com/@Ninjaruss_">YouTube videos</a>
@@ -62,24 +67,23 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 </section>
   <section class="tile projects" aria-labelledby="art-projects">
 <img class="project-emblem" src="/images/emblems/shuriken.svg" alt="" aria-hidden="true">
-<span class="chip">Projects</span>
 <div class="tile-intro">
 <h2 id="art-projects">Projects</h2>
-<p>Apps &amp; experiments.</p>
+<p>Tools I built around the things I love.</p>
 </div>
 <div class="project-list">
 <a class="project" href="/showcase/utasync">
 <img src="/images/showcase/utasync.svg" alt="">
 <div>
 <strong>Utasync</strong>
-<span>Learn Japanese through music</span>
+<span>Practice Japanese with timed lyrics and song loops</span>
 </div>
 </a>
 <a class="project" href="/showcase/l-file">
 <img src="/images/media/usogui.webp" alt="">
 <div>
 <strong>L-file</strong>
-<span>Usogui database · Hosted site offline</span>
+<span>Usogui manga database{lFile?.data.status && ` · ${lFile.data.status}`}</span>
 </div>
 </a>
 <a class="go" href="/showcase">Explore the projects</a>
@@ -111,8 +115,8 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 </section>
   <a class="tile shelf" href="/shelf">
 <div>
-<span class="chip">Shelf</span>
-<h2>Media log</h2>
+<span class="chip">Media log</span>
+<h2>Shelf</h2>
 <p>Stories, characters, and music that stick with me.</p>
 </div>
 <div class="posters" aria-hidden="true">
@@ -125,9 +129,10 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 <img class="journal-emblem" src="/images/emblems/torii.svg" alt="" aria-hidden="true">
 <span class="chip">Practice</span>
 <h2>Japanese journal</h2>
-<p>Small entries as I learn.</p>
+<p>Short entries I write in Japanese as I learn, mistakes included.</p>
 </a>
  </BentoGrid>
+ <div class="guestbook-row"><TracesBar /></div>
  <footer class="footer">
 <nav aria-label="Elsewhere">
 <a href="https://myanimelist.net/animelist/Ninjaruss_">MyAnimeList</a>
@@ -219,6 +224,10 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   margin-top: 7px;
   font-style: italic;
 }
+#personal-hub .intro {
+  margin-top: 12px;
+  max-width: 52ch;
+}
 #personal-hub .about-links {
   display: flex;
   gap: 20px;
@@ -235,6 +244,8 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   gap: 14px;
   grid-auto-rows: auto;
 }
+#personal-hub .guestbook-row { margin-top: 18px; }
+#personal-hub .video-start { margin-top: 8px; }
 #personal-hub .tile {
   animation: none;
   position: relative;
@@ -531,6 +542,7 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   color: var(--muted);
   font-size: 15px;
 }
+#personal-hub .now .now-context { margin-top: 14px; }
 #personal-hub .japanese-journal { grid-column: span 4; overflow: hidden; }
 #personal-hub .japanese-journal > :not(.journal-emblem) { position: relative; }
 #personal-hub .journal-emblem {
