@@ -32,7 +32,7 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   <a class="tile now" href="/now">
 <span class="chip">Now</span>
 <p class="now-context">Where I’m at</p>
-<h2>{latestNow?.data.title || "Where I'm at"}</h2>
+<h2>{latestNow?.data.title || 'Personal updates'}</h2>
 {latestNow && <p class="now-date"><time datetime={latestNow.data.publishedAt.toISOString()}>{formatDate(latestNow.data.publishedAt)}</time></p>}</a>
  </div>
  <BentoGrid class="grid">
@@ -200,16 +200,14 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 }
 #personal-hub .intro-row {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(220px, 1fr);
+  grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr);
   gap: 14px;
   margin-bottom: 14px;
 }
 #personal-hub .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 18px;
+  display: grid;
+  align-content: center;
+  gap: 14px;
   padding: 24px 28px;
   border: 3px solid var(--gold);
   background: var(--bg);
@@ -338,7 +336,7 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 16/9;
+  aspect-ratio: 3/1;
   object-fit: cover;
   object-position: 63% center;
 }
@@ -480,7 +478,7 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 }
 #personal-hub .novel .premise {
   margin: 8px 0 20px;
-  max-width: 34ch;
+  max-width: none;
 }
 #personal-hub .novel .go {
   color: var(--gold);
@@ -573,6 +571,11 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   color: var(--muted);
   font-size: 14px;
 }
+@media (min-width: 701px) and (max-width: 1023px) {
+  #personal-hub .grid > * { grid-column: span 6; }
+  #personal-hub .video-art img { aspect-ratio: 16/9; }
+  #personal-hub .shelf { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+}
 @media (max-width: 700px) {
   #personal-hub {
     padding: 16px;
@@ -624,15 +627,12 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 }
 #personal-hub .video-actions {
   display: flex;
-  gap: 20px;
+  gap: 4px 20px;
   flex-wrap: wrap;
 }
 #personal-hub .video-caption {
   flex: 1;
   align-content: start;
-}
-#personal-hub .premise {
-  max-width: 42ch;
 }
 #personal-hub .post time {
   color: inherit;
