@@ -5,6 +5,7 @@ import BentoGrid from '../components/BentoGrid.astro';
 import TracesBar from '../components/TracesBar.astro';
 import { publicNotes } from '../utils/notes';
 import { formatDate } from '../utils/dates';
+import { stripMarkdown } from '../utils/content';
 
 const [notes, now, lFile] = await Promise.all([
   getCollection('notes'),
@@ -13,6 +14,9 @@ const [notes, now, lFile] = await Promise.all([
 ]);
 const posts = publicNotes(notes).filter(entry => entry.data.publishedAt).slice(0, 3);
 const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())[0];
+// Preview the actual update rather than adding a second summary to maintain.
+const nowOpening = stripMarkdown(latestNow?.body.split(/\n\s*\n/).find(paragraph => paragraph.trim() && !/^[#<]/.test(paragraph.trim())) ?? '');
+const nowExcerpt = nowOpening.match(/^.*?[.!?](?:\s|$)/)?.[0].trim() || nowOpening;
 ---
 
 <BaseLayout title="Home" displayTitle="in spite of it all — ninjaruss" description="Writing, videos, projects, and Remember Rain — the personal hub of Ninjaruss.">
@@ -22,7 +26,7 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 <div>
 <h1>NINJARUSS</h1>
 <p class="motto">In spite of it all...</p>
-<p class="intro">I’m an otaku, and I want to tell stories of my own. I make videos, write, and build tools around the things I love. Sometimes a story that’s completely over the top is what makes me want to try harder at the life I already have.</p>
+<p class="intro">I’m an otaku, and I want to tell stories of my own. Sometimes a story that’s completely over the top is what makes me want to try harder at the life I already have.</p>
 </div>
 <nav class="about-links" aria-label="About and contact">
 <a href="/life">About</a>
@@ -31,45 +35,40 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 </header>
   <a class="tile now" href="/now">
 <span class="chip">Now</span>
-<p class="now-context">Where I’m at</p>
 <h2>{latestNow?.data.title || 'Personal updates'}</h2>
-{latestNow && <p class="now-date"><time datetime={latestNow.data.publishedAt.toISOString()}>{formatDate(latestNow.data.publishedAt)}</time></p>}</a>
+{latestNow && <p class="now-date"><time datetime={latestNow.data.publishedAt.toISOString()}>{formatDate(latestNow.data.publishedAt)}</time></p>}
+{nowExcerpt && <p class="now-excerpt">{nowExcerpt}</p>}
+<span class="now-read">Read the update <span aria-hidden="true">→</span></span></a>
  </div>
  <BentoGrid class="grid">
   <section class="tile writing" aria-labelledby="art-writing">
-<span class="chip">Essays &amp; notes</span>
 <div class="tile-intro">
-<h2 id="art-writing">Writing</h2>
-<p>Personal essays on life and becoming the person I want to be.</p>
-</div>{posts.map(post => <a class="post" href={`/notes/${post.slug}`}>{post.data.title}<time datetime={post.data.publishedAt!.toISOString()}>{formatDate(post.data.publishedAt!)}</time>
+<h2 id="art-writing"><a class="tile-link" href="/notes">Writing<span class="arrow" aria-hidden="true">→</span></a></h2>
+</div>{posts.map(post => <a class="post" href={`/notes/${post.slug}`}><span>{post.data.title}</span><time datetime={post.data.publishedAt!.toISOString()}>{formatDate(post.data.publishedAt!)}</time>
 </a>)}
-<a class="go" href="/notes">All writing →</a>
 </section>
   <section class="tile video" aria-labelledby="art-video">
-<a class="video-art" href="https://www.youtube.com/@Ninjaruss_" aria-label="Ninjaruss on YouTube">
+<div class="video-art">
 <picture>
 <source media="(max-width: 700px)" srcset="/images/identity/ttgl-pointing-480.webp 480w, /images/identity/ttgl-pointing-960.webp 960w" sizes="calc(100vw - 36px)" width="960" height="960">
 <img src="/images/identity/ttgl-banner-1440.webp" srcset="/images/identity/ttgl-banner-720.webp 720w, /images/identity/ttgl-banner-1440.webp 1440w" sizes="(max-width: 1280px) 56vw, 714px" width="1440" height="480" alt="Ninjaruss pointing toward the viewer against a gold and black spiral" fetchpriority="high">
 </picture>
-<span class="chip">YouTube</span>
-</a>
+</div>
 <div class="video-caption">
 <div>
-<h2 id="art-video">Watch Ninjaruss</h2>
+<h2 id="art-video"><a class="tile-link" href="https://www.youtube.com/@Ninjaruss_">Videos<span class="arrow" aria-hidden="true">↗</span><span class="offsite">on YouTube</span></a></h2>
 <p>Videos about anime, learning Japanese, and my life in Japan.</p>
-<a class="video-start" href="/showcase/marie-video-essay">My Marie video essay →</a>
 </div>
 <nav class="video-actions" aria-label="Videos and livestreams">
-<a href="https://www.youtube.com/@Ninjaruss_">YouTube videos</a>
-<a href="https://twitch.tv/ninjaruss_">Twitch livestreams</a>
+<a href="/showcase/marie-video-essay">My Marie video essay →</a>
+<a href="https://twitch.tv/ninjaruss_">Twitch livestreams<span class="arrow" aria-hidden="true">↗</span><span class="offsite">external link</span></a>
 </nav>
 </div>
 </section>
   <section class="tile projects" aria-labelledby="art-projects">
 <img class="project-emblem" src="/images/emblems/shuriken.svg" alt="" aria-hidden="true">
 <div class="tile-intro">
-<h2 id="art-projects">Projects</h2>
-<p>Tools I built around the things I love.</p>
+<h2 id="art-projects"><a class="tile-link" href="/showcase">Projects<span class="arrow" aria-hidden="true">→</span></a></h2>
 </div>
 <div class="project-list">
 <a class="project" href="/showcase/utasync">
@@ -86,7 +85,6 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 <span>Usogui manga database{lFile?.data.status && ` · ${lFile.data.status}`}</span>
 </div>
 </a>
-<a class="go" href="/showcase">Explore the projects</a>
 </div>
 </section>
   <section class="tile novel" aria-labelledby="art-novel">
@@ -104,18 +102,19 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 <i>
 </i>
 </div>
-<span class="chip">Visual novel</span>
+<span class="chip">Visual novel · In progress</span>
 <div class="tile-intro">
-<h2 id="art-novel">Remember Rain</h2>
-<p>A work in progress.</p>
+<h2 id="art-novel"><a class="tile-link" href="/novel">Remember Rain<span class="arrow" aria-hidden="true">→</span></a></h2>
 </div>
 <p class="premise">Rain dreams of writing a story that will inspire someone. Following a ghost makes him a fugitive, pulling him into supernatural horrors that threaten the refuges he turns to for escape. He keeps reaching for his dreams without knowing what pursuing them will cost.</p>
-<p class="draft">Manuscript, characters, and planning documents</p>
-<a class="go" href="/novel">Explore Remember Rain</a>
 </section>
+  <a class="tile japanese-journal" href="/japanese-journal">
+<img class="journal-emblem" src="/images/emblems/torii.svg" alt="" aria-hidden="true">
+<h2>Japanese journal</h2>
+<p>Short entries I write in Japanese as I learn, mistakes included.</p>
+</a>
   <a class="tile shelf" href="/shelf">
 <div>
-<span class="chip">Media log</span>
 <h2>Shelf</h2>
 <p>Stories, characters, and music that stick with me.</p>
 </div>
@@ -125,20 +124,26 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 <img src="/images/media/ttgl.webp" alt="" loading="lazy">
 </div>
 </a>
-  <a class="tile japanese-journal" href="/japanese-journal">
-<img class="journal-emblem" src="/images/emblems/torii.svg" alt="" aria-hidden="true">
-<span class="chip">Practice</span>
-<h2>Japanese journal</h2>
-<p>Short entries I write in Japanese as I learn, mistakes included.</p>
-</a>
  </BentoGrid>
  <div class="guestbook-row"><TracesBar /></div>
  <footer class="footer">
-<nav aria-label="Elsewhere">
-<a href="https://myanimelist.net/animelist/Ninjaruss_">MyAnimeList</a>
-<a href="https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD">Spotify</a>
+<nav class="footer-site" aria-label="Pages on this site">
+<a href="/notes">Writing</a>
+<a href="/showcase">Projects</a>
+<a href="/novel">Remember Rain</a>
+<a href="/shelf">Shelf</a>
+<a href="/japanese-journal">Japanese journal</a>
+<a href="/now">Now</a>
+<a href="/traces">Traces</a>
+<a href="/life">About</a>
+<a href="/life#contact" data-contact>Contact</a>
 </nav>
-<a href="/life#contact" data-contact>Email me</a>
+<nav class="footer-elsewhere" aria-label="Elsewhere on the web">
+<a href="https://www.youtube.com/@Ninjaruss_">YouTube<span class="arrow" aria-hidden="true">↗</span><span class="offsite">external link</span></a>
+<a href="https://twitch.tv/ninjaruss_">Twitch<span class="arrow" aria-hidden="true">↗</span><span class="offsite">external link</span></a>
+<a href="https://myanimelist.net/animelist/Ninjaruss_">MyAnimeList<span class="arrow" aria-hidden="true">↗</span><span class="offsite">external link</span></a>
+<a href="https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD">Spotify<span class="arrow" aria-hidden="true">↗</span><span class="offsite">external link</span></a>
+</nav>
 </footer>
 </div>
 </BaseLayout>
@@ -200,13 +205,13 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 }
 #personal-hub .intro-row {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr);
+  grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
   gap: 14px;
   margin-bottom: 14px;
 }
 #personal-hub .header {
   display: grid;
-  align-content: center;
+  align-content: start;
   gap: 14px;
   padding: 24px 28px;
   border: 3px solid var(--gold);
@@ -224,7 +229,7 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 }
 #personal-hub .intro {
   margin-top: 12px;
-  max-width: 52ch;
+  max-width: 65ch;
 }
 #personal-hub .about-links {
   display: flex;
@@ -243,7 +248,6 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   grid-auto-rows: auto;
 }
 #personal-hub .guestbook-row { margin-top: 18px; }
-#personal-hub .video-start { margin-top: 8px; }
 #personal-hub .tile {
   animation: none;
   position: relative;
@@ -261,6 +265,7 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   background: var(--bg);
   clip-path: polygon(100% 0, 100% 100%, 0 100%);
   pointer-events: none;
+  z-index: 3;
 }
 #personal-hub .tile h2 {
   color: inherit;
@@ -276,7 +281,7 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
 }
 #personal-hub .tile-intro {
-  margin: 10px 0 18px;
+  margin: 6px 0 14px;
 }
 #personal-hub .tile-intro p {
   color: var(--muted);
@@ -284,6 +289,7 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   font-size: 15px;
 }
 #personal-hub .writing {
+  container-type: inline-size;
   grid-column: span 5;
   background: var(--gold);
   color: var(--ink);
@@ -292,20 +298,16 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   display: flex;
   flex-direction: column;
 }
-#personal-hub .writing .chip {
-  background: var(--ink);
-  color: var(--gold);
-}
-#personal-hub .writing .tile-intro p {
-  color: var(--ink);
-}
 #personal-hub .post {
   display: block;
+  flex: 1;
+  align-content: center;
   padding: 14px 0;
   border-top: 1px solid #958721;
   font-size: 17px;
   font-weight: 700;
   line-height: 1.4;
+  min-height: 44px;
 }
 #personal-hub .post time {
   display: block;
@@ -313,14 +315,44 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   font-size: 14px;
   font-weight: 400;
 }
-#personal-hub .go {
+#personal-hub .tile h2 a {
   display: inline-flex;
-  min-height: 44px;
   align-items: center;
-  font-weight: 700;
-  margin-top: auto;
-  padding-top: 12px;
-  align-self: flex-start;
+  gap: 10px;
+  min-height: 44px;
+  color: inherit;
+  font: inherit;
+}
+#personal-hub .arrow { color: var(--gold); font: 600 20px/1 var(--font-body); }
+#personal-hub .writing .arrow { color: var(--ink); }
+/* Each card has exactly one destination, and the whole card goes there: the
+   hover lift promises a click target, so the body of the card has to honour it.
+   Inner links are raised above the overlay and keep their own destinations. */
+#personal-hub .tile-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+#personal-hub :is(.post, .project, .video-actions) {
+  position: relative;
+  z-index: 2;
+}
+/* Says "this leaves the site" to screen readers; the glyph says it visually. */
+#personal-hub .offsite {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@container (min-width: 420px) {
+  #personal-hub .post { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: baseline; gap: 16px; padding: 12px 0; }
+  #personal-hub .post time { margin-top: 0; white-space: nowrap; font-size: 13px; }
 }
 #personal-hub .video {
   grid-column: span 7;
@@ -340,40 +372,31 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   object-fit: cover;
   object-position: 63% center;
 }
-#personal-hub .video-art .chip {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-}
 #personal-hub .video-caption {
-  padding: 16px 22px;
+  padding: 18px 24px 20px;
   background: var(--surface);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
 }
 #personal-hub .video-caption h2 {
   font-size: 25px;
 }
 #personal-hub .video-caption a {
-  color: var(--gold);
+  color: var(--muted);
   min-height: 44px;
   display: inline-flex;
   align-items: center;
   font-weight: 700;
 }
+#personal-hub .video-caption h2 a { color: var(--text); }
 #personal-hub .projects {
   display: flex;
   flex-direction: column;
-  grid-column: span 7;
+  grid-column: span 5;
   padding: 24px;
   overflow: hidden;
-}
-#personal-hub .projects .tile-intro {
-  position: relative;
-  z-index: 1;
 }
 #personal-hub .project-list {
   display: flex;
@@ -384,6 +407,7 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 }
 #personal-hub .project {
   display: flex;
+  flex: 1;
   align-items: center;
   gap: 15px;
   border-top: 1px solid var(--line);
@@ -417,7 +441,7 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   pointer-events: none;
 }
 #personal-hub .novel {
-  grid-column: span 5;
+  grid-column: span 7;
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -472,30 +496,23 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   background: linear-gradient(transparent, #1d2625);
   pointer-events: none;
 }
-#personal-hub .novel > :not(.rain-field) {
+/* No z-index here: these are positioned and come after .rain-field in the DOM,
+   so they already paint above it — and keeping them at auto lets the card's
+   stretched link (z-index 1) sit on top of the premise instead of under it. */
+#personal-hub .novel > :not(.rain-field):not(.tile-intro) {
   position: relative;
-  z-index: 1;
 }
 #personal-hub .novel .premise {
   margin: 8px 0 20px;
   max-width: none;
 }
-#personal-hub .novel .go {
-  color: var(--gold);
-}
-#personal-hub .novel .draft {
-  color: var(--muted);
-  font-size: 14px;
-  border-top: 1px solid var(--line);
-  padding-top: 12px;
-}
 #personal-hub .shelf {
-  grid-column: span 8;
+  grid-column: span 7;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
   gap: 20px;
-  padding: 22px;
+  padding: 24px;
 }
 #personal-hub .shelf h2 {
   margin-top: 10px;
@@ -526,10 +543,13 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
 }
 #personal-hub .now,
 #personal-hub .japanese-journal {
-  padding: 22px;
+  padding: 24px;
 }
 #personal-hub .now {
   border-color: var(--gold);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
 }
 #personal-hub .now h2,
 #personal-hub .japanese-journal h2 {
@@ -540,8 +560,19 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   color: var(--muted);
   font-size: 15px;
 }
-#personal-hub .now .now-context { margin-top: 14px; }
-#personal-hub .japanese-journal { grid-column: span 4; overflow: hidden; }
+#personal-hub .now h2 { color: var(--gold); }
+#personal-hub .now .now-date { font-size: 13px; }
+#personal-hub .now .now-excerpt { color: var(--text); margin-top: 14px; line-height: 1.6; }
+#personal-hub .now-read { display: flex; justify-content: space-between; gap: 16px; margin-top: auto; padding-top: 18px; color: var(--gold); font-weight: 600; }
+#personal-hub .now:hover { text-decoration: none; }
+#personal-hub .now:hover .now-read { text-decoration: underline; text-underline-offset: 4px; }
+#personal-hub .japanese-journal {
+  grid-column: span 5;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 #personal-hub .japanese-journal > :not(.journal-emblem) { position: relative; }
 #personal-hub .journal-emblem {
   position: absolute;
@@ -552,24 +583,35 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   opacity: 0.08;
   pointer-events: none;
 }
+/* The page used to end in two outbound links and nothing else. Anyone who
+   scrolls the whole hub now lands on the full map of it. */
 #personal-hub .footer {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 18px;
+  display: grid;
+  gap: 2px 32px;
+  margin-top: 26px;
+  padding-top: 14px;
+  border-top: 2px solid var(--line);
 }
 #personal-hub .footer nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 0 22px;
 }
 #personal-hub .footer a {
   min-height: 44px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  gap: 5px;
   color: var(--muted);
   font-size: 14px;
+}
+#personal-hub .footer-site a {
+  color: var(--text);
+  font-weight: 700;
+}
+#personal-hub .footer .arrow {
+  font-size: 13px;
+  color: inherit;
 }
 @media (min-width: 701px) and (max-width: 1023px) {
   #personal-hub .grid > * { grid-column: span 6; }
@@ -597,12 +639,15 @@ const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publi
   }
   #personal-hub .writing,
   #personal-hub .projects,
-  #personal-hub .novel {
-    padding: 22px;
+  #personal-hub .novel,
+  #personal-hub .shelf,
+  #personal-hub .now,
+  #personal-hub .japanese-journal {
+    padding: 20px;
   }
   #personal-hub .video-art img {
     height: auto;
-    aspect-ratio: 4/3;
+    aspect-ratio: 16/9;
     object-position: center 35%;
   }
   #personal-hub .tile h2 {
