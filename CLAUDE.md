@@ -12,8 +12,12 @@ This file provides guidance for Claude Code (claude.ai/code) when working with t
 npm run dev       # Start dev server at localhost:4321
 npm run build     # Build static site to ./dist/
 npm run preview   # Preview production build locally
-npm run test      # Run vitest unit tests
+npm run test      # Run vitest unit tests (15 files, 226 tests)
 npm run astro     # Direct Astro CLI access
+
+# Life snapshot tooling — see the Life section for the review contract.
+npm run life:check  -- /path/to/public.json                  # validate, print SHA256
+npm run life:import -- /path/to/public.json --approve <sha>  # write src/data/life.json
 ```
 
 ## Architecture
@@ -29,12 +33,23 @@ src/
 │   ├── notes/        # Philosophical fragments
 │   ├── novel/        # "Remember Rain" novel (Scrivener export — Characters, Manuscript, Story Plan, World)
 │   ├── now/          # "Now" page snapshots (current focus)
+│   ├── profile/       # Single entry; only its links[] is still read (see Life)
 │   └── showcase/     # Projects as inquiries
+├── data/             # life.json — the reviewed public Life snapshot. EMPTY by
+│                     #   default; written only by `npm run life:import`
 ├── layouts/          # Page layout templates
 ├── pages/            # File-based routing
+├── scripts/          # Browser entry points (cursor, transition, life)
 ├── styles/           # Global CSS (no frameworks)
-├── tests/            # Vitest unit tests (novel, content, substack, shelf, sessions, streamTile, ...)
-└── utils/            # Shared utilities (content, collections, substack, noteRedirect, dates, novel, splitView/)
+├── tests/            # Vitest unit tests (15 files, 226 tests — novel, content,
+│                     #   notes, shelfWall, traces, lifeExport, lifeMap, ...)
+└── utils/            # Shared utilities (content, collections, notes, dates,
+                      #   novel, life*, traces*, splitView/)
+
+packages/
+└── life-ui/          # Content-free Life map renderer + artwork, vendored
+                      #   verbatim by a separate private project (see Life)
+scripts/               # Node tooling: life-import, add-image, OG/font builders
 ```
 
 ### Key Patterns
@@ -58,17 +73,17 @@ All collections share a base schema (defined in `sharedSchema`):
 
 Collection-specific extensions:
 - **shelf**: adds `content_type: 'anime' | 'manga' | 'film' | 'series' | 'music' | 'book' | 'game' | 'character' | 'other'`, `isFavorite: boolean` (defaults to false), and `tags` (string array, defaults to []) — shelf is the only collection with tags
-- **notes**: uses sharedSchema without extensions (no tags; relatedness via `collections`), plus an optional `substackUrl` (`z.string().url().optional()` — optional only so a half-written entry doesn't fail the build). It is the slug→Substack redirect map, with `jp-journal` also rendered locally at `/japanese-journal` (see the Substack section below)
+- **notes**: uses sharedSchema without extensions (no tags; relatedness via `collections`), plus an optional `substackUrl` (`z.string().url().optional()` — optional only so a half-written entry doesn't fail the build). Historically the slug→Substack redirect map; `substackUrl` is now **provenance only** and controls no navigation, rendering or feed. `jp-journal` is rendered at `/japanese-journal` (see the Writing section below — there is no longer a Substack section)
 - **showcase**: uses sharedSchema without extensions
 - **now**: simplified schema with `title` (defaults to 'Now'), `publishedAt` (required), `updatedAt`, `draft`
-- **profile**: single entry backing `/about` — `hook` (required), `credentials[]`, `makes[]` (`{label, blurb, href}`), `makesMore` (`{text, href}`), `subjects[]` (`{group, items[]}`), `connect`, `links[]` (`{label, href, primary}`). Every string is `.min(1)` — a blank field is a build error, not a silently empty card. Schema is defined in `src/utils/profile.ts` and imported into `config.ts` (not inline) so it stays unit-testable. Body markdown is the ABOUT prose. Deliberately has **no** `draft` field: it's a singleton the author edits directly
+- **profile**: single entry backing `/about` — `hook` (required), `credentials[]`, `makes[]` (`{label, blurb, href}`), `makesMore` (`{text, href}`), `subjects[]` (`{group, items[]}`), `connect`, `links[]` (`{label, href, primary}`). Every string is `.min(1)` — a blank field is a build error, not a silently empty card. Schema is defined in `src/utils/profile.ts` and imported into `config.ts` (not inline) so it stays unit-testable. Body markdown was the ABOUT prose. Deliberately has **no** `draft` field: it's a singleton the author edits directly. **Mostly unused as of 2026-11-13**: `/life` reads only `links[]` (filtered to drop the YouTube and Writing labels). Every other field is still Zod-validated on each build and rendered nowhere — see the Life section
 
 ## Layouts
 
 | Layout | Purpose |
 |--------|---------|
 | `BaseLayout.astro` | Foundation wrapper with meta, styles, view transitions |
-| `SplitViewLayout.astro` | Three-panel list/detail/emblem interface with client-side navigation and emblem card sidebar. Optional `kicker` prop; renders the unified P4G section header (`p4g-tab` + `p4g-heading` + `p4g-underline`; the page title is the `<h1>` and the entry title in the detail panel is the `<h2>` beneath it, on the list route and the standalone detail routes alike) — the same header pattern is replicated on the Now, Now-archive, and Novel pages; optional `showSearch` prop (default `true`) gates the whole `.split-view__filter` block (search input + segmented type control) — `/showcase` renders it `false` and is bare: no search, no type pills, no draw deck, no RSS icon. (`placeholderStats` and `showDraw` — the build-time stats `<dl>` and the draw-a-card deck/mobile DRAW button — were removed with `/journal` in the Substack migration; see the Substack section below) |
+| `SplitViewLayout.astro` | Three-panel list/detail/emblem interface with client-side navigation and emblem card sidebar. Optional `kicker` prop; renders the unified P4G section header (`p4g-tab` + `p4g-heading` + `p4g-underline`; the page title is the `<h1>` and the entry title in the detail panel is the `<h2>` beneath it, on the list route and the standalone detail routes alike) — the same header pattern is replicated on the Now, Now-archive, and Novel pages; optional `showSearch` prop (default `true`) gates the whole `.split-view__filter` block (search input + segmented type control) — `/showcase` renders it `false` and is bare: no search, no type pills, no draw deck, no RSS icon. (`placeholderStats` and `showDraw` — the build-time stats `<dl>` and the draw-a-card deck/mobile DRAW button — were removed with `/journal` in the September Substack migration, which the Writing section has since superseded) |
 
 ## Component Inventory
 
@@ -259,6 +274,8 @@ as a description of the homepage.
 - `bento.css` — `.bento-grid` plus the now-dead `.bento-tile`/`.logo-tile`/`.latest-tile`/`.title-tile`/`.image-tile` families left over from the old homepage (see the Homepage section). The current homepage's CSS is **not** here — it lives in `index.astro`'s own `<style is:global>` block
 - `transitions.css` — P4G-style animations and view transitions
 - `novel.css` — Novel writer's-desk UI (gold/black/brown; desk landing, folder pages, paper/ink reading pages, sepia rain canvas)
+- `life.css` — The `/life` page (`.life__*`). Imported directly by `life/index.astro` and `life/[id].astro`, not by `BaseLayout`
+- `about.css` — **Orphaned.** Imported by nothing since About became `/life`. Its `.arc-card` rules are doubly dead: that card lives in `now.astro`'s own scoped block (see the Sessions section)
 
 ### Key CSS Variables
 ```css
@@ -327,15 +344,14 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 ## Pages & Routes
 
 ### Content Collection Pages
-- `/showcase` — `SplitViewLayout`, `section="showcase"`, showcase entries only, sorted by `updatedAt`/`publishedAt` descending. **Bare** (`showSearch={false}`): no search, no type control, no draw deck, no RSS icon — `populateTypes` already hides the type control when fewer than two types are present, so nothing extra was needed there for the single-type list. Removing the draw deck means `/showcase` now **auto-opens its newest entry on desktop** on load — the deck was the only thing that used to suppress SplitViewLayout's ordinary auto-open behavior (see Important Implementation Detail 1). Dissolved from the old `/journal`, which merged notes + showcases into one date-sorted list; notes moved to Substack (see the Substack section below), so the merge had nothing left to merge. (The old featured strip linking `/novel` and `/status` (then `/stream`) was removed earlier; those live in the NavPill now.)
+- `/showcase` — `SplitViewLayout`, `section="showcase"`, showcase entries only, sorted by `updatedAt`/`publishedAt` descending. **Bare** (`showSearch={false}`): no search, no type control, no draw deck, no RSS icon — `populateTypes` already hides the type control when fewer than two types are present, so nothing extra was needed there for the single-type list. Removing the draw deck means `/showcase` now **auto-opens its newest entry on desktop** on load — the deck was the only thing that used to suppress SplitViewLayout's ordinary auto-open behavior (see Important Implementation Detail 1). Dissolved from the old `/journal`, which merged notes + showcases into one date-sorted list; notes moved to Substack at the time (and have since been restored on-site — see the Writing section), so the merge had nothing left to merge. (The old featured strip linking `/novel` and `/status` (then `/stream`) was removed earlier; those live in the NavPill now.)
 - `/notes/[...slug]` — Static on-site note reading pages; see Writing below.
 - `/showcase/[slug]` — Individual project detail pages (left panel shows the showcase-only list, `section="showcase"`)
 - `/shelf` — Flat 'wall' collage of every entry (size = favorite/written/logged tier) with a sticky type-filter bar and inline quick-view panel. Progressive enhancement: cards link to `/shelf/[slug]` without JS; JS intercepts clicks to push `/shelf/[slug]` into history and open the panel instead (`?open=slug` supported for legacy links only).
 - `/shelf/[slug]` — Individual shelf detail pages
 
 ### Legacy Routes (301 Redirects)
-- `/status` → redirects to `/about` (the 2026-08 `/status`↔`/about` merge; `astro.config.mjs` `redirects`).
-- `/stream` → redirects to `/about` (retargeted in the same merge so it's a direct hop, not a chain through `/status`; `astro.config.mjs` `redirects`).
+- `/about`, `/status` and `/stream` → all redirect to `/life` (`astro.config.mjs` `redirects`). `/status` and `/stream` were retargeted when About became `/life`, so each is a direct hop rather than a chain. See the Life section.
 - `/journal` and `/writing` → `/notes`.
 - `/notes/jp-journal` → `/japanese-journal`. Other public notes render locally.
 - `/rss.xml` is a local RSS endpoint; no redirect.
@@ -350,7 +366,7 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 
 ### Utility Pages
 - `/` — Homepage: the `#personal-hub` layout (intro row + six-card 12-column grid + Traces ticker + footer site map). See the Homepage section
-- `/about` — profile card. One card, one screen: header (name/epithet/portrait from `_protagonist.md` via `parseProtagonist`), credential lines, WHAT I MAKE, SUBJECTS I EXPLORE, ABOUT prose, NOW, CONNECT + FIND ME. Copy is hand-written in the single-entry `profile` collection (`src/content/profile/about.md`); the Zod schema and the `pickProfile`/`nowLine` selectors live in `src/utils/profile.ts` (pure — vitest can't resolve `astro:content`, the same split `substack.ts`'s `parseSubstackFeed` uses). `profile.links[]` carries a primary "Read on Substack" link to `https://ninjaruss.substack.com`, and `makes[]`'s "Things I build" entry points at `/showcase`. Exactly one live element in the profile card proper: the NOW line, pulled from the latest `now` entry and omitted entirely when there isn't one. Reached from NavPill (the About item, on every non-home page) and from the homepage's `.about-links` nav in the header card. **This whole bullet is stale beyond its homepage claims**: the route is now `/life` (`src/pages/life/index.astro` plus `/life/[id]`, with `life.css`, `lifeMap`/`lifeExport` utilities and tests), and `/about`, `/status` and `/stream` all 301 there. Re-auditing the `/life` system is a separate pass — do not trust the rest of this entry. The page absorbed `/status` in that same merge: the current-arc card (`parseCurrentArc()` over `_quests.md`) is the first block in the main column, above the hook, and the retired mailbox strip's "Send mail to be read on stream" line now sits in the rail's Connect section. Arc-card CSS lives in `about.css`; `status.css` was deleted. Was a 301 to `/notes/i-am-ninjaruss` — the "no static About page" stance is preserved in spirit (the card is all output and links, no biography) and that note is now the deep read, linked from the ABOUT prose. The email address is assembled client-side (`#about-mail`), never in the served HTML. Link labels inside `.p4g-sweep` anchors **must** be wrapped in an element (`<span>`): the utility lifts children via `.p4g-sweep > *`, which doesn't match bare text nodes, so an unwrapped label gets painted over by the gold panel on hover.
+- `/life` — the About page (replaces `/about`, which 301s here). Hand-written profile prose plus a dormant record-driven half (Memories / Calendar / People / map) fed by one reviewed JSON snapshot. **See the Life section for the whole system** — the pipeline, the shared map package and the snapshot contract are the parts that matter before editing it.
 - `/now` — Latest "Now" entry (current focus)
 - `/now/archive` — Historical "Now" entries list
 
@@ -421,6 +437,127 @@ and any remaining historical references below.
   `src/utils/shelf.ts`/`sortShelfSection` retired with them. Wall logic lives in
   `src/utils/shelfWall.ts`, tested in `src/tests/shelfWall.test.ts`.
 - The `/favorites` route 301-redirects to `/shelf` (the old `?fav=1` filter is long gone).
+
+## Life (`/life`) — replaces `/about`
+
+**CORRECTION (2026-11-13 audit): `/about` is gone.** It is a 301 to `/life`, as
+are `/status` and `/stream`. The profile-card page CLAUDE.md used to describe
+(hook + credential lines + WHAT I MAKE + SUBJECTS I EXPLORE + ABOUT prose + NOW
++ CONNECT, with the arc card on top) does not exist. `src/styles/about.css` is
+still in the repo but **imported by nothing** — `/life` uses `src/styles/life.css`.
+The route's framing survived the rewrite ("a profile that has a status, not a
+status screen that has a profile", all output and links rather than biography);
+almost none of its markup did.
+
+### What `/life` actually renders
+
+`src/pages/life/index.astro`, `<div class="life life--about" data-life>`:
+1. `.life__intro` — framed portrait (from `_protagonist.md` via
+   `parseProtagonist()`, which still degrades to `DEFAULT_PROTAGONIST` on a
+   missing file), the protagonist name as the `<h1>`, a hand-written
+   introduction, and a "Say hello" jump link.
+2. `.life__perspective` — one hand-written paragraph.
+3. `#making` "Along the way" — **three hand-written `<section>`s** (Fukuoka,
+   the Marie essay, Utasync), each ending in a link to the thing it describes
+   (`/now/2026-11`, `/showcase/marie-video-essay`, `/showcase/utasync`), then
+   two `.life__context` navs: "What I make" (`/novel`, YouTube, `/notes`,
+   `/showcase`) and "Updates and practice" (`/now`, `/japanese-journal`).
+   This copy is **in the page template**, not in a collection.
+4. `#memories` / `#calendar` / `#people` — the record-driven half (see below).
+5. `#places` — a `<details>` disclosure wrapping the server-rendered Life map.
+6. `#contact` footer — `#life-mail` (assembled client-side) plus
+   `profile.links` filtered to drop the `YouTube` and `Writing` labels, since
+   the context navs above already carry those.
+
+**The record-driven half is currently dormant, and that is the expected state.**
+Every one of those three sections is gated on `records.length > 0`, and
+`src/data/life.json` **does not exist** (`src/data/` is an empty directory), so
+`loadLifeExport()` returns `{ schemaVersion: 1, records: [] }` and the live page
+shows only items 1–3, 5 and 6. The map renders with no markers. Do not read a
+blank Memories section as a bug — it means no snapshot has been published yet.
+Note the per-section `.life__quiet` empty-state strings ("I haven't shared any
+memories here yet.") are therefore **unreachable**: the outer `records.length >
+0` gate and the inner `length === 0` ternary contradict each other.
+
+### The public-snapshot pipeline
+
+This is the part worth understanding before touching anything here. `/life`
+never reads a private source; it reads one reviewed, hash-approved JSON file.
+
+- `src/utils/lifeExport.ts` — the **v1 public contract**, a Zod
+  `discriminatedUnion` over five record kinds: `experience` (dated, with
+  `people`/`places`/`events` reference arrays), `person`, `place` (a `region`
+  ref plus optional 0–100 `position: {x,y}`), `event` (`places` refs), and
+  `region` (optional `parent`, optional `mapKey`). Every object is `.strict()`
+  — an unknown field is a **parse error**, not a silently dropped one, which is
+  the whole point: a private field cannot ride along unnoticed. A
+  `superRefine` then enforces referential integrity (every ref must resolve to
+  a record of the right kind), unique ids, unique region `mapKey`s, and no
+  cycles in the region hierarchy. `canonicalLifeExport()` emits a
+  deterministic serialization — keys sorted, record order and every string
+  including whitespace preserved — so a review hash is stable.
+- `src/utils/lifeData.ts` — `loadLifeExport()` reads only
+  `src/data/life.json`; **ENOENT means "nothing shared yet" and returns an
+  empty bundle, but malformed content throws and fails the build** rather than
+  quietly hiding records that were meant to be public. Plus
+  `linkedLifeRecords()` (an entry's outbound refs, resolved) and
+  `lifeEncounters()` (the inverse — every experience that links *to* this
+  record, newest first).
+- `scripts/life-import.ts` — the only writer. `life:check <file>` validates and
+  prints a SHA256; `life:import <file> --approve <sha256>` refuses unless the
+  hash matches what was reviewed. It writes to a `randomUUID` temp file with
+  `flag: 'wx'` and `rename`s into place, and **refuses to follow a symlink** at
+  either the destination or its parent. Errors never echo input values, because
+  a rejected file may contain secrets. It does not deploy. The script and its
+  `life:check` / `life:import` npm aliases are both committed.
+
+### `packages/life-ui/` — shared map UI outside `src/`
+
+A content-free local package (`life-map.mjs` server renderer, `life-map.js`
+browser controller, `life-map.css`, `fukuoka.mjs` artwork) imported by
+`life/index.astro` with a relative `../../../packages/…` path. It is
+**vendored verbatim** by a separate private life-archive project, which is why
+it exists as a package at all: the caller supplies validated flat records and
+its own `hrefForRecord` adapter, so this is presentation reuse and
+deliberately **not** a data-synchronization path. Read
+`packages/life-ui/README.md` before editing — it records the `mapKey` binding
+vocabulary (`fukuoka`, `fukuoka-{chuo,hakata,higashi,minami,jonan,sawara,nishi}`),
+the rule that a descendant region's coordinates are never plotted on an
+ancestor's map, the fragment-link no-JS fallback, that SVG markers avoid inline
+`style` attributes to satisfy the private project's CSP, and the byte-for-byte
+`ui:check` contract on the private side. The artwork is original illustrative
+geography — not boundaries, not directions.
+
+### `/life/[id]` — one page per record
+
+`getStaticPaths()` over the same snapshot, so with no snapshot there are **zero
+such routes**. Each renders a kind tab, title, date (experiences only), the
+body split on blank lines, then Connections (`linkedLifeRecords`), Places &
+regions (children by `region`/`parent`), and Encounters (`lifeEncounters`). The
+back link targets the parent section anchor on `/life` via a kind→anchor map
+(`experience`→`memories`, `person`→`people`, `place`/`event`/`region`→`places`).
+
+### Client script
+
+`src/scripts/life.ts` does two small things, both idempotent via a
+`data-ready`/`textContent` guard and both re-run on `astro:page-load`:
+`initLife()` opens the `#places` disclosure when the hash is `places` or
+targets anything inside it (a `<details>` does not open itself for a fragment
+inside it, so deep links into the map would otherwise land on a closed
+element), removing its `hashchange` listener on `astro:before-swap`; and
+`initLifeMail()` fills `#life-mail`, which ships `hidden` with a `<noscript>`
+obfuscated-text fallback. The email address is never in the served HTML — the
+same pattern as the homepage's `setupContact()`.
+
+### What is left of the old `profile` collection
+
+`pickProfile()` is still called, but **only `profile.links` is read**. `hook`,
+`credentials`, `makes`, `makesMore`, `subjects`, `connect` and the body
+markdown are validated on every build and rendered nowhere. `nowLine()` is
+still exported and unit-tested with no caller. `src/content/profile/about.md`
+also carries an `# EXPIRES OCTOBER 2026` comment over copy its author already
+flagged as going stale. Deciding whether to trim the schema to `links` or to
+surface that copy again on `/life` is a content call, not a cleanup.
 
 ## Visual Novel System ("Remember Rain")
 
@@ -531,13 +668,18 @@ unit-tested, but no page calls it any more.
 `traces.astro` now — the homepage ticker is read-only, and the submit form lives
 exclusively on `/traces`.
 
-## Sessions & the /about arc card
+## Sessions & the arc card (now on `/now`)
 
 The `sessions` collection logs work sessions (Japanese, writing, streams) as
 hand-written markdown — create a `.md` in `src/content/sessions/` (VS Code
 snippet: type `session` + Tab). These files are currently an inert historical
 archive: nothing reads them anymore (see below), so creating new ones is
 optional bookkeeping, not something any page depends on.
+
+**Second correction (2026-11-13 audit):** `/about` itself no longer exists — it
+is a 301 to `/life` (see the Life section), and `/life` carries no arc card
+either. So every "`/about`" below should be read as the historical page, not a
+current destination; the arc card's only home is `/now`.
 
 The arc card that now lives on **`/now`** — not `/about`; see the correction below — traces back to `/status`
 (spec: docs/superpowers/specs/2026-08-18-status-page-arc-revamp-design.md),
@@ -549,7 +691,7 @@ reflect. `/status` was then merged into `/about`
 became clear the two pages were two one-screen answers to "who is this?" that
 already shared the protagonist header, the profile links, and the mailbox —
 only the arc card and the `LV n` chip were unique to `/status`. Both `/status`
-and `/stream` now 301 to `/about`. The surviving framing: `/about` is a
+and `/stream` now 301 to `/life`. The surviving framing: the About page is a
 profile that has a status, not a status screen that has a profile — and it's
 still viewer-facing, not a personal tracker: the arc card's job is "what
 chapter of the story is this, and what's currently being decided" — not "how
@@ -582,21 +724,22 @@ many sessions has Russ logged."
   rules did **not** move into `about.css` — they are in `now.astro`'s scoped
   style block (see the correction above).
 - **Identity header** and **"find me elsewhere" links row** — no longer
-  `/status`-specific; they're just `/about`'s own header (portrait/name/
-  epithet from `_protagonist.md`, parsed by `parseProtagonist()`,
-  `src/utils/protagonist.ts`; missing file/fields degrade to defaults) and its
-  existing rail links strip (`profile.links`) — not the `social-links`
+  `/status`-specific; both survive on `/life` as `.life__intro` (portrait/name
+  from `_protagonist.md`, parsed by `parseProtagonist()`,
+  `src/utils/protagonist.ts`; missing file/fields degrade to defaults) and the
+  `#contact` footer's `profile.links` strip — not the `social-links`
   collection, which models Bonds/confidants (`arcana`/`affinity`/`rank`/`lore`)
   and has no real entries.
 - **The `LV n` chip is gone.** It was a byproduct stat for a screen that no
   longer exists, and `computeSiteLevel()` is no longer called anywhere.
   `src/utils/level.ts` and `src/tests/level.test.ts` remain in the repo,
   unimported, still passing — deleting them is a separate decision.
-- **Mailbox strip** — carried over into `/about`'s existing Connect section:
-  address assembled client-side into `#about-mail` (never in served HTML),
-  `<noscript>` obfuscated-text fallback, plus the one line kept from
-  `/status`'s old mailbox strip, "Send mail to be read on stream" (hard-coded
-  copy, not a `profile` schema field). Kept because the homepage's
+- **Mailbox strip** — now `/life`'s `#contact` footer:
+  address assembled client-side into `#life-mail` (never in served HTML, filled
+  by `initLifeMail()` in `src/scripts/life.ts`) with a `<noscript>`
+  obfuscated-text fallback. The "Send mail to be read on stream" line kept from
+  `/status`'s old mailbox strip is **gone** — the footer is now just "Say hello"
+  plus links. Historically kept because the homepage's
   mail link pointed at it as its no-JS fallback. (The homepage's mail affordance is now the `.about-links`/footer Contact link to `/life#contact`, assembled client-side by `setupContact()`; there is no `#mail-tile`.)
 
 `STAT_COLORS`/`STAT_ORDER`/`StatName`/`hexToRgbTriplet` are all that remain in
@@ -627,16 +770,18 @@ separate decision, not part of this page.
 
 | `src/utils/dates.ts` | `formatDate()`, `shouldShowUpdatedDate()` | Date formatting and update-date display logic |
 | `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `parseOrderPrefix()`, `unescapeScrivenerMarkdown()`, `stripSceneLabel()`, `countWords()`, `computeNovelStats()`, `flattenFolderFiles()`, `findRecentFiles()`, `findSynopsisDoc()`, `findFirstScene()` | Scrivener-backed novel content loader + rain-gauge stats + desk recency/intro helpers |
-| `src/utils/sessions.ts` | `STAT_ORDER`, `StatName`, `STAT_COLORS`, `hexToRgbTriplet()` | The shared stat vocabulary/colors — the only place the five stat hexes are written (`about.astro`'s arc card and `scripts/transition.ts`'s page-transition card read `STAT_COLORS`; the homepage About tile deliberately does **not** — see below). Tallying/radar/donut/quest-parsing/level-curve logic that used to live here was deleted in the 2026-08 `/status` rebuild (see Sessions & the /about arc card above) |
-| `src/utils/protagonist.ts` | `parseProtagonist()`, `DEFAULT_PROTAGONIST` | Minimal frontmatter reader for `_protagonist.md` (name/epithet/portrait); missing file/fields degrade to defaults |
-| `src/utils/profile.ts` | `profileSchema`, `pickProfile()`, `nowLine()` | /about profile card data layer — Zod schema (from `astro/zod`, **not** `astro:content`, so vitest can load it), singleton entry selection, and the single live NOW line (returns null rather than a placeholder when there's nothing real to show) |
+| `src/utils/sessions.ts` | `STAT_ORDER`, `StatName`, `STAT_COLORS`, `hexToRgbTriplet()` | The shared stat vocabulary/colors — the only place the five stat hexes are written (`now.astro`'s arc card and `scripts/transition.ts`'s page-transition card read `STAT_COLORS`; the homepage About tile deliberately does **not** — see below). Tallying/radar/donut/quest-parsing/level-curve logic that used to live here was deleted in the 2026-08 `/status` rebuild (see the Sessions section above) |
+| `src/utils/protagonist.ts` | `parseProtagonist()`, `DEFAULT_PROTAGONIST` | Minimal frontmatter reader for `_protagonist.md` (name/epithet/portrait); missing file/fields degrade to defaults. Consumed by `/life`'s header |
+| `src/utils/profile.ts` | `profileSchema`, `pickProfile()`, `nowLine()` | Profile-collection data layer — Zod schema (from `astro/zod`, **not** `astro:content`, so vitest can load it) and singleton entry selection. `/life` calls `pickProfile()` and reads only `links[]`. `nowLine()` is exported and unit-tested but **has no caller** |
+| `src/utils/lifeExport.ts` | `lifeExportSchema`, `canonicalLifeExport()`, `LifeExport` | The v1 public Life snapshot contract — strict discriminated union over 5 record kinds, referential-integrity/uniqueness/cycle checks, and a deterministic serializer for review hashes. See the Life section |
+| `src/utils/lifeData.ts` | `loadLifeExport()`, `linkedLifeRecords()`, `lifeEncounters()`, `LifeRecord` | Reads the one snapshot at `src/data/life.json` (absent → empty bundle; malformed → build failure) and resolves records' forward and reverse links |
 | `src/utils/shelfWall.ts` | `wallTier()`, `wallShape()`, `wallClass()`, `wallRotation()`, `sortWall()`, `resolveInitialFilter()` | /shelf wall logic — affection tiers, shape/span classes, slug-seeded rotation, ordering, filter-URL resolution |
 | `src/utils/splitView/` | (11 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
 | `src/utils/traces.ts` | `tracesMessageSchema`, `parseTracesInput()`, `sanitizeText()`, `hashIp()`, `isRateLimited()`, `containsBlockedTerm()`, `BLOCKED_TERMS`, `NAME_MAX_LENGTH`, `MESSAGE_MAX_LENGTH`, `RATE_LIMIT_WINDOW_MS` | Traces validation/hash/rate-limit/blocklist — see Traces section |
 | `src/utils/tracesDb.ts` | `insertMessage()`, `listMessages()`, `countMessages()`, `lastSubmissionByIpHash()`, `deleteMessage()`, `TraceRow` | Traces database access layer (Neon, lazy-initialized) |
 | `src/utils/tracesFormat.ts` | `formatTraceTimestamp()`, `formatTraceTimestampCompact()` | Zero-import timestamp formatting. `formatTraceTimestamp()` is used by `traces.astro`'s list; `formatTraceTimestampCompact()` was the homepage's compact form and is now exported and tested but unused (the homepage ticker shows no timestamps) |
 
-The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `eventBindings`, `filterEngine`, `filterUI`, `idleManager`, `mediaHandlers`, `proseImageTilt`, `types`, `urlState`. (`drawCard` — the notes-only draw pool — was deleted with the draw-a-card deck in the Substack migration; see the Substack section above.)
+The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `eventBindings`, `filterEngine`, `filterUI`, `idleManager`, `mediaHandlers`, `proseImageTilt`, `types`, `urlState`. (`drawCard` — the notes-only draw pool — was deleted with the draw-a-card deck in the September Substack migration; see the Writing section, which supersedes it.)
 
 ## Astro Integrations
 
@@ -652,7 +797,7 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 
 ## Important Implementation Details
 
-1. **SplitViewLayout JavaScript**: Three-panel layout (list/detail/emblem) with client-side fetch for detail content, History API for navigation, search filtering (Cmd/Ctrl+K to focus search) when `showSearch` is true, emblem card flipping on content selection, falls back gracefully without JS. `contentLoader.loadContent` fetches by each list item's own `href` (not the page section). On load with no slug in the URL, auto-opens the newest visible entry — desktop layout only (detected via the applied grid columns, not viewport width) and without pushing history or moving focus; detection retries on a setTimeout loop (20 × 75ms then 20 × 250ms, ~6.5s total) because styles can land after init and rAF is suspended in background tabs, and is re-kicked once on window `load` and once when the `(min-width: 1200px)` media query flips true (embedded panes can report 0×0 at init), with a `splitView.isConnected` guard stopping stale timers after view-transition swaps (`src/utils/splitView/index.ts`; `loadContent` accepts `{ pushHistory, focusHeading }` options). **`/showcase` now auto-opens its newest entry on desktop** — the old `/journal` route was the one place that suppressed this, by rendering the draw-a-card deck (`showDraw`) in the placeholder instead; both the deck and `showDraw` were deleted with the notes merge (see the Substack section above), and nothing replaced the suppression, so the ordinary auto-open behavior now applies.
+1. **SplitViewLayout JavaScript**: Three-panel layout (list/detail/emblem) with client-side fetch for detail content, History API for navigation, search filtering (Cmd/Ctrl+K to focus search) when `showSearch` is true, emblem card flipping on content selection, falls back gracefully without JS. `contentLoader.loadContent` fetches by each list item's own `href` (not the page section). On load with no slug in the URL, auto-opens the newest visible entry — desktop layout only (detected via the applied grid columns, not viewport width) and without pushing history or moving focus; detection retries on a setTimeout loop (20 × 75ms then 20 × 250ms, ~6.5s total) because styles can land after init and rAF is suspended in background tabs, and is re-kicked once on window `load` and once when the `(min-width: 1200px)` media query flips true (embedded panes can report 0×0 at init), with a `splitView.isConnected` guard stopping stale timers after view-transition swaps (`src/utils/splitView/index.ts`; `loadContent` accepts `{ pushHistory, focusHeading }` options). **`/showcase` now auto-opens its newest entry on desktop** — the old `/journal` route was the one place that suppressed this, by rendering the draw-a-card deck (`showDraw`) in the placeholder instead; both the deck and `showDraw` were deleted with the notes merge (see the Writing section), and nothing replaced the suppression, so the ordinary auto-open behavior now applies.
 
 1b. **SplitView mobile (≤900px) stacked layout**: the list panel flows at natural height (`.split-view__nav` has `max-height: none` — the page scrolls; an inner scroller left a dead band above the bottom nav) with `--nav-clearance` bottom padding, and the empty detail pane is `display: none` until a selection exists (`has-selection` is server-set on detail routes like `/showcase/[slug]` and client-set on tap, so both flows show the detail). Auto-open remains desktop-only. The `.split-view__content .prose` right inset in that breakpoint exists to clear the fixed `.emblem-badge` (60px + its offset) — removing it puts the badge back on top of the text.
 

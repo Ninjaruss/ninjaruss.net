@@ -8,7 +8,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run",
-    "add-image": "node scripts/add-image.js"
+    "add-image": "node scripts/add-image.js",
+    "life:check": "tsx scripts/life-import.ts check",
+    "life:import": "tsx scripts/life-import.ts import"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
