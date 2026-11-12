@@ -73,57 +73,171 @@ Collection-specific extensions:
 ## Component Inventory
 
 ### Structural
-- `BentoGrid.astro` / `BentoTile.astro` — Homepage grid system with visual hierarchy
-- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). Links Home/Showcase/Visual Novel/Shelf/About/Now/Traces/Writing with solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`; `/showcase/[slug]` paths highlight Showcase via the shared `startsWith` match on `['/showcase']` — no special-casing needed now that `/notes/*` is a server-rendered redirect off-site rather than an on-site route); optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on /about. (No longer the centered floating Home pill.) **Labels match what each destination calls itself** — the `/novel` item reads "Visual Novel" (it used to read "VN", a string that appeared nowhere on the page it pointed to), and `/traces` and Writing (→ Substack, the one off-site item, opened in a new tab) were added after the 2026-09 audit found the guestbook reachable from exactly one link and the prose unreachable from `/showcase`, `/shelf` and `/novel`. ≤1024px: items wrap into rows (44px targets, hairlines via gap + gold-tinted inner background) and the back link takes a full-width third row (a folder title never fits a quarter-width cell); a small script publishes the nav's measured height as `--nav-clearance` on <html> (re-set on astro:page-load/resize), consumed by page bottom paddings (now pages, SplitViewLayout detail panel, novel.css) so the bar never covers content.
+- `BentoGrid.astro` — A bare `<div class="bento-grid">` with a slot and an optional extra `class`. On the homepage it is used only as that slot wrapper; `#personal-hub .grid` overrides its grid entirely (see the Homepage section).
+- `BentoTile.astro` — **Dead.** Still in the repo, imported by nothing since the homepage rewrite. Its variants (`interactive`/`highlight`/`dark`/`static`), sizes, kickers, span classes and `.bento-tile__corner` hover triangle, and their `bento.css` rules, describe a homepage that no longer exists.
+- `TracesBar.astro` — The homepage guestbook ticker; see the Traces section.
+- `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). **CORRECTION (2026-11-13 audit): four items, not eight.** The menu is Home / About (`/life`) / Now / Shelf, each with a solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`, via a shared `startsWith` match on the item's `match` array). The previous entry listed Home/Showcase/Visual Novel/Shelf/About/Now/Traces/Writing and an off-site Substack item; none of that is in the component. Writing, Projects, Remember Rain, Traces and Japanese journal are reachable from the homepage header, the homepage cards and the homepage footer site map instead, which is why they are not menu items — the deliberate trade is a menu you can read at a glance against one more hop from a deep page. A **second** table in the component maps those off-menu destinations to labels (`/notes` → "Writing", `/showcase` → "Projects", `/novel` → "Remember Rain", `/traces` → "Guestbook", `/japanese-journal` → "Japanese journal", else "Explore") for one purpose only: naming the visitor's current location in the collapsed mobile `<summary>`. It sets no `aria-current` and adds no link. Optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on `/life` and every other non-home page. **Labels match what each destination calls itself** — the rule that retired "VN" for "Remember Rain", a string that actually appears on the page it points to. Both a `.nav-bar__desktop` strip and a `.nav-bar__mobile` `<details>` disclosure are rendered server-side and swapped by CSS at **1200px** (not 1024px): below it the bar goes full-width and the disclosure's `<summary>` shows the current-location label beside "Menu ☰", opening a 2-column grid of 48px targets above itself (`max-height: 65dvh`, scrollable), with the back link spanning both columns. `initNavigation()` publishes the nav's measured height +16px as `--nav-clearance` on `<html>` via a `ResizeObserver`, consumed by page bottom paddings (`life.css`, `novel.css`, `ReadingLayout`, `SplitViewLayout`, `traces.astro`, `404.astro`) so the bar never covers content — each with its own fallback default, so a script failure doesn't collapse the padding.
 
-### Bento Tile Hierarchy
-The homepage uses a visual hierarchy pattern:
-- **Journal tile** (`.journal-tile`, 4×2, core, slash split): gold Writing field / black showcases field separated by a diagonal `clip-path` seam (`::before` overlay; shifts ~2% left on hover, static under reduced motion; row entries carry `padding-right: var(--space-xl)` so dates clear the hovered seam — the seam leans left as it descends (66%→58% at rest, 64%→56% on hover) so its encroachment *grows* down the list while the padding is constant, which is why the bottom row is the first to be crossed; the old `--space-md` left the last row's date 2px under the black field on hover at ≥1232px, and the date is black text, so it did not merely overlap, it vanished). Root is a `div` (no nested anchors). Whole-tile navigation is JS (`initializeJournalTileNav`, `data-tile-href="/showcase"`): a click handler on the tile routes any non-`<a>` click to `/showcase` via `window.location.href` (a plain assignment on purpose — the view-transition router's trusted-event gating makes a stretched-link/`navigate()` approach unverifiable and it silently failed in testing); entry links keep their own view-transition nav. Left: gold WRITING tab linking out to `https://ninjaruss.substack.com`, up to five deep-link rows fetched at build time from the Substack feed (`fetchSubstackPosts()`, see the Substack section below) with right-aligned dates — when the feed fetch returned `[]`, the row list is replaced by a single muted `.journal-tile__empty` line ("Posts live on Substack now.", linking out) rather than leaving the heading over nothing, since an empty feed (Substack outage, a build-time block, no posts yet) is a live, expected outcome, not a bug. Right: gold SHOWCASES tab linking to `/showcase`, three showcase rows (42px emblem + visible title; gold border marks the most recent); the showcases column has `padding-left` so its content clears the seam and never straddles the diagonal. Corner hover triangle is gold (overrides the highlight-tile black — it sits on the black field). Below 1024px the fields stack and the black field is painted by `.journal-tile__showcases` itself (negative-margin bleed + 16px diagonal top clip) — tile-relative percentage seams can't track auto-sized content. **Naming wart, documented rather than fixed**: the tile reads "Writing" in the UI and its whole-tile click now routes to `/showcase`, but the CSS class family (`.journal-tile`, `.journal-tile__*`) and the JS function (`initializeJournalTileNav()`) still say "journal" — leftover from when this was the merged `/journal` tile. Same kind of wart as `#stream-tile` below (see the Stream tile bullet); not renamed here because that's a separate change from documenting it.
-- **Core tiles** (`.bento-tile--core`): Journal and Shelf (Media Log) with elevated gold glow and larger typography. The homepage Shelf tile's 8-cover collage tucks under a diagonal top edge (`.tile-poster-strip` clip) — one cut, no new colors.
-- **Signal tiles**: Current activity indicators (Now, Latest) — Now shows the latest now-entry's title; Latest is 2×2 with a stripped-markdown excerpt, an absolute per-entry date (`.latest-date`, never time-since, rendered lowercase to match the journal tile's date rows), and cycles client-side through the latest 2 Substack posts + latest 1 showcase (interleaved post/showcase/post, 7s interval; Substack entries have no per-entry emblem of their own and render `/images/emblems/scroll.svg`; each swap is a P4G gold sweep — a skewed gold panel (`.latest-tile__sweep`, `skewX(--skew-accent)`, the same move as the journal-entry hover `.list-item::before`) sweeps across via the `latest-sweep` keyframes on `#latest-tile.is-cycling`: in to cover, entry swapped behind it at the midpoint, out to reveal; cycling is skipped entirely under `prefers-reduced-motion`, which also sets the sweep `animation: none`). The emblem sits on a deeper-black angled field (`.latest-tile__emblem-wrap`, `clip-path` + negative-margin bleed) traced by a gold hairline (`::before`, skewX(-4deg) measured against the clip edge); ≤768px the field flattens to the tile's bottom edge and the hairline hides.
-- **Novel tile** (`.novel-tile`, 1×2, rows 2-3): "rain gauge" — script words (Manuscript/ folder, big gold; labelled "script words" in the UI) vs outline words (other folders, small grey) from `computeNovelStats()`. Each rain drop is randomized per-visit (position/speed/delay/length/opacity) by `initializeNovelRain`. Client script (`initializeNovelRain`) reads `data-scene-modified`/`data-outline-modified` and sets `is-raining` (scene work ≤14 days, CSS rain animation scaled by `--rain-strength`), `is-misting` (outline-only work ≤14 days, sparse slow drizzle), or `is-waiting` (static "the rain waits." line); the rain spans the full tile (14 drops with varied lengths via `--len`, spread across the width). Design invariant: never red, never displays a count of absent days — the tile rewards accumulation, it does not shame absence.
-- **Stream tile** (`.stream-tile`, `#stream-tile`): Dark 1×2 tile linking to `/about`, kicker "About" and the protagonist's name as its title; shows a one-line teaser of the current arc's decision text (read from `_quests.md`'s `## Current Arc` section, the same source `/about`'s arc card uses). Pulsing red border (`--color-live`) when live, via the unchanged `/api/live-status.ts` polling. Known wart: the element keeps `id="stream-tile"`, the `.stream-tile` class, and the whole `--st-*`/`.st-*` CSS prefix family from its pre-merge "Stream" identity even though the tile now means "About" — the id is load-bearing for the live-status client script, and renaming it would have to touch the CSS and that script together in the same pass, so it was deliberately left for a separate cleanup.
-- **Logo tiles** (`.logo-tile`): External service links (MyAnimeList, Spotify) and an Email tile (2×1, `#mail-tile`, **gold** — see below) with 48x48px logos/icons and hover effects. The email address (mailbox@ninjaruss.net) is never in the served HTML — `initializeMailTile()` assembles the `mailto:` on first pointerenter/focus/touch/click (bot-scrape mitigation; same pattern fills `#about-mail` in `/about`'s Connect block). Angled gold kicker chips name each tile's role (WATCHLIST / LISTENING / CONTACT), corner-cut clip-path (no hover shadow — clip-path would clip it, same reason there's no focus outline ring — hover/focus feedback is the gold sweep + lift instead), brand-colored hovers replaced by the shared `.p4g-sweep` gold wash with black text.
-- **YouTube tile**: Full-bleed channel avatar with an angled gold "YouTube" kicker chip (`.yt-tile__chip`); switches to Twitch live preview when streaming (live overlay covers the chip)
+### Homepage — `#personal-hub`
 
-**The Email tile is gold; MAL and Spotify are dark.** Fill is what separates *owned* content from *external services* in the bottom band — the mail tile sat inside the MAL/Spotify cluster reading as a third service, and it was the emptiest tile on the grid (379×168 holding an icon, one word and one line). Gold also restores the page's colour balance: measured share of tile area was 16.3% top / 67.4% middle / **0% bottom**, so gold had collapsed into one horizontal stripe and everything below it read as a footer. It is now 16.3 / 67.4 / 15.7. Because the ground is gold, `.logo-tile--mail` **reverses** the shared `.p4g-sweep`: the panel sweeps *black* and the text flips to gold (a gold panel is invisible on gold). Same inversion the journal tile's note rows use. The kicker inverts to gold-on-black at rest and back on hover.
+**CORRECTION (2026-11-13 audit): the bento-tile homepage is gone.** Everything
+this section used to describe — the `.journal-tile` with its diagonal seam, the
+`.latest-tile` cycle, `#stream-tile`, the `.novel-tile` rain gauge,
+`.logo-tile`s for MAL/Spotify/mail, `initializeTilt()`,
+`initializeNovelRain()`, `initializeMailTile()`,
+`initializeJournalTileNav()`, `.hero-band`, the span classes and the ~17
+infinite-animation "motion budget" — was deleted when the homepage was
+rewritten from scratch. Verified by grepping `src/` and `scripts/`: not one of
+those classes or functions exists any more. Four recent passes over the
+replacement are recorded in `docs/audits/2026-11-12-homepage-card-balance.md`,
+and the navigation pass landed as commit `030d78c`.
 
-**Motion budget.** The homepage runs ~17 infinite CSS animations at rest (14 novel rain drops, 2 title shimmer rules, 1 Now dot breathe) plus the Latest cycle timer. Treat that as the ceiling — adding an ambient loop means removing one. Two things were cut on those grounds: the Now tile's radar-ping rings (pure ornament — the gold ground and the NOW kicker already say "now"; the dot still breathes) and a LIVE badge keyframe that ran forever inside the YouTube tile's `opacity: 0` overlay. **Badge breathing is scoped to the live state** (`.st-live-badge:not([hidden])`, `.is-twitch-live .yt-tile__live-badge`) rather than living on the shared plate rule — `opacity: 0` does not stop an animation, only `display: none` does, and the About badge escaped that only by accident. The Latest cycle is **11s, not 7s**: it shared a period with the Traces park rotation, so with the two unsynchronised something on the page changed every ~3.5s on average.
+`src/pages/index.astro` now renders one page-sized component: a `#personal-hub`
+wrapper holding, in order, `.intro-row`, the card `.grid`, `.guestbook-row`
+(just `<TracesBar />`), and `.footer`. No `BentoTile`, no tile variants, no
+kickers, no corner triangles. It is ~720 lines, most of it CSS.
 
-**The Twitch preview image has no `src` in the template** — `applyLiveState()` copies `data-src` onto it the first time Twitch reports live. It was a third-party request (`static-cdn.jtvnw.net`) fired on every homepage load for an image that is invisible almost always.
+**Where the CSS lives, and why it is `is:global`.** Almost all of the
+homepage's CSS is a single `<style is:global>` block inside `index.astro`, with
+every rule prefixed `#personal-hub`. `TracesBar.astro` does the same thing for
+its own markup. That is deliberate, not laziness: Astro's scoped CSS only tags
+elements present in that component's own server-rendered template, so a scoped
+rule could never reach `.grid` (the root of the `<BentoGrid>` component),
+`.traces` (the root of `<TracesBar>`), or the trace rows TracesBar builds with
+`document.createElement`. The old file solved this by sprinkling `:global(...)`
+per selector; this one takes the whole block global and uses the `#personal-hub`
+id as the scope instead. **Consequence worth knowing:** TracesBar's styles are
+written as `#personal-hub .traces…`, so the component renders unstyled anywhere
+except the homepage.
 
-Tile variants: `interactive` (default), `highlight` (gold bg), `dark`, `static`
-Sizes: `dominant` (2x2), `medium-wide` (2x1), `medium-tall` (1x2), `small` (1x1)
+**Local token aliases.** `#personal-hub` opens by remapping the site tokens onto
+short local names — `--gold`, `--bg`, `--surface`, `--ink`, `--text`, `--muted`,
+`--line` onto `--color-gold`, `--color-bg-deep`, `--color-bg-elevated`,
+`--color-black`, `--color-text`, `--color-text-muted`,
+`--color-border-strong` — and sets `color-scheme: dark`, a dotted
+`radial-gradient` ground, and `font: 16px/1.6 var(--font-body)`. The hub's own
+rules then use the short names. This is an alias layer over the design system,
+not a second palette: the Code Style rule still holds, and a new colour belongs
+in `global.css` and then in this map. A handful of one-off hexes do sit inline
+(`#958721` writing hairlines, `#111719`/`#1d2625` novel ground, `#57605a` rain,
+`#b3a249` poster frames, `#191919` traces strip) — they are card-local
+atmosphere, not tokens, and shouldn't be copied outward.
 
-**Hover signature**: the corner-cut triangle (`.bento-tile__corner` — gold triangle slides into the top-right on hover/focus) is the single hover signature for every interactive bento tile, paired with a lift (`translate(-4px,-4px)`), a shadow step to `--shadow-hard-hover`, and a gold border. Gold-background (`highlight`) tiles use a black triangle for contrast; `static` tiles hide it. Shelf cards have a matching `.shelf-card__corner`. BentoTile has no `accent` prop — the old `.bento-tile--accent` dot, corner-bracket `::after` decorations, and `.bento-tile--cyan` variant were all removed. The `--interactive` variant no longer declares a `rotate`/`scale`/`brightness` hover or a gradient `::before` bloom: every homepage tile is also `--dark`/`--highlight`, whose later equal-specificity `:hover` reset the transform, and the bloom sat at `z-index: -1` behind an opaque tile background — none of it rendered anywhere.
+**`.intro-row`** — `minmax(0, 2fr)` / `minmax(300px, 1fr)`, stacking to one
+column at ≤700px.
+- `.header` is the gold-bordered identity card: the page's `<h1>` (NINJARUSS),
+  `.motto`, `.intro` prose capped at `65ch`, and an `.about-links` nav to
+  `/life` and `/life#contact`. The contact link's address is assembled
+  client-side by `setupContact()` on first pointerenter/focus/touchstart (the
+  same bot-scrape mitigation the old mail tile used, re-armed on
+  `astro:page-load`); `mailbox@ninjaruss.net` is never in the served HTML. Note
+  the About destination is **`/life`**, not `/about` — `/about` is a 301 to it.
+- `.now` is a whole-card `<a href="/now">`: chip, the latest `now` entry's
+  title, its date, a one-sentence excerpt, and a `.now-read` call to action
+  pinned to the bottom with `margin-top: auto`. The excerpt is computed at
+  build from the entry's **own first real paragraph** (first block that is
+  neither blank nor starting `#`/`<`, run through `stripMarkdown`, then cut at
+  the first sentence end) rather than a `description` field — the point is not
+  to add a second summary that has to be kept in sync with the update itself.
 
-`.bento-tile__header` sits at `z-index: 4`, one above the corner triangle's `3`: the triangle is `aria-hidden` decoration and must slide *behind* the kicker, not clip its last glyph (it ate 6px of "Visual Novel" on the 1×2 Novel tile at 1025–1100px).
+**`.grid` — six cards, one 5/7 seam.** `<BentoGrid class="grid">` emits
+`class="bento-grid grid"`, and `#personal-hub .grid` re-declares
+`grid-template-columns: repeat(12, minmax(0, 1fr))`. The id selector outranks
+`bento.css`'s own 6-column `.bento-grid` rule, so BentoGrid is being used here
+as a plain slot wrapper, not for its grid.
 
-**Kickers are one silhouette.** `.bento-tile__label` carries the parallelogram `clip-path` in its *base* rule; every variant below only swaps colours (`--dark`/`--core` → black text on gold, `--highlight` and `--highlight.--core` → gold text on black). Before this the cut lived only on the `--core` rule, so the three `--dark` tiles (Novel, About, Latest) rendered rounded rectangles beside cut ones.
+| Row | Left (`span 5`) | Right (`span 7`) |
+|-----|-----------------|------------------|
+| 1 | `.writing` → `/notes` | `.video` → YouTube |
+| 2 | `.projects` → `/showcase` | `.novel` → `/novel` |
+| 3 | `.japanese-journal` → `/japanese-journal` | `.shelf` → `/shelf` |
 
-**Tile subtitles are always visible** (`opacity: .75`, `1` on hover — `.7`/`1` on gold `--highlight` grounds). `.6` measured only 3.12–3.34:1 over the dark tile grounds, under the 4.5:1 AA floor for 12px text; the 2026-09 audit raised it to `.75` (~4.4–4.7:1). The gold `--highlight` case keeps `.7`, which reads 7.59:1., matching `.logo-tile__description`/`.st-teaser`/`.latest-tile__excerpt`. `.bento-tile__description` used to be `opacity: 0; max-height: 0` until hover, which made the Now tile's subtitle the only tile copy on the grid you could not read at rest. It also sits at `--text-xs` like every other tile's prose (it was the lone `--text-sm`).
+All three rows share the **same** 5/7 split on purpose. The rows previously
+split 5/7, 6/6 and 8/4, which put the vertical seam at a different x on every
+row; Japanese journal moved left and Shelf moved right to line them up. At
+701–1023px every child goes `span 6` (one blanket rule, `#personal-hub .grid >
+*`); at ≤700px the grid collapses to one column and `grid-column: auto`.
 
-**The 3D mouse-tilt binds to every tile**, via `SELECTOR = '.bento-tile, .logo-tile, .image-tile, .title-tile'` in `initializeTilt()`. It used to lead with `.bento-tile--interactive`, but `BentoTile` defaults to `variant="interactive"` while every homepage tile passes `dark`/`highlight` instead — so Journal, Now, Media Log and Latest (both `--core` tiles among them) silently never tilted, and hovering Novel tilted in 3D while the Journal tile beside it stayed flat. The tilt writes an inline `transform`, which outranks the CSS hover transform on any tile it covers.
+**One destination per card, and the whole card goes there.** Half the cards used
+to be whole-card links and half were `<section>`s where only the heading was
+clickable — yet every card carried the same hover lift, so the page promised a
+click target it did not always honour. Now `.now`, `.japanese-journal` and
+`.shelf` are `<a>` roots outright, and `.writing`, `.video`, `.projects` and
+`.novel` are `<section aria-labelledby>` whose heading link carries
+`.tile-link`, which stretches over the card via `::after { inset: 0; z-index: 1
+}`. Inner links that must keep their own destinations — `.post` rows,
+`.project` rows, `.video-actions` — are raised above it by one `:is()` rule at
+`z-index: 2`. Heading arrows sit **beside** their titles (they used to be
+`space-between`-pushed up to 440px away, so title and arrow read as unrelated
+elements).
 
-**Neighbour dimming** is one `:is()` pair in `bento.css`, not the old 18-selector hand-written cross-product, and it now includes `.traces-bar` — which had been left out of the grid entirely (hovering it dimmed nothing, and it never dimmed).
-Span classes: `.bento-tile--span-4x2`, `.bento-tile--span-3x2`, `.bento-tile--span-2x2`, `.bento-tile--span-2x1`, `.bento-tile--span-1x2`
+Two traps this creates, both already paid for once:
+- `.novel`'s children get `position: relative` so they paint above
+  `.rain-field`, but **deliberately no `z-index`** — being positioned and later
+  in the DOM is enough, and leaving them at `auto` lets the stretched link
+  (z-index 1) sit on top of `.premise` instead of under it. Adding a `z-index`
+  there traps the overlay.
+- `.projects .tile-intro` and the novel's children previously carried
+  `z-index`/`position` rules that covered or trapped the overlay; they were
+  removed, not worked around.
 
-**Current Homepage Grid Pattern:**
-- Row 1: Title (4×1) + YouTube (1×1) + Now (1×1). Both YouTube and Now live in the *inner* grid inside `.hero-band`, so their `order` only sequences them against each other and the title tile — they cannot reorder past the owned-content tiles, because the whole band is one item of the outer grid. The Now tile's title is clamped to 2 lines (`--clamped` modifier): unclamped, a long monthly title set the height of the entire hero row.
-- Rows 2-3: Journal (4×2, core) + Novel (1×2, rain gauge) + Stream (1×2)
-- Rows 4-5: Shelf/Media Log (2×2, core) + Latest (2×2) + MAL (1×1, row 4) + Spotify (1×1, row 4) + Email (2×1, row 5)
+**Off-site links are marked.** Every outbound link pairs a `↗` glyph with an
+`.offsite` span ("on YouTube", "external link") that is visually hidden by the
+usual clip-path recipe — the glyph says it to sighted readers, the span says it
+to screen readers. Off-site and on-site destinations were previously
+indistinguishable.
 
-Note: Title grid placement is controlled by scoped CSS in `index.astro` (`.title-tile { grid-column: span 4 }`), not a span class. Below the grid (not a tile): the Traces band — see the Traces section.
+**`.writing` is the one gold card.** Gold ground, `--ink` text, and every
+gold-on-gold treatment inverts for it: focus outline, hover border, and the
+corner notch all flip to `--ink` (a gold panel is invisible on gold — the same
+inversion the old mail tile needed). It also sets `container-type: inline-size`
+and a `@container (min-width: 420px)` query so post dates sit beside titles when
+the card is wide enough and below them when it is not — a container query, not a
+viewport one, because the card's width does not track the viewport's across the
+three breakpoints.
 
-Row 1 has to be re-balanced twice on the way down, because the title's span is
-fixed at 4 while the grid's column count is not. At 769–1024px the grid is 4
-columns, so the title fills its own row and YouTube + Now must each `span 2` to
-fill the next one; at ≤768px (2 columns) they each go full-width. Both rules live
-in `index.astro`'s scoped CSS and **must** be placed after the base
-`.image-tile--youtube { grid-column: span 1 }` declaration to outrank it.
-`.home-now-tile` is the root of a `<BentoTile>` component, so Astro never stamps
-the scope attribute on it and its rules **must** be wrapped in `:global(...)` —
-the same gotcha as the client-built Traces markup, for a different reason.
+**Hover/focus signature.** One rule for everything: `:is(.tile, .traces)` on
+hover or `:is(:focus-visible, :has(:focus-visible))` lifts
+`translateY(-3px)`, takes a gold border and steps the shadow to
+`--shadow-hard-hover`, and the 16px bottom-right notch (`.tile:after`, a
+`clip-path` triangle painted in the page background) flips to gold. Hover is
+gated behind `(hover: hover) and (pointer: fine)`; `prefers-reduced-motion`
+drops the transition and the transform. This replaces the old
+`.bento-tile__corner` triangle as the site's tile hover language — the notch
+cuts *out* of the corner rather than sliding *into* it, but it is the same
+angular P4G move.
+
+**No ambient motion, and no tilt.** `.rain-field` is six static `<i>` hairlines
+at hand-placed percentages — no JS, no keyframes. The only looping animation
+anywhere on the page is the Traces ticker, which pauses on hover and focus.
+There is no mouse-tilt: `initializeTilt()` no longer exists (`cursor.ts` only
+mentions it in a comment about the bug class it used to have). The hub also
+forces the native pointer back on — `html.has-custom-cursor:has(#personal-hub)`
+sets `cursor: auto !important` and hides `#cursor` — so the custom cursor dot is
+a rest-of-site treatment only.
+
+**`.footer` is a site map.** The page used to end in two outbound links and no
+way back in. It now has a `.footer-site` nav listing every on-site destination
+(Writing, Projects, Remember Rain, Shelf, Japanese journal, Now, Traces, About,
+Contact) and a separate `.footer-elsewhere` nav for YouTube, Twitch,
+MyAnimeList and Spotify, each marked `.offsite`.
+
+**Dead code left behind by the rewrite — documented, not fixed.** Grepped and
+confirmed unreferenced:
+- `src/components/BentoTile.astro` is imported by nothing.
+- `src/styles/bento.css` (491 lines, still imported by `BaseLayout.astro`) is
+  almost entirely dead: the whole `.bento-tile*` variant/span/corner family,
+  `.logo-tile`, `.latest-tile`, `.title-tile`, `.image-tile`, and a
+  neighbour-dimming `:is()` pair whose selectors include `.traces-bar` —
+  TracesBar renders `.traces`, so that rule now matches nothing at all. Only
+  `.bento-grid` is still live, and `#personal-hub .grid` overrides it.
+- `cursor.ts`'s `TILE_SELECTOR` still names `.traces-bar` and `.traces-bullet`;
+  only the second still exists (as a TracesBar row link).
+- `src/pages/api/live-status.ts` and `src/pages/api/twitch-live.ts` are live
+  endpoints that no page calls — the live badge and Twitch preview went with
+  `#stream-tile` and the YouTube tile.
+Clearing those is its own change; this entry exists so nobody reads `bento.css`
+as a description of the homepage.
 
 ### List/Detail
 - `ListItem.astro` — Left panel items in SplitViewLayout
@@ -142,7 +256,7 @@ the same gotcha as the client-built Traces markup, for a different reason.
 ### CSS Files
 - `global.css` — Design tokens, colors, spacing, shadows
 - `typography.css` — Fonts (**Archivo Black, Syne, JetBrains Mono** — not Inter; see below), type scale, metric-matched fallback `@font-face`s
-- `bento.css` — Grid system and tile variants
+- `bento.css` — `.bento-grid` plus the now-dead `.bento-tile`/`.logo-tile`/`.latest-tile`/`.title-tile`/`.image-tile` families left over from the old homepage (see the Homepage section). The current homepage's CSS is **not** here — it lives in `index.astro`'s own `<style is:global>` block
 - `transitions.css` — P4G-style animations and view transitions
 - `novel.css` — Novel writer's-desk UI (gold/black/brown; desk landing, folder pages, paper/ink reading pages, sepia rain canvas)
 
@@ -235,8 +349,8 @@ Reusable menu-screen moves — prefer these over bespoke CSS for new surfaces:
 - `/novel/[folder]/.../[file]` — Focused reading pages; folder-only URLs (e.g. `/novel/characters`) 301-redirect to the matching desk anchor (`/novel#characters`)
 
 ### Utility Pages
-- `/` — Homepage with BentoGrid tiles
-- `/about` — profile card. One card, one screen: header (name/epithet/portrait from `_protagonist.md` via `parseProtagonist`), credential lines, WHAT I MAKE, SUBJECTS I EXPLORE, ABOUT prose, NOW, CONNECT + FIND ME. Copy is hand-written in the single-entry `profile` collection (`src/content/profile/about.md`); the Zod schema and the `pickProfile`/`nowLine` selectors live in `src/utils/profile.ts` (pure — vitest can't resolve `astro:content`, the same split `substack.ts`'s `parseSubstackFeed` uses). `profile.links[]` carries a primary "Read on Substack" link to `https://ninjaruss.substack.com`, and `makes[]`'s "Things I build" entry points at `/showcase`. Exactly one live element in the profile card proper: the NOW line, pulled from the latest `now` entry and omitted entirely when there isn't one. Reached from NavPill (the About item, on every non-home page) and from the homepage's 1×2 About tile. The `.title-tile__about` button under the homepage tagline was removed in the 2026-08 `/status` merge — an always-visible nav item replaces it. The page absorbed `/status` in that same merge: the current-arc card (`parseCurrentArc()` over `_quests.md`) is the first block in the main column, above the hook, and the retired mailbox strip's "Send mail to be read on stream" line now sits in the rail's Connect section. Arc-card CSS lives in `about.css`; `status.css` was deleted. Was a 301 to `/notes/i-am-ninjaruss` — the "no static About page" stance is preserved in spirit (the card is all output and links, no biography) and that note is now the deep read, linked from the ABOUT prose. The email address is assembled client-side (`#about-mail`), never in the served HTML. Link labels inside `.p4g-sweep` anchors **must** be wrapped in an element (`<span>`): the utility lifts children via `.p4g-sweep > *`, which doesn't match bare text nodes, so an unwrapped label gets painted over by the gold panel on hover.
+- `/` — Homepage: the `#personal-hub` layout (intro row + six-card 12-column grid + Traces ticker + footer site map). See the Homepage section
+- `/about` — profile card. One card, one screen: header (name/epithet/portrait from `_protagonist.md` via `parseProtagonist`), credential lines, WHAT I MAKE, SUBJECTS I EXPLORE, ABOUT prose, NOW, CONNECT + FIND ME. Copy is hand-written in the single-entry `profile` collection (`src/content/profile/about.md`); the Zod schema and the `pickProfile`/`nowLine` selectors live in `src/utils/profile.ts` (pure — vitest can't resolve `astro:content`, the same split `substack.ts`'s `parseSubstackFeed` uses). `profile.links[]` carries a primary "Read on Substack" link to `https://ninjaruss.substack.com`, and `makes[]`'s "Things I build" entry points at `/showcase`. Exactly one live element in the profile card proper: the NOW line, pulled from the latest `now` entry and omitted entirely when there isn't one. Reached from NavPill (the About item, on every non-home page) and from the homepage's `.about-links` nav in the header card. **This whole bullet is stale beyond its homepage claims**: the route is now `/life` (`src/pages/life/index.astro` plus `/life/[id]`, with `life.css`, `lifeMap`/`lifeExport` utilities and tests), and `/about`, `/status` and `/stream` all 301 there. Re-auditing the `/life` system is a separate pass — do not trust the rest of this entry. The page absorbed `/status` in that same merge: the current-arc card (`parseCurrentArc()` over `_quests.md`) is the first block in the main column, above the hook, and the retired mailbox strip's "Send mail to be read on stream" line now sits in the rail's Connect section. Arc-card CSS lives in `about.css`; `status.css` was deleted. Was a 301 to `/notes/i-am-ninjaruss` — the "no static About page" stance is preserved in spirit (the card is all output and links, no biography) and that note is now the deep read, linked from the ABOUT prose. The email address is assembled client-side (`#about-mail`), never in the served HTML. Link labels inside `.p4g-sweep` anchors **must** be wrapped in an element (`<span>`): the utility lifts children via `.p4g-sweep > *`, which doesn't match bare text nodes, so an unwrapped label gets painted over by the gold panel on hover.
 - `/now` — Latest "Now" entry (current focus)
 - `/now/archive` — Historical "Now" entries list
 
@@ -343,161 +457,79 @@ this only surfaces on the real deployment, not `astro dev`/`vercel dev`.
 **Anti-abuse (all invisible, no CAPTCHA)**: a honeypot field (`website`,
 silently no-ops rather than erroring), Vercel BotID (`checkBotId()`
 server-side, fails open on error — see `vercel.json`'s proxy rewrites and
-`initBotId()` client-side calls in both `traces.astro` and `index.astro`),
+`initBotId()` called client-side in `traces.astro` only — the homepage no
+longer submits anything, so its old `index.astro` call went with the rewrite),
 a per-IP rate limit (`hashIp()`/`isRateLimited()` in `src/utils/traces.ts`,
 5 min window, `ip_hash` never stores the raw IP), a length cap (name 40 /
 message 100 chars), and a narrow, intentionally-not-general-purpose
 blocklist (`BLOCKED_TERMS` in the same file — self-harm-incitement phrases
 only; extend it directly rather than treating it as a profanity filter).
 
-**Homepage — the bar is the lane** (`.traces-lane`; five redesigns in:
-pills → fixed-corner ticker → full-width wall → danmaku over the hero →
-this). Comments fly right-to-left through the traces bar's own ~32px lane.
-The previous version flew them **across the hero row**, over the wordmark,
-on the reasoning that overlaying content is what makes danmaku read as
-danmaku. That reasoning doesn't survive the specifics: danmaku is native on
-bilibili because the surface underneath is *video* — continuously moving
-already — and because the comments are *about* it, time-synced. Here the
-surface was a static identity mark that is also the page's `<h1>`, the
-messages have no relationship to it, and the hero is the first two seconds
-of the page, when a visitor is actively scanning. The instinct behind the
-overlay was still right — the corner-widget versions failed because they
-read as a bolted-on module — but the thing to inhabit is the bar, not the
-title. Nothing gets covered, and it is where bilibili puts its comment
-chrome anyway.
+**Homepage — `TracesBar.astro`, a paused-on-hover ticker.** **CORRECTION
+(2026-11-13 audit): the danmaku homepage treatment is gone.** The bullets that
+flew right-to-left, the two-zone `.traces-current`/`.traces-lane` split, the
+parked `.traces-park` line and its 7s cross-fade, `buildTracesSpawnQueue`,
+`pumpTracesLane`/`queueTracesBullet`, `tracesLaneFreeAt`, the gap/speed jitter
+constants, `tracesFlightAllowed()`, the one-per-session arrival burst, the
+`<dialog>` modal with its count header, and the `.hero-band` layout wrapper all
+went with the homepage rewrite. Verified by grep: none of those names survive
+in `src/`. That was the sixth redesign (pills → fixed-corner ticker →
+full-width wall → danmaku over the hero → danmaku in the bar → this); the
+reasoning recorded for the earlier ones is history now, not current behaviour.
 
-This also retired `.traces-sky`, `syncTracesSkyHeight()`, and the
-`--traces-sky-top`/`--traces-sky-h` vars: the lane is an ordinary in-flow
-element, so there is nothing to measure and publish (and no leaked `resize`
-listener, which the old sync installed and never removed).
+What exists instead is `src/components/TracesBar.astro`, rendered once on the
+homepage inside `.guestbook-row`. It is a single strip: a `.traces-title` link
+to `/traces`, a `.traces-lane`, and a gold `.sign` button also to `/traces`.
+- **Server-rendered state is the empty state.** The template ships
+  `.traces-fallback` ("A few words from people passing through.") with the
+  track `hidden`. That is the no-JS state, the pre-fetch state, and the
+  API-failure state — the `catch` deliberately does nothing, so the invitation
+  and the canonical `/traces` link stay usable. With a successful fetch and
+  zero rows it becomes "Be the first to leave a few words."
+- **One client fetch**, `/api/traces?limit=15`, then rows are built with
+  `document.createElement` (never `innerHTML`) with each field type-checked and
+  the id validated as a safe positive integer before use. Each row links to
+  `/traces#trace-<id>`, so the bar is a deep index into the canonical list.
+- **The seamless loop is a cloned list.** `.traces-messages` is cloned into a
+  `.traces-echo` copy that is `aria-hidden` with every link `tabIndex = -1`:
+  the loop closes visually without repeating messages to screen readers or
+  adding duplicate keyboard stops.
+- **Duration is measured, not guessed.** A `ResizeObserver` on both the lane
+  and the list publishes `--traces-distance` (the list's real width, with
+  `min-width` forced to at least the lane's) and `--traces-duration =
+  distance / 35` — a constant ~35px/s, so a long backlog scrolls for longer
+  rather than faster.
+- **Hover and focus pause it**, via `animation-play-state: paused` on
+  `:hover`/`:focus-within`. `:focus-within` goes further and turns the lane
+  into a real `overflow-x: auto` scroller with `animation: none`, because a
+  focused row has to be brought into view and the browser cannot scroll to
+  something a `transform` is moving.
+- **Setup is idempotent and cleans up.** A `data-ready` flag guards re-entry,
+  and an `AbortController` plus `observer.disconnect()` fire on
+  `astro:before-swap` so a view transition does not leak the fetch, the
+  observer or the motion listener.
+- **≤700px** the strip becomes a 2-column grid with the lane on its own second
+  row under a top hairline. **`prefers-reduced-motion`** stops the animation,
+  hides the echo copy, makes the lane a scroller and lets rows wrap
+  (`white-space: normal`, `max-width: min(65ch, 75vw)`) — the messages are
+  still all there, just read by scrolling instead of waiting.
+- **Styling gotcha**: TracesBar's `<style is:global>` prefixes every rule
+  `#personal-hub`, so the component is unstyled outside the homepage. See the
+  Homepage section for why the homepage CSS is global rather than scoped.
 
-**Two zones, not one lane taking turns.** The bar splits into
-`.traces-current` (fixed slot, ≤42%, hairline divider) and `.traces-lane`
-(the rest). The first version had them share one lane and alternate — the
-parked line dropped to `opacity: 0` whenever a bullet was in flight — which
-meant the only readable thing on the bar vanished for the whole burst. It
-was also quietly broken: `startTracesParkRotation` sets `park.style.opacity
-= '1'` inline when it cross-fades, and an inline style outranks the
-`[data-flying]` rule, so every rotation that landed mid-burst (every 7s,
-against a ~13s burst) forced the parked line back on top of the bullets.
-Separate zones make the collision structurally impossible rather than
-timing-dependent.
+**Timestamps**: `/traces` shows full date **and time**
+(`formatTraceTimestamp`, "Aug 25, 2026 · 3:41 PM UTC"). Traces are submission
+instants, not editorial content dates, so this intentionally departs from the
+sitewide date-only `formatDate()` (see `src/utils/tracesFormat.ts`). The
+homepage ticker carries **no timestamp at all** — a timestamp on a moving row
+is unreadable noise, and dropping it makes each row narrower, which is width
+the lane spends on spacing instead. `formatTraceTimestampCompact()` was the
+homepage's compact form ("aug 25 · 3:41pm"); it is still exported and still
+unit-tested, but no page calls it any more.
 
-**Separating bullets in time, not space.** The overlay scattered them
-across ~80% of the hero's height with a random `top`; one lane has to keep
-them apart along the only axis it has.
-`pumpTracesLane`/`queueTracesBullet` are a strictly serial queue: each
-spawn publishes the moment its trailing edge clears the right edge
-(`width / (laneWidth + width) × duration`) into `tracesLaneFreeAt`, and the
-next bullet waits for that plus a gap. A fixed stagger cannot work —
-duration is length-scaled, so it would overlap exactly the longest,
-hardest-to-read messages. The hover stream polls the same gate and keeps at
-most one item queued ahead, so a long hover can't build a backlog that
-keeps firing after the pointer leaves.
-
-**Both intervals are sampled, not constant.** The gap is drawn per bullet
-from `TRACES_GAP_MIN_MS`–`TRACES_GAP_MAX_MS` (0.9–3.2s) and the crossing
-time carries ±`TRACES_SPEED_JITTER` (28%). Without the speed jitter every
-message short enough to hit the `TRACES_BULLET_MIN_MS` floor crosses at
-exactly the same rate, so a burst of short ones marches in lockstep; a
-single fixed gap is the tell that a "stream" is really a queue draining.
-
-**Bullets enter at `left: 100%`, not `left: 0`.** The old rule paired
-`left: 0` with a `translateX(100%)` start keyframe — but a percentage
-translate resolves against **the element's own width**, so a 313px bullet
-started 313px from the lane's left edge and popped into view mid-lane
-instead of flying in from off-screen. The tall sky and random vertical
-lanes disguised it; one lane stacks every bullet at the same x and makes it
-obvious. The keyframe now travels `--lane-width + --bullet-width`, both
-published at spawn.
-
-**Bullets are `<span>`s, not `<button>`s.** The lane lives inside the bar's
-`<a>`, and nesting an interactive element in an anchor is invalid; they were
-already `tabIndex = -1` and unreachable by keyboard. Clicking one now just
-clicks the bar, which opens the modal at the parked message — a moving
-click target was never a good affordance.
-
-**Motion is bounded, not ambient.** One burst on arrival
-(`runTracesBurst`, ≤3 bullets), then it settles and only the parked line
-remains. The homepage already spends a lot of its motion budget (novel
-rain, Latest cycling every 7s, the live pulse). The burst fires at most once
-per session (`sessionStorage`) so hopping home from `/showcase` doesn't
-replay it, and an `IntersectionObserver` cancels the remainder if the
-visitor scrolls past the bar mid-burst.
-
-**The current comment** (`.traces-park`, inside `.traces-current`):
-cross-fades to the next message every ~7s, independent of the flight. This
-is where the backlog is actually surfaced. It only ever changes *opacity in
-place*: peripheral vision is tuned to translation, not opacity, which is why
-this can rotate through everything without reading as a busy page (same
-reason the Latest tile can cycle). **Hover the bar to pull the flight back**
-— pointing at it is an explicit "show me these".
-
-**The two zones deliberately show different things.** The current comment is
-static and has a reserved slot, so it carries name + message + timestamp.
-Bullets are moving, so they carry name + message only — a timestamp on a
-moving target is unreadable noise, and dropping it makes each bullet ~25%
-narrower, which is width the lane gets to spend on spacing instead.
-
-**Flight is desktop-only** (`tracesFlightAllowed`, ≥769px). A bullet
-crossing a ~250px lane is frantic rather than ambient, and the compact bar
-has no room to read one mid-flight — below that the lane just cross-fades
-the parked line. That is also the first time mobile has shown any trace
-content at all; the previous versions hid the parked line entirely there and
-left only the invitation to add more.
-
-**Same-person grouping** (`buildTracesSpawnQueue`): names are free text,
-not accounts, so "same person" is approximated by trimmed
-case-insensitive name match. Each group's newest message is a "primary";
-their older ones follow as `--echo` bullets (smaller, dimmer). The queue
-is consumed in that order by the burst, the hover stream, and the parked
-rotation alike, so a person's history stays together everywhere.
-
-**The bar** (`.traces-bar`, `#traces-tab`): player-chrome strip flush under
-the hero — lane + Sign. This is the affordance the pure-overlay versions
-lacked; on bilibili the input bar is what invites the comment in the first
-place. Clicking it opens the `<dialog>` modal at whichever message is
-currently parked. `.traces-bar__field` ("Leave a trace — one line") is the
-server-rendered **empty state**, so it is also the no-JS and pre-fetch
-state; `renderTracesPark` hides it once real content lands.
-
-**The count lives in the modal header**, not the bar. It reads as a detail
-you want once the full list is open rather than as bar chrome. It still
-comes from the API's `total` (a real `countMessages()`, not the page size),
-held in `tracesTotal` at fetch time and written into `#traces-modal-count`
-on open. **The bar therefore needs an explicit `aria-label`**: the lane is
-`aria-hidden` (its text rotates every few seconds, which would otherwise
-rename the link continuously), leaving "Sign" as the only text in the
-anchor.
-
-**Layout gotcha**: the bar needs to be ~40px but `.bento-grid`'s implicit
-rows are `minmax(100px, auto)`, so it can't just be another row — row 1 and
-the bar are wrapped in `.hero-band` (one full-width grid item) whose inner
-element reuses the `.bento-grid` class to inherit the 6/4/2/1-column
-responsive steps. `.hero-band` sets `animation: none` because
-`.bento-grid > *` carries the entrance stagger and the band would otherwise
-scale while its own tiles scale inside it.
-
-**Timestamps**: the modal list and `/traces` show full date **and time**
-(`formatTraceTimestamp`, "Aug 25, 2026 · 3:41 PM UTC"); the homepage's
-current comment uses the compact form ("aug 25 · 3:41pm") and bullets carry
-no timestamp at all. Traces are submission
-instants, not editorial content dates, so this intentionally departs from
-the sitewide date-only `formatDate()` (see `src/utils/tracesFormat.ts`).
-
-**Reduced motion**: flying text is the one thing this feature cannot do, so
-`tracesFlightAllowed()` is false, JS skips the burst and the hover stream
-entirely, and the parked line stays static on the newest message (the
-rotation timer is never started).
-
-**Gotcha**: Astro's scoped CSS only tags elements present in the
-server-rendered template. Anything built client-side via
-`document.createElement`/`innerHTML` — the bullets, the parked line's own
-spans, the modal's form/list — never gets the `data-astro-cid-*` attribute,
-so scoped rules silently never match. Every such selector in
-`traces.astro` and `index.astro` is wrapped in `:global(...)`; do the same
-for any new dynamically-created Traces markup. (`.traces-park` itself is in
-the template and stays scoped; its `__name`/`__time` children are not.)
+**Anti-abuse footprint on the homepage**: none. `initBotId()` is called only in
+`traces.astro` now — the homepage ticker is read-only, and the submit form lives
+exclusively on `/traces`.
 
 ## Sessions & the /about arc card
 
@@ -529,8 +561,10 @@ many sessions has Russ logged."
   `arc-card` element and no arc content at all, while `/now` contains both. The
   markup lives at `now.astro:74-86`, its CSS at `now.astro:191-259`, and only
   `now.astro` imports `parseCurrentArc()` (`now.astro:7,35`). `about.css`
-  contains no `.arc-card` rule. The homepage's About tile (`#stream-tile`) still
-  shows a one-line teaser from the same `_quests.md` section. Apart from where it
+  contains no `.arc-card` rule. **Further correction (2026-11-13):** the
+  homepage About tile (`#stream-tile`) that used to teaser the same `_quests.md`
+  section no longer exists — the homepage rewrite deleted it, and nothing on the
+  homepage reads `_quests.md` now. Apart from where it
   lives, the rest of this bullet describes the card accurately. Whole-card accent-colored by the arc's stat (border/kicker/
   updated stamp use `STAT_COLORS`), with a stat emblem badge
   (`/images/emblems/<stat>.png`) on a dark circular plate for contrast (the
@@ -563,24 +597,21 @@ many sessions has Russ logged."
   `<noscript>` obfuscated-text fallback, plus the one line kept from
   `/status`'s old mailbox strip, "Send mail to be read on stream" (hard-coded
   copy, not a `profile` schema field). Kept because the homepage's
-  `#mail-tile` links to `/about` as its no-JS fallback.
+  mail link pointed at it as its no-JS fallback. (The homepage's mail affordance is now the `.about-links`/footer Contact link to `/life#contact`, assembled client-side by `setupContact()`; there is no `#mail-tile`.)
 
 `STAT_COLORS`/`STAT_ORDER`/`StatName`/`hexToRgbTriplet` are all that remain in
 `src/utils/sessions.ts` — everything else (tallying, radar/donut geometry,
 quest-file parsing, the log-scale level curve) was deleted with the pause
 menu. `STAT_COLORS` is still consumed by `scripts/transition.ts`'s per-route
 page-transition card effect (a static route→stat color mapping, unrelated to
-session tallies) and by the arc card above. It is **not** used by the homepage's
-About tile any more: the stat hue was the only non-gold accent on that page and
-`Expression`'s `#a855f7` measured 4.40:1 against the tile ground at 11px, under
-AA. That tile's `--st-lead` (arc label, its hairline, and the portrait ring) is
-hard-wired to `var(--color-gold)`; the stat colour still identifies the arc on
-`/about`, where the card is the subject and carries the stat emblem.
+session tallies) and by the arc card above. It is **not** read by the homepage at
+all any more — the About tile that used to carry a (deliberately gold, not
+stat-hued) accent was deleted in the homepage rewrite.
 
-The homepage's Stream tile (`#stream-tile`, dark 1×2, links to `/about`) shows
-the same live-now indicator as before (`/api/live-status.ts`, unchanged) plus
-a one-line teaser of the current arc's decision text, read from the same
-`_quests.md` section.
+**Gone (2026-11-13 audit):** the homepage Stream tile (`#stream-tile`) that
+carried the live-now indicator and the arc teaser was deleted in the homepage
+rewrite. `src/pages/api/live-status.ts` and `src/pages/api/twitch-live.ts` are
+still live endpoints, but no page calls either one.
 
 The `social-links` collection/schema is unused by any page as of 2026-08 (it
 has one `draft: true` sample entry) — a future Bonds/confidants feature is a
@@ -603,7 +634,7 @@ separate decision, not part of this page.
 | `src/utils/splitView/` | (11 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
 | `src/utils/traces.ts` | `tracesMessageSchema`, `parseTracesInput()`, `sanitizeText()`, `hashIp()`, `isRateLimited()`, `containsBlockedTerm()`, `BLOCKED_TERMS`, `NAME_MAX_LENGTH`, `MESSAGE_MAX_LENGTH`, `RATE_LIMIT_WINDOW_MS` | Traces validation/hash/rate-limit/blocklist — see Traces section |
 | `src/utils/tracesDb.ts` | `insertMessage()`, `listMessages()`, `countMessages()`, `lastSubmissionByIpHash()`, `deleteMessage()`, `TraceRow` | Traces database access layer (Neon, lazy-initialized) |
-| `src/utils/tracesFormat.ts` | `formatTraceTimestamp()`, `formatTraceTimestampCompact()` | Zero-import timestamp formatting shared by `traces.astro`'s list, the homepage modal list, and the wall bullets' compact date+time |
+| `src/utils/tracesFormat.ts` | `formatTraceTimestamp()`, `formatTraceTimestampCompact()` | Zero-import timestamp formatting. `formatTraceTimestamp()` is used by `traces.astro`'s list; `formatTraceTimestampCompact()` was the homepage's compact form and is now exported and tested but unused (the homepage ticker shows no timestamps) |
 
 The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `eventBindings`, `filterEngine`, `filterUI`, `idleManager`, `mediaHandlers`, `proseImageTilt`, `types`, `urlState`. (`drawCard` — the notes-only draw pool — was deleted with the draw-a-card deck in the Substack migration; see the Substack section above.)
 
@@ -641,11 +672,11 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 
 4. **Accessibility**: Focus-visible gold rings, prefers-reduced-motion respected, 44px minimum touch targets
 
-5. **Now Page**: Dynamically renders the latest entry from the `now` collection. To update, add a new markdown file to `src/content/now/` with `publishedAt` frontmatter. Archive available at `/now/archive`. The homepage Now tile shows the latest entry's title.
+5. **Now Page**: Dynamically renders the latest entry from the `now` collection. To update, add a new markdown file to `src/content/now/` with `publishedAt` frontmatter. Archive available at `/now/archive`. The homepage's `.now` card shows the latest entry's title, date and a build-time first-sentence excerpt of its body.
 
-6. **Latest Tile**: Homepage 2×2 tile with an absolute date (`.latest-date`, formatted at build with `formatDate`, carried per entry in `data-entries` so it swaps with the cycle — never "days ago", per the no-shame invariant; `text-transform: lowercase` in CSS so it matches the journal tile's "aug 1" rows without touching `formatDate`) and excerpt; cycles client-side through the latest 2 Substack posts and latest 1 showcase (interleaved post/showcase/post, 7s interval; Substack entries render with `/images/emblems/scroll.svg`, having no per-entry emblem of their own; each swap is a P4G gold sweep — a skewed gold panel (`.latest-tile__sweep`) sweeps across via the `latest-sweep` keyframes on `#latest-tile.is-cycling`, matching the journal-entry hover, with the entry swapped behind it mid-sweep; cycling skipped under `prefers-reduced-motion`). The emblem sits on a deeper-black angled field (`.latest-tile__emblem-wrap`, `clip-path` + negative-margin bleed) traced by a gold hairline (`::before`, skewX(-4deg) measured against the clip edge); ≤768px the field flattens to the tile's bottom edge and the hairline hides.
+6. **Homepage cards**: see the Homepage section. The short version: six cards on a 12-column grid sharing one 5/7 seam, each with exactly one destination reached by a stretched `.tile-link::after` overlay, inner links raised above it; CSS in `index.astro`'s `<style is:global>` block, prefixed `#personal-hub`. There is no Latest tile, no client-side content cycling and no ambient animation on the page.
 
-6b. **NavPill**: 6 items — Home / Showcase / VN / Shelf / About / Now — rendered on every non-home page including `/about` (whose sidebar "Ninjaruss" logo badge was removed back when this was `/status`; both `/status` and `/stream` now 301-redirect to `/about`). `/showcase/[slug]` paths highlight Showcase via the shared `startsWith` match on `['/showcase']` — no special-casing needed now that `/notes/*` is a server-rendered redirect off-site rather than an on-site route.
+6b. **NavPill**: four items — Home / About (`/life`) / Now / Shelf — rendered on every non-home page. `/showcase/[slug]`, `/notes/*` and the other off-menu destinations are not menu items; they only set the collapsed mobile `<summary>` label (see the component inventory). Hidden on the homepage, which has its own header links and footer site map.
 
 7. **Shelf Wall**: `/shelf` is one flat dense-packed collage (not SplitViewLayout, no per-type sections) where an entry's size expresses affection — favorites large with a gold ring, written-about medium, bare logs small, nothing dimmed. See the Shelf Page Features section above for the full model.
 
@@ -711,13 +742,16 @@ All placeholder emblems share the same card template (dark card, gold gradient f
 - `aria-current` is `"page"` or absent — never `"false"` (AT reads the attribute's
   presence, and `"false"` is a token, not an absence)
 - Micro-caps letter-spacing is `--tracking-label` or `--tracking-wide` — nothing
-  else. The homepage previously carried eight ad-hoc values
+  else. The old bento homepage carried eight ad-hoc values
   (.06/.08/.1/.12/.14/.16/.18em) on what is visually one thing: a small
   uppercase mono chip
-- There is exactly one LIVE badge treatment (`.st-live-badge, .yt-tile__live-badge`
-  — solid `--color-live` plate, white mono caps, one `live-badge-breathe`
-  keyframe). The About tile and the YouTube tile can be live in the same moment
-  and used to disagree about what "live" looked like
+- There is no LIVE badge on the site any more. Both treatments
+  (`.st-live-badge` on the About tile, `.yt-tile__live-badge` on the YouTube
+  tile) went with the homepage rewrite, along with the `live-badge-breathe`
+  keyframe; `--color-live`/`--color-live-rgb` survive as tokens and are still
+  the right colour if a live indicator comes back. The lesson that put them on
+  one shared rule still holds: two surfaces that can be live in the same moment
+  must not disagree about what "live" looks like
 - Follow stagger animation pattern (50ms-100ms increments) for lists and grids
 - Keep components minimal and composable
 - Use `collections` field for cross-referencing content (enables RelatedContent component)
