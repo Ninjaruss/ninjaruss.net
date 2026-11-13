@@ -1,5 +1,4 @@
 ---
-substackUrl: "https://ninjaruss.substack.com/p/gratitude"
 title: "Gratitude"
 emblem: "/images/emblems/scroll.svg"
 publishedAt: 2026-02-01

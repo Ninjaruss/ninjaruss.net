@@ -1,5 +1,4 @@
 ---
-substackUrl: "https://ninjaruss.substack.com/p/infinity"
 title: "Infinity"
 emblem: "/images/emblems/scroll.svg"
 publishedAt: 2026-03-14

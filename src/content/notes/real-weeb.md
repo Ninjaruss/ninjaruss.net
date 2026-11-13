@@ -1,5 +1,4 @@
 ---
-substackUrl: "https://ninjaruss.substack.com/p/real-weeb"
 title: "Real Weeb"
 emblem: "/images/emblems/torii.svg"
 publishedAt: 2026-05-11

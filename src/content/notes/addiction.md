@@ -1,5 +1,4 @@
 ---
-substackUrl: "https://ninjaruss.substack.com/p/addiction"
 title: "Addiction"
 emblem: "/images/emblems/scroll.svg"
 publishedAt: 2026-02-20

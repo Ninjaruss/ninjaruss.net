@@ -23,13 +23,11 @@ const shelf = defineCollection({
   }),
 });
 
-// Notes render on-site; old external URLs remain optional migration provenance.
-// Japanese practice continues to render at /japanese-journal.
+// Notes render on-site. Japanese practice continues to render at
+// /japanese-journal.
 const notes = defineCollection({
   type: 'content',
-  schema: sharedSchema.extend({
-    substackUrl: z.string().url().optional(),
-  }),
+  schema: sharedSchema,
 });
 
 // Showcase collection — projects framed as inquiries

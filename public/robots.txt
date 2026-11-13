@@ -6,10 +6,8 @@
 User-agent: *
 Allow: /
 
-# Non-page endpoints: a JSON API and the live-status pollers. Crawling them
-# wastes budget and returns nothing indexable.
+# Non-page endpoints: the Traces JSON API. Crawling it wastes budget and
+# returns nothing indexable.
 Disallow: /api/
 
-# The Substack feed is the canonical one for writing; the site's /rss.xml is a
-# 301 to it (see vercel.json).
 Sitemap: https://ninjaruss.net/sitemap-index.xml

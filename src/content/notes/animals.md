@@ -1,5 +1,4 @@
 ---
-substackUrl: "https://ninjaruss.substack.com/p/animals"
 title: "Animals"
 emblem: "/images/emblems/scroll.svg"
 publishedAt: 2026-03-06

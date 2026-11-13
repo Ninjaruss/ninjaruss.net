@@ -1,5 +1,4 @@
 ---
-substackUrl: "https://ninjaruss.substack.com/p/waifus"
 title: "Waifus"
 emblem: "/images/emblems/torii.svg"
 publishedAt: 2026-02-07

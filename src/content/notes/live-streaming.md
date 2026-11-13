@@ -1,5 +1,4 @@
 ---
-substackUrl: "https://ninjaruss.substack.com/p/live-streaming"
 title: "Live Streaming"
 emblem: "/images/emblems/shuriken.svg"
 publishedAt: 2026-03-02

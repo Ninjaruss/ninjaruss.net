@@ -1,5 +1,4 @@
 ---
-substackUrl: "https://ninjaruss.substack.com/p/avoidance"
 title: "Avoidance"
 emblem: "/images/emblems/scroll.svg"
 publishedAt: 2026-06-25

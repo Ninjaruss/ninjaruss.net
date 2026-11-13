@@ -1,5 +1,4 @@
 ---
-substackUrl: "https://ninjaruss.substack.com/p/live-without-regret"
 title: "Live Without Regret"
 emblem: "/images/emblems/flame.svg"
 publishedAt: 2026-04-11

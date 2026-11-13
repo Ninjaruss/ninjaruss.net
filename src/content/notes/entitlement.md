@@ -1,5 +1,4 @@
 ---
-substackUrl: "https://ninjaruss.substack.com/p/entitlement"
 title: "Entitlement"
 emblem: "/images/emblems/scroll.svg"
 publishedAt: 2026-04-27

@@ -1,5 +1,4 @@
 ---
-# substackUrl: "https://ninjaruss.substack.com/p/live-without-regret"
 title: "Micro vs Macro of Writing"
 emblem: "/images/emblems/flame.svg"
 publishedAt: 2026-09-08
