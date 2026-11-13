@@ -1,13 +1,14 @@
-/* Anything genuinely interactive. This used to be a hand-maintained list led by
-   `.bento-tile--interactive` — but every homepage tile passes `variant="dark"` or
-   `"highlight"`, so only Novel and About matched it, while the Journal, Shelf,
-   Now and Latest tiles did not. It also missed the global nav, the whole /shelf
-   wall and the SplitView list entirely, and it DID match the decorative title
-   tile. Deriving it from the element type instead of a class list means it
-   cannot go stale again — the same bug class CLAUDE.md records for
-   initializeTilt(). */
-const TILE_SELECTOR =
-  'a[href], button, .traces-bar, .traces-bullet, [role="button"]';
+/* Anything genuinely interactive, derived from the element type rather than a
+   class list. The original was a hand-maintained list of homepage tile classes
+   that drifted out of sync with the markup and then outlived it entirely; this
+   cannot go stale the same way.
+
+   The 2026-11-13 dead-code pass dropped the two leftover class hooks that were
+   still in here: `.traces-bar` (TracesBar renders `.traces`, so it never
+   matched) and `.traces-bullet` (a real class, but always on an `<a href>`,
+   so `a[href]` already covers it). Both were inert regardless — TracesBar only
+   appears on the homepage, which hides the custom cursor entirely. */
+const TILE_SELECTOR = 'a[href], button, [role="button"]';
 
 // Only take over the cursor on hover-capable (pointer) devices, and only once
 // JS is confirmed running. CSS hides the native cursor via

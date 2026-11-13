@@ -12,7 +12,6 @@
 .life__experiences h3 { font: 1.15rem var(--font-display); margin: 0 0 var(--space-md); }
 .life__experiences p { line-height: 1.8; margin: 0 0 var(--space-sm); }
 .life__experiences a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-gold); }
-.life__quiet { color: var(--color-text-muted); max-width: 45ch; line-height: 1.8; padding: var(--space-lg) 0; }
 .life__day { margin-bottom: var(--space-xl); scroll-margin-top: var(--space-xl); }
 .life__day h3 { font: .9rem var(--font-mono); color: var(--color-text-muted); }
 .life__record { display: block; padding: var(--space-lg) 0; border-bottom: 1px solid var(--color-border); text-decoration: none; color: var(--color-text); }

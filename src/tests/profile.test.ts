@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { pickProfile, nowLine, profileSchema } from '../utils/profile';
+import { pickProfile, profileSchema } from '../utils/profile';
 
 describe('pickProfile', () => {
   it('returns null when the collection is empty', () => {
@@ -23,57 +23,6 @@ describe('pickProfile', () => {
   it('does not treat about-me as the named entry', () => {
     const entries = [{ id: 'about-me.md' }, { id: 'aaa.md' }];
     expect(pickProfile(entries)).toEqual({ id: 'aaa.md' });
-  });
-});
-
-const nowEntry = (title: string, iso: string, draft = false) => ({
-  data: { title, publishedAt: new Date(iso), draft },
-});
-
-describe('nowLine', () => {
-  it('returns null for an empty collection', () => {
-    expect(nowLine([])).toBeNull();
-  });
-
-  it('returns the newest entry title linked to /now', () => {
-    const entries = [
-      nowEntry('Older thing', '2026-06-01'),
-      nowEntry('Go 日本語 Go!!!', '2026-08-01'),
-      nowEntry('Middle thing', '2026-07-01'),
-    ];
-    expect(nowLine(entries)).toEqual({ title: 'Go 日本語 Go!!!', href: '/now' });
-  });
-
-  it('ignores drafts', () => {
-    const entries = [
-      nowEntry('Published', '2026-06-01'),
-      nowEntry('Secret', '2026-08-01', true),
-    ];
-    expect(nowLine(entries)).toEqual({ title: 'Published', href: '/now' });
-  });
-
-  it('returns null when every entry is a draft', () => {
-    expect(nowLine([nowEntry('Secret', '2026-08-01', true)])).toBeNull();
-  });
-
-  it('returns null when the newest title is blank', () => {
-    expect(nowLine([nowEntry('   ', '2026-08-01')])).toBeNull();
-  });
-
-  it('keeps the first array element when two entries tie on date', () => {
-    const entries = [
-      nowEntry('First', '2026-08-01'),
-      nowEntry('Second', '2026-08-01'),
-    ];
-    expect(nowLine(entries)).toEqual({ title: 'First', href: '/now' });
-  });
-
-  it('returns null when the newest title is blank, without falling back', () => {
-    const entries = [
-      nowEntry('Older but good', '2026-06-01'),
-      nowEntry('   ', '2026-08-01'),
-    ];
-    expect(nowLine(entries)).toBeNull();
   });
 });
 

@@ -12,7 +12,7 @@ This file provides guidance for Claude Code (claude.ai/code) when working with t
 npm run dev       # Start dev server at localhost:4321
 npm run build     # Build static site to ./dist/
 npm run preview   # Preview production build locally
-npm run test      # Run vitest unit tests (15 files, 226 tests)
+npm run test      # Run vitest unit tests (13 files, 195 tests)
 npm run astro     # Direct Astro CLI access
 
 # Life snapshot tooling — see the Life section for the review contract.
@@ -41,7 +41,7 @@ src/
 ├── pages/            # File-based routing
 ├── scripts/          # Browser entry points (cursor, transition, life)
 ├── styles/           # Global CSS (no frameworks)
-├── tests/            # Vitest unit tests (15 files, 226 tests — novel, content,
+├── tests/            # Vitest unit tests (13 files, 195 tests — novel, content,
 │                     #   notes, shelfWall, traces, lifeExport, lifeMap, ...)
 └── utils/            # Shared utilities (content, collections, notes, dates,
                       #   novel, life*, traces*, splitView/)
@@ -89,7 +89,6 @@ Collection-specific extensions:
 
 ### Structural
 - `BentoGrid.astro` — A bare `<div class="bento-grid">` with a slot and an optional extra `class`. On the homepage it is used only as that slot wrapper; `#personal-hub .grid` overrides its grid entirely (see the Homepage section).
-- `BentoTile.astro` — **Dead.** Still in the repo, imported by nothing since the homepage rewrite. Its variants (`interactive`/`highlight`/`dark`/`static`), sizes, kickers, span classes and `.bento-tile__corner` hover triangle, and their `bento.css` rules, describe a homepage that no longer exists.
 - `TracesBar.astro` — The homepage guestbook ticker; see the Traces section.
 - `NavPill.astro` — Fixed bottom-left P4G angled nav bar (`.nav-bar`, corner-cut clip-path, hard gold shadow via `drop-shadow` wrapper). **CORRECTION (2026-11-13 audit): four items, not eight.** The menu is Home / About (`/life`) / Now / Shelf, each with a solid-gold active-page highlight (`.nav-bar__item--active` + `aria-current="page"`, via a shared `startsWith` match on the item's `match` array). The previous entry listed Home/Showcase/Visual Novel/Shelf/About/Now/Traces/Writing and an off-site Substack item; none of that is in the component. Writing, Projects, Remember Rain, Traces and Japanese journal are reachable from the homepage header, the homepage cards and the homepage footer site map instead, which is why they are not menu items — the deliberate trade is a menu you can read at a glance against one more hop from a deep page. A **second** table in the component maps those off-menu destinations to labels (`/notes` → "Writing", `/showcase` → "Projects", `/novel` → "Remember Rain", `/traces` → "Guestbook", `/japanese-journal` → "Japanese journal", else "Explore") for one purpose only: naming the visitor's current location in the collapsed mobile `<summary>`. It sets no `aria-current` and adds no link. Optional `backLink`/`backLabel` props append a back link. Hidden on the homepage; rendered on `/life` and every other non-home page. **Labels match what each destination calls itself** — the rule that retired "VN" for "Remember Rain", a string that actually appears on the page it points to. Both a `.nav-bar__desktop` strip and a `.nav-bar__mobile` `<details>` disclosure are rendered server-side and swapped by CSS at **1200px** (not 1024px): below it the bar goes full-width and the disclosure's `<summary>` shows the current-location label beside "Menu ☰", opening a 2-column grid of 48px targets above itself (`max-height: 65dvh`, scrollable), with the back link spanning both columns. `initNavigation()` publishes the nav's measured height +16px as `--nav-clearance` on `<html>` via a `ResizeObserver`, consumed by page bottom paddings (`life.css`, `novel.css`, `ReadingLayout`, `SplitViewLayout`, `traces.astro`, `404.astro`) so the bar never covers content — each with its own fallback default, so a script failure doesn't collapse the padding.
 
@@ -237,22 +236,26 @@ way back in. It now has a `.footer-site` nav listing every on-site destination
 Contact) and a separate `.footer-elsewhere` nav for YouTube, Twitch,
 MyAnimeList and Spotify, each marked `.offsite`.
 
-**Dead code left behind by the rewrite — documented, not fixed.** Grepped and
-confirmed unreferenced:
-- `src/components/BentoTile.astro` is imported by nothing.
-- `src/styles/bento.css` (491 lines, still imported by `BaseLayout.astro`) is
-  almost entirely dead: the whole `.bento-tile*` variant/span/corner family,
-  `.logo-tile`, `.latest-tile`, `.title-tile`, `.image-tile`, and a
-  neighbour-dimming `:is()` pair whose selectors include `.traces-bar` —
-  TracesBar renders `.traces`, so that rule now matches nothing at all. Only
-  `.bento-grid` is still live, and `#personal-hub .grid` overrides it.
-- `cursor.ts`'s `TILE_SELECTOR` still names `.traces-bar` and `.traces-bullet`;
-  only the second still exists (as a TracesBar row link).
-- `src/pages/api/live-status.ts` and `src/pages/api/twitch-live.ts` are live
-  endpoints that no page calls — the live badge and Twitch preview went with
-  `#stream-tile` and the YouTube tile.
-Clearing those is its own change; this entry exists so nobody reads `bento.css`
-as a description of the homepage.
+**Dead code the rewrite left behind — cleared 2026-11-13.** For the record, so
+nobody goes looking for these:
+- `src/components/BentoTile.astro` — **deleted.** It was imported by nothing.
+- `src/styles/bento.css` — cut from 491 lines to just the `.bento-grid`
+  primitive. The whole `.bento-tile*` variant/span/kicker/corner family,
+  `.logo-tile`, `.latest-tile`, `.title-tile`, `.image-tile` and the
+  neighbour-dimming `:is()` pair are gone. The dimming rule had been dead on
+  its own terms anyway: its selectors included `.traces-bar` while TracesBar
+  renders `.traces`.
+- `cursor.ts`'s `TILE_SELECTOR` — the leftover `.traces-bar` (never matched)
+  and `.traces-bullet` (always on an `<a href>`, so already covered) hooks were
+  dropped; it is now `'a[href], button, [role="button"]'`.
+- `src/pages/api/live-status.ts`, `src/pages/api/twitch-live.ts` and their
+  `liveStatus.ts` / `twitchStatus.ts` / `twitchToken.ts` utilities — **deleted**
+  with `liveStatus.test.ts` and the `parseTwitchLiveResponse` block in
+  `sessions.test.ts`. They were a complete, working YouTube/Twitch polling
+  chain whose only consumer was the deleted `#stream-tile`. Restoring a live
+  badge means rewriting the polling and re-adding `TWITCH_CLIENT_ID`,
+  `TWITCH_CLIENT_SECRET`, `YOUTUBE_API_KEY` and `YOUTUBE_CHANNEL_ID`.
+`src/pages/api/` now holds only the two Traces endpoints.
 
 ### List/Detail
 - `ListItem.astro` — Left panel items in SplitViewLayout
@@ -271,11 +274,10 @@ as a description of the homepage.
 ### CSS Files
 - `global.css` — Design tokens, colors, spacing, shadows
 - `typography.css` — Fonts (**Archivo Black, Syne, JetBrains Mono** — not Inter; see below), type scale, metric-matched fallback `@font-face`s
-- `bento.css` — `.bento-grid` plus the now-dead `.bento-tile`/`.logo-tile`/`.latest-tile`/`.title-tile`/`.image-tile` families left over from the old homepage (see the Homepage section). The current homepage's CSS is **not** here — it lives in `index.astro`'s own `<style is:global>` block
+- `bento.css` — Just the `.bento-grid` primitive behind `BentoGrid.astro` (23 lines; the dead tile families were removed 2026-11-13). The homepage's CSS is **not** here — it lives in `index.astro`'s own `<style is:global>` block, and `#personal-hub .grid` overrides every property in this file
 - `transitions.css` — P4G-style animations and view transitions
 - `novel.css` — Novel writer's-desk UI (gold/black/brown; desk landing, folder pages, paper/ink reading pages, sepia rain canvas)
 - `life.css` — The `/life` page (`.life__*`). Imported directly by `life/index.astro` and `life/[id].astro`, not by `BaseLayout`
-- `about.css` — **Orphaned.** Imported by nothing since About became `/life`. Its `.arc-card` rules are doubly dead: that card lives in `now.astro`'s own scoped block (see the Sessions section)
 
 ### Key CSS Variables
 ```css
@@ -443,8 +445,9 @@ and any remaining historical references below.
 **CORRECTION (2026-11-13 audit): `/about` is gone.** It is a 301 to `/life`, as
 are `/status` and `/stream`. The profile-card page CLAUDE.md used to describe
 (hook + credential lines + WHAT I MAKE + SUBJECTS I EXPLORE + ABOUT prose + NOW
-+ CONNECT, with the arc card on top) does not exist. `src/styles/about.css` is
-still in the repo but **imported by nothing** — `/life` uses `src/styles/life.css`.
++ CONNECT, with the arc card on top) does not exist. `src/styles/about.css` was
+orphaned by that change and was **deleted** in the 2026-11-13 dead-code pass —
+`/life` uses `src/styles/life.css`.
 The route's framing survived the rewrite ("a profile that has a status, not a
 status screen that has a profile", all output and links rather than biography);
 almost none of its markup did.
@@ -475,9 +478,13 @@ Every one of those three sections is gated on `records.length > 0`, and
 `loadLifeExport()` returns `{ schemaVersion: 1, records: [] }` and the live page
 shows only items 1–3, 5 and 6. The map renders with no markers. Do not read a
 blank Memories section as a bug — it means no snapshot has been published yet.
-Note the per-section `.life__quiet` empty-state strings ("I haven't shared any
-memories here yet.") are therefore **unreachable**: the outer `records.length >
-0` gate and the inner `length === 0` ternary contradict each other.
+The per-section `.life__quiet` empty-state strings ("I haven't shared any
+memories here yet.") were therefore **unreachable** — the outer `records.length
+> 0` gate and the inner `length === 0` ternary contradicted each other — and
+the dead inner branches plus the `.life__quiet` rule in `life.css` were removed
+on 2026-11-13. Rendered output did not change. If you ever want those empty
+states to show, the change is to drop the *outer* gate, which is a design
+decision about whether an empty section is worth a heading.
 
 ### The public-snapshot pipeline
 
@@ -553,8 +560,9 @@ same pattern as the homepage's `setupContact()`.
 
 `pickProfile()` is still called, but **only `profile.links` is read**. `hook`,
 `credentials`, `makes`, `makesMore`, `subjects`, `connect` and the body
-markdown are validated on every build and rendered nowhere. `nowLine()` is
-still exported and unit-tested with no caller. `src/content/profile/about.md`
+markdown are validated on every build and rendered nowhere. (`nowLine()` was
+the other export; it had no caller and was deleted 2026-11-13.)
+`src/content/profile/about.md`
 also carries an `# EXPIRES OCTOBER 2026` comment over copy its author already
 flagged as going stale. Deciding whether to trim the schema to `links` or to
 surface that copy again on `/life` is a content call, not a cleanup.
@@ -661,8 +669,8 @@ sitewide date-only `formatDate()` (see `src/utils/tracesFormat.ts`). The
 homepage ticker carries **no timestamp at all** — a timestamp on a moving row
 is unreadable noise, and dropping it makes each row narrower, which is width
 the lane spends on spacing instead. `formatTraceTimestampCompact()` was the
-homepage's compact form ("aug 25 · 3:41pm"); it is still exported and still
-unit-tested, but no page calls it any more.
+homepage's compact form ("aug 25 · 3:41pm"); it had no caller after the
+homepage rewrite and was deleted on 2026-11-13.
 
 **Anti-abuse footprint on the homepage**: none. `initBotId()` is called only in
 `traces.astro` now — the homepage ticker is read-only, and the submit form lives
@@ -703,7 +711,8 @@ many sessions has Russ logged."
   `arc-card` element and no arc content at all, while `/now` contains both. The
   markup lives at `now.astro:74-86`, its CSS at `now.astro:191-259`, and only
   `now.astro` imports `parseCurrentArc()` (`now.astro:7,35`). `about.css`
-  contains no `.arc-card` rule. **Further correction (2026-11-13):** the
+  contained no `.arc-card` rule either, and that file no longer exists (deleted
+  2026-11-13). **Further correction (2026-11-13):** the
   homepage About tile (`#stream-tile`) that used to teaser the same `_quests.md`
   section no longer exists — the homepage rewrite deleted it, and nothing on the
   homepage reads `_quests.md` now. Apart from where it
@@ -720,9 +729,9 @@ many sessions has Russ logged."
   failing the build. Hand-edited, expected to change every few weeks/months —
   not per-stream. The rest of `_quests.md` (The Question / Active / Ideas —
   `<Stat>` / Completed) is Russ's private planning scaffold and is **not**
-  rendered anywhere. `status.css` was deleted in the merge, but its arc-card
-  rules did **not** move into `about.css` — they are in `now.astro`'s scoped
-  style block (see the correction above).
+  rendered anywhere. `status.css` was deleted in the merge, and its arc-card
+  rules never moved into `about.css` (itself since deleted) — they live in
+  `now.astro`'s scoped style block (see the correction above).
 - **Identity header** and **"find me elsewhere" links row** — no longer
   `/status`-specific; both survive on `/life` as `.life__intro` (portrait/name
   from `_protagonist.md`, parsed by `parseProtagonist()`,
@@ -731,9 +740,9 @@ many sessions has Russ logged."
   collection, which models Bonds/confidants (`arcana`/`affinity`/`rank`/`lore`)
   and has no real entries.
 - **The `LV n` chip is gone.** It was a byproduct stat for a screen that no
-  longer exists, and `computeSiteLevel()` is no longer called anywhere.
-  `src/utils/level.ts` and `src/tests/level.test.ts` remain in the repo,
-  unimported, still passing — deleting them is a separate decision.
+  longer exists. `src/utils/level.ts` and `src/tests/level.test.ts` sat
+  unimported and still passing for months; both were **deleted** in the
+  2026-11-13 dead-code pass.
 - **Mailbox strip** — now `/life`'s `#contact` footer:
   address assembled client-side into `#life-mail` (never in served HTML, filled
   by `initLifeMail()` in `src/scripts/life.ts`) with a `<noscript>`
@@ -753,8 +762,8 @@ stat-hued) accent was deleted in the homepage rewrite.
 
 **Gone (2026-11-13 audit):** the homepage Stream tile (`#stream-tile`) that
 carried the live-now indicator and the arc teaser was deleted in the homepage
-rewrite. `src/pages/api/live-status.ts` and `src/pages/api/twitch-live.ts` are
-still live endpoints, but no page calls either one.
+rewrite, and the live-status/Twitch endpoints it polled were deleted in the
+same day's dead-code pass (see the Homepage section).
 
 The `social-links` collection/schema is unused by any page as of 2026-08 (it
 has one `draft: true` sample entry) — a future Bonds/confidants feature is a
@@ -772,14 +781,14 @@ separate decision, not part of this page.
 | `src/utils/novel.ts` | `buildNovelTree()`, `slugify()`, `parseMetaData()`, `parseOrderPrefix()`, `unescapeScrivenerMarkdown()`, `stripSceneLabel()`, `countWords()`, `computeNovelStats()`, `flattenFolderFiles()`, `findRecentFiles()`, `findSynopsisDoc()`, `findFirstScene()` | Scrivener-backed novel content loader + rain-gauge stats + desk recency/intro helpers |
 | `src/utils/sessions.ts` | `STAT_ORDER`, `StatName`, `STAT_COLORS`, `hexToRgbTriplet()` | The shared stat vocabulary/colors — the only place the five stat hexes are written (`now.astro`'s arc card and `scripts/transition.ts`'s page-transition card read `STAT_COLORS`; the homepage About tile deliberately does **not** — see below). Tallying/radar/donut/quest-parsing/level-curve logic that used to live here was deleted in the 2026-08 `/status` rebuild (see the Sessions section above) |
 | `src/utils/protagonist.ts` | `parseProtagonist()`, `DEFAULT_PROTAGONIST` | Minimal frontmatter reader for `_protagonist.md` (name/epithet/portrait); missing file/fields degrade to defaults. Consumed by `/life`'s header |
-| `src/utils/profile.ts` | `profileSchema`, `pickProfile()`, `nowLine()` | Profile-collection data layer — Zod schema (from `astro/zod`, **not** `astro:content`, so vitest can load it) and singleton entry selection. `/life` calls `pickProfile()` and reads only `links[]`. `nowLine()` is exported and unit-tested but **has no caller** |
+| `src/utils/profile.ts` | `profileSchema`, `pickProfile()`, `ProfileData` | Profile-collection data layer — Zod schema (from `astro/zod`, **not** `astro:content`, so vitest can load it) and singleton entry selection. `/life` calls `pickProfile()` and reads only `links[]`. `nowLine()` lived here until the 2026-11-13 dead-code pass |
 | `src/utils/lifeExport.ts` | `lifeExportSchema`, `canonicalLifeExport()`, `LifeExport` | The v1 public Life snapshot contract — strict discriminated union over 5 record kinds, referential-integrity/uniqueness/cycle checks, and a deterministic serializer for review hashes. See the Life section |
 | `src/utils/lifeData.ts` | `loadLifeExport()`, `linkedLifeRecords()`, `lifeEncounters()`, `LifeRecord` | Reads the one snapshot at `src/data/life.json` (absent → empty bundle; malformed → build failure) and resolves records' forward and reverse links |
 | `src/utils/shelfWall.ts` | `wallTier()`, `wallShape()`, `wallClass()`, `wallRotation()`, `sortWall()`, `resolveInitialFilter()` | /shelf wall logic — affection tiers, shape/span classes, slug-seeded rotation, ordering, filter-URL resolution |
 | `src/utils/splitView/` | (11 modules) | Modular SplitViewLayout client JS — see `index.ts` for entry point |
 | `src/utils/traces.ts` | `tracesMessageSchema`, `parseTracesInput()`, `sanitizeText()`, `hashIp()`, `isRateLimited()`, `containsBlockedTerm()`, `BLOCKED_TERMS`, `NAME_MAX_LENGTH`, `MESSAGE_MAX_LENGTH`, `RATE_LIMIT_WINDOW_MS` | Traces validation/hash/rate-limit/blocklist — see Traces section |
 | `src/utils/tracesDb.ts` | `insertMessage()`, `listMessages()`, `countMessages()`, `lastSubmissionByIpHash()`, `deleteMessage()`, `TraceRow` | Traces database access layer (Neon, lazy-initialized) |
-| `src/utils/tracesFormat.ts` | `formatTraceTimestamp()`, `formatTraceTimestampCompact()` | Zero-import timestamp formatting. `formatTraceTimestamp()` is used by `traces.astro`'s list; `formatTraceTimestampCompact()` was the homepage's compact form and is now exported and tested but unused (the homepage ticker shows no timestamps) |
+| `src/utils/tracesFormat.ts` | `formatTraceTimestamp()` | Zero-import timestamp formatting for `traces.astro`'s list. The lowercase `formatTraceTimestampCompact()` served the old homepage wall bullets and was deleted 2026-11-13 (the ticker shows no timestamps) |
 
 The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `eventBindings`, `filterEngine`, `filterUI`, `idleManager`, `mediaHandlers`, `proseImageTilt`, `types`, `urlState`. (`drawCard` — the notes-only draw pool — was deleted with the draw-a-card deck in the September Substack migration; see the Writing section, which supersedes it.)
 

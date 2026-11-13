@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { STAT_ORDER, hexToRgbTriplet, STAT_COLORS } from '../utils/sessions';
-import { parseTwitchLiveResponse } from '../utils/twitchStatus';
 
 describe('STAT_ORDER', () => {
   it('has exactly 5 stats', () => {
@@ -25,23 +24,5 @@ describe('hexToRgbTriplet', () => {
     expect(hexToRgbTriplet('#ff4040')).toEqual([255, 64, 64]);
     expect(hexToRgbTriplet('#2dd4bf')).toEqual([45, 212, 191]);
     expect(hexToRgbTriplet('#000000')).toEqual([0, 0, 0]);
-  });
-});
-
-describe('parseTwitchLiveResponse', () => {
-  it('returns true when data array is non-empty', () => {
-    expect(parseTwitchLiveResponse({ data: [{ type: 'live' }] })).toBe(true);
-  });
-
-  it('returns false when data array is empty', () => {
-    expect(parseTwitchLiveResponse({ data: [] })).toBe(false);
-  });
-
-  it('returns false for null input', () => {
-    expect(parseTwitchLiveResponse(null)).toBe(false);
-  });
-
-  it('returns false for malformed response', () => {
-    expect(parseTwitchLiveResponse({ items: ['something'] })).toBe(false);
   });
 });

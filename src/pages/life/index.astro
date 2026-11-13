@@ -75,7 +75,7 @@ const mapHtml = renderLifeMap({records,hrefForRecord:record=>`/life/${record.id}
         {memories.length > 0 && (
         <section id="memories" class="life__section" aria-labelledby="memories-title">
           <h2 id="memories-title" class="p4g-heading">Memories</h2>
-          {memories.length === 0 ? <p class="life__quiet">I haven’t shared any memories here yet.</p> : days.map(day => <div id={`day-${day}`} class="life__day">
+          {days.map(day => <div id={`day-${day}`} class="life__day">
             <h3><time datetime={day}>{dateLabel(day)}</time></h3>
             {memories.filter(memory => memory.date === day).map(memory => <a class="life__record" href={`/life/${memory.id}`}><strong>{memory.title}</strong><p>{memory.body.length > 180 ? `${memory.body.slice(0, 180)}…` : memory.body}</p></a>)}
           </div>)}
@@ -85,7 +85,7 @@ const mapHtml = renderLifeMap({records,hrefForRecord:record=>`/life/${record.id}
         {memories.length > 0 && (
         <section id="calendar" class="life__section" aria-labelledby="calendar-title">
           <h2 id="calendar-title" class="p4g-heading">Calendar</h2>
-          {months.length === 0 ? <p class="life__quiet">Shared memories will appear here by date.</p> : months.map((month, index) => {
+          {months.map((month, index) => {
             const first = new Date(`${month}-01T12:00:00Z`);
             const count = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 0)).getUTCDate();
             return <details class="life__month" open={index === 0}>
@@ -107,7 +107,7 @@ const mapHtml = renderLifeMap({records,hrefForRecord:record=>`/life/${record.id}
         {people.length > 0 && (
         <section id="people" class="life__section" aria-labelledby="people-title">
           <h2 id="people-title" class="p4g-heading">People</h2>
-          {people.length === 0 ? <p class="life__quiet">No people profiles shared yet.</p> : people.map(person => <a class="life__record" href={`/life/${person.id}`}><strong>{person.title}</strong><p>{person.body.length > 180 ? `${person.body.slice(0, 180)}…` : person.body}</p></a>)}
+          {people.map(person => <a class="life__record" href={`/life/${person.id}`}><strong>{person.title}</strong><p>{person.body.length > 180 ? `${person.body.slice(0, 180)}…` : person.body}</p></a>)}
         </section>
         )}
       <details id="places" class="life__map-disclosure" data-life-map-disclosure>
