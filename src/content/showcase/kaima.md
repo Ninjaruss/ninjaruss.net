@@ -4,7 +4,7 @@ description: "An earlier Japanese-learning channel experiment. New videos are on
 status: "Historical"
 publishedAt: 2026-04-25
 updatedAt: 2026-10-02
-emblem: "/images/showcase/KAIMA.png"
+emblem: "/images/showcase/KAIMA.webp"
 ---
 
 > **Update — October 2, 2026:** My main YouTube channel, [@Ninjaruss_](https://www.youtube.com/@Ninjaruss_), is now where I upload my Japanese learning and updates from living in Japan. The original project journal follows below.

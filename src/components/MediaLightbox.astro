@@ -9,7 +9,10 @@
   </button>
   <div class="media-lightbox__backdrop"></div>
   <div class="media-lightbox__content">
-    <img class="media-lightbox__img" src="" alt="" />
+    <!-- No `src` attribute: an empty one is resolved against the document URL,
+         so every page rendering this dialog fetched its own HTML a second time
+         just to fail. openMediaLightbox() sets .src when the dialog opens. -->
+    <img class="media-lightbox__img" alt="" />
     <video class="media-lightbox__video" controls style="display: none;"></video>
   </div>
   <p class="media-lightbox__caption"></p>

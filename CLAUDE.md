@@ -274,6 +274,7 @@ nobody goes looking for these:
 ### CSS Files
 - `global.css` — Design tokens, colors, spacing, shadows
 - `typography.css` — Fonts (**Archivo Black, Syne, JetBrains Mono** — not Inter; see below), type scale, metric-matched fallback `@font-face`s
+- `fonts.css` — **GENERATED** by `node scripts/build-fonts.mjs`; do not hand-edit. Self-hosted `@font-face` rules for Archivo Black, Syne and JetBrains Mono (latin + latin-ext only — the site has no Cyrillic/Greek/Vietnamese text, and none of these families covers CJK, so Japanese has always fallen through to the system stack). The woff2 files are byte-for-byte the ones Google serves, moved to `public/fonts/`: a delivery change, not a type change. It replaced a render-blocking `<link>` to fonts.googleapis.com that pointed at a *second* third-party origin, so no woff2 URL was discoverable until that stylesheet returned. `BaseLayout` now preloads only Syne 400 and Archivo Black latin; `unicode-range` and weight matching keep the rest unfetched unless rendered.
 - `bento.css` — Just the `.bento-grid` primitive behind `BentoGrid.astro` (23 lines; the dead tile families were removed 2026-11-13). The homepage's CSS is **not** here — it lives in `index.astro`'s own `<style is:global>` block, and `#personal-hub .grid` overrides every property in this file
 - `transitions.css` — P4G-style animations and view transitions
 - `novel.css` — Novel writer's-desk UI (gold/black/brown; desk landing, folder pages, paper/ink reading pages, sepia rain canvas)
@@ -718,7 +719,7 @@ many sessions has Russ logged."
   homepage reads `_quests.md` now. Apart from where it
   lives, the rest of this bullet describes the card accurately. Whole-card accent-colored by the arc's stat (border/kicker/
   updated stamp use `STAT_COLORS`), with a stat emblem badge
-  (`/images/emblems/<stat>.png`) on a dark circular plate for contrast (the
+  (`/images/emblems/<stat>.webp`, 160px) on a dark circular plate for contrast (the
   emblem PNGs are opaque-white-background line art and wash out if dropped
   directly on a pale accent color like Insight). Sourced from a
   `## Current Arc` section in `_quests.md` (`**Arc:**`/`**Stat:**`/
@@ -848,6 +849,24 @@ The `splitView/` directory is modular: `contentLoader`, `emblemAnimation`, `even
 - All `.webp`, max 640px wide, quality 80 (animated WebP for the former GIFs — sharp with `{ animated: true }` preserves frames). Keep new posters in this format/budget; the directory went 15MB → 4.3MB in the 2026-07 optimization pass and page weight is the shelf's main perf lever.
 - `.shelf-card` carries a diamond-watermark background (inline SVG data URI) so a card whose poster is still loading — or missing — reads as intentional, not broken.
 
+### Screenshots and diagrams (`/public/images/showcase/`)
+- All `.webp`, **max 1600px on the long edge, quality 80**. Prose is ~700px
+  wide and these open in `MediaLightbox`, so 1600 is the 2x retina budget plus
+  room to zoom a diagram; text and ER diagrams stay legible (checked by eye, not
+  assumed). Source PNGs ran 2900–3840px and up to 2.2MB each — the 2026-11-13
+  pass took the directory from 21MB to 2.0MB with no visible change.
+- Prose images get `width`/`height`, `decoding="async"` and `loading="lazy"`
+  (all but the first, which may be the LCP element) added at build time by
+  `src/utils/rehypeProseImages.mjs`, wired in as a `markdown.rehypePlugins`
+  entry. Don't hand-write those attributes in markdown — but an explicit one
+  always wins over the plugin.
+
+### Stat emblems (`/public/images/emblems/<stat>.webp`)
+- **160px, quality 88.** The floor is set by `scripts/transition.ts`, which
+  draws them onto `#transition-canvas` at `cw * 0.56` where `cw` maxes at 200 —
+  so up to 112px, and the canvas has no DPR scaling. 96px was tried first and
+  under-resolved that draw. The `/now` arc badge shows them at 32px.
+
 ### Logos (`/public/images/logos/`)
 - `myanimelist.svg` — MyAnimeList logo for external link tile
 - `spotify.svg` — Spotify logo for external link tile
@@ -859,10 +878,10 @@ All placeholder emblems share the same card template (dark card, gold gradient f
 - `torii.svg` — Japan / weeb life
 - `flame.svg` — Drive, goals, growth ("clear mind, burning soul")
 - `shuriken.svg` — Ninjaruss identity / online presence
-- Content-specific emblems stored per entry (PNGs)
+- Content-specific emblems stored per entry (WebP)
 
 ### Card Assets
-- `/public/images/ygo-card-backing.png` — Yu-Gi-Oh style card backing texture for EmblemCard reverse
+- `/public/images/ygo-card-backing.webp` — Yu-Gi-Oh style card backing texture for EmblemCard reverse. It renders on **every** detail page, so it is the one asset whose size is paid site-wide; it was a 1.1MB PNG until the 2026-11-13 pass took it to 58KB.
 
 ## Adding New Content
 

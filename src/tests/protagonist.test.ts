@@ -3,11 +3,11 @@ import { parseProtagonist, DEFAULT_PROTAGONIST } from '../utils/protagonist';
 
 describe('parseProtagonist', () => {
   it('parses all three fields', () => {
-    const md = `---\nname: NINJARUSS\nepithet: the fool who left for Japan\nportrait: /images/stream/portrait.png\n---\n`;
+    const md = `---\nname: NINJARUSS\nepithet: the fool who left for Japan\nportrait: /images/stream/portrait.webp\n---\n`;
     expect(parseProtagonist(md)).toEqual({
       name: 'NINJARUSS',
       epithet: 'the fool who left for Japan',
-      portrait: '/images/stream/portrait.png',
+      portrait: '/images/stream/portrait.webp',
     });
   });
 

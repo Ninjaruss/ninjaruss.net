@@ -28,11 +28,11 @@ export interface StatCard {
 
 /* Colours come from the single STAT_COLORS table in utils/sessions.ts. */
 const STAT_CARDS: Record<StatName, StatCard> = {
-  Determination: { color: STAT_COLORS.Determination, name: 'DETERMINATION', emblemPath: '/images/emblems/determination.png' },
-  Insight:       { color: STAT_COLORS.Insight,       name: 'INSIGHT',       emblemPath: '/images/emblems/insight.png'       },
-  Expression:    { color: STAT_COLORS.Expression,    name: 'EXPRESSION',    emblemPath: '/images/emblems/expression.png'    },
-  Sincerity:     { color: STAT_COLORS.Sincerity,     name: 'SINCERITY',     emblemPath: '/images/emblems/sincerity.png'     },
-  Chaos:         { color: STAT_COLORS.Chaos,         name: 'CHAOS',         emblemPath: '/images/emblems/chaos.png'         },
+  Determination: { color: STAT_COLORS.Determination, name: 'DETERMINATION', emblemPath: '/images/emblems/determination.webp' },
+  Insight:       { color: STAT_COLORS.Insight,       name: 'INSIGHT',       emblemPath: '/images/emblems/insight.webp'       },
+  Expression:    { color: STAT_COLORS.Expression,    name: 'EXPRESSION',    emblemPath: '/images/emblems/expression.webp'    },
+  Sincerity:     { color: STAT_COLORS.Sincerity,     name: 'SINCERITY',     emblemPath: '/images/emblems/sincerity.webp'     },
+  Chaos:         { color: STAT_COLORS.Chaos,         name: 'CHAOS',         emblemPath: '/images/emblems/chaos.webp'         },
 };
 
 const ROUTE_STATS: [string, StatName][] = [

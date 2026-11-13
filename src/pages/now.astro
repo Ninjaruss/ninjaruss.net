@@ -39,7 +39,7 @@ function colorBg(hex: string, a: number): string {
 
 const arcColor = currentArc?.stat ? STAT_COLORS[currentArc.stat] : null;
 const arcEmblem = currentArc?.stat
-  ? `/images/emblems/${currentArc.stat.toLowerCase()}.png`
+  ? `/images/emblems/${currentArc.stat.toLowerCase()}.webp`
   : '/images/emblems/default.svg';
 const arcCardStyle = arcColor
   ? `--arc-color:${arcColor};--arc-color-dim:${colorBg(arcColor, 0.35)}`

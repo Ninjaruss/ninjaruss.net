@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from 'astro:transitions';
+import '../styles/fonts.css';
 import '../styles/global.css';
 import '../styles/typography.css';
 import '../styles/bento.css';
@@ -47,19 +48,24 @@ const ogImageIsRaster = /\.(png|jpe?g|webp)$/i.test(resolvedOgImage);
     <link rel="alternate" type="application/rss+xml" title="Ninjaruss — Writing" href="/rss.xml" />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Fonts. Loaded as a <link> rather than an @import inside typography.css:
-         an @import is only discovered after the stylesheet has been fetched and
-         parsed, which put the Google Fonts CSS on a second render-blocking round
-         trip and the woff2 files on a third. The two preconnects take the TLS
-         setup out of both of those hops. Metric-matched fallback faces are
-         declared in typography.css so the swap does not move the layout.
-         Syne 800 is deliberately absent — it is unused. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-    />
+    <!-- Fonts are self-hosted (public/fonts, @font-face in styles/fonts.css,
+         regenerate with `node scripts/build-fonts.mjs`). They used to be served
+         by Google, which meant the browser could not discover a single woff2
+         URL until a render-blocking third-party stylesheet came back, and then
+         had to open a connection to a *second* third-party origin to fetch
+         them. Same files, same glyphs — one origin, and no round trip spent
+         learning the URLs.
+
+         Metric-matched fallback faces still live in typography.css so the
+         `display: swap` does not move the layout. Syne 800 is deliberately
+         absent — it is unused.
+
+         Only the two faces that paint above the fold on every page are
+         preloaded: Syne 400 (body) and Archivo Black (every heading). Other
+         weights and the latin-ext subsets are left to unicode-range and normal
+         discovery, so a visitor who never renders them never fetches them. -->
+    <link rel="preload" href="/fonts/syne-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/archivo-black-400-latin.woff2" as="font" type="font/woff2" crossorigin />
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />

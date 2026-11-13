@@ -8,6 +8,7 @@ import vercel from '@astrojs/vercel';
 import { join } from 'node:path';
 
 import { buildNovelTree } from './src/utils/novel.ts';
+import { rehypeProseImages } from './src/utils/rehypeProseImages.mjs';
 
 /**
  * Folder-only URLs under /novel (e.g. /novel/characters, /novel/manuscript/arc-3-prisoner).
@@ -45,6 +46,11 @@ collectFolders({ subfolders: novelTree }, []);
 export default defineConfig({
   site: 'https://ninjaruss.net',
   adapter: vercel(),
+  /* Give every markdown image its intrinsic width/height (no layout shift when
+     it decodes) plus lazy/async hints on all but the first. See the plugin. */
+  markdown: {
+    rehypePlugins: [rehypeProseImages],
+  },
   integrations: [
     mdx(),
     sitemap({
