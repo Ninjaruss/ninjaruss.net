@@ -230,11 +230,18 @@ forces the native pointer back on — `html.has-custom-cursor:has(#personal-hub)
 sets `cursor: auto !important` and hides `#cursor` — so the custom cursor dot is
 a rest-of-site treatment only.
 
-**`.footer` is a site map.** The page used to end in two outbound links and no
-way back in. It now has a `.footer-site` nav listing every on-site destination
-(Writing, Projects, Remember Rain, Shelf, Japanese journal, Now, Traces, About,
-Contact) and a separate `.footer-elsewhere` nav for YouTube, Twitch,
-MyAnimeList and Spotify, each marked `.offsite`.
+**`.footer` is outbound links only.** It briefly carried a `.footer-site` nav
+listing every on-site destination, added because the page used to end in two
+outbound links and no way back in. On the homepage that was a second copy of
+the navigation: nine of its ten entries were already on screen as cards or as
+the header's `.about-links`, and the tenth (Traces) is TracesBar's own title
+link. It was removed in the 2026-11-16 copy pass along with its one CSS rule.
+What remains is `.footer-elsewhere` — YouTube, Twitch, MyAnimeList and Spotify,
+each marked `.offsite`. **The `.offsite` string names the destination**
+("on YouTube", "on Twitch"), not the generic "external link" it used to:
+that phrase was the single most repeated text on a 255-word page, and the
+Videos heading already disagreed with the footer about what to call the same
+kind of link.
 
 **Dead code the rewrite left behind — cleared 2026-11-13.** For the record, so
 nobody goes looking for these:

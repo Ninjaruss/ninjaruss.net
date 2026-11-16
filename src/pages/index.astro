@@ -58,11 +58,11 @@ const nowExcerpt = nowOpening.match(/^.*?[.!?](?:\s|$)/)?.[0].trim() || nowOpeni
 <div class="video-caption">
 <div>
 <h2 id="art-video"><a class="tile-link" href="https://www.youtube.com/@Ninjaruss_">Videos<span class="arrow" aria-hidden="true">↗</span><span class="offsite">on YouTube</span></a></h2>
-<p>Videos about anime, learning Japanese, and my life in Japan.</p>
+<p>Anime, learning Japanese, and my life in Japan.</p>
 </div>
 <nav class="video-actions" aria-label="Videos and livestreams">
 <a href="/showcase/marie-video-essay">My Marie video essay →</a>
-<a href="https://twitch.tv/ninjaruss_">Twitch livestreams<span class="arrow" aria-hidden="true">↗</span><span class="offsite">external link</span></a>
+<a href="https://twitch.tv/ninjaruss_">Twitch livestreams<span class="arrow" aria-hidden="true">↗</span><span class="offsite">on Twitch</span></a>
 </nav>
 </div>
 </section>
@@ -107,12 +107,12 @@ const nowExcerpt = nowOpening.match(/^.*?[.!?](?:\s|$)/)?.[0].trim() || nowOpeni
 <div class="tile-intro">
 <h2 id="art-novel"><a class="tile-link" href="/novel">Remember Rain<span class="arrow" aria-hidden="true">→</span></a></h2>
 </div>
-<p class="premise">Rain has spent his life protecting the dream of writing something that inspires someone — by never testing it. A finished attempt could prove him ordinary, and an unfinished one never can. Then he steps off his commute on impulse, steals a resonant object, and is blamed for disappearances caused by a man who can take wanting itself. He has to act without proof that acting will make him exceptional, or safe.</p>
+<p class="premise">Rain has spent his life protecting the dream of writing something that inspires someone — by never testing it. A finished attempt could prove him ordinary; an unfinished one never can. Then he steps off his commute on impulse, steals a resonant object, and is blamed for disappearances caused by a man who can take wanting itself. He has to act without knowing it will make him exceptional, or safe.</p>
 </section>
   <a class="tile japanese-journal" href="/japanese-journal">
 <img class="journal-emblem" src="/images/emblems/torii.svg" alt="" aria-hidden="true">
 <h2>Japanese journal</h2>
-<p>Short entries I write in Japanese as I learn, mistakes included.</p>
+<p>Short entries I write as I learn, mistakes included.</p>
 </a>
   <a class="tile shelf" href="/shelf">
 <div>
@@ -128,23 +128,11 @@ const nowExcerpt = nowOpening.match(/^.*?[.!?](?:\s|$)/)?.[0].trim() || nowOpeni
  </BentoGrid>
  <div class="guestbook-row"><TracesBar /></div>
  <footer class="footer">
-<nav class="footer-site" aria-label="Pages on this site">
-<a href="/notes">Writing</a>
-<a href="/showcase">Projects</a>
-<a href="/novel">Remember Rain</a>
-<a href="/shelf">Shelf</a>
-<a href="/japanese-journal">Japanese journal</a>
-<a href="/now">Now</a>
-<a href="/traces">Traces</a>
-<a href="/life">About</a>
-<a href="/life#contact" data-contact>Contact</a>
-<a href="/ja" lang="ja">日本語</a>
-</nav>
 <nav class="footer-elsewhere" aria-label="Elsewhere on the web">
-<a href="https://www.youtube.com/@Ninjaruss_">YouTube<span class="arrow" aria-hidden="true">↗</span><span class="offsite">external link</span></a>
-<a href="https://twitch.tv/ninjaruss_">Twitch<span class="arrow" aria-hidden="true">↗</span><span class="offsite">external link</span></a>
-<a href="https://myanimelist.net/animelist/Ninjaruss_">MyAnimeList<span class="arrow" aria-hidden="true">↗</span><span class="offsite">external link</span></a>
-<a href="https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD">Spotify<span class="arrow" aria-hidden="true">↗</span><span class="offsite">external link</span></a>
+<a href="https://www.youtube.com/@Ninjaruss_">YouTube<span class="arrow" aria-hidden="true">↗</span><span class="offsite">on YouTube</span></a>
+<a href="https://twitch.tv/ninjaruss_">Twitch<span class="arrow" aria-hidden="true">↗</span><span class="offsite">on Twitch</span></a>
+<a href="https://myanimelist.net/animelist/Ninjaruss_">MyAnimeList<span class="arrow" aria-hidden="true">↗</span><span class="offsite">on MyAnimeList</span></a>
+<a href="https://open.spotify.com/playlist/6PYIeR2dXsbTrk47TqetSD">Spotify<span class="arrow" aria-hidden="true">↗</span><span class="offsite">on Spotify</span></a>
 </nav>
 </footer>
 </div>
@@ -585,8 +573,9 @@ const nowExcerpt = nowOpening.match(/^.*?[.!?](?:\s|$)/)?.[0].trim() || nowOpeni
   opacity: 0.08;
   pointer-events: none;
 }
-/* The page used to end in two outbound links and nothing else. Anyone who
-   scrolls the whole hub now lands on the full map of it. */
+/* Outbound links only. A site map here duplicated nine of its ten entries
+   from the cards and the header above it, and the tenth (Traces) is
+   TracesBar's own title link. */
 #personal-hub .footer {
   display: grid;
   gap: 2px 32px;
@@ -606,10 +595,6 @@ const nowExcerpt = nowOpening.match(/^.*?[.!?](?:\s|$)/)?.[0].trim() || nowOpeni
   gap: 5px;
   color: var(--muted);
   font-size: 14px;
-}
-#personal-hub .footer-site a {
-  color: var(--text);
-  font-weight: 700;
 }
 #personal-hub .footer .arrow {
   font-size: 13px;
