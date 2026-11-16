@@ -1,0 +1,189 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+/* The one Japanese page on the site. Deliberately not part of a locale
+   routing scheme and deliberately without NavPill: that menu's labels are
+   English and fixed at four items, and English chrome across the one page
+   written for Japanese readers works against the point. This page's own
+   links are its navigation.
+
+   Copy is hand-written and reviewed, not machine-translated at build time —
+   see docs/superpowers/specs/2026-11-16-japanese-intro-page-design.md for
+   why the notes and the novel are deliberately not translated. */
+const makes = [
+  { label: 'Remember Rain', note: '制作中のビジュアルノベル', href: '/novel', offsite: false },
+  { label: 'YouTube', note: '動画とエッセイ', href: 'https://www.youtube.com/@Ninjaruss_', offsite: true },
+  { label: '書きもの', note: 'エッセイや短い文章', href: '/notes', offsite: false },
+  { label: 'プロジェクト', note: '作ったツールや実験', href: '/showcase', offsite: false },
+];
+---
+
+<BaseLayout
+  lang="ja"
+  title="自己紹介"
+  displayTitle="ニンジャラス — 自己紹介"
+  description="ニンジャラスの自己紹介。福岡で日本語を勉強しながら、ビジュアルノベルや動画、文章を作っています。"
+>
+  <div class="ja">
+    <header class="ja__intro">
+      <h1 class="ja__name">ニンジャラス</h1>
+      <p class="ja__lead">はじめまして。ニンジャラスです。</p>
+      <p>
+        オタクです。自分の物語を作りたいと思っています。動画を作ったり、文章を書いたり、好きなものに関わるツールを作ったりしています。
+      </p>
+      <p>今は福岡に住んでいて、日本語を勉強しています。</p>
+      <p>
+        全力でやりきるアニメや漫画が好きです。心に残る物語は、自分の生活をもう少し頑張ろうという気持ちにさせてくれます。誰かにとって、そういうものを作りたいと思っています。
+      </p>
+    </header>
+
+    <section class="ja__section" aria-labelledby="ja-makes">
+      <h2 id="ja-makes" class="ja__heading">つくっているもの</h2>
+      <ul class="ja__list">
+        {makes.map(({ label, note, href, offsite }) => (
+          <li>
+            <a href={href}>
+              <span class="ja__list-label">{label}</span>
+              {offsite && <span class="ja__arrow" aria-hidden="true">↗</span>}
+              {offsite && <span class="ja__offsite">外部リンク</span>}
+            </a>
+            <span class="ja__list-note">{note}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="ja__section" aria-labelledby="ja-study">
+      <h2 id="ja-study" class="ja__heading">日本語の練習</h2>
+      <p>日本語の勉強の記録を公開しています。間違いもそのまま残しています。</p>
+      <a class="ja__link" href="/japanese-journal">日本語の日記を読む <span aria-hidden="true">→</span></a>
+    </section>
+
+    <section class="ja__section" aria-labelledby="ja-contact">
+      <h2 id="ja-contact" class="ja__heading">連絡</h2>
+      <p>気軽に声をかけてください。</p>
+      <a class="ja__link" href="/life#contact">連絡先 <span aria-hidden="true">→</span></a>
+    </section>
+
+    <footer class="ja__footer">
+      <p class="ja__note">
+        ※ このページ以外は英語で書かれています。ブラウザの翻訳機能をご利用ください。
+      </p>
+      <a class="ja__link" href="/">英語のトップページへ <span aria-hidden="true">→</span></a>
+    </footer>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Own small block rather than extending the .life__* family: this is one
+     page, and borrowing that page's layout would couple them for no reason.
+
+     No skew and no letter-spacing on the headings. The site's .p4g-heading
+     applies --skew-display and --tracking-label, both tuned for latin caps;
+     CJK glyphs are dense square forms that smear under a shear and come
+     apart under added tracking. Everything else here is the site's tokens. */
+  .ja {
+    max-width: 62ch;
+    margin: 0 auto;
+    /* No NavPill on this page, so no --nav-clearance to respect — a plain
+       bottom rhythm instead of 96px reserved for a bar that is not here. */
+    padding: clamp(32px, 8vw, 72px) 20px clamp(48px, 10vw, 80px);
+    color: var(--color-text);
+  }
+  .ja__name {
+    font-family: var(--font-display);
+    font-size: var(--text-page-title);
+    line-height: 1.15;
+    letter-spacing: normal;
+    color: var(--color-gold);
+    margin: 0 0 24px;
+  }
+  .ja__lead {
+    font-size: 1.125rem;
+  }
+  .ja p {
+    line-height: 1.9;
+    margin: 0 0 1.25em;
+  }
+  .ja__section {
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 1px solid var(--color-surface-3);
+  }
+  .ja__heading {
+    font-family: var(--font-display);
+    font-size: var(--text-panel-title);
+    letter-spacing: normal;
+    color: var(--color-gold);
+    margin: 0 0 16px;
+  }
+  .ja__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .ja__list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-surface-2);
+  }
+  .ja__list a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    font-weight: 700;
+    color: var(--color-text);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+  }
+  .ja__list a:hover,
+  .ja__list a:focus-visible {
+    color: var(--color-gold);
+    border-bottom-color: var(--color-gold);
+  }
+  .ja__list-note {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+  }
+  .ja__arrow {
+    font-size: 0.8em;
+  }
+  .ja__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--color-gold);
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+  }
+  .ja__link:hover,
+  .ja__link:focus-visible {
+    border-bottom-color: var(--color-gold);
+  }
+  .ja__footer {
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 1px solid var(--color-surface-3);
+  }
+  .ja__note {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+  }
+  /* Says "this leaves the site" to screen readers; the glyph says it visually. */
+  .ja__offsite {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>
