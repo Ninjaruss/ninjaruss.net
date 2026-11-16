@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from 'astro:transitions';
+import { translatedAlternates } from '../utils/i18n';
 import '../styles/fonts.css';
 import '../styles/global.css';
 import '../styles/typography.css';
@@ -15,6 +16,10 @@ interface Props {
   description?: string;
   ogImage?: string;
   ogType?: string;
+  /** BCP 47 tag for this page's own prose. Pages are English unless they
+   *  say otherwise; /ja passes 'ja' so browsers stop offering to translate
+   *  Japanese into Japanese. */
+  lang?: string;
 }
 
 const {
@@ -23,10 +28,15 @@ const {
   description = 'ninjaruss.net – a personal site with notes, media logs, and projects',
   ogImage,
   ogType = 'website',
+  lang = 'en',
 } = Astro.props;
 const siteTitle = 'ninjaruss';
 const fullTitle = displayTitle ?? `${title} — ${siteTitle}`;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://ninjaruss.net');
+const alternates = translatedAlternates(Astro.url.pathname).map(({ hreflang, path }) => ({
+  hreflang,
+  href: new URL(path, Astro.site || 'https://ninjaruss.net').href,
+}));
 /* Raster on purpose: X/Facebook/LinkedIn/Slack/Discord/iMessage all refuse SVG
    for og:image, so the SVG source would render as no preview image at all.
    social-default.png is generated from social-default.svg by
@@ -37,7 +47,7 @@ const ogImageIsRaster = /\.(png|jpe?g|webp)$/i.test(resolvedOgImage);
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -45,6 +55,9 @@ const ogImageIsRaster = /\.(png|jpe?g|webp)$/i.test(resolvedOgImage);
     <title>{fullTitle}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonicalUrl.href} />
+    {alternates.map(({ hreflang, href }) => (
+      <link rel="alternate" hreflang={hreflang} href={href} />
+    ))}
     <link rel="alternate" type="application/rss+xml" title="Ninjaruss — Writing" href="/rss.xml" />
     <meta name="generator" content={Astro.generator} />
 
