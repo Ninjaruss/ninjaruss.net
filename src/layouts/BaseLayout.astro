@@ -1,6 +1,6 @@
 ---
 import { ClientRouter } from 'astro:transitions';
-import { translatedAlternates } from '../utils/i18n';
+import { ogLocale, translatedAlternates } from '../utils/i18n';
 import '../styles/fonts.css';
 import '../styles/global.css';
 import '../styles/typography.css';
@@ -82,6 +82,7 @@ const ogImageIsRaster = /\.(png|jpe?g|webp)$/i.test(resolvedOgImage);
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />
+    <meta property="og:locale" content={ogLocale(lang)} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl.href} />

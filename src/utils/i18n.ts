@@ -30,3 +30,17 @@ const PAIRED_PATHS = new Set(PAIR.map(({ path }) => normalize(path)));
 export function translatedAlternates(pathname: string): Alternate[] {
   return PAIRED_PATHS.has(normalize(pathname)) ? PAIR : [];
 }
+
+/* Open Graph wants a locale, not a bare language tag, and a page that omits
+   it inherits whatever the sharer assumes the site is — so /ja would preview
+   in Japanese under an English locale. Only the two languages the site
+   actually has: anything else is the site's own. */
+const OG_LOCALES: Record<string, string> = {
+  en: 'en_US',
+  ja: 'ja_JP',
+};
+
+/** The `og:locale` for a page's `lang`, falling back to the site default. */
+export function ogLocale(lang: string): string {
+  return OG_LOCALES[lang] ?? OG_LOCALES.en;
+}

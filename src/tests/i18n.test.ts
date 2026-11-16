@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { translatedAlternates } from '../utils/i18n';
+import { ogLocale, translatedAlternates } from '../utils/i18n';
 
 describe('translatedAlternates', () => {
   it('pairs the English homepage with the Japanese introduction', () => {
@@ -36,5 +36,16 @@ describe('translatedAlternates', () => {
 
   it('does not treat a nested path as the paired page', () => {
     expect(translatedAlternates('/ja/something')).toEqual([]);
+  });
+});
+
+describe('ogLocale', () => {
+  it('maps the page language to an Open Graph locale', () => {
+    expect(ogLocale('ja')).toBe('ja_JP');
+    expect(ogLocale('en')).toBe('en_US');
+  });
+
+  it('falls back to the site default for a language it does not know', () => {
+    expect(ogLocale('fr')).toBe('en_US');
   });
 });
