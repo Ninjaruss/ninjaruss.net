@@ -1,6 +1,6 @@
-<section class="traces" aria-label="Traces guestbook" data-traces-bar>
+<section class="traces" aria-label="Guestbook" data-traces-bar>
   <a class="traces-title" href="/traces">Traces <span>Guestbook</span></a>
-  <div class="traces-lane" tabindex="0" aria-label="Recent guestbook messages">
+  <div class="traces-lane" tabindex="0" aria-label="Recent messages">
     <p class="traces-fallback">A few words from people passing through.</p>
     <div class="traces-track" hidden>
       <ul class="traces-messages"></ul>
@@ -54,7 +54,7 @@
           list.append(item);
         }
         if (!list.children.length) {
-          fallback.textContent = 'Be the first to leave a few words.';
+          fallback.textContent = 'Be the first to leave a trace.';
           return;
         }
         // Close the loop without repeating messages for screen readers or
