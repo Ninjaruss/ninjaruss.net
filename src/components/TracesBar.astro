@@ -1,5 +1,5 @@
-<section class="traces" aria-label="Guestbook" data-traces-bar>
-  <a class="traces-title" href="/traces">Traces <span>Guestbook</span></a>
+<section class="traces" aria-labelledby="traces-title" data-traces-bar>
+  <a class="traces-title" id="traces-title" href="/traces">Guestbook</a>
   <div class="traces-lane" tabindex="0" aria-label="Recent messages">
     <p class="traces-fallback">A few words from people passing through.</p>
     <div class="traces-track" hidden>
@@ -104,11 +104,6 @@
   align-items: center;
   gap: 10px;
 }
-#personal-hub .traces-title span {
-  color: var(--muted);
-  font-size: 14px;
-  font-weight: 400;
-}
 #personal-hub .sign {
   background: var(--gold);
   color: var(--ink);
@@ -168,9 +163,8 @@
   @keyframes traces-flow { to { transform: translateX(calc(-1 * var(--traces-distance))); } }
   @media (max-width: 700px) {
     #personal-hub .traces { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 6px; }
+    /* One word now, so nothing to stack: the base row flex is correct here. */
     #personal-hub .traces-title { grid-area: 1 / 1; }
-    #personal-hub .traces-title { flex-direction: column; align-items: flex-start; justify-content: center; gap: 0; }
-    #personal-hub .traces-title span { display: block; font-size: 12px; }
     #personal-hub .sign { grid-area: 1 / 2; font-size: 13px; padding-inline: 10px; }
     #personal-hub .traces-lane { grid-area: 2 / 1 / 3 / -1; border-inline: 0; border-top: 1px solid var(--line); }
   }
