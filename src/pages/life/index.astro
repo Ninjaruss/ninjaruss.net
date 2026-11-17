@@ -34,13 +34,13 @@ const mapHtml = renderLifeMap({records,hrefForRecord:record=>`/life/${record.id}
       </div>
       <div class="life__hello">
         <h1 class="p4g-heading">{protagonist.name}</h1>
-        <p class="life__introduction">I’m an otaku, and I want to tell stories of my own. I make videos, write, and build tools around the things I love.</p>
+        <p class="life__introduction">I’m an otaku, and I’m writing a visual novel called Remember Rain. I make videos, write, and build tools around the things I love.</p>
         <a class="life__contact-link" href="#contact" data-astro-reload>Say hello</a>
       </div>
     </header>
 
     <div class="life__content">
-        <p class="life__perspective">I love anime and manga that go all out. The stories that stick with me make me want to try harder at the life I already have. I want to make something that gives someone else that same feeling.</p>
+        <p class="life__perspective">The stories that stay with me are the ones that go all out. I want to make something that does that for someone else.</p>
         <section id="making" class="life__section" aria-labelledby="making-title">
           <h2 id="making-title" class="p4g-heading">Along the way</h2>
           <div class="life__experiences">
@@ -60,13 +60,18 @@ const mapHtml = renderLifeMap({records,hrefForRecord:record=>`/life/${record.id}
               <a href="/showcase/utasync">Why I built Utasync →</a>
             </section>
           </div>
-          <nav class="life__context" aria-label="What I make">
+          {/* These two rows said what they were only in an aria-label, so on
+              screen they read as orphaned text under a rule. The heading each
+              nav is named by is now visible, and labels it for everyone. */}
+          <nav class="life__context" aria-labelledby="context-make">
+            <h3 id="context-make" class="life__context-title">What I make</h3>
             <a href="/novel">Remember Rain</a>
             <a href="https://www.youtube.com/@Ninjaruss_">YouTube</a>
             <a href="/notes">Writing</a>
             <a href="/showcase">All projects</a>
           </nav>
-          <nav class="life__context" aria-label="Updates and practice">
+          <nav class="life__context" aria-labelledby="context-updates">
+            <h3 id="context-updates" class="life__context-title">Updates and practice</h3>
             <a href="/now">Current focus · Now</a>
             <a href="/japanese-journal">Japanese practice journal</a>
           </nav>
@@ -110,10 +115,16 @@ const mapHtml = renderLifeMap({records,hrefForRecord:record=>`/life/${record.id}
           {people.map(person => <a class="life__record" href={`/life/${person.id}`}><strong>{person.title}</strong><p>{person.body.length > 180 ? `${person.body.slice(0, 180)}…` : person.body}</p></a>)}
         </section>
         )}
+      {/* Gated like Memories, Calendar and People. With no published snapshot
+          the map has no markers, so this opened onto an empty illustration —
+          the one record-driven surface that still invited a click when there
+          was nothing behind it. */}
+      {records.length > 0 && (
       <details id="places" class="life__map-disclosure" data-life-map-disclosure>
         <summary><span class="p4g-heading">Explore the map</span></summary>
         <div set:html={mapHtml} />
       </details>
+      )}
     </div>
 
     <footer id="contact" class="life__contact">

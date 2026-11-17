@@ -60,8 +60,19 @@
   .life__contact { margin-top: var(--space-xl); }
 }
 
-.life__context { display: flex; flex-wrap: wrap; gap: var(--space-md); margin-top: var(--space-lg); }
+.life__context { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md); margin-top: var(--space-lg); }
 .life__context a { display: inline-flex; align-items: center; min-height: 44px; }
+/* Takes the full row so the links start on a line of their own. Reset off the
+   global h3 display scale: this is a micro-caps group label, not a heading in
+   the page's reading hierarchy. */
+.life__context-title {
+  flex: 0 0 100%;
+  margin: 0;
+  font: .8rem/1.6 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
 
 
 /* About is one reading flow; the map remains an optional native disclosure. */
