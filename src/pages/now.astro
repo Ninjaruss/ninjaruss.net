@@ -53,7 +53,6 @@ const arcCardStyle = arcColor
     <p class="reading-description">What I’m currently focused on.</p>
     <nav class="writing-links" aria-label="Now navigation">
       <a href="/now/archive">Past updates →</a>
-      <a href="/life">About me →</a>
     </nav>
   </header>
   <div class:list={['now-reading', { 'now-reading--focused': !!currentArc }]}>
@@ -79,7 +78,6 @@ const arcCardStyle = arcColor
         {latestPost.data.title !== 'Now' && <h2>{latestPost.data.title}</h2>}
       </header>
       <div class="prose"><Content /></div>
-      <nav class="writing-links reading-footer" aria-label="Past Now entries"><a href="/now/archive">Read past updates →</a></nav>
     </article>
   </div>
 </ReadingLayout>
