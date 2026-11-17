@@ -544,10 +544,13 @@
   .page-turn__link { max-width: 100%; }
   .page-turn__link--next { align-items: flex-start; text-align: left; }
 }
-/* The desk's one line of prose: what the story is, before any navigation. */
+/* The desk's prose: what the story is, before any navigation. */
 .desk-premise {
   max-width: 62ch;
   margin: 0 0 var(--space-lg);
+}
+.desk-premise p {
+  margin: 0 0 var(--space-md);
   line-height: 1.8;
   /* Parchment, not --novel-warm-dim: dim is the binder's hook treatment, for
      text that is subordinate to a link. This is the page's lead paragraph. */

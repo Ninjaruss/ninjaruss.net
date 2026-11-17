@@ -15,20 +15,25 @@ const { backLink, backLabel } = Astro.props;
 const currentPath = Astro.url.pathname;
 const isHome = currentPath === '/';
 
-/* Primary navigation introduces the person; creative work stays on Home/About. */
+/* Home, then the work, then the person. Remember Rain sits second because it
+   is the thing being made; the rest of the creative work is still reached from
+   Home and About rather than from here, so the menu stays readable at a glance.
+   The label is what the page calls itself — the same rule that retired "VN". */
 const SECTIONS: NavSection[] = [
   { href: '/', label: 'Home', match: ['/'] },
+  { href: '/novel', label: 'Remember Rain', match: ['/novel'] },
   { href: '/life', label: 'About', match: ['/life'] },
   { href: '/now', label: 'Now', match: ['/now'] },
   { href: '/shelf', label: 'Shelf', match: ['/shelf'] },
 ];
 
-/* Keep the mobile location label accurate on destinations outside the main menu. */
+/* Keep the mobile location label accurate on destinations outside the main menu.
+   SECTIONS is spread first, so anything listed here that is also a menu item
+   would be dead — /novel moved up into SECTIONS and is no longer repeated. */
 const currentSection = [
   ...SECTIONS,
   { label: 'Writing', match: ['/notes'] },
   { label: 'Projects', match: ['/showcase'] },
-  { label: 'Remember Rain', match: ['/novel'] },
   { label: 'Guestbook', match: ['/traces'] },
   { label: 'Japanese journal', match: ['/japanese-journal'] },
 ].find(section => section.match.some(path => path !== '/' && (currentPath === path || currentPath.startsWith(`${path}/`))))?.label ?? 'Explore';
