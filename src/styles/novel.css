@@ -549,6 +549,21 @@
   max-width: 62ch;
   margin: 0 0 var(--space-lg);
 }
+/* Rain's own opening line, carried verbatim. Set apart from the frame around
+   it so it reads as the book speaking rather than as copy about the book. */
+.desk-premise__quote {
+  margin: 0 0 var(--space-lg);
+  padding-left: 1.1rem;
+  border-left: 2px solid var(--novel-border-strong);
+  font-size: 1.125rem;
+  font-style: italic;
+  line-height: 1.75;
+  color: var(--novel-paper);
+}
+.desk-premise__motto {
+  font-style: italic;
+  color: var(--color-gold);
+}
 .desk-premise p {
   margin: 0 0 var(--space-md);
   line-height: 1.8;

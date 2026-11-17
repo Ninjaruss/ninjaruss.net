@@ -173,36 +173,54 @@ const pageTitle =
         </div>
       </header>
 
-      {/* Sourced from the DRAFTED PROSE (Arc 1) and Story Plan/What does it
-          mean to fall, not from the story bible's character sheets. Two earlier
-          passes failed here: one lifted Rain's contradiction field verbatim
-          ("wants more than anyone in the story"), which describes the book from
-          outside it, and one built the hook on the notebook of first lines and
-          the Water Ministry — both of which the author flags as tentative or
-          placeholder. Everything below is on the page or in the thesis doc:
-          the ceiling, the unwritten outline, the light in the alley, the one
-          thing taken for no reason he can produce, the disproportionate charge
-          he cannot dispute, the parents' question. The close states the thesis
-          in Rain's terms rather than as the drafting doc's maxim about falling,
-          which was written for the author and read as a definition. It hinges
-          off the parents' line — "what he has done to his life" is answered by
-          spending one of its possible versions — which is why that line ends
-          the paragraph before it and why "no way to put it back" was added
-          there: the close turns on the theft being irreversible, so the
-          paragraph that sets it up has to say so. It ends on the question
-          rather than the answer, because the book has not answered it yet.
-          Vesper is left out: his arc is still stubs, so pitching him would be
-          pitching an intention. */}
-      <div class="desk-premise p3r-animate">
-        <p>Rain is twenty-three. He dreams about the ceiling coming down while the rain comes in, and he cannot fall. There is an outline he opens every morning and never writes, and a quiet conviction that none of this counts yet — that his real life starts once he is ready for it.</p>
-        <p>Then a faint light at the end of his commute beckons and steps into an alley he has walked past for years, and he follows it. He leaves with one thing he does not need and cannot justify wanting, and no way to put it back. By morning he is wanted for disappearances he had nothing to do with — a charge wildly out of proportion and not, in fact, false. His parents call. They do not ask whether he did it. They ask what he has done to his life.</p>
-        <p>It is a fair question. He has spent his life keeping every version of himself available, and he has just spent one of them on nothing. Now he finds out whether he was ever going to be more than the person who kept them.</p>
-      </div>
-
-      <nav class="novel-start p3r-animate" style="--stagger-delay: 30ms" aria-label="Start exploring Remember Rain">
+      <nav class="novel-start p3r-animate" style="--stagger-delay: 15ms" aria-label="Start exploring Remember Rain">
         {firstScene && <a href={fileUrl(firstScene)}>Read the draft</a>}
         <a href="#planning">Browse planning · spoilers</a>
       </nav>
+
+      {/* Rain's own first line, then the least amount of frame that can stand
+          around it. Earlier passes pitched him in the third person and in an
+          analytical register the book never uses — the drafted prose is first
+          person and wry ("Fuck it", "They don't know shit") — so the pitch did
+          not sound like the thing it was selling. It also ran to 325 words of
+          synopsis for a draft of 6,338, and explained the trap rather than
+          letting the opening line be it. The quote is verbatim from
+          Manuscript/Arc 1/0 Rain intro. The closing line is that scene's own
+          ending callback, which is also where the site's motto comes from.
+
+          The middle three paragraphs carry setting, abilities and later arcs
+          without exposition: the Flare and Imprints are stated through the one
+          Imprint this book's canon settles (World/Magic System, "The Goggles").
+          Its origin — a worker's refusal — is deliberately NOT narrated: that
+          is exposition, and the thematic point survives without it, because
+          what carries it is the resonance rule ("resonance is strongest when
+          an Imprint's completed transition and a person's unresolved
+          transition share an emotional or behavioral shape"). So the pitch
+          states the pull and not the provenance: the man who cannot go through
+          with anything is drawn to an object that exists only because someone
+          else did. "Paid for out of you" rather than any billing metaphor,
+          since the canon is "every deliberate use is paid for, and each person
+          pays in their own currency". The arc gestures are compressed
+          into one rhythm — relief, silence, a happy life — covering the Arc 2
+          asylum and Arc 3's true silence and beloved life, with "he has to
+          leave each one" standing in for the pitfall structure; the thinning
+          rain and quieter streets are the correction's documented symptoms
+          (World/Locations). The close names the obstacle instead of the
+          outcome, so it spoils nothing: Arc 5 asks whether he can choose
+          without knowing who the choice proves he is, and his character
+          sheet's question is whether he can respect himself once evidence
+          replaces fantasy. The outbound train is not alluded to at all.
+          The Water Ministry is deliberately unnamed — the author flags it as
+          placeholder, so the pitch shows its effects and not its letterhead. */}
+      <div class="desk-premise p3r-animate">
+        <blockquote class="desk-premise__quote">I dreamed and dreamed of the ceiling finally collapsing while rain poured outside. Yet I could not fall.</blockquote>
+        <p>Rain is twenty-three, on an island where it has not stopped raining in his lifetime. There is an outline he opens every morning and never writes, and a plan to start living once he is ready. Then he follows a faint light down an alley he has walked past for years, and takes something he cannot justify wanting.</p>
+        <p>Five years ago the Flare left the world unevenly seeded, and objects have kept the shape of the irreversible things that happen around them ever since. One that matches something unfinished in you will open an ability of your own, and every use of it is paid for out of you. What pulls at Rain is an object shaped by a decision someone else actually went through with: the one shape his own life has never made.</p>
+        <p>The theft is small; the charge that lands by morning is not, and is not false either. What follows offers him relief, then silence, then a life in which he is genuinely happy, and he has to leave each one — while the city gets easier, and the rain begins to thin.</p>
+        <p>The charge is not the hard part, and neither is the city, or the man behind it. Nothing he does will tell him whether he was ever going to be someone. He has to do it anyway.</p>
+        <p class="desk-premise__motto">In spite of it all.</p>
+      </div>
+
 
       <section class="desk-script p3r-animate" id="manuscript" style="--stagger-delay: 60ms" aria-label="Script">
         <header class="desk-script__header">
