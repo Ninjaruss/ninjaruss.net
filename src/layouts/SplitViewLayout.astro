@@ -546,6 +546,21 @@ const kickerText = kicker ?? SECTION_KICKERS[section] ?? section;
     text-transform: uppercase;
   }
 
+  /* Body headings sit UNDER the entry title, not over it. The global h2/h3
+     sizes (--text-4xl / --text-3xl) are tuned for a page whose own <h1> is at
+     --text-page-title; inside the detail panel the entry title is a
+     --text-panel-title heading, so an unscoped body h2 rendered at 40px
+     against a 24px title — the name of the thing you were reading was the
+     smallest heading on screen. Scoped to the panel so reading pages, whose
+     <h1> really is page-title sized, keep the full scale. */
+  .split-view__content .prose h2 {
+    font-size: 1.25rem;
+  }
+
+  .split-view__content .prose h3 {
+    font-size: 1.0625rem;
+  }
+
   .split-view__content .entry__meta {
     display: flex;
     flex-direction: column;

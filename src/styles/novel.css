@@ -243,13 +243,40 @@
   color: var(--color-gold);
 }
 
-/* ══ Binder — outline folders, the desk's opening move ══ */
+/* ══ Binder — outline folders, below the script ══
+   The binder used to be the desk's opening move, which put the spoiler-bearing
+   planning docs above the story itself. It now follows the script and carries
+   its own heading, so the "contains spoilers" warning is visible rather than
+   living only in the nav's aria-label. */
 .desk-binder {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.5rem;
   align-items: start;
   margin-bottom: 3rem;
+}
+.desk-binder__heading {
+  /* Spans the grid rather than taking the first column as a panel-sized cell. */
+  grid-column: 1 / -1;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-panel-title);
+  /* Same treatment as .desk-script__heading so the desk's two section titles
+     read as one pair. */
+  text-transform: uppercase;
+  transform: skewX(var(--skew-display));
+  color: var(--color-gold);
+  border-bottom: 2px solid var(--novel-border-strong);
+  padding-bottom: 6px;
+}
+.desk-binder__heading span {
+  display: inline-block;
+  transform: skewX(calc(-1 * var(--skew-display)));
+  font-family: var(--font-mono);
+  font-size: var(--text-floor);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--novel-warm-dim);
 }
 .binder-panel {
   background: rgba(26, 22, 16, 0.82);
@@ -517,6 +544,16 @@
   .page-turn__link { max-width: 100%; }
   .page-turn__link--next { align-items: flex-start; text-align: left; }
 }
+/* The desk's one line of prose: what the story is, before any navigation. */
+.desk-premise {
+  max-width: 62ch;
+  margin: 0 0 var(--space-lg);
+  line-height: 1.8;
+  /* Parchment, not --novel-warm-dim: dim is the binder's hook treatment, for
+     text that is subordinate to a link. This is the page's lead paragraph. */
+  color: var(--novel-parchment);
+}
+
 .novel-start { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-xl); margin-bottom: var(--space-xl); }
 .novel-start a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-gold); text-underline-offset: .25em; }
 .novel-start a:focus-visible { outline: 3px solid var(--color-gold); outline-offset: 4px; }

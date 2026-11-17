@@ -2,6 +2,7 @@
 title: "KAIMA - JP Learning Live Stream"
 description: "An earlier Japanese-learning channel experiment. New videos are on Ninjaruss."
 status: "Historical"
+archived: true
 publishedAt: 2026-04-25
 updatedAt: 2026-10-02
 emblem: "/images/showcase/KAIMA.webp"

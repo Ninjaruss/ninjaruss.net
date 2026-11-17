@@ -173,41 +173,21 @@ const pageTitle =
         </div>
       </header>
 
-      <nav class="novel-start" aria-label="Start exploring Remember Rain">
+      {/* The desk never said what the story was. A visitor arriving from the
+          homepage card got a header, two links and then the planning binder —
+          so the one page devoted to Remember Rain was the one place its premise
+          did not appear. Hand-written and public-facing on purpose: the Story
+          Plan synopsis doc that findSynopsisDoc() locates is a working document
+          full of late-arc spoilers, so it is linked from the binder, not piped
+          in here. */}
+      <p class="desk-premise p3r-animate">Rain has spent his life protecting the dream of writing something that inspires someone — by never testing it. A finished attempt could prove him ordinary; an unfinished one never can. Then he steps off his commute on impulse, steals a resonant object, and is blamed for disappearances caused by a man who can take wanting itself.</p>
+
+      <nav class="novel-start p3r-animate" style="--stagger-delay: 30ms" aria-label="Start exploring Remember Rain">
         {firstScene && <a href={fileUrl(firstScene)}>Read the draft</a>}
         <a href="#planning">Browse planning · spoilers</a>
       </nav>
 
-      <nav id="planning" class="desk-binder p3r-animate" style="--stagger-delay: 30ms" aria-label="Planning documents · contains spoilers">
-        {binderGroups.map((group) => (
-          <section class="binder-panel" id={group.slug}>
-            <h2 class="binder-panel__header">{group.title}</h2>
-            {group.rootFiles.length > 0 && (
-              <ul class="binder-panel__list">
-                {group.rootFiles.map((file) => (
-                  <li>
-                    <a href={fileUrl(file)}>{file.title}</a>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {group.subs.map((sub) => (
-              <div class="binder-panel__sub">
-                <h3 class="binder-panel__sublabel">{sub.title}</h3>
-                <ul class="binder-panel__list">
-                  {sub.files.map((file) => (
-                    <li>
-                      <a href={fileUrl(file)}>{file.title}</a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </section>
-        ))}
-      </nav>
-
-      <section class="desk-script p3r-animate" id="manuscript" style="--stagger-delay: 90ms" aria-label="Script">
+      <section class="desk-script p3r-animate" id="manuscript" style="--stagger-delay: 60ms" aria-label="Script">
         <header class="desk-script__header">
           <h2 class="desk-script__heading">Script</h2>
           <span class="desk-script__count">{stats.storyWords.toLocaleString('en-US')} words</span>
@@ -236,6 +216,36 @@ const pageTitle =
           </section>
         ))}
       </section>
+      <nav id="planning" class="desk-binder p3r-animate" style="--stagger-delay: 90ms" aria-label="Planning documents · contains spoilers">
+        <h2 class="desk-binder__heading">Planning <span>· contains spoilers</span></h2>
+        {binderGroups.map((group) => (
+          <section class="binder-panel" id={group.slug}>
+            <h2 class="binder-panel__header">{group.title}</h2>
+            {group.rootFiles.length > 0 && (
+              <ul class="binder-panel__list">
+                {group.rootFiles.map((file) => (
+                  <li>
+                    <a href={fileUrl(file)}>{file.title}</a>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {group.subs.map((sub) => (
+              <div class="binder-panel__sub">
+                <h3 class="binder-panel__sublabel">{sub.title}</h3>
+                <ul class="binder-panel__list">
+                  {sub.files.map((file) => (
+                    <li>
+                      <a href={fileUrl(file)}>{file.title}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </section>
+        ))}
+      </nav>
+
     </div>
   )}
 

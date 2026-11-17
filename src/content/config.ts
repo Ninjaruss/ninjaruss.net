@@ -33,7 +33,10 @@ const notes = defineCollection({
 // Showcase collection — projects framed as inquiries
 const showcase = defineCollection({
   type: 'content',
-  schema: sharedSchema.extend({ status: z.string().optional() })
+  // `archived` drives ordering on /showcase (see src/utils/showcase.ts):
+  // finished projects sink below live ones instead of floating to the top —
+  // and into the auto-opened slot — whenever their writeup is edited.
+  schema: sharedSchema.extend({ status: z.string().optional(), archived: z.boolean().default(false) })
 });
 
 // Now collection — archived "now" snapshots
