@@ -1,5 +1,10 @@
 <section class="traces" aria-labelledby="traces-title" data-traces-bar>
-  <a class="traces-title" id="traces-title" href="/traces">Guestbook</a>
+  <!-- A heading, not a link. The gold "Leave a trace" button sits in the same
+       strip and goes to the same place, so the title was the second of two
+       adjacent links to /traces (the scrolling rows are the third, but they
+       deep-link to their own message). It keeps naming the region via
+       aria-labelledby either way. -->
+  <h2 class="traces-title" id="traces-title">Guestbook</h2>
   <div class="traces-lane" tabindex="0" aria-label="Recent messages">
     <p class="traces-fallback">A few words from people passing through.</p>
     <div class="traces-track" hidden>
@@ -98,7 +103,11 @@
 }
 #personal-hub .traces-title {
   color: var(--gold);
-  font-weight: 700;
+  /* Now an <h2>, so the global display-font heading scale has to be reset —
+     this is a strip label, not a section title at --text-panel-title. */
+  font: 700 16px/1.6 var(--font-body);
+  text-transform: none;
+  letter-spacing: normal;
   min-height: 44px;
   display: flex;
   align-items: center;

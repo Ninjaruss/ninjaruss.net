@@ -7,16 +7,26 @@ import { publicNotes } from '../utils/notes';
 import { formatDate } from '../utils/dates';
 import { stripMarkdown } from '../utils/content';
 
-const [notes, now, lFile] = await Promise.all([
+const [notes, now, lFile, shelf, journal] = await Promise.all([
   getCollection('notes'),
   getCollection('now', ({ data }) => !data.draft),
   getEntry('showcase', 'l-file'),
+  getCollection('shelf', ({ data }) => !data.draft),
+  getEntry('notes', 'jp-journal'),
 ]);
 const posts = publicNotes(notes).filter(entry => entry.data.publishedAt).slice(0, 3);
 const latestNow = now.sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())[0];
 // Preview the actual update rather than adding a second summary to maintain.
 const nowOpening = stripMarkdown(latestNow?.body.split(/\n\s*\n/).find(paragraph => paragraph.trim() && !/^[#<]/.test(paragraph.trim())) ?? '');
 const nowExcerpt = nowOpening.match(/^.*?[.!?](?:\s|$)/)?.[0].trim() || nowOpening;
+
+// Row 3's two cards were a heading, one line and a watermark. Each now states
+// what it is holding, so the height they already occupy says something: the
+// journal's newest dated entry (same `## YYYY-MM-DD` headings the journal page
+// indexes, ascending, so the last match is the latest) and the shelf's size.
+const journalLatest = [...(journal?.body ?? '').matchAll(/^##\s+(\d{4}-\d{2}-\d{2})\s*$/gm)].at(-1)?.[1];
+const journalLatestDate = journalLatest ? new Date(`${journalLatest}T00:00:00Z`) : null;
+const shelfCount = shelf.length;
 ---
 
 <BaseLayout title="Home" displayTitle="in spite of it all — ninjaruss" description="Writing, videos, projects, and Remember Rain — the personal hub of Ninjaruss.">
@@ -39,7 +49,7 @@ const nowExcerpt = nowOpening.match(/^.*?[.!?](?:\s|$)/)?.[0].trim() || nowOpeni
 <h2>{latestNow?.data.title || 'Personal updates'}</h2>
 {latestNow && <p class="now-date"><time datetime={latestNow.data.publishedAt.toISOString()}>{formatDate(latestNow.data.publishedAt)}</time></p>}
 {nowExcerpt && <p class="now-excerpt">{nowExcerpt}</p>}
-<span class="now-read">Read the update <span aria-hidden="true">→</span></span></a>
+<span class="tile-read">Read the update <span aria-hidden="true">→</span></span></a>
  </div>
  <BentoGrid class="grid">
   <section class="tile writing" aria-labelledby="art-writing">
@@ -107,17 +117,20 @@ const nowExcerpt = nowOpening.match(/^.*?[.!?](?:\s|$)/)?.[0].trim() || nowOpeni
 <div class="tile-intro">
 <h2 id="art-novel"><a class="tile-link" href="/novel">Remember Rain<span class="arrow" aria-hidden="true">→</span></a></h2>
 </div>
-<p class="premise">Rain has spent his life protecting the dream of writing something that inspires someone — by never testing it. A finished attempt could prove him ordinary; an unfinished one never can. Then he steps off his commute on impulse, steals a resonant object, and is blamed for disappearances caused by a man who can take wanting itself. He has to act without knowing it will make him exceptional, or safe.</p>
+<p class="premise">A young man steps off his commute on impulse, steals a resonant object, and is blamed for disappearances caused by a man who can take wanting itself.</p>
 </section>
   <a class="tile japanese-journal" href="/japanese-journal">
 <img class="journal-emblem" src="/images/emblems/torii.svg" alt="" aria-hidden="true">
 <h2>Japanese journal</h2>
 <p>Short entries I write as I learn, mistakes included.</p>
-</a>
+{journalLatestDate && <p class="tile-meta">Last entry <time datetime={journalLatest}>{formatDate(journalLatestDate)}</time></p>}
+<span class="tile-read">Read the journal <span aria-hidden="true">→</span></span></a>
   <a class="tile shelf" href="/shelf">
-<div>
+<div class="shelf-text">
 <h2>Shelf</h2>
 <p>Stories, characters, and music that stick with me.</p>
+<p class="tile-meta">{shelfCount} entries</p>
+<span class="tile-read">Browse the shelf <span aria-hidden="true">→</span></span>
 </div>
 <div class="posters" aria-hidden="true">
 <img src="/images/media/persona-4-golden.webp" alt="">
@@ -504,6 +517,11 @@ const nowExcerpt = nowOpening.match(/^.*?[.!?](?:\s|$)/)?.[0].trim() || nowOpeni
   gap: 20px;
   padding: 24px;
 }
+#personal-hub .shelf-text {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
 #personal-hub .shelf h2 {
   margin-top: 10px;
 }
@@ -553,15 +571,28 @@ const nowExcerpt = nowOpening.match(/^.*?[.!?](?:\s|$)/)?.[0].trim() || nowOpeni
 #personal-hub .now h2 { color: var(--gold); }
 #personal-hub .now .now-date { font-size: 13px; }
 #personal-hub .now .now-excerpt { color: var(--text); margin-top: 14px; line-height: 1.6; }
-#personal-hub .now-read { display: flex; justify-content: space-between; gap: 16px; margin-top: auto; padding-top: 18px; color: var(--gold); font-weight: 600; }
-#personal-hub .now:hover { text-decoration: none; }
-#personal-hub .now:hover .now-read { text-decoration: underline; text-underline-offset: 4px; }
+/* The three whole-card <a> tiles share one footer row. Writing, Videos,
+   Projects and Remember Rain signal their destination with an arrow beside the
+   heading; Now, Japanese journal and Shelf are the cards that ARE links, and
+   two of them used to say so least — no arrow, no call to action, just a
+   heading and a line. */
+#personal-hub .tile-read { display: flex; justify-content: space-between; gap: 16px; margin-top: auto; padding-top: 18px; color: var(--gold); font-weight: 600; }
+#personal-hub .tile-meta { margin-top: 10px; font: 12px/1.5 var(--font-mono); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--muted); }
+#personal-hub .now:hover,
+#personal-hub .japanese-journal:hover,
+#personal-hub .shelf:hover { text-decoration: none; }
+#personal-hub .now:hover .tile-read,
+#personal-hub .japanese-journal:hover .tile-read,
+#personal-hub .shelf:hover .tile-read { text-decoration: underline; text-underline-offset: 4px; }
 #personal-hub .japanese-journal {
   grid-column: span 5;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* Was centred, which left .tile-read's margin-top:auto nothing to push
+     against — the footer row has to sit on the card's bottom edge the way
+     the Now card's does. */
+  justify-content: flex-start;
 }
 #personal-hub .japanese-journal > :not(.journal-emblem) { position: relative; }
 #personal-hub .journal-emblem {
