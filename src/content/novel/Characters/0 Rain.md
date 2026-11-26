@@ -10,13 +10,13 @@ A young man with a notebook full of first lines and no second ones.
 
 \- \*\*Traits:\*\* \*\*Soft Yearning\*\* / \*\*Sudden Resolve\*\*
 
-\- \*\*Contradiction:\*\* he wants more than anyone in the story and does less than anyone in it.
+\- \*\*Contradiction:\*\* he genuinely wants to discover what he is capable of, yet fear of consequences and a declining belief in his own worth keep him from the experiences through which he could find out.
 
-\- \*\*Question:\*\* \*Can I still respect myself after reality replaces fantasy with evidence?\*
+\- \*\*Question:\*\* \*Can I live according to what matters to me without knowing what it will amount to or who I will become?\*
 
-Rain preserves possibility because choosing one life would close others and make him finite. Beneath that defense is a fear that a finished attempt may prove he is ordinary. He never diagnoses that fear aloud; he speaks honestly about the lives a choice would close, while the notebook supplies the less flattering evidence.
+Rain wants to discover his limits and what he is truly capable of through living, making, and trying. He genuinely wants to act, but anticipating consequences gives him more reasons to hesitate than ways to begin. As he hesitates, he feels increasingly that he has little of value to offer; that judgment makes the next attempt harder. Preserving possibility also protects him from closing other lives and from discovering that a finished attempt may prove he is ordinary. That fear remains a secondary, unresolved insecurity: he does not yet know how much he wants to find his limits and how much he hopes they will confirm he is exceptional. He never diagnoses that fear aloud; the stopped notebook supplies evidence he cannot comfortably explain.
 
-He grew up praised for potential and steered away from risking it. His hardworking parents equate safety with love: his father tends to decide what Rain means before listening, while his mother offers sincere encouragement without understanding the specific dream. They see extensive computer time, a weaker visible work trajectory, and little finished evidence. Their interpretation is incomplete, not wholly false: Rain genuinely creates, learns, and tries, but reflection and preparation often substitute for irreversible action. Rain learned to deflect rather than explain himself. Their concern is real, but being supported and being seen have never felt identical to him.
+He grew up praised for potential and steered away from risking it. His hardworking parents equate safety with love: his father tends to decide what Rain means before listening, while his mother offers sincere encouragement without understanding the specific dream. They see extensive computer time, a weaker visible work trajectory, and little finished evidence. Their interpretation is incomplete, not wholly false: Rain genuinely creates, learns, and tries, but reflection and preparation often substitute for irreversible action. Rain discounts real prior efforts because they have not amounted to the life he wanted; unfinished work and an uncertain future begin to feel like evidence that he has nothing to offer. He learned to deflect rather than explain himself. Their concern is real, but being supported and being seen have never felt identical to him. He wants their understanding, while needing to learn that wanting something does not require their validation.
 
 Before the story, Rain left a stable, approved path because he feared that staying would become indefinite continuation. He quit without a secure replacement, hoping the irreversible leap would force him toward the creative life he imagined. It did not. He still struggled to follow through, finish imperfect work, and produce evidence of the life he claimed to want. Under sufficient local resonance, that exit patterned the personal resonance he later experiences as the Ghost.
 
@@ -34,11 +34,17 @@ Before the story, Rain left a stable, approved path because he feared that stayi
 
 \- Carries himself as though his weight has not committed to the next step. Under pressure, that softness snaps into decisive motion.
 
-His generosity is real. His avoidance is not laziness or indifference; it is how he protects an untested image of himself.
+His generosity and concern for others are real. His avoidance grows from consequence anxiety and perceived inadequacy as well as the wish to protect untested potential. He can care for someone else and still struggle to state a need of his own.
 
 \#\#\# Want, Fear, and Change
 
-Rain wants to create a great story capable of inspiring someone as deeply as formative stories inspired him. He also wants a life large enough to justify that dream without exposing him to the evidence of trying. He outsources movement to the Ghost, decisions to Claire, direction to Roxana, and physical presence to the Clone. His change is not becoming certain or discovering a completed self. It is choosing participation while fear, limitation, relapse, and consequence remain.
+Rain wants to create a great story capable of inspiring someone as deeply as formative stories inspired him. He wants the experience through which he could discover whether and how he can do it, even while fearing the answer. Can he still respect himself after reality replaces fantasy with evidence? That question remains, but it sits within the larger difficulty of pursuing what matters without advance certainty, approval, or proof of exceptional worth.
+
+A normal, safe life has real attractions. The conflict is whether he chooses it or accepts it because other people and circumstances have already decided who he should be. He cannot fully explain what he hopes to find, but fears never having the chance to find out. Accepting a limitation discovered through experience is different from accepting a prescribed identity before he has tested it; neither requires discovering a true or final self.
+
+As Rain participates, his world grows larger and he feels more alive, even as his social standing and external stability deteriorate. He doubts that feeling when the visible evidence suggests he is throwing his life away. Meaningful experience does not cancel what he loses, and feeling alive does not prove a decision was good. His confidence can falter while his capacity to respond grows.
+
+He outsources movement to the Ghost, decisions to Claire, direction to Roxana, and physical presence to the Clone. His change is learning to choose, accept consequences, reassess, and pivot while fear, limitation, relapse, and uncertainty remain. Agency includes admitting a mistake, changing a plan, and answering for harm to others; it does not require defending every past decision or rejecting another person's better judgment. Self-sufficiency includes asking for and accepting help without making someone else responsible for choosing his life. He can want without being vindicated, and continue without becoming certain.
 
 1\. He follows the Ghost off his commute and steals the goggles.
 
@@ -116,7 +122,11 @@ Rain looks ordinary and approachable rather than visibly heroic. Keep the notebo
 
 \- He does not discover a true or final self. He remains hesitant, unfinished, and capable of relapse.
 
-\- Do not let him explain that he fears being ordinary. Let his stopped notebook make the case.
+\- Keep fear of being ordinary as a secondary insecurity he has not resolved and does not diagnose aloud. Let his stopped notebook carry it without making it the sole explanation for his hesitation.
+
+\- Do not treat a safe life as inherently lesser, every refusal as agency, or every consequence as proof that others have misunderstood him. Wanting does not excuse harm; accepting accountability need not mean accepting an externally prescribed identity.
+
+\- Do not equate surrender to the authorities with surrender of agency. What returning would concretely require him to give up in Arc 1 remains unresolved; do not invent a condition to make his refusal automatically right.
 
 \- His departure is neither public vindication nor exile presented as freedom. The fugitive condition remains; choosing a direction within it is the change.
 
