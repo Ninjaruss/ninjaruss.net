@@ -18,27 +18,31 @@ The chronological owner for the whole story. Keep scene order, indispensable cau
 
 Quest supplies the route from commute to outbound train. Horror supplies the increasing pressure as correction advances regardless of local wins and finally succeeds against Rain through extraction. Battle is localized; Roxana versus the Pursuer is the clearest recurring Battle subplot, while other combat takes the genre of its immediate dramatic question.
 
-\#\#\# Arc 1 · The Fugitive
+### Arc 1 · The Fugitive
 
-\*\*Choice pressure:\*\* Rain can let hiding close into another commute or follow the Ghost before he feels ready. Continuing connects the accusation to the asylum.
+**Reorganized 2026-11-26.** The private aftermath precedes the public accusation. Existing prose is moved without rewriting; stable drafting handles are retained even where display numbers change. The following is the working scene arrangement, not a resolution of every causal gap.
 
-\- \*\*0 · Rain intro\*\* — Establish Rain's dreams, self-awareness, and hope that something external will fix him. Use the exact selected opening line in the manuscript. The Ghost appears and guides his attention away from the commute.
+**Choice pressure:** Rain takes something he wants before he can justify it, delays exposing the choice to judgment, and faces consequences that do not prove what his desire was worth. After seeking shelter and receiving help, he must choose whether to accompany the others. The arc can close on another choice without vindication, certainty, or a completed self.
 
-\- \*\*1 · The road less traveled\*\* — Rain walks his usual route. The Ghost turns into an alley. He argues for routine, says \*fuck it\*, and follows. End as he enters the dark.
+- **0 · Rain intro** — Keep the existing morning, unfinished story, hesitation, and exact manuscript opening. His genuine creative desire and frustration coexist. Do not change the locked ending callback to resolve the existing opening-wording discrepancy.
 
-\- \*\*2 · The vault\*\* — Shiori breaches Nimbus's confiscated-artifact vault to recover something of her own. Rain follows the Ghost through her breach, feels the goggles' Pull, and steals them. She leaves without Nimbus identifying her, and keeps his nervous laugh. (Drafted, 2,417 words. The two-object attribution mechanism was cut 2026-11-04; the drafted prose needs no change.)
+- **1 · The road less traveled** — Keep the authored commute, the Ghost’s appearance, and the decision to enter the alley. This is the departure from routine, not proof that every attraction should be obeyed.
 
-\- \*\*3 · The charge lands\*\* — By morning Nimbus knows the goggles are gone. Rain did take them, deliberately, and the disappearances are attached to him because he is the available explanation. \*\*The charge is false in proportion, never in fact\*\* — he is not owed an exoneration, and the scene must not become a factual dispute he could win. Official numbers and a plausible theory spread. Family and friends call: they do not ask whether he did it, they ask what he has done to his life. He half-believes explanation can restore the old life. (Drafted, 380 words, and unfinished — it stops mid-argument with his mother.)
+- **2 · The vault** — Keep Shiori’s existing encounter, the Pull, deliberate theft, escape, inconclusive news report, journey home, and sleep. End before the next alarm. Shiori’s later revisions and the exact object she retrieves remain untouched.
 
-\- \*\*4 · The drift\*\* — Rain's old identity closes back over him: the hiding acquires a routine with its own small comforts and he catches himself keeping it. Same ceiling, same \*not yet\*, different room — this rhymes with card 0 deliberately. The Ghost reappears and he does not move. Ends when he follows it anyway, which now delivers him to the disappearance site directly. The Pursuer glimpse was cut 2026-11-04.
+- **3 · The morning after** — Reuse the former drift card before the public accusation. Move the existing alarm, failed goggles examination, postponed tinkering, unwritten story, and work preparation here. Rain is frustrated that he risked so much without a defensible explanation. {TK a concrete opportunity to tell his family that he postpones; exact private interval.} This is his existing home, not an invented safehouse. The old stable handle remains a1s04_drift.
 
-\- \*\*5 · The follow\*\* — \*\*CUT 2026-11-04.\*\* Pure transit; card 4 now delivers him to the site. Keep from it only the texture of the site itself for card 6: no forced door, no struggle, and the missing person had reportedly been doing better.
+- **4 · The charge lands** — Move the existing broadcast here, followed by the complete authored reaction and family conversation. Public discovery arrives before Rain has found an explanation. Autonomy, criticism of the theft, and the hurt of concealment can coexist. {TK precise public allegation, identification timing, and practical reason to leave home.} The two-object attribution lines remain preserved draft text awaiting revision, not reinstated plot. The old stable handle remains a1s03_charge_lands.
 
-\- \*\*6 · Claire and Roxana save Rain\*\* — Claire and Roxana are already investigating the disappearance pattern: someone Roxana took in and fed is among the missing, while Claire follows evidence and rumours of memory removal. \*\*Claire's introduction is the bullets scene\*\* — she shoots bullets out of the air. Her seed says the character was built around this image as her entrance, so it belongs here and nowhere later. Claire has calculated an exit; Rain breaks her model as noise. Roxana holds the Pursuer long enough for Claire's route to work. Rain contributes little and watches, colliding with an objective that predates him.
+- **5 · Somewhere to hide** — Split the existing city-wandering passage out of the rescue card. Rain looks for shelter, observes the crowd, reaches the old shops, and notices a brief flash. His next step follows a concrete perception in his existing prose. No new investigative lead or Ghost function is introduced. This new card is not restoration of the cut transit-only The follow.
 
-\- \*\*7 · The hideout\*\* — First still group scene. Roxana makes Rain family quickly. Claire cannot classify him. She resolves a small problem before he finishes asking, and he permits it without comment.
+- **6 · Claire and Roxana save Rain** — Keep the authored approach to the flash, encounter with injured Roxana, hesitant concern, and armed unit’s arrival. Claire and Roxana’s disappearance investigation exists independently; someone Roxana cared for is among the missing. Claire’s introduction remains the bullet interception. Keep Rain’s attempt to respond without making him tactically competent. {TK reconcile the draft’s security unit with the planned Pursuer, explain the shooting order, and stage the escape within existing ability rules.} The inherited event list is a working sketch.
 
-\- \*\*8 · The trail\*\* — Claire traces the disappearances to the asylum. Nobody asks Rain to come. Staying is safer; he goes anyway.
+- **7 · The hideout** — First still group scene. Keep Roxana’s quick welcome, Claire’s difficulty classifying Rain, and the small problem she solves before he finishes asking. Accepting shelter is compatible with agency. Do not settle the family conflict.
+
+- **8 · The trail** — Claire identifies the asylum as the next destination. Nobody requires Rain to come; staying is credible and he goes. {TK his particular reason, grounded in the preceding scenes.} End on the pleasant, open-doored refuge. Another choice closes the arc; the pain of continuing to want carries into Arc 2.
+
+**Still open:** the duration and disclosure beat; identification and accusation mechanics; the reason to leave home and conditions of cooperation; the flash’s cause and security/Pursuer connection; Rain’s particular reason to go to the asylum. The original Go home pitfall is retained as working design, but its timing and exit must be reconciled with this arrangement rather than assumed to fit automatically.
 
 ---
 

@@ -1,10 +1,12 @@
-Created: August 11, 2026 at 4:31 AM
-Modified: August 11, 2026 at 4:31 AM
+Created: 2026-08-11 04:31:36 +0900
+Modified: 2026-11-26 23:50:15 +0900
 Status: No Status
 Label: Raw
 Keywords: 
 
 
-Claire's pattern: the disappearances have a next node, the asylum. Nobody asks Rain to come; staying is safer; he goes. The alley's echo, aimed at people. Ends on first sight of the asylum, pleasant and open-doored.
+Claire traces the disappearances toward the asylum. Nobody requires Rain to accompany them and staying is a credible option; he goes. End on the pleasant, open-doored refuge, handing the question of painful wanting to Arc 2.
 
 Rain, Claire, Roxana | hideout to asylum threshold
+
+{TK Rain’s specific reason to go, grounded in what he has learned and felt. Do not lock exoneration, investigation, or helping as the sole motive yet.}

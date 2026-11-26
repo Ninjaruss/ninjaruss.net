@@ -1,12 +1,12 @@
-Created: August 11, 2026 at 4:31 AM
-Modified: October 1, 2026 at 4:10 AM
+Created: 2026-08-11 04:31:36 +0900
+Modified: 2026-11-26 23:50:15 +0900
 Status: No Status
 Label: Raw
 Keywords: 
 
 
-The alley opens into a Nimbus building someone already broke into: a lost-and-found of confiscated Imprints and unclaimed belongings. The goggles call — Shiori's early work, patterned by a worker's refusal, someone who kept showing up for years and then walked out mid-shift and never came back for their things. An unnamed stranger keeps his nervous laugh. He walks out a thief — deliberately, and with one thing only.
+Rain follows the attraction through an already-breached Nimbus vault, meets the unnamed Shiori, and deliberately leaves with the goggles. Preserve the existing theft and escape prose. An inconclusive news report gives him temporary breathing room; he returns home, resumes familiar actions, and falls asleep. End before the morning alarm.
 
-Rain, Shiori (unnamed) | Nimbus Imprint Vault
+Rain, Shiori (unnamed) | vault, escape, journey home
 
-Drafted, 2,417 words. The Gadget X two-object mechanism was cut 2026-11-04; the drafted prose needs no change. The goggles' Imprint was settled 2026-11-05 (see World/Magic System, "The Goggles").
+The private morning and public accusation have moved to the next two cards. Shiori's object and the disputed two-object attribution are not revised by this split.

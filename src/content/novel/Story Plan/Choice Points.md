@@ -38,13 +38,15 @@ Comfort matters. A pitfall that is merely boring or obviously wrong cannot tempt
 
 \|---\|---\|---\|---\|---\|---\|
 
-\| \*\*1\*\* \| \*\*Go home\*\* \| the old life \| The drift \| The follow \| Rain admits wrongs he did not commit and resumes the commute. \|
+| **1** | **Go home** | the old life | {TK placement after the morning-after reorganization} | {TK exit and reconvergence; The follow was cut} | Existing working ending retained: Rain admits wrongs he did not commit and resumes the commute. Conditions remain unresolved. |
 
 \| \*\*2\*\* \| \*\*Become a patient\*\* \| the present from painful wanting \| The archive \| The melt \| Rain accepts treatment for the ache of wanting, remains for additional sessions, and gradually lets the asylum determine what needs relief next. \|
 
 \| \*\*3\*\* \| \*\*Stay in the life\*\* \| the possible life \| The lives \| The mountain \| Rain never ends the beloved life. It remains valuable and does not need to reveal itself as false. \|
 
 \| \*\*4\*\* \| \*\*Let it expire\*\* \| the decision itself \| The amnesty \| The unsigned offer \| Rain leaves both options open until circumstances close them; the Circuit Line becomes a new commute. \|
+
+**Arc 1 placement open — 2026-11-26:** The former drift card now holds private avoidance before the public accusation. This does not establish what legal surrender would require, when the Go home loop can begin, or what triggers its exit. Do not equate accountability with surrender of agency or treating a quiet life as failure. The existing false-ending design is retained for reconsideration, not silently rewritten.
 
 Together the pitfalls move from preserving the old life, to protecting the present from wanting, to preserving a possible life, to preserving the decision itself. Arc 5 has no corresponding shelter: across Arcs 1–4 the player keeps Rain's story moving; in Arc 5 Rain keeps Rain moving.
 

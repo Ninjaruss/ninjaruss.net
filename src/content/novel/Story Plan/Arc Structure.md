@@ -8,7 +8,7 @@ This file records what each arc does to the story. \`1 The Spine.md\` owns scene
 
 \|---\|---\|---\|---\|
 
-\| \*\*1 · Fugitive\*\* \| Can you take one irreversible step before feeling ready? \| \*\*Action produces consequence.\*\* Rain acts and his life becomes worse; risk is not automatic reward. \| The apparent refuge is pleasant and open-doored. \|
+| **1 · Fugitive** | Can you respond when a choice you wanted brings consequences before you can justify it? | **Action produces consequence.** Private postponement precedes public discovery; criticism and concealment do not settle his whole identity. Receiving help and making another choice do not vindicate the first one. | He chooses to accompany the others toward the pleasant, open-doored refuge. |
 
 \| \*\*2 · Mirror\*\* \| Can you keep wanting when wanting hurts? \| \*\*Relief can genuinely help, but successful intervention can begin replacing participation.\*\* The danger is not treatment or repetition by itself; it is the expanding authority to determine what the person may become next. \| Rain and Roxana are referred to the state. \|
 
@@ -26,7 +26,7 @@ From \`Research/Seed/Rain - Philosophical Seed\` §8. The ladder is why the five
 
 \|---\|---\|---\|
 
-\| \*\*1 · Fugitive\*\* \| Making a decision means allowing it real consequences. Acting is not rewarded. \| If pursuing something can hurt this much, why keep wanting it? \|
+| **1 · Fugitive** | A choice has consequences; concealing it can add consequences of its own. Rain can receive help and make another choice while still uncertain about the first. | If pursuing something can hurt this much, why keep wanting it? |
 
 \| \*\*2 · Mirror\*\* \| Relieving suffering matters, and relief becomes dangerous when it removes a person's capacity to participate in their own future. \| Why choose an uncertain reality when a more comfortable alternative is genuinely available? \|
 

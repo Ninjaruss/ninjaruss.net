@@ -1,6 +1,6 @@
-a1s02\_vault
+a1s02_vault
 
-%% The alley opens into the Nimbus lost-and-found through Shiori's active breach. She removes something of her own without Nimbus identifying her. The separately held goggles call to Rain: her early work, patterned by a worker's refusal — someone who kept showing up for years, then walked out mid-shift and never came back for their things. He steals them, deliberately and only them, and the unnamed Shiori keeps his nervous laugh. \| Rain, Shiori (unnamed) \| Nimbus vault
+%% The alley opens into the Nimbus lost-and-found through Shiori's active breach. She removes something of her own without Nimbus identifying her. The separately held goggles call to Rain: her early work, patterned by a worker's refusal — someone who kept showing up for years, then walked out mid-shift and never came back for their things. He steals them, deliberately and only them, and the unnamed Shiori keeps his nervous laugh. | Rain, Shiori (unnamed) | Nimbus vault
 
 I couldn't remember ever noticing this alleyway before, despite walking past it almost every day.
 
@@ -34,7 +34,7 @@ I opened the shed door.
 
 It seems to be a storage spot for workers to drop off their equipment. Various tools are assorted among the steel shelves. Thick, yellow rain jackets hang on a nearby rack. A large whiteboard, with poorly erased smudges and pinned papers, listing a bunch of charts and numbers.
 
-Boring. Mundane. Exactly what I should've expected. All things really driving the point that I am really, \*really\* wasting my time.
+Boring. Mundane. Exactly what I should've expected. All things really driving the point that I am really, *really* wasting my time.
 
 I approach the whiteboard. Mostly chores, procedures, the usual list of things someone decided workers needed reminding about. Either these sheets were replaced recently, or nobody actually reads them.
 
@@ -50,7 +50,7 @@ The stairs open into a wider maintenance area split by concrete walls and metal 
 
 The faint light I saw was coming from an old light panel overhead, barely doing its job. The large boiler sat in the center with its many pipes spreading into the walls and the floor.
 
-\*SLAM\*
+*SLAM*
 
 I flinched hard enough to look like I was dodging a bullet. It sounded like a metal pipe fell somewhere deep down the corridor to my right.
 
@@ -96,7 +96,7 @@ She takes a quick glance towards the bin, then scans me before squinting.
 
 "Probably not? I think you're confusing me with someone else."
 
-"Then why are you going through \*my\* stuff?"
+"Then why are you going through *my* stuff?"
 
 My hand froze in my pocket. My fingers were wrapped around the goggles.
 
@@ -148,7 +148,7 @@ Well, I guess she found what she came for.
 
 "My name?" she repeated, still fastening the pouch.
 
-\*CLICK\*
+*CLICK*
 
 Before she could answer, the lights flashed completely on, exposing everything.
 
@@ -172,7 +172,7 @@ Why am I still holding onto this?
 
 Do I need them at all? Not at all.
 
-But I \*want\* the goggles.
+But I *want* the goggles.
 
 "FAILURE TO COMPLY WILL INITIATE SECURITY RESPONSE."
 
@@ -258,82 +258,3 @@ Only for a moment…
 
 …
 
-"BREAK YOUR OWN LIMITER—"
-
-My hand dismissed the alarm. My eyes opened. The room’s ceiling light contrasted with the moody blue light of the outside.
-
-Damn. I passed out. At this point, I should really avoid my couch at all costs.
-
-Though this time around I did not feel that guilty.
-
-What I should feel guilty about is…
-
-The goggles. What the hell am I going to do with these? I stared at them, trying to feel out a reaction within me that could give me the answer.
-
-Nothing.
-
-I picked them up and pulled the strap over my head. For something covered in wires and hardware, they were surprisingly light. The lenses were even clearer than the tint would have you expect. My fingers glided across the sides looking for a way to interact. There didn’t seem to be any physical buttons oddly enough.
-
-Then I noticed a small icon near the bottom right of my vision. A microphone symbol. I thought this thing was off from how nothing entering my vision.
-
-“Uh, goggles, turn on?”
-
-…
-
-“Power on?” 
-
-…
-
-“Voice control activate?”
-
-…
-
-“Help?”
-
-Still nothing.
-
-I took them off and tried to inspect the goggles more closely. I was hoping to find a model or a brand associated with this thing. 
-
-Only to find a sliver of cyan tape once again. Seems like she likes that color.
-
-Maybe I’ll figure it out later after a bit more tinkering.
-
-I wrote a reminder to myself with the laptop. 
-
-I realized I haven’t written anything for the story.
-
-…
-
-Focus. Focus on what matters right now. 
-
-7:53 AM. I lost track of time. A few minutes left before I need to head to work on time. 
-
-I switched out my clothes, ate a simple sandwich, brushed my teeth, and gathered my belongings into my bag sling.
-
-Before leaving, I decided to check on any updates of the situation yesterday.
-
-…
-
-I felt a tense gravity pull my whole self to the ground.
-
-8:00 AM.
-
-“BREAK YOUR OWN LIMITER,”
-
-“We have released the following surveillance image of the suspect.”
-
-Damn it.
-
-“BECOME YOUR OWN ANSWER,”
-
-“He was last seen stealing two very important objects from the warehouse.”
-
-Two?
-
-“FIGHT, FIGHT,”
-
-“One of which can be very dangerous in the wrong hands.”
-
-“PUSH THROUGH PRESSURE.”
-
-“We must find him before it’s too late.”

@@ -77,3 +77,13 @@ The bookmark formulation is developed but not locked. Its current test is whethe
 \- What exact first destination has Rain chosen on the outbound train?
 
 \- Which public account leaves Rain a fugitive after the correction apparatus is broken?
+
+### Arc 1 causal links after the 2026-11-26 reorganization
+
+- What concrete opportunity to tell his family does Rain postpone after taking the goggles, and how long is the private interval? The retained prose currently reaches the next morning; a longer delay needs an explicit prose revision.
+- What links the vault theft to the public disappearance allegation, and when is Rain identified? The preserved broadcast still attributes two objects to him, although that mechanism was cut; retaining his prose does not restore it.
+- Why does he leave home after the family call, and what does he understand returning the goggles or cooperating would require? Surrender and surrender of agency are not equivalent by definition.
+- What causes the draft’s flash near the old shops, and how does the armed security unit relate to the planned Pursuer? Why is an order to shoot issued?
+- How does Rain’s concern for injured Roxana affect their escape within the established ability rules? The inherited first-manifestation sketch does not lock a duration or a new power.
+- What particular reason brings Rain to the asylum with Claire and Roxana when staying is possible?
+- Where does the existing Go home pitfall belong now, and how does it reconverge without restoring the cut transit card or implying that accountability itself ends agency?

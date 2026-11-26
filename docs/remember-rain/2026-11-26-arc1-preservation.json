@@ -1,0 +1,56 @@
+{
+  "date": "2026-11-26",
+  "source_commit": "59a5e8baadd884d0948ab2f9ed74b1291fb74f6d",
+  "preserved_nonblank_lines": 273,
+  "authorship_policy": "All live prose and inherited event notes preserved; no authorship guesses. New text consists of notes, briefs, and explicitly unresolved drafting prompts.",
+  "sources": [
+    {
+      "source_uuid": "0A7EDD9F-9DE0-4CC9-9AC1-EE0E3769B6A8",
+      "source_path": "Manuscript/Arc 1 - Fugitive/0 Rain intro",
+      "source_body_sha256": "698e229c7c4295db1461bab96028ee83092c29ffda7356ca550ec850fdb7675d",
+      "preserved_nonblank_lines": 13,
+      "destinations": {
+        "Manuscript/Arc 1 - Fugitive/0 Rain intro": 13
+      }
+    },
+    {
+      "source_uuid": "225C7B88-B9F5-4C9C-BB1F-5DED07A06324",
+      "source_path": "Manuscript/Arc 1 - Fugitive/1 The road less traveled",
+      "source_body_sha256": "514330c467d767ddc278865342375e253d9ecf9b00e9bc127067499f06adfccf",
+      "preserved_nonblank_lines": 8,
+      "destinations": {
+        "Manuscript/Arc 1 - Fugitive/1 The road less traveled": 8
+      }
+    },
+    {
+      "source_uuid": "D1FBC773-597C-40C8-9787-26F630D838D6",
+      "source_path": "Manuscript/Arc 1 - Fugitive/2 The vault",
+      "source_body_sha256": "7a1fe8c59c2016c6e4bb0ad63b03eeb2a83998c87cb6b7a438dfc3ce9856baf8",
+      "preserved_nonblank_lines": 168,
+      "destinations": {
+        "Manuscript/Arc 1 - Fugitive/2 The vault": 128,
+        "Manuscript/Arc 1 - Fugitive/3 The morning after": 26,
+        "Manuscript/Arc 1 - Fugitive/4 The charge lands": 14
+      }
+    },
+    {
+      "source_uuid": "17C0403D-E06C-4E80-96D8-36189A7AAC13",
+      "source_path": "Manuscript/Arc 1 - Fugitive/3 The charge lands",
+      "source_body_sha256": "0aa217f4dfca7fae15d4b218077c81c3bdfd5c98740a06e7bad38a30919d3b7c",
+      "preserved_nonblank_lines": 35,
+      "destinations": {
+        "Manuscript/Arc 1 - Fugitive/4 The charge lands": 35
+      }
+    },
+    {
+      "source_uuid": "F410E011-76AF-4D84-ABCA-722E20A337AF",
+      "source_path": "Manuscript/Arc 1 - Fugitive/6 Claire and Roxana save Rain",
+      "source_body_sha256": "8c755c7efd90321a3d0237a5b1d1b105797e1fb7ddead439ec2acd4db6f34fc0",
+      "preserved_nonblank_lines": 49,
+      "destinations": {
+        "Manuscript/Arc 1 - Fugitive/6 Claire and Roxana save Rain": 38,
+        "Manuscript/Arc 1 - Fugitive/5 Somewhere to hide": 11
+      }
+    }
+  ]
+}
