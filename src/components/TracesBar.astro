@@ -11,11 +11,6 @@
       <ul class="traces-messages"></ul>
     </div>
   </div>
-  <!-- WCAG 2.2.2: the ticker auto-starts and runs far longer than five
-       seconds, so pausing it cannot depend on hovering or tabbing into it.
-       Ships hidden and is revealed only once rows load, since with the
-       fallback line showing there is nothing moving to pause. -->
-  <button class="traces-pause" type="button" hidden aria-pressed="false">Pause</button>
   <a class="sign" href="/traces">Leave a trace</a>
 </section>
 
@@ -28,21 +23,12 @@
     const track = bar.querySelector<HTMLElement>('.traces-track')!;
     const list = bar.querySelector<HTMLUListElement>('.traces-messages')!;
     const fallback = bar.querySelector<HTMLElement>('.traces-fallback')!;
-    const pause = bar.querySelector<HTMLButtonElement>('.traces-pause')!;
-    pause.addEventListener('click', () => {
-      const paused = bar.dataset.paused !== 'true';
-      bar.dataset.paused = String(paused);
-      pause.setAttribute('aria-pressed', String(paused));
-      pause.textContent = paused ? 'Play' : 'Pause';
-    });
     const controller = new AbortController();
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     let observer: ResizeObserver | undefined;
 
     const syncMotion = () => {
       lane.scrollLeft = 0;
-      if (motion.matches) pause.hidden = true;
-      else if (!track.hidden) pause.hidden = false;
     };
     motion.addEventListener('change', syncMotion);
     document.addEventListener('astro:before-swap', () => {
@@ -85,11 +71,6 @@
         track.append(echo);
         fallback.hidden = true;
         track.hidden = false;
-        // Under reduced motion the track is not animated, so a pause control
-        // would claim to do something it does not.
-        if (!motion.matches) {
-          pause.hidden = false;
-        }
         const measure = () => {
           list.style.minWidth = `${lane.clientWidth}px`;
           const distance = list.getBoundingClientRect().width;
@@ -144,20 +125,6 @@
 #personal-hub .sign:focus-visible {
   outline-color: var(--text);
 }
-#personal-hub .traces-pause {
-  flex-shrink: 0;
-  min-height: 44px;
-  padding: 8px 14px;
-  background: none;
-  border: 1px solid var(--line);
-  color: var(--text);
-  font: 600 13px/1 var(--font-body);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  cursor: pointer;
-}
-#personal-hub .traces-pause:hover { border-color: var(--gold); color: var(--gold); }
-#personal-hub .traces-pause:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 
   #personal-hub .traces { flex-wrap: nowrap; }
   #personal-hub .traces-title, #personal-hub .sign { flex-shrink: 0; }
@@ -197,8 +164,7 @@
     outline-offset: 2px;
   }
   #personal-hub .traces:hover .traces-track,
-  #personal-hub .traces:focus-within .traces-track,
-  #personal-hub .traces[data-paused="true"] .traces-track { animation-play-state: paused; }
+  #personal-hub .traces:focus-within .traces-track { animation-play-state: paused; }
   /* Focused entries must be brought into view without a moving transform. */
   #personal-hub .traces-lane:focus-within { overflow-x: auto; }
   #personal-hub .traces-lane:focus-within .traces-track { animation: none; }
@@ -208,9 +174,7 @@
     #personal-hub .traces { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 6px; }
     /* One word now, so nothing to stack: the base row flex is correct here. */
     #personal-hub .traces-title { grid-area: 1 / 1; }
-    #personal-hub .traces-pause { grid-area: 1 / 2; padding-inline: 10px; }
-    #personal-hub .sign { grid-area: 1 / 3; font-size: 13px; padding-inline: 10px; }
-    #personal-hub .traces { grid-template-columns: minmax(0, 1fr) auto auto; }
+    #personal-hub .sign { grid-area: 1 / 2; font-size: 13px; padding-inline: 10px; }
     #personal-hub .traces-lane { grid-area: 2 / 1 / 3 / -1; border-inline: 0; border-top: 1px solid var(--line); }
   }
   @media (prefers-reduced-motion: reduce) {
