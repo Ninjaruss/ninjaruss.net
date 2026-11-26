@@ -194,9 +194,9 @@ describe('buildNovelTree', () => {
     // Characters still has an Asylum Patients subfolder
     expect(tree.characters.subfolders).toHaveProperty('asylum-patients');
 
-    // Manuscript holds the story arcs as subfolders, each with scene files
+    // Story arcs may hold scene files directly or group them into sequences.
     expect(tree.manuscript.subfolders).toHaveProperty('arc-1-fugitive');
-    expect(tree.manuscript.subfolders['arc-1-fugitive'].files.length).toBeGreaterThan(0);
+    expect(flattenFolderFiles(tree.manuscript.subfolders['arc-1-fugitive']).length).toBeGreaterThan(0);
 
     // World holds Magic System as a flat file now (was Lore/Magic System/)
     expect(tree.world.files.some((f) => f.slug === 'magic-system')).toBe(true);

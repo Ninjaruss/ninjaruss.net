@@ -1,0 +1,170 @@
+{
+  "date": "2026-11-27",
+  "base_commit": "38077c87558c933b676111e340c44eda199f9848",
+  "branch": "remember-rain/arc1-sequence-review-2026-11-27",
+  "manuscript_text_policy": "Exact existing file bytes retained; no edits to prose, notes, placeholders or metadata sidecars.",
+  "scene_count": 9,
+  "files": [
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/0 Rain intro.md",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/1 Taking the first step/0 Rain intro.md",
+      "sha256": "698e229c7c4295db1461bab96028ee83092c29ffda7356ca550ec850fdb7675d",
+      "scene_uuid": "0A7EDD9F-9DE0-4CC9-9AC1-EE0E3769B6A8"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/0 Rain intro MetaData.txt",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/1 Taking the first step/0 Rain intro MetaData.txt",
+      "sha256": "1b203960f0598a7eede3c24c022dc5e5b499ac3405f06d477a6c74e01276e07a",
+      "scene_uuid": "0A7EDD9F-9DE0-4CC9-9AC1-EE0E3769B6A8"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/1 The road less traveled.md",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/1 Taking the first step/1 The road less traveled.md",
+      "sha256": "180a9b3b3824902d1bfcc3572e8acb4ac486f8c1142f8e008aa1509d6c5d73c0",
+      "scene_uuid": "225C7B88-B9F5-4C9C-BB1F-5DED07A06324"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/1 The road less traveled MetaData.txt",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/1 Taking the first step/1 The road less traveled MetaData.txt",
+      "sha256": "c6e80714bbd17367aed469d2f764bd8d42eefab7f2093bd1577e6b17c5919175",
+      "scene_uuid": "225C7B88-B9F5-4C9C-BB1F-5DED07A06324"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/2 The vault.md",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/1 Taking the first step/2 The vault.md",
+      "sha256": "a6d3db34d6de513e6133e337172738408f211b3a43ecdc880754da4311dd8961",
+      "scene_uuid": "D1FBC773-597C-40C8-9787-26F630D838D6"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/2 The vault MetaData.txt",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/1 Taking the first step/2 The vault MetaData.txt",
+      "sha256": "60b0ec190ecb02b6eb0db602064ed667f725e8e3ac4f4895d97cdf9211429191",
+      "scene_uuid": "D1FBC773-597C-40C8-9787-26F630D838D6"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/3 The morning after.md",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/1 Taking the first step/3 The morning after.md",
+      "sha256": "2fa78c4105bb34a6cedae2fcbb16ec385772d3c544ce45e07f43aba0290b6a64",
+      "scene_uuid": "409BCF59-533E-40BA-BD83-0FD344E9BDA3"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/3 The morning after MetaData.txt",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/1 Taking the first step/3 The morning after MetaData.txt",
+      "sha256": "cbc0034b1928f149a895ca3151c439ac075ce3cfb0417e63271072c7cfaba5cb",
+      "scene_uuid": "409BCF59-533E-40BA-BD83-0FD344E9BDA3"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/4 The charge lands.md",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/1 Taking the first step/4 The charge lands.md",
+      "sha256": "0e2156b3fd228f5e7a547385e73fecf98693b61bba44880141e085e14ee348ce",
+      "scene_uuid": "17C0403D-E06C-4E80-96D8-36189A7AAC13"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/4 The charge lands MetaData.txt",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/1 Taking the first step/4 The charge lands MetaData.txt",
+      "sha256": "9547d92a8e1b0d7bef691b571a45c285cba96f1833393f3a3942f0f0f3a0a04a",
+      "scene_uuid": "17C0403D-E06C-4E80-96D8-36189A7AAC13"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/5 Somewhere to hide.md",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/2 The weight of a decision/5 Somewhere to hide.md",
+      "sha256": "f43a83c01bf20c5dcbf2ead82424a4b8d21928921fc855630e79656e7bcfefbc",
+      "scene_uuid": "F0E8462B-C8D8-4E11-BC19-A81C4223809C"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/5 Somewhere to hide MetaData.txt",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/2 The weight of a decision/5 Somewhere to hide MetaData.txt",
+      "sha256": "57b5781eff487205c9347eb90e5d98217e96490c37848ae50b521fd22b5aa55d",
+      "scene_uuid": "F0E8462B-C8D8-4E11-BC19-A81C4223809C"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/6 Claire and Roxana save Rain.md",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/2 The weight of a decision/6 Claire and Roxana save Rain.md",
+      "sha256": "8306b2745161097a635bdb5623a7318d294c083f991870072128a93877dcffda",
+      "scene_uuid": "F410E011-76AF-4D84-ABCA-722E20A337AF"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/6 Claire and Roxana save Rain MetaData.txt",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/2 The weight of a decision/6 Claire and Roxana save Rain MetaData.txt",
+      "sha256": "78590dca000355f117fc92e152d0e8918a34116b0b2a4d759de23787c09fb38a",
+      "scene_uuid": "F410E011-76AF-4D84-ABCA-722E20A337AF"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/7 The hideout.md",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/3 Choosing to continue/7 The hideout.md",
+      "sha256": "246b210591b8a474486817f77cf0ac9bd425cf96e021333bf5a606cbc0ed7692",
+      "scene_uuid": "D2C15425-9CBD-4D2C-82CA-7569596D0ADA"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/7 The hideout MetaData.txt",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/3 Choosing to continue/7 The hideout MetaData.txt",
+      "sha256": "8d970a10c22e2eaa7b057df163be08d08230d038667a5e3e569e43841055cea6",
+      "scene_uuid": "D2C15425-9CBD-4D2C-82CA-7569596D0ADA"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/8 The trail.md",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/3 Choosing to continue/8 The trail.md",
+      "sha256": "5acf4a0ad2fdcd846cad852077aa185618c70abf3f47cce7805f98f914a37442",
+      "scene_uuid": "CED304C3-F181-4061-B998-0C4E13F2923F"
+    },
+    {
+      "source": "src/content/novel/Manuscript/Arc 1 - Fugitive/8 The trail MetaData.txt",
+      "destination": "src/content/novel/Manuscript/Arc 1 - Fugitive/3 Choosing to continue/8 The trail MetaData.txt",
+      "sha256": "073cbdebdf5673b0f43679a818f69e219317a1ac13f51372b860f66c639e6a3e",
+      "scene_uuid": "CED304C3-F181-4061-B998-0C4E13F2923F"
+    }
+  ],
+  "scrivener": {
+    "original_non_binder_files_verified_unchanged": 274,
+    "original_arc1_scene_count": 9,
+    "existing_scene_titles_and_ids_unchanged": true,
+    "reading_order_unchanged": true,
+    "scenes": [
+      {
+        "uuid": "0A7EDD9F-9DE0-4CC9-9AC1-EE0E3769B6A8",
+        "title": "0 Rain intro",
+        "rtf_sha256": "86f0539b9ef76c7b1a09ca99695040e601b58244e375801eb46a0010f3c52319"
+      },
+      {
+        "uuid": "225C7B88-B9F5-4C9C-BB1F-5DED07A06324",
+        "title": "1 The road less traveled",
+        "rtf_sha256": "30e51bce586947d8791dd5d62c66da9c1201cb4befe7c8bd44b83b266ffa020d"
+      },
+      {
+        "uuid": "D1FBC773-597C-40C8-9787-26F630D838D6",
+        "title": "2 The vault",
+        "rtf_sha256": "7ee132147c0dbd1f456586ae3f307f8e9513f6ed6a0865d9b3dc1d68dcb1dd7e"
+      },
+      {
+        "uuid": "409BCF59-533E-40BA-BD83-0FD344E9BDA3",
+        "title": "3 The morning after",
+        "rtf_sha256": "93d20b6b65a28c8c42ed0d29ae6fa9e1e8e27edce5b6d853175e71012d467d33"
+      },
+      {
+        "uuid": "17C0403D-E06C-4E80-96D8-36189A7AAC13",
+        "title": "4 The charge lands",
+        "rtf_sha256": "188fdc0076a8dc2fced91f504b582e76959d697df569f16967b33dcc586dbc31"
+      },
+      {
+        "uuid": "F0E8462B-C8D8-4E11-BC19-A81C4223809C",
+        "title": "5 Somewhere to hide",
+        "rtf_sha256": "b2861ed6c3c6eaa6dbe84a060f1f7d1d32f622d4f92b3f03a3e26db8cf32f0f6"
+      },
+      {
+        "uuid": "F410E011-76AF-4D84-ABCA-722E20A337AF",
+        "title": "6 Claire and Roxana save Rain",
+        "rtf_sha256": "f29d19e8c3044fa183cc74978be321bcc9150927c01c8bb73cc1aacc9b0ec295"
+      },
+      {
+        "uuid": "D2C15425-9CBD-4D2C-82CA-7569596D0ADA",
+        "title": "7 The hideout",
+        "rtf_sha256": "f586ba2c266e8b9b011b2dd77a278be34c346456b891ac2ec29ec6385daa7432"
+      },
+      {
+        "uuid": "CED304C3-F181-4061-B998-0C4E13F2923F",
+        "title": "8 The trail",
+        "rtf_sha256": "ab0c62f2f4115a7217b442e79382239d0f3e34cd0da609cfc434737cbcdd567b"
+      }
+    ]
+  }
+}

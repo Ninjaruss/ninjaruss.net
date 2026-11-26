@@ -1,0 +1,7 @@
+Created: 2026-11-27
+Modified: 2026-11-27
+Status: No Status
+Label: No Label
+Keywords: 
+
+Working sequence grouping; see Story Plan/Arc 1 Sequence Guide. Existing scene identifiers, bodies and briefs unchanged.
