@@ -32,7 +32,14 @@ const shelfCount = shelf.length;
 <BaseLayout title="Home" displayTitle="in spite of it all — ninjaruss" description="Writing, videos, projects, and Remember Rain — the personal hub of Ninjaruss.">
 <div id="personal-hub" aria-label="Illustrated personal hub">
  <div class="intro-row">
- <header class="header">
+ {/* Explicit roles because BaseLayout wraps every page's slot in <main>, and
+     a <header>/<footer> nested inside main loses its implicit banner /
+     contentinfo mapping. The homepage has no site chrome outside this wrapper
+     — NavPill is hidden here — so without these the only landmarks a screen
+     reader gets are main and the four navs. Moving them out of <main> is the
+     structural fix and is costly: .header is one half of .intro-row's grid,
+     and every rule for both is scoped #personal-hub. */}
+ <header class="header" role="banner">
 <div>
 <h1>NINJARUSS</h1>
 <p class="motto">In spite of it all...</p>
@@ -117,10 +124,8 @@ const shelfCount = shelf.length;
 <div class="tile-intro">
 <h2 id="art-novel"><a class="tile-link" href="/novel">Remember Rain<span class="arrow" aria-hidden="true">→</span></a></h2>
 </div>
-{/* Enters from the world rather than from Rain: the desk's pitch opens on
-    him and the island in almost these words, so a visitor arriving from here
-    was reading the same two sentences twice. */}
-<p class="premise">Something is quietly making the island easier to live on — cleaner streets, thinner rain, and people losing whatever would have made them go. Rain has spent his whole life not going anywhere. Then he steals something small he cannot justify wanting, and by morning he is wanted for a crime far larger than the one he committed.</p>
+{/* A short story premise; the novel desk develops the emotional stakes. */}
+<p class="premise">One stolen pair of goggles turns Rain’s detour home into a life he cannot plan. Between a city offering relief and people who challenge what he believes about himself, he keeps trying to discover what he wants—and how to live with the consequences.</p>
 </section>
   <a class="tile japanese-journal" href="/japanese-journal">
 <img class="journal-emblem" src="/images/emblems/torii.svg" alt="" aria-hidden="true">
@@ -142,7 +147,7 @@ const shelfCount = shelf.length;
 </a>
  </BentoGrid>
  <div class="guestbook-row"><TracesBar /></div>
- <footer class="footer">
+ <footer class="footer" role="contentinfo">
 {/* Only the destinations no card already carries. YouTube and Twitch were
     here as well as on the Videos card — the same duplication that retired
     .footer-site, which repeated nine of the page's own cards back at it. */}

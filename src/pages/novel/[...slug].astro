@@ -151,7 +151,7 @@ const pageTitle =
 
 <BaseLayout
   title={pageTitle}
-  description="A visual novel in progress — scenes, characters, world, and story plan."
+  description="A story in progress about a young fugitive, unexpected connections, and learning to live without knowing what his choices will make of him."
 >
   <NavPill backLink={view === 'file' && topFolder ? `/novel#${topFolder.slug}` : undefined}
            backLabel={view === 'file' && topFolder ? topFolder.title : undefined} />
@@ -178,96 +178,15 @@ const pageTitle =
         <a href="#planning">Browse planning · spoilers</a>
       </nav>
 
-      {/* Rain's own first line, then the least amount of frame that can stand
-          around it. Earlier passes pitched him in the third person and in an
-          analytical register the book never uses — the drafted prose is first
-          person and wry ("Fuck it", "They don't know shit") — so the pitch did
-          not sound like the thing it was selling. It also ran to 325 words of
-          synopsis for a draft of 6,338, and explained the trap rather than
-          letting the opening line be it. The quote is verbatim from
-          Manuscript/Arc 1/0 Rain intro. The closing line is that scene's own
-          ending callback, which is also where the site's motto comes from.
-
-          The middle carries setting, abilities and threat without explaining
-          any of them. The setting is Rain at scale, not his opposite — the
-          earlier draft had the city genuinely vital and him the only stuck
-          thing in it, which inverts the point. World/Locations: "a city
-          sustained by circulation increasingly eliminates the irregularity
-          produced by things actually changing", and Themes and Motifs files
-          movement and stillness together because "motion is not automatically
-          progress". So the city is modern, lit and endlessly rebuilt on the
-          outside and going still underneath, which is Rain's own condition
-          with better engineering; his commute is the city in miniature, which
-          is why that paragraph ends on the train rather than on a contrast.
-          The correction then presents as the cure for the decay it is
-          accelerating, which is why the
-          antagonist needs no motive here: earlier drafts spent 100 words
-          explaining that he is kind and why he believes it, and explaining a
-          threat defuses it. What is left is capability and reach — he does not
-          need to touch you, and you would not notice — plus the symptom that
-          matters, people having stopped starting things. He is unnamed, and
-          the four pitfalls are gone: naming the comfortable endings described
-          occurrences a stranger has no frame for. Abilities compress to one
-          clause tied to the theft, which is also the thematic point, since the
-          man who cannot act irreversibly is pulled toward an object that only
-          exists because somebody else did. The Flare and Imprints are
-          World/Magic System; the water loop and the correction's symptoms are
-          World/Locations; the Ministry stays unnamed. The close carries the seeds rather than the plot.
-          Both seeds are about premature completion: Vesper's throughline is
-          that he "mistakes understanding for authority to author the person's
-          future", against his own seed's "it is never really over until it's
-          over"; Rain does the same thing to himself in reverse, since while
-          nothing is finished nothing can come back as proof. So one sentence
-          holds both — no life is finished until it is over, not his and not
-          the ones being completed around him — and the last line is the Rain
-          seed's own answer, that he does not need to become his ideal self
-          before participating.
-
-          Two things here are constrained by Story Plan/2 Pessimism of
-          Strength, and an earlier draft broke both. That document is explicit
-          that the distinction the story defends "is between choosing to remain
-          and losing the ability to choose otherwise — never between moving and
-          staying", and that nothing "licenses measuring a person by how much
-          they initiate, and the story should not ask the reader to". So the
-          correction's horror cannot be that people stop beginning things — a
-          chosen quiet life is not a failure in this stance — it has to be the
-          lost capacity to choose otherwise, which is why those people "did not
-          decide to stay so much as lose whatever would have made them go".
-          Same document: "commitment does not guarantee a good result; it
-          allows a choice to acquire consequences", so the close cannot promise
-          that beginning is rewarded. It states the opposite. It still names
-          the obstacle and not the outcome, so it spoils nothing.
-
-          It no longer opens on "None of that is the hard part". That worked
-          when the paragraph above was the four pitfalls, which are things worth
-          dismissing; against a city quietly losing its will it dismissed the
-          scariest thing in the pitch one sentence after building it, and the
-          pivot from everybody to Rain had no bridge. The bridge is the commute: the city
-          circulates without changing, which is what Rain's own life already
-          does, so what is being done to the island is a commute at scale.
-
-          The bridge is NOT that Rain is already corrected, which an earlier
-          version of this line implied. The correction takes wanting — "the
-          appetite for a thing rather than the memory of it" — and Rain's
-          defining trait is the opposite: he wants more than anyone and acts
-          less than anyone. Outwardly identical (both continue and start
-          nothing), opposite in cause, and the difference is the whole book.
-          So the line says what he still has rather than what he has lost.
-          It also no longer opens "Rain has lived like that", whose nearest
-          antecedent was the corrected people one paragraph up — the same
-          conflation, surviving in the connective after the sentence itself was
-          fixed. Naming the parallel as something he does, rather than a state
-          he is in, keeps it pointed at the commute. That is also where
-          Pessimism of Strength lands: he retains the
-          ability to choose otherwise and they do not.
-      */}
+      {/* Preserve the manuscript quote; frame the story through ongoing
+          participation, consequences and connection rather than a single leap. */}
       <div class="desk-premise p3r-animate">
         <blockquote class="desk-premise__quote">I dreamed and dreamed of the ceiling finally collapsing while rain poured outside. Yet I could not fall.</blockquote>
-        <p>Rain is twenty-three. There is an outline he opens every morning and never writes, and a plan to begin living once he is ready. He has never once done a thing he could not take back.</p>
-        <p>He lives on an island where it has not stopped raining in his lifetime. The city looks like the future — water drawn out of the caldera, pushed through the streets and brought back again, everything lit and engineered and endlessly rebuilt. But it circulates; it does not change. All that motion arrives back where it started. Rain rides the same train through it twice a day.</p>
-        <p>Then he follows a faint light into an alley he has walked past for years, and takes something he cannot justify wanting. Since the Flare, objects have held the shape of the irreversible things that happened around them; this one was shaped by a decision somebody else went through with. The theft is small. What lands on him by morning is not.</p>
-        <p>Lately the stillness has been spreading. It does not arrive as decline; it arrives as relief. Cleaner streets, thinner rain, fewer interruptions, and people who did not decide to stay so much as lose whatever would have made them go. Somebody is doing this on purpose. He does not need to touch you, and you would not notice if he had.</p>
-        <p>What is being done to the island, Rain has been doing to himself for years. The difference is that he still wants something, which is the part being taken from everybody else — and acting on it will not prove anything, or be rewarded. It only lets what he does start to have consequences. No life is finished until it is over, his included. He does not have to become someone first.</p>
+        <p>Rain has already left one safe path behind. He wants to create a story that moves someone, but still struggles to take the next step without a good explanation for himself or the people he cares about.</p>
+        <p>Then he follows a strange light off his commute and steals a pair of goggles he cannot justify wanting. The theft becomes an accusation far larger than the act itself.</p>
+        <p>On an island under constant rain, he encounters people whose extraordinary abilities make his own limits hard to ignore. They have troubles of their own. Helping them, accepting their help, and choosing whether to follow them draw him into experiences he could never have planned.</p>
+        <p>But on this island, even the memories behind a choice can be taken away. Someone is offering relief, and a quieter city is beginning to lose its capacity to want anything different.</p>
+        <p>Remember Rain is about learning to live within the attempt—letting experience change you, accepting consequences, and choosing a response without waiting to become someone else first. A decision can go wrong and still leave another one to make.</p>
         <p class="desk-premise__motto">In spite of it all.</p>
       </div>
 
