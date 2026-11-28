@@ -22,4 +22,5 @@ Only to see the same greyed scenery
 But as I stared into the gap once more
 My own hue had subtly shifted
 
-### Written on November 28, 2026, after attending the Kitakyushu Pop Culture Festival alone.
+
+### - Written on November 28, 2026, after attending the Kitakyushu Pop Culture Festival alone.
