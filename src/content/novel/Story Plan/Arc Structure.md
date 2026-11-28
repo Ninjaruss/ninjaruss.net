@@ -18,6 +18,12 @@ This file records what each arc does to the story. \`1 The Spine.md\` owns scene
 
 \| \*\*5 · Proof\*\* \| Can you choose without knowing who that choice proves you are? \| \*\*Evidence reaches its limit.\*\* Vesper owns the complete past record and still cannot determine the next response. \| Rain remains a fugitive and boards the outbound train by choice. \|
 
+
+\#\#\# Arc 1 — Reader Expectation
+
+Chosen 2026-11-27: invite the hope that one decisive departure will finally make Rain's life begin, while allowing readers to recognize efforts he and they may initially undervalue. The leap changes his circumstances without completing his transformation or erasing his prior participation.
+
+Protect three things: visible effort before the theft, familiar hesitation after the leap, and a further choice without vindication. An attempt that looks foolish may make new experience possible, but neither difficulty nor later growth proves that this particular action was necessary or correct. Rain can initiate, listen, learn, answer for harm, and revise; he cannot guarantee an outcome. Keep the adventure's attraction and absurdity real rather than punishing the reader for enjoying them.
 \#\#\# What Each Arc Leaves Unresolved
 
 From \`Research/Seed/Rain - Philosophical Seed\` §8. The ladder is why the five arcs do not repeat one lesson in escalating circumstances: each one settles something and exposes the next problem.

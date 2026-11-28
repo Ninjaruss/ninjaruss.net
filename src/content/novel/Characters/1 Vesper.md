@@ -12,11 +12,11 @@ The youngest major character, physically unthreatening, and already convinced he
 
 \- \*\*Contradiction:\*\* he cannot bear to watch anyone suffer slowly, so he takes their suffering and keeps his own.
 
-\- \*\*Question:\*\* \*Can I accept someone becoming well in a way I did not cause or choose?\*
+\- \*\*Question:\*\* \*Can I keep caring for someone without deciding what their life must become?\*
 
-Vesper is not secretly cruel. His warmth, patience of manner, and desire to relieve suffering are real. His coercion comes from certainty: he trusts the successful result he can produce more than another person's unfinished ability to revise, refuse, or become otherwise.
+Vesper is not secretly cruel. His warmth, patience of manner, and desire to relieve suffering are real. His coercion comes from certainty: he trusts the successful result he can produce more than another person's unfinished ability to revise, refuse, or become otherwise. He can understand and care for someone while struggling to respect a response that leaves his understanding or intervention incomplete. Their participation need not look like improvement he can verify.
 
-He was thirteen when the Flare happened. The resonant alteration gave him unusually complete encoding and retrieval: perfect recall and involuntary replay are parts of the same memory architecture. Five years of experimentation and escalating success have made his conclusions feel complete because he reached them quickly and has forgotten none of the evidence.
+He was thirteen when the Flare happened. The resonant alteration gave him unusually complete encoding and retrieval: perfect recall and involuntary replay are parts of the same memory architecture. Five years of experimentation and escalating success have made his conclusions feel complete because he reached them quickly and has forgotten none of the evidence. His recall reinforces his belief that he knows human nature; accurate recollection does not make his interpretation of a person final or their next choice inevitable.
 
 \#\#\# On the Page
 
@@ -24,11 +24,13 @@ He was thirteen when the Flare happened. The resonant alteration gave him unusua
 
 \- Never raises his voice or indulges in menace.
 
-\- Asks permission every time and means it. He treats consent in the present as sufficient even when the intervention changes the future person who might reconsider it; incomplete disclosure sharpens this problem but does not exhaust it. At city scale the asking does not lapse — it becomes a form (see \*\*At city scale, asking becomes a form\*\*, below).
+\- Asks permission every time and means it. He treats consent in the present as sufficient even when the intervention changes the future person who might reconsider it; incomplete disclosure sharpens this problem but does not exhaust it. How this value becomes city-scale authorization remains unresolved; asking through a form is a working proposal, not established consent (see \*\*Consent at city scale\*\*, below).
 
 \- Shows the extraction mechanism rather than hiding it.
 
 \- Fixes small problems before anyone asks: a latch, a chair, a memory, a city.
+
+\- Admires people who are driven and put effort into making things happen. When their efforts do not produce the result he expects, his frustration can erase what they actually attempted.
 
 \- Covers the single visible flicker caused by \*not yet\* almost immediately.
 
@@ -48,7 +50,9 @@ His failure is not a lack of understanding. An intact record can let him underst
 
 He mistakes knowing the destination for authority to close the route.
 
-\*\*At city scale, asking becomes a form.\*\* His one consistent virtue does not fail when the correction scales; it industrialises. The Ministry's register \*is\* the asking — \*Circulation Adjustment Notice\*, \*Resonance Compliance Renewal\*, \*Household Flow Assessment\* (\`World/Locations.md\`) — while \`World/Magic System.md\` has the loop deliver the treatment through the water supply, and nobody consents to their water. The notice went out, and it was compliant. This is why Claire can make his case honestly in \`Arc 4 · 5\` — “the correction asks permission” — without lying and without being right: she is repeating a true sentence about a form. Keep this in the paperwork and the courtesy, never in a speech where he defends it. \`\{TK\}\` one scene where the courtesy is visible at city scale; \`Arc 2 · 6\` (the archive) and \`Arc 4 · 5\` (the advocate) are the candidates.
+\*\*Consent at city scale — working proposal, not locked.\*\* \`World/Locations.md\` proposes that asking becomes a form: the Ministry's \*Circulation Adjustment Notice\*, \*Resonance Compliance Renewal\*, and \*Household Flow Assessment\* would carry Vesper's present-bound authorization into civic administration. On that reading, he could believe he had preserved asking while the water loop delivers treatment without individual contact. Claire's statement that “the correction asks permission” would describe a procedure without settling whether it constitutes meaningful consent. Keep any adopted expression in paperwork and courtesy rather than a speech defending the system.
+
+The interpretation, the household authorization rules, and a scene making the courtesy visible remain open. \`Arc 2 · 6\` (the archive) and \`Arc 4 · 5\` (the advocate) are candidates, not new scene requirements. If this proposal changes, the connection between his individual asking and the city-wide correction still needs an answer; do not change the established water-loop mechanics to supply one.
 
 1\. The asylum establishes him as genuinely helpful and technically open.
 
@@ -68,7 +72,7 @@ He mistakes knowing the destination for authority to close the route.
 
 \#\#\# With Others
 
-\- \*\*Rain:\*\* Rain resembles the unfinished person Vesper cannot bear to watch. Vesper reads him from completed evidence and cannot account for the next response.
+\- \*\*Rain:\*\* Rain resembles the unfinished person Vesper cannot bear to watch. Vesper respects a desire backed by action, but can tell Rain he did not try when real attempts have not produced the expected result. This reinforces Rain's own tendency to discount his efforts. Vesper can understand the pattern of Rain's avoidance while failing to recognize participation that changes what Rain wants. His reading of completed evidence does not contain the next response.
 
 \- \*\*Claire:\*\* both reduce uncertainty. Claire's final responsibility is to hand the decision back; Vesper cannot leave the outcome in another person's control.
 
@@ -112,11 +116,11 @@ The cost is his certainty. Every access runs through his own retrieval architect
 
 He cannot be out-fought, only out-spent: produce what his records answer badly, make him consult, and let the interference do the rest.
 
-\*\*Removal is his only offer.\*\* Everything he can do to a person is a subtraction: extraction takes the record, Melt destroys it, and the correction takes wanting itself. He cannot help anyone carry anything. This is why his kindness and his violence are the same gesture, and why every refusal of him in the story is a refusal of the same offer.
+\*\*Removal is the intervention he trusts.\*\* Extraction takes the record, Melt destroys it, and correction takes wanting itself. These capabilities make subtraction available where another person still carrying pain leaves the result uncertain. He can listen, comfort, offer practical help, and enjoy being kind. The controlling turn comes when he stops trusting such support because it has not resolved the suffering and believes he can intervene more effectively.
 
-\*\*The alternative he never considers is not a power.\*\* Helping someone recognise what is hurting them, confront it, limit its damage, or decide what it will mean for what they do next requires no Deviation at all. Reframing an experience is not lying about it — the facts do not have to move for their meaning to — and he has read enough lives to do it better than almost anyone. He never offers it. Removal is the help he can verify, and a person still carrying something is a result he cannot confirm. He withholds it from himself on the same grounds: he understands his mother's departure perfectly and has never once decided what it is allowed to mean.
+\*\*Accompaniment is not a power he lacks.\*\* Helping someone recognize what hurts, limit its damage, or reconsider what an experience means requires no Deviation. His understanding could support that process, but he struggles to respect it when the person continues hurting or chooses a direction he cannot validate. Removal offers a result he can verify. His mother's departure remains an experience he understands without having resolved what it means for his own next response. Do not make all his ordinary care a concealed treatment or deny its genuine value.
 
-\*\*Shatter is the exception, and he does not use it.\*\* It returns the memory to its owner and gives the outcome back to someone else at the cost of his own access. It is the one thing he could do that is not a subtraction, and it is the one thing he withholds.
+\*\*Shatter is the restoration he withholds.\*\* It returns the memory to its owner and gives the outcome back to someone else at the cost of his own access. Unlike his subtractive treatments, it restores what he extracted while relinquishing his access.
 
 \#\#\# Visual Anchors
 
@@ -132,7 +136,7 @@ Vesper is slight, young, composed, and physically non-threatening. He should inv
 
 \- Do not reduce his failure to never asking or to disclosure alone. His consent is genuine but present-bound: he assumes today's authorization can settle a future whose ability to revise may be changed by the treatment itself.
 
-\- Do not let the city correction read as the moment he abandoned consent. He never stopped asking; the asking became a notice. The horror is the continuity, not a lapse.
+\- Preserve his genuine concern with permission in individual treatment. Asking becoming a notice at city scale is a working proposal; do not treat it as settled consent or assume a betrayal of his values without deciding how the scale changes them.
 
 \- His mother never appears in flashback, and Vesper never explains Rain through her.
 
@@ -143,3 +147,15 @@ Vesper is slight, young, composed, and physically non-threatening. He should inv
 \- Understanding a person does not entitle him to author their future. Keep the distinction active in what he does, not as a speech he loses.
 
 \- He is neither redeemed nor philosophically annihilated at the end.
+
+\#\#\# Working Questions — Not Settled
+
+These possibilities emerged while refining his relationship with Rain. They are not additional settled motives or new plot requirements. Test them when developing his encounters; they need not be resolved before finishing Arc 1.
+
+\- \*\*Priority:\*\* Is reducing suffering his overriding aim when it conflicts with self-direction or ambition? This is the current working direction, not a final ranking of his values.
+
+\- \*\*His own investment:\*\* Does seeing an intervention work give him a satisfaction he then needs to preserve? A renewed difficulty or changed aim might threaten his sense that his help mattered. This possible reward and unnoticed selfishness remain hypotheses; do not make them the hidden explanation for all his kindness.
+
+\- \*\*The correction's loss:\*\* Does he recognize and accept the initiative the correction destroys, or make exceptions in his thinking that the intervention cannot preserve? Its existing mechanics remain unchanged; his relationship to their cost is unresolved.
+
+\- \*\*An unfinished desire:\*\* Working formulation: he trusts his understanding of a person's life more than their unfinished desire to change it. Explore whether he can recognize the choice to try without a grand justification as meaningful, rather than another impulse or symptom. This is not a claim that Rain's feeling makes every risk wise, or that suffering is necessary for worth.

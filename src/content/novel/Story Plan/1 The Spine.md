@@ -24,6 +24,8 @@ Quest supplies the route from commute to outbound train. Horror supplies the inc
 
 **Choice pressure:** Rain takes something he wants before he can justify it, delays exposing the choice to judgment, and faces consequences that do not prove what his desire was worth. After seeking shelter and receiving help, he must choose whether to accompany the others. The arc can close on another choice without vindication, certainty, or a completed self.
 
+
+\*\*Reader expectation — chosen 2026-11-27:\*\* the departure can look like the decisive act that will finally transform Rain. The private aftermath reveals hesitation surviving the leap; visible efforts before and after it complicate the belief that he has never really tried. The intro, morning-after, family call, and closing choice carry this development without a new event, a concealed achievement, or an explanatory speech. Preserve the pleasure of the adventure. The theft can affect his development without being certified as wise or necessary; accountability and revising an approach remain compatible with agency.
 - **0 · Rain intro** — Keep the existing morning, unfinished story, hesitation, and exact manuscript opening. His genuine creative desire and frustration coexist. Do not change the locked ending callback to resolve the existing opening-wording discrepancy.
 
 - **1 · The road less traveled** — Keep the authored commute, the Ghost’s appearance, and the decision to enter the alley. This is the departure from routine, not proof that every attraction should be obeyed.

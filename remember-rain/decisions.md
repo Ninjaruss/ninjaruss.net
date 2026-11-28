@@ -304,6 +304,237 @@ though Rain cannot. The two rulings are load-bearing on each other.
 
 **Status:** decided
 
+### D-008 — Rain's preparation, openness, and uneven participation · 2026-11-27
+
+**Decided:** The author approved four targeted character refinements after exploring
+Rain's behavior and reviewing the existing sheet:
+
+- Rain can recognize what he wants and understand an answer while struggling to
+  apply it. He makes an immediate attempt feel like a commitment of his whole
+  future and resources; research and planning can postpone direct experience.
+- Disappointment after an imperfect attempt precedes his gradual recognition
+  that he chose and tried while unready. Preserve real prior efforts rather than
+  treating him as someone who has never begun.
+- He wants honesty and deep connection, considers the burden on the listener,
+  and can disclose a difficulty without turning it into a concrete request.
+  Difficulty answering concerns consequential personal choices, not quiet rooms
+  in general.
+- He enjoys the company of people who make and do things. That attraction need
+  not always become self-comparison. The stopped notebook is a particular motif,
+  not a claim that he has made no other creative efforts.
+
+**Reasoning:** Commitment to living means entering and responding to the present
+experience without first securing readiness or justifying an entire future.
+Persistence includes learning, help, accountability, and changing an approach;
+it does not require spending every resource or defending every past decision.
+
+**Applied:** `Characters/0 Rain` in the live Scrivener package, then synchronized
+to `src/content/novel/Characters/0 Rain.md`. No manuscript prose, ability rules,
+plot events, locked callbacks, or ending changed.
+
+**Still open:** The Spine's claim that every earlier decision avoided consequence
+and the Ghost's exact contribution to commitment were explicitly excluded from
+this revision. Surrender conditions and Shiori revisions remain unresolved.
+No candidate resolution of those questions is adopted here.
+
+**Status:** decided
+
+### D-009 — Vesper's judgment of effort and bounded working questions · 2026-11-27
+
+**Decided:** The author requested a bounded sheet update before returning to
+Arc 1. Preserve these established character choices:
+
+- Vesper genuinely admires driven people and wants to support effort.
+- He can erase Rain's real attempts when they do not produce the result he
+  expects, reinforcing Rain's own tendency to discount his efforts.
+- Extraordinary recall reinforces Vesper's belief that he understands human
+  nature. That belief does not make his interpretations final or another
+  person's next response inevitable.
+
+**Provisional, explicitly not adopted as settled motives:** reducing suffering
+as his overriding priority; needing his own help to feel worthwhile; whether
+he recognizes the correction's loss of initiative or makes exceptions its
+mechanism cannot preserve; and the formulation that he trusts his understanding
+more than another person's unfinished desire to change.
+
+**Reasoning:** Preserve the author's discoveries without requiring an Arc 2
+draft or a complete new philosophy before finishing Arc 1. The established
+compassion and controlling certainty remain the foundation. Working questions
+must not become additional plot requirements or conclusions about Rain's risks.
+
+**Applied:** `Characters/1 Vesper` in the live Scrivener package, synchronized to
+`src/content/novel/Characters/1 Vesper.md`. History, existing plot beats, abilities,
+ending, and guardrails remain unchanged. The separate climax rationale issue
+and the correction's tradeoff remain open.
+
+**Status:** decided for the bounded edits above; listed hypotheses remain open.
+
+### D-010 — Arc 1's decisive-leap expectation and overlooked efforts · 2026-11-27
+
+**Decided:** The author selected expectation options 1 and 3 and approved targeted
+planning updates: invite hope that one decisive departure will finally make
+Rain's life begin, while gradually revealing real efforts that he and the reader
+may initially undervalue. The leap changes circumstances without completing his
+transformation or becoming his first-ever meaningful act.
+
+**Reasoning:** An attempt that appears foolish can open experience unavailable
+through preparation alone. That does not prove this particular act necessary,
+wise, or exempt from accountability. Rain cannot guarantee correctness or outcome;
+he can attempt, listen, learn, answer for harm, and revise his approach. Preserve
+the adventure's attraction, humor, and absurdity.
+
+**Applied:**
+- `Story Plan/Arc Structure` — records the chosen reader expectation and its limits.
+- `Story Plan/1 The Spine` — records its use within the existing Arc 1 sequence.
+- Arc 1 `0 Rain intro`, `3 The morning after`, `4 The charge lands`, and
+  `8 The trail` — author-private drafting comments only: existing effort before
+  the theft, hesitation after the leap, an attempted difficult call, and a further
+  choice without vindication.
+- Matching local website mirrors synchronized from these source edits.
+
+**Preserved:** All existing scene prose and handles, scene order, synopses,
+abilities, later-arc Spine text, and locked ending. No invented prior achievement,
+new event, explanatory speech, or literal change of narrator is required.
+
+**Still open:** Identification and accusation mechanics; cooperation and surrender
+conditions; the reason to leave home; the closing motive; the Ghost's exact
+contribution to commitment; Shiori revisions; and the separate climax rationale.
+Other suggested expectation traps and wider narrative evolutions are not adopted.
+
+**Status:** decided
+
+### D-011 — Roxana's acceptance and independent capability · 2026-11-28
+
+**Decided:** The author clarified that Roxana feels she must prove she can do
+things alone because she believes independent capability is the condition for
+being accepted. Approved a targeted revision of her existing sheet:
+
+- Center the contradiction and question on whether she remains wanted when
+  others see what she cannot manage alone. Usefulness remains one strategy for
+  security, rather than her sole motive.
+- Preserve the real strength and pleasure in resourcefulness, adapting to limits,
+  care, and renewed attempts. Neither competence nor generosity is automatically
+  a bid for acceptance.
+- Replace universal inability to receive with difficulty trusting help that
+  overlooks her existing effort. Allow varied responses across people and offers.
+- Keep Vesper's intervention a real harmful experience; receiving one hand cannot
+  settle her conflict. Later capability must not prove she never needed help.
+
+**Still exploratory:** Which kinds of help feel exposing, and whether she accepts
+needs in others that she believes would make her own presence unacceptable. These
+are marked working questions, not universal behavioral rules. No new origin,
+mentor, medical history, or relationship event is established.
+
+**Applied:** `Characters/Roxana` in live Scrivener, synchronized to the local
+`src/content/novel/Characters/Roxana.md` mirror. Opening, core psychology, growth,
+and prison beat's emotional emphasis revised. Objective plot events, existing
+relationships, condition, powers, visual anchors, and ending preserved. All other
+Scrivener bodies and manuscript prose remain unchanged.
+
+**Follow-up alignment:** `Story Plan/0 What is Remember Rain` still presents
+usefulness and its former question as her central formulation; `Themes and Motifs`
+still foregrounds indispensability. Those summaries were not rewritten by this
+character-sheet edit. Their character interpretation should defer to the revised
+sheet; a broader consistency pass remains separate.
+
+**Status:** decided for the targeted edits; listed working questions remain open.
+
+### D-012 — Claire's certainty and responsibility for foreseeable harm · 2026-11-28
+
+**Decided:** The author accepted the recommended emphasis: Claire seeks certainty
+because she struggles to forgive herself for consequences she believes she should
+have foreseen. Her primary response when an informed decision ends badly is that
+she should have prevented it; distrust of her own judgment can follow.
+
+- Distinguish an accurate, useful model from a guarantee that nobody will be hurt.
+  Her effective action and satisfaction in solving problems remain real.
+- Describe the cycle in which bad outcomes prompt further calculation, temporary
+  relief, and increasing decision burden when certainty cannot be obtained.
+- Separate the building's flaw, dismissal of her warning, and scapegoating from
+  Claire's own interpretation of failing to prevent the disaster. Remove the
+  suggestion that being correct caused it or that greater humility is established
+  as the missing preventive action. The existing history events remain intact.
+- Her development distinguishes what she could reasonably know, what she should
+  learn or repair, and what she could never guarantee. Limits do not excuse actual
+  mistakes, and good reasoning is not something she must abandon.
+
+**Applied:** `Characters/Claire` in live Scrivener and its local website mirror.
+The broad always-late contradiction was replaced with the conditions under which
+she seeks an impossible guarantee. The Roxana relationship sentence now reflects
+D-011's concern with independent capability rather than indispensability alone.
+
+**Preserved:** Actual backstory paragraph, all seven plot beats, ability mechanics,
+costs, visual anchors, honesty, accommodations, accepted help, and the uncured
+ending. No new traumatic event, ordinary taste, dialogue, or relationship event.
+Other characters and manuscript prose were not edited.
+
+**Follow-up alignment:** The general story overview still uses the earlier
+"almost never wrong and almost never in time" shorthand. The revised character
+sheet governs its interpretation; broader overview alignment remains separate.
+
+**Status:** decided
+
+### D-013 — Claire's attachment to approaching certainty · 2026-11-28
+
+**Decided:** The author approved making the research process itself more rewarding
+and compelling for Claire, alongside D-012's fear of foreseeable harm.
+
+- Useful discoveries supply relief, capability, and a sense of nearing readiness.
+  Another variable provides a clear task while acting exposes the uncertainty
+  investigation cannot eliminate.
+- A new consideration can reopen a settled question. She can have sufficient
+  evidence for a reasonable decision and still prefer further investigation for
+  the feeling it provides. Self-blame after an outcome can intensify this cycle,
+  but the attraction also operates before failure.
+- Preserve genuinely necessary research, curiosity, satisfaction, and successful
+  problem-solving. Her ability repeatedly yields useful answers, making the
+  boundary between inquiry and avoidance harder to recognize.
+- Distinguish approaching clarity from the existing Click at model completion,
+  and temporary relief from permanent certainty. No new mechanical reward or
+  clinical diagnosis is established.
+
+**Applied:** Three psychological passages in `Characters/Claire`, in live
+Scrivener and the local website mirror: an observable tendency to reopen a
+question, the reinforced research loop, and recognition of when investigation
+postpones the next useful action.
+
+**Preserved:** D-012's responsibility motive, actual backstory, all seven plot
+beats, relationships, ability mechanics including the Click, visual anchors,
+guardrails, and uncured ending. No new event or scene prose. Existing broader
+overview alignment remains separate.
+
+**Status:** decided
+
+### D-014 — Vesper's accompaniment, authority, and provisional consent · 2026-11-28
+
+**Decided:** The author approved the bounded review refinements:
+
+- Broaden his central question to caring without deciding what another person's
+  life must become. Their participation need not look like verifiable improvement.
+- Preserve genuine listening, comfort, practical help, and pleasure in kindness.
+  His controlling turn concerns losing trust in unresolved accompaniment when he
+  believes intervention can produce a better, verifiable result.
+- Replace blanket inability to help anyone carry anything with the distinction
+  between ordinary support and subtractive treatment. Shatter's description is
+  scoped to restoration, without changing how it works.
+- Consistently mark asking-through-forms at city scale as a working proposal,
+  matching the status in `World/Locations`. Individual concern with permission
+  remains; household authorization and the bridge to city-scale treatment are
+  unresolved, not silently decided by this wording.
+
+**Still provisional:** Satisfaction from seeing an intervention work and its
+possible connection to needing his effort to matter. This elaborates the working
+question rather than adopting a hidden motive. His value hierarchy and attitude
+toward the correction's loss remain open.
+
+**Applied:** `Characters/1 Vesper` in live Scrivener and its local website mirror.
+No changes to `World/Locations`, the correction's mechanics, or other source
+documents. Existing backstory, eight plot beats, relationships, extraction and
+combat rules, visual anchors, and ending preserved. No new scene requirement,
+biographical event, or literal narrative viewpoint change.
+
+**Status:** decided for the bounded edits; listed proposals remain open.
+
 <!--
 Template:
 

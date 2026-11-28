@@ -1,6 +1,6 @@
 \#\# Roxana
 
-She can give almost anything and cannot receive without feeling exposed.
+She keeps trying despite her limits, but fears that needing help will cost her acceptance.
 
 \#\#\# Quick Read
 
@@ -10,11 +10,11 @@ She can give almost anything and cannot receive without feeling exposed.
 
 \- \*\*Traits:\*\* \*\*Forceful Warmth\*\* / \*\*Guarded Neediness\*\*
 
-\- \*\*Contradiction:\*\* she can give anything and cannot receive.
+\- \*\*Contradiction:\*\* her self-reliance is real, but she feels she must prove she can manage alone to be accepted.
 
-\- \*\*Question:\*\* \*Can I trust my worth when nobody needs what I provide?\*
+\- \*\*Question:\*\* \*Can I believe people will still want me around when they see what I cannot manage alone?\*
 
-Roxana uses usefulness as evidence that she belongs. Her care is sincere; its force also keeps other people from seeing what she wants. She takes responsibility for the immediate body, hunger, wound, or threat in front of her, then turns that response into protection, work, and physical action.
+Roxana believes people accept her because she is capable on her own. Her resourcefulness and persistence are genuine strengths she values; she can enjoy solving a problem, adapting to a limit, and making another attempt. The pressure comes when managing alone becomes something she must demonstrate to remain welcome. Usefulness is one way she establishes that security. Her care is sincere: she responds to the immediate body, hunger, wound, or threat in front of her through protection, work, and physical action.
 
 \#\#\# On the Page
 
@@ -32,23 +32,23 @@ Roxana uses usefulness as evidence that she belongs. Her care is sincere; its fo
 
 \- Anger enters through the body: a set stance, a hand already moving, a barrier or opponent met directly.
 
-She takes Rain in before asking about the accusation. She also trains him because having someone to carry is how she confirms she belongs, without admitting that need. Neither fact cancels the other.
+She takes Rain in before asking about the accusation. Welcoming and training him can be pleasurable acts of care as well as ways to feel secure in what she brings to a relationship. Do not make every generous or competent act a bid for acceptance.
 
 \#\#\# Want, Fear, and Change
 
 Roxana's burns are a persistent condition rather than a single event's scar: not solved, not solvable, managed daily with small accommodations and accepted as a fact of her life so she can stop spending her life on solving it. \{TK origin: what the burns are and where they came from — author's call, deliberately not decided here\}
 
-What she learned from it is the loneliness: people who hear about the pain and state the obvious. \*Have you tried not doing that. Have you tried this product.\* Advice that is not unhelpful so much as tone-deaf, from people who never considered she had already tried it. That is why she cannot receive — receiving has always meant being misunderstood. She carries a lighter that does not work.
+What she learned from it is the loneliness: people who hear about the pain and state the obvious. \*Have you tried not doing that. Have you tried this product.\* Advice that is not unhelpful so much as tone-deaf, from people who never considered she had already tried it. Such encounters make offers of help difficult to trust, especially when they overlook the work she already does to manage. Her response need not be the same with every person or kind of assistance; relief and exposure can coexist. She carries a lighter that does not work.
 
-Roxana wants to be needed and known, but believes nobody leans on someone whose limits they have seen. She makes herself indispensable so belonging never has to survive her replaceability. Strength is not ease for her; it is the responsibility to keep returning when protection still matters.
+Roxana wants to be needed and known, yet fears that visible dependence will change whether people want her around. Providing something valuable does not necessarily reassure her if she still needs help herself. She can mistake an assisted achievement for evidence that her own capability was insufficient. Strength is not ease for her; she can keep trying through difficulty without being able to guarantee that she can carry it alone.
 
-The sharper test is not whether she can accept a hand once. It is whether she can remain in the room while someone else cooks, protects, decides, or carries and still believe she belongs.
+Accepting one hand does not settle this belief. Vesper's intervention gives her a real harmful experience to contend with, not merely an unfounded reluctance others can talk away. Her change includes remaining in the room while someone else cooks, protects, decides, or carries and believing she is still wanted. Receiving care can coexist with agency, persistence, and renewed capability; later strength must not prove that she never needed anyone. She can still feel exposed or return to proving herself afterward.
 
 1\. She appears at full fighting capability and wins an exit from the Pursuer.
 
 2\. She accepts Vesper's steadying hand and loses the memory-network that lets her stand as she did before.
 
-3\. In the prison, time without anyone needing her wears through the armor of usefulness.
+3\. In the prison, time without anyone needing her removes a familiar way to feel secure, while her own need challenges the belief that acceptance depends on managing alone.
 
 4\. She accepts the Ghost's open hand and produces a raw spark without the lighter.
 
@@ -114,6 +114,12 @@ Roxana is compact and physically forceful. Burn scars on her arms are essential.
 
 \- Starborne carries rather than heals. Do not let the flame restore removed function or erase injury and inertia.
 
-\- Receiving care does not cure her or make dependence shameful.
+\- Receiving care does not cure her or make dependence shameful. Preserve the satisfaction in her real capability without making solitary endurance the price of belonging.
 
 \- Avoid frail-tragic-woman imagery and the serene disabled-sage archetype.
+
+\#\#\# Working Questions — Not Settled
+
+\- Which kinds of assistance feel most exposing, and with whom? Practical help, information, physical support, and emotional accompaniment need not mean the same thing to her. No new origin or history is established by this question.
+
+\- Does she sincerely welcome needs in others that she believes would make her own presence unacceptable? This unequal standard is a possibility to explore, not a settled rule for every relationship.

@@ -65,3 +65,5 @@ I switched out my clothes, ate a simple sandwich, brushed my teeth, and gathered
 
 
 {TK duration: the retained prose currently runs into the next morning’s 7:53/8:00 sequence. If a longer private interval is wanted, revise those links deliberately; no extra days have been established.}
+
+%% READER EXPECTATION — chosen 2026-11-27: the leap has not removed his familiar hesitation. His attempt to understand the goggles still counts even without the hoped-for result. Let readers encounter both the effort and his disappointment; preserve humor and curiosity rather than making the aftermath a punishment for wanting adventure.

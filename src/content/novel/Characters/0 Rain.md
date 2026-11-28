@@ -14,9 +14,13 @@ A young man with a notebook full of first lines and no second ones.
 
 \- \*\*Question:\*\* \*Can I live according to what matters to me without knowing what it will amount to or who I will become?\*
 
-Rain wants to discover his limits and what he is truly capable of through living, making, and trying. He genuinely wants to act, but anticipating consequences gives him more reasons to hesitate than ways to begin. As he hesitates, he feels increasingly that he has little of value to offer; that judgment makes the next attempt harder. Preserving possibility also protects him from closing other lives and from discovering that a finished attempt may prove he is ordinary. That fear remains a secondary, unresolved insecurity: he does not yet know how much he wants to find his limits and how much he hopes they will confirm he is exceptional. He never diagnoses that fear aloud; the stopped notebook supplies evidence he cannot comfortably explain.
+Rain wants to discover his limits and what he is capable of through living, making, and trying. He can recognize what he wants and understand what pursuing it requires, yet still struggle to act. He treats an immediate attempt as though it must commit his whole future and justify the resources he gives it. Research and planning promise to make him ready; he struggles to recognize when further preparation is postponing an experience he could enter, learn from, and respond to.
 
-He grew up praised for potential and steered away from risking it. His hardworking parents equate safety with love: his father tends to decide what Rain means before listening, while his mother offers sincere encouragement without understanding the specific dream. They see extensive computer time, a weaker visible work trajectory, and little finished evidence. Their interpretation is incomplete, not wholly false: Rain genuinely creates, learns, and tries, but reflection and preparation often substitute for irreversible action. Rain discounts real prior efforts because they have not amounted to the life he wanted; unfinished work and an uncertain future begin to feel like evidence that he has nothing to offer. He learned to deflect rather than explain himself. Their concern is real, but being supported and being seen have never felt identical to him. He wants their understanding, while needing to learn that wanting something does not require their validation.
+After an imperfect attempt, disappointment comes first. Only gradually can he recognize that he made a decision and tried despite being unready. He often discounts real efforts because they have not produced the life or capability he hoped for, making the next attempt harder.
+
+Preserving possibility also protects him from closing other lives and from the fear that a finished attempt will prove he is ordinary. That remains a secondary, unresolved insecurity: he does not yet know how much he wants to find his limits and how much he hopes they will confirm he is exceptional. He never diagnoses that fear aloud; the stopped notebook supplies evidence he cannot comfortably explain.
+
+He grew up praised for potential and steered away from risking it. His hardworking parents equate safety with love: his father tends to decide what Rain means before listening, while his mother offers sincere encouragement without understanding the specific dream. They see extensive computer time, a weaker visible work trajectory, and little finished evidence. Their interpretation is incomplete, not wholly false: Rain genuinely creates, learns, and tries, but reflection and preparation often substitute for irreversible action. Unfinished work and an uncertain future begin to feel like evidence that he has nothing to offer. He learned to deflect rather than explain himself. Their concern is real, but being supported and being seen have never felt identical to him. He wants their understanding, while needing to learn that wanting something does not require their validation.
 
 Before the story, Rain left a stable, approved path because he feared that staying would become indefinite continuation. He quit without a secure replacement, hoping the irreversible leap would force him toward the creative life he imagined. It did not. He still struggled to follow through, finish imperfect work, and produce evidence of the life he claimed to want. Under sufficient local resonance, that exit patterned the personal resonance he later experiences as the Ghost.
 
@@ -24,17 +28,19 @@ Before the story, Rain left a stable, approved path because he feared that stayi
 
 \- Agreeable, self-deprecating, and easy company; often a fraction absent from his own body.
 
-\- Spins a pen and almost never writes. His notebook holds ideas stopped after one line because a second line would become evidence.
+\- Spins a pen over this notebook, where ideas stop after one line because a second line would become evidence. The stopped pages do not erase his real efforts elsewhere.
 
 \- Looks at ceilings and cloud cover rather than open sky.
 
-\- Struggles to answer in quiet rooms, but moves with sudden commitment in emergencies.
+\- Struggles when asked to explain a consequential personal choice, even when he knows the answer but finds it difficult to act on. In emergencies, he can move with sudden commitment.
 
-\- Permits help without requesting it, asks what other people need, and does not state what he needs.
+\- Wants to be honest and open with people he feels comfortable around. Sharing a difficulty can still be easier than making a concrete request for help.
 
 \- Carries himself as though his weight has not committed to the next step. Under pressure, that softness snaps into decisive motion.
 
-His generosity and concern for others are real. His avoidance grows from consequence anxiety and perceived inadequacy as well as the wish to protect untested potential. He can care for someone else and still struggle to state a need of his own.
+His generosity and concern for others are real. He yearns for deep connection while considering how much he asks another person to carry. He can explain what holds him back without being able to overcome it through explanation alone.
+
+He enjoys finding people who are driven to make or do things and turn their ambitions into reality; he has felt the lack of that company. Their enthusiasm and activity are attractions in themselves, without every encounter having to become a comparison with his own progress.
 
 \#\#\# Want, Fear, and Change
 
@@ -44,7 +50,7 @@ A normal, safe life has real attractions. The conflict is whether he chooses it 
 
 As Rain participates, his world grows larger and he feels more alive, even as his social standing and external stability deteriorate. He doubts that feeling when the visible evidence suggests he is throwing his life away. Meaningful experience does not cancel what he loses, and feeling alive does not prove a decision was good. His confidence can falter while his capacity to respond grows.
 
-He outsources movement to the Ghost, decisions to Claire, direction to Roxana, and physical presence to the Clone. His change is learning to choose, accept consequences, reassess, and pivot while fear, limitation, relapse, and uncertainty remain. Agency includes admitting a mistake, changing a plan, and answering for harm to others; it does not require defending every past decision or rejecting another person's better judgment. Self-sufficiency includes asking for and accepting help without making someone else responsible for choosing his life. He can want without being vindicated, and continue without becoming certain.
+He outsources movement to the Ghost, decisions to Claire, direction to Roxana, and physical presence to the Clone. His change is learning to commit himself to the choice in front of him, stay involved through difficulty, and try again without first committing every resource or becoming fully prepared. He accepts consequences, reassesses, and pivots while fear, limitation, relapse, and uncertainty remain. Agency includes admitting a mistake, changing a plan, and answering for harm to others; it does not require defending every past decision or rejecting another person's better judgment. Self-sufficiency includes asking for and accepting help without making someone else responsible for choosing his life. He can want without being vindicated, and continue without becoming certain.
 
 1\. He follows the Ghost off his commute and steals the goggles.
 
@@ -90,7 +96,7 @@ The outbound train is the final scene. Nothing follows the ending callback.
 
 \- \*\*Shiori:\*\* she makes imperfect things and lets them exist. Rain admires this without identifying it as the answer to his notebook.
 
-\- \*\*The Pursuer:\*\* Rain cannot start because he protects possible futures. The Pursuer cannot stop because he protects an accumulated past.
+\- \*\*The Pursuer:\*\* Rain postpones attempts when they feel like commitments of his whole future, protecting possibilities he has not tested. The Pursuer cannot stop because he protects an accumulated past.
 
 \#\#\# The Ghost, Clone, Perfect Clone, and Split
 

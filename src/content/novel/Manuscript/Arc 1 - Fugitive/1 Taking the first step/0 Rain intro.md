@@ -23,3 +23,4 @@ What should I do today? My notes were laid out in several folders on the laptop 
 My story. Or rather the outline for it. I opened the file and stared at the screen to see all of my ideas waiting to be condensed.
 
 Not yet. I should probably figure out a better way to spend my time.
+%% READER EXPECTATION — chosen 2026-11-27: invite hope that a decisive departure will transform Rain, without establishing that he has never tried. His existing notes and outline are real efforts he discounts. Preserve the authored opening; no invented prior achievement or thematic explanation is required.

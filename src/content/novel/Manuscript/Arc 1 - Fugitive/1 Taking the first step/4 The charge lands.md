@@ -75,3 +75,5 @@ That’s just who I am.
 
 
 {TK the practical decision after the call: why Rain leaves home and looks for shelter. Do not supply an unseen police arrival or settle surrender terms.}
+
+%% READER EXPECTATION — chosen 2026-11-27: the existing decision to call despite anticipating misunderstanding is a real attempt, even though the conversation does not resolve the conflict. Preserve both that effort and the legitimate question of theft and concealment. Do not make either the call or its difficulty prove his whole identity.

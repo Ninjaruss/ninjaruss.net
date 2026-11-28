@@ -5,3 +5,5 @@ a1s08_trail
 %% Arc 1 closes on another choice after the first has brought consequences, rather than on vindication or completed independence. He can accept their help and choose to accompany them. His exact motive must emerge from the encounter and conversation, not be supplied by the Ghost.
 
 {TK draft the scene within this brief; existing prose has not been replaced.}
+
+%% READER EXPECTATION — chosen 2026-11-27: close on another attempt while the first remains unresolved, rather than his first-ever real act or a completed transformation. Receiving help can belong to this choice. Keep his particular motive open until drafted; neither adventure nor later growth vindicates the theft.
