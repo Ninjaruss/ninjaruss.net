@@ -1,34 +1,61 @@
-/**
- * Renders public/social-default.svg to public/social-default.png (1200x630).
- *
- * Why a raster copy exists at all: X/Twitter, Facebook, LinkedIn, Slack, Discord
- * and iMessage all refuse SVG for `og:image`. When the default was the .svg,
- * every share of the site rendered as a bare link with no preview image — while
- * `twitter:card` promised a large one. The SVG stays the editable source; the
- * PNG is what BaseLayout points og:image / twitter:image at.
- *
- * Usage: node scripts/build-og-image.mjs
- */
-import { readFile, writeFile } from 'node:fs/promises';
+/** Regenerate the default link preview with `node scripts/build-og-image.mjs`. */
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
-const root = new URL('../', import.meta.url);
-const svgPath = fileURLToPath(new URL('public/social-default.svg', root));
-const pngPath = fileURLToPath(new URL('public/social-default.png', root));
+const publicPath = (path) => fileURLToPath(new URL(`../public/${path}`, import.meta.url));
+const width = 1200;
+const height = 630;
+const gold = '#ffe52c';
+const background = '#0a0a0a';
 
-const svg = await readFile(svgPath);
-
-/* density: the SVG declares width/height in user units, so scale density to land
-   on exactly 1200x630 regardless of the source viewBox units. */
-const png = await sharp(svg, { density: 96 })
-  .resize(1200, 630, { fit: 'fill' })
-  .png({ compressionLevel: 9, palette: true })
+const artwork = await sharp(publicPath('images/identity/ttgl-pointing-960.webp'))
+  .resize(height, height)
+  .png()
   .toBuffer();
 
-await writeFile(pngPath, png);
+// The diagonal cut echoes the homepage tiles and leaves room for the pointing pose.
+const panel = Buffer.from(`
+  <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+    <defs>
+      <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+        <circle cx="1" cy="1" r="1.2" fill="#28251a"/>
+      </pattern>
+    </defs>
+    <path d="M0 0H686L556 630H0Z" fill="${gold}"/>
+    <path d="M0 0H679L549 630H0Z" fill="${background}"/>
+    <path d="M0 0H679L549 630H0Z" fill="url(#dots)"/>
+    <path d="M64 205H153L145 211H64Z" fill="${gold}"/>
+  </svg>
+`);
 
-const meta = await sharp(png).metadata();
-console.log(
-  `wrote ${pngPath} — ${meta.width}x${meta.height}, ${meta.format}, ${(png.length / 1024).toFixed(1)}KB`
-);
+const title = await sharp({ text: {
+  text: `<span foreground="${gold}"><i>NINJARUSS</i></span>`,
+  font: 'Archivo Black 82',
+  fontfile: publicPath('fonts/archivo-black-400-latin.woff2'),
+  rgba: true,
+} }).png().toBuffer();
+
+const motto = await sharp({ text: {
+  text: '<span foreground="#f5f5f5"><i>In spite of it all...</i></span>',
+  font: 'Syne 38',
+  fontfile: publicPath('fonts/syne-400-latin.woff2'),
+  rgba: true,
+} }).png().toBuffer();
+
+const domain = await sharp({ text: {
+  text: '<span foreground="#ccc7b5">ninjaruss.net</span>',
+  font: 'Syne 27',
+  fontfile: publicPath('fonts/syne-400-latin.woff2'),
+  rgba: true,
+} }).png().toBuffer();
+
+await sharp({ create: { width, height, channels: 3, background } })
+  .composite([
+    { input: artwork, left: width - height, top: 0 },
+    { input: panel, left: 0, top: 0 },
+    { input: title, left: 64, top: 239 },
+    { input: motto, left: 64, top: 331 },
+    { input: domain, left: 64, top: 540 },
+  ])
+  .jpeg({ quality: 90, mozjpeg: true })
+  .toFile(publicPath('social-ninjaruss.jpg'));

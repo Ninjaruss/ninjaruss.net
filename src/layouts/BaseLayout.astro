@@ -37,13 +37,15 @@ const alternates = translatedAlternates(Astro.url.pathname).map(({ hreflang, pat
   hreflang,
   href: new URL(path, Astro.site || 'https://ninjaruss.net').href,
 }));
-/* Raster on purpose: X/Facebook/LinkedIn/Slack/Discord/iMessage all refuse SVG
-   for og:image, so the SVG source would render as no preview image at all.
-   social-default.png is generated from social-default.svg by
-   `node scripts/build-og-image.mjs`. */
-const resolvedOgImage = ogImage ?? '/social-default.png';
-const ogImageUrl = new URL(resolvedOgImage, Astro.site || 'https://ninjaruss.net').href;
-const ogImageIsRaster = /\.(png|jpe?g|webp)$/i.test(resolvedOgImage);
+// Link previews need a raster image. Regenerate the default with scripts/build-og-image.mjs.
+const defaultOgImage = '/social-ninjaruss.jpg';
+const customOgImage = ogImage && !/\.svg(?:[?#]|$)/i.test(ogImage) ? ogImage : undefined;
+const ogImageUrl = new URL(customOgImage ?? defaultOgImage, canonicalUrl.origin).href;
+const ogImageAlt = customOgImage
+  ? `${siteTitle} — ${description}`
+  : lang === 'ja'
+    ? '金色と黒の渦を背景に、こちらを指さすニンジャラス'
+    : 'Ninjaruss pointing toward the viewer against a gold and black spiral';
 ---
 
 <!DOCTYPE html>
@@ -87,16 +89,21 @@ const ogImageIsRaster = /\.(png|jpe?g|webp)$/i.test(resolvedOgImage);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl.href} />
     <meta property="og:image" content={ogImageUrl} />
-    {ogImageIsRaster && <meta property="og:image:width" content="1200" />}
-    {ogImageIsRaster && <meta property="og:image:height" content="630" />}
-    <meta property="og:image:alt" content={`${siteTitle} — ${description}`} />
+    {!customOgImage && (
+      <>
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+      </>
+    )}
+    <meta property="og:image:alt" content={ogImageAlt} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
-    <meta name="twitter:image:alt" content={`${siteTitle} — ${description}`} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
     <ClientRouter />
   </head>
